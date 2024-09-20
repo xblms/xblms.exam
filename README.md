@@ -1,4 +1,4 @@
-# XBLMS .NET快速开发框架
+# XBLMES 在线考试系统
 
 <img src="https://gitee.com/xblms/xblms/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/logo.png" height="180" align="center">
 
@@ -14,8 +14,6 @@
 
 分分钟搭建一套属于自己的应用系统，只需要在基架之上完成业务功能即可
 
-清新脱俗的编码风格，继承了.net强大的“封装”基因，拿来即用，优雅永不过时
-
 
 ### 内置功能-管理端
 
@@ -28,7 +26,6 @@
 | 系统管理  | 管理员设置、用户设置、数据库管理、访问拦截管理  |  
 | 日志管理  | 管理员日志、用户日志、系统错误日志，日志设置  |  
 | 统计图表  | 用户登录统计、访问拦截统计  |  
-| demo功能  | 简单的增删改查操作,cache的简单操作  |  
 
 ### 内置功能-用户端
 
@@ -43,16 +40,16 @@
 * 管理端
 <table>
     <tr>
-        <td><img src="https://gitee.com/xblms/xblms/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/adminlogin.png"/></td>
-        <td><img src="https://gitee.com/xblms/xblms/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/adminindex.png"/></td>
+        <td></td>
+        <td></td>
     </tr>
 </table>
 
 * 用户端
 <table>
     <tr>
-        <td><img src="https://gitee.com/xblms/xblms/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/homelogin.png"/></td>
-        <td><img src="https://gitee.com/xblms/xblms/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/homeindex.png"/></td>
+        <td></td>
+        <td></td>
     </tr>
 </table>
 
