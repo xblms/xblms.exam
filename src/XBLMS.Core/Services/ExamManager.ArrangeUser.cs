@@ -18,11 +18,27 @@ namespace XBLMS.Core.Services
                     var group = await _userGroupRepository.GetAsync(groupId);
                     if (group.GroupType == UsersGroupType.Fixed)
                     {
-                        userIds = group.UserIds;
+                        if (group.UserIds != null && group.UserIds.Count > 0)
+                        {
+                            userIds.AddRange(group.UserIds);
+                        }
+
                     }
                     if (group.GroupType == Enums.UsersGroupType.Range)
                     {
-                        userIds = await _userRepository.GetUserIdsWithOutLockedAsync(group.CompanyIds, group.DepartmentIds, group.DutyIds);
+                        var letUserIds = await _userRepository.GetUserIdsWithOutLockedAsync(group.CompanyIds, group.DepartmentIds, group.DutyIds);
+                        if (letUserIds != null && letUserIds.Count > 0)
+                        {
+                            userIds.AddRange(letUserIds);
+                        }
+                    }
+                    if (group.GroupType == UsersGroupType.All)
+                    {
+                        var letUserIds = await _userRepository.GetUserIdsWithOutLockedAsync();
+                        if (letUserIds != null && letUserIds.Count > 0)
+                        {
+                            userIds.AddRange(letUserIds);
+                        }
                     }
                 }
             }
@@ -31,7 +47,7 @@ namespace XBLMS.Core.Services
                 userIds = await _userRepository.GetUserIdsWithOutLockedAsync();
             }
 
-            if (userIds.Count > 0)
+            if (userIds != null && userIds.Count > 0)
             {
                 foreach (int userId in userIds)
                 {

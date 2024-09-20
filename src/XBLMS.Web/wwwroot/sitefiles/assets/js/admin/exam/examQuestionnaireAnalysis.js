@@ -1,11 +1,9 @@
-﻿var $url = 'common/examPaperLayerView';
+﻿var $url = 'exam/examQuestionnaireAnalysis';
 
 var data = utils.init({
   id: utils.getQueryInt('id'),
+  paper:null,
   list: null,
-  randomIds: null,
-  paper: null,
-  curRandomId:0
 });
 
 var methods = {
@@ -15,32 +13,18 @@ var methods = {
     utils.loading(this, true);
     $api.get($url, {
       params: {
-        id: this.id,
-        randomId: this.curRandomId
+        id: this.id
       }
     }).then(function (response) {
       var res = response.data;
 
       $this.paper = res.item;
       $this.list = res.txList;
-      $this.randomIds = res.randomIds;
-      $this.curRandomId = res.randomId;
-
     }).catch(function (error) {
       utils.error(error, { layer:true });
     }).then(function () {
       utils.loading($this, false);
     });
-  },
-  tmDidScroll: function (id) {
-    this.$refs['answerScrollbar'].wrap.scrollTop = 0;
-    var eid = '#tm_' + id;
-    var scrollTop = ($(eid).offset().top) - 128;
-    this.$refs['answerScrollbar'].wrap.scrollTop = scrollTop;
-  },
-  selectChangeRandomConfig: function (value) {
-    this.curRandomId = value;
-    this.apiGet();
   }
 };
 

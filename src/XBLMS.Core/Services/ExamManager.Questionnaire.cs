@@ -1,22 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text.Json.Serialization;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Datory;
-using Datory.Annotations;
-using DocumentFormat.OpenXml.ExtendedProperties;
-using DocumentFormat.OpenXml.Office2010.ExcelAc;
-using Newtonsoft.Json.Converters;
-using NPOI.POIFS.Properties;
-using NPOI.SS.Formula.Functions;
-using XBLMS.Dto;
 using XBLMS.Enums;
 using XBLMS.Models;
-using XBLMS.Repositories;
-using XBLMS.Services;
-using XBLMS.Utils;
 
 namespace XBLMS.Core.Services
 {
@@ -54,18 +39,34 @@ namespace XBLMS.Core.Services
                 foreach (int groupId in paper.UserGroupIds)
                 {
                     var group = await _userGroupRepository.GetAsync(groupId);
-                    if (group.GroupType == UsersGroupType.Fixed)
+                    if (group != null)
                     {
-                        userIds = group.UserIds;
+                        if (group.GroupType == UsersGroupType.Fixed)
+                        {
+                            if(group.UserIds!=null &&  group.UserIds.Count > 0)
+                            {
+                                userIds.AddRange(group.UserIds);
+                            }
+                    
+                        }
+                        if (group.GroupType == Enums.UsersGroupType.Range)
+                        {
+                            var letUserIds = await _userRepository.GetUserIdsWithOutLockedAsync(group.CompanyIds, group.DepartmentIds, group.DutyIds);
+                            if (letUserIds != null && letUserIds.Count > 0)
+                            {
+                                userIds.AddRange(letUserIds);
+                            }
+                        }
+                        if (group.GroupType == UsersGroupType.All)
+                        {
+                            var letUserIds = await _userRepository.GetUserIdsWithOutLockedAsync();
+                            if (letUserIds != null && letUserIds.Count > 0)
+                            {
+                                userIds.AddRange(letUserIds);
+                            }
+                        }
                     }
-                    if (group.GroupType == Enums.UsersGroupType.Range)
-                    {
-                        userIds = await _userRepository.GetUserIdsWithOutLockedAsync(group.CompanyIds, group.DepartmentIds, group.DutyIds);
-                    }
-                    if (group.GroupType == UsersGroupType.All)
-                    {
-                        userIds = await _userRepository.GetUserIdsWithOutLockedAsync();
-                    }
+
                 }
             }
 

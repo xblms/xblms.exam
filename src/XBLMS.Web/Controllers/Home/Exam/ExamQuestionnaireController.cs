@@ -15,6 +15,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
     public partial class ExamQuestionnaireController : ControllerBase
     {
         private const string Route = "exam/examQuestionnaire";
+        private const string RouteItem = "exam/examQuestionnaire/item";
 
         private readonly IConfigRepository _configRepository;
         private readonly IAuthManager _authManager;

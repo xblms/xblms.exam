@@ -19,7 +19,6 @@ var methods = {
 
       $this.tm = res.item;
     }).catch(function (error) {
-      utils.loading($this, false);
       utils.error(error, { layer:true });
     }).then(function () {
       utils.loading($this, false);

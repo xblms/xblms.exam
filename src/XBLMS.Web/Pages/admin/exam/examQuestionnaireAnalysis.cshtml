@@ -1,0 +1,84 @@
+﻿@page
+@{ Layout = "_Layout"; }
+@section Styles{
+    <link href="/sitefiles/assets/lib/geeks/css/theme.min.css" rel="stylesheet" type="text/css" />
+    <style>
+        .el-input__inner {
+            border-radius: 0;
+            border-top-width: 0px;
+            border-left-width: 0px;
+            border-right-width: 0px;
+            border-bottom-width: 2px;
+            background: none;
+        }
+    </style>
+}
+<el-card>
+    <div slot="header" class="clearfix">
+        <span class="fw-bold fs-4">调查问卷-{{ paper.title }}（共：{{ paper.tmTotal }}项，调查人次：{{ paper.answerTotal }}）</span>
+        <div style="float:right;">
+            <el-button class="btn btn-outline-success py-3 w-100" v-on:click="utils.closeLayerSelf">退出预览</el-button>
+        </div>
+    </div>
+    <el-row>
+        <el-col>
+            <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-145) + 'px' }" ref="answerScrollbar">
+                <div class="pe-3">
+                    <div class="mb-3" v-for="(tm,tmIndex) in list">
+                        <el-card>
+                            <div :id="'tm_'+tm.id">
+                                <span class="mb-3 d-flex justify-content-start  align-items-start">
+                                    <span>{{ tm.tmIndex }}、</span>
+                                    <span v-if="tm.baseTx==='Tiankongti'">
+                                        <span v-if="tm.titleList && tm.titleList.length>0">
+                                            <span v-for="tmContent in tm.titleList">
+                                                <span v-if="utils.contains(tmContent.value,'___')">
+                                                    <el-input size="small" style="width:130px;"></el-input>
+                                                </span>
+                                                <span v-else v-html="tmContent.value"></span>
+                                            </span>
+                                        </span>
+                                        <span v-else v-html="tm.title"></span>
+                                    </span>
+                                    <span v-else v-html="tm.title"></span>
+                                    <span class="ms-auto badge text-dark px-0">({{tm.score}}分)</span>
+                                </span>
+                                <div class="list-group" v-if="tm.baseTx!=='Tiankongti' && tm.baseTx!=='Jiandati'">
+                                    <div v-if="tm.baseTx==='Danxuanti' || tm.baseTx==='Panduanti'">
+                                        <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.options">
+                                            <div class="d-flex justify-content-start align-items-start">
+                                                <div class="me-1 position-relative">
+                                                    <span class="position-absolute top-50 start-0 translate-middle pe-3" v-if="utils.contains(utils.toCamelCase(tm.answer),utils.toCamelCase(optionsABC[optionIndex]))"><i class="el-icon-success text-success fw-bold"></i></span>
+                                                    {{optionsABC[optionIndex]}}.
+                                                </div>
+                                                <div>
+                                                    <span v-html="option"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div v-if="tm.baseTx==='Duoxuanti'">
+                                        <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.options">
+                                            <div class="d-flex justify-content-start align-items-start">
+                                                <div class="me-1 position-relative">
+                                                    <span class="position-absolute top-50 start-0 translate-middle pe-3" v-if="utils.contains(utils.toCamelCase(tm.answer),utils.toCamelCase(optionsABC[optionIndex]))"><i class="el-icon-success text-success fw-bold"></i></span>
+                                                    {{optionsABC[optionIndex]}}.
+                                                </div>
+                                                <div>
+                                                    <span v-html="option"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </el-card>
+                    </div>
+                </div>
+            </el-scrollbar>
+        </el-col>
+    </el-row>
+</el-card>
+@section Scripts {
+    <script src="/sitefiles/assets/js/admin/exam/examQuestionnaireAnalysis.js" type="text/javascript"></script>
+}

@@ -1,4 +1,5 @@
 var $url = "/exam/examQuestionnaire";
+var $urlItem = "/exam/examQuestionnaire/item";
 
 var data = utils.init({
   form: {
@@ -36,6 +37,23 @@ var methods = {
       $this.loadMoreLoading = false;
     });
   },
+  apiGetItem: function (id) {
+    var $this = this;
+
+    $api.get($urlItem, { params: {id:id} }).then(function (response) {
+      var res = response.data;
+
+      let pIndex = $this.list.findIndex(item => {
+        return item.id === id;
+      });
+
+      $this.$set($this.list, pIndex, res.item);
+
+
+    }).catch(function (error) {
+    }).then(function () {
+    });
+  },
   btnSearchClick: function () {
     this.form.pageIndex = 1;
     this.list = [];
@@ -62,7 +80,7 @@ var methods = {
         width: "100%",
         height: "100%",
         end: function () {
-
+          $this.apiGetItem(paper.id);
         }
       });
     }
