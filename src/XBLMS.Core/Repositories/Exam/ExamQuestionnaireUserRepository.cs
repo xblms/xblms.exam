@@ -30,6 +30,10 @@ namespace XBLMS.Core.Repositories
         {
             return await _repository.InsertAsync(item);
         }
+        public async Task<bool> UpdateAsync(ExamQuestionnaireUser item)
+        {
+            return await _repository.UpdateAsync(item);
+        }
 
         public async Task DeleteAsync(int id)
         {

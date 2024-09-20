@@ -48,7 +48,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
 
         public class GetSubmitRequest
         {
-            public int PapaerId { get; set; }
+            public int Id { get; set; }
             public List<ExamQuestionnaireTm> TmList { get; set; }
         }
     }

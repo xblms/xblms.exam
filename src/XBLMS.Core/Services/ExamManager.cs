@@ -286,7 +286,8 @@ namespace XBLMS.Core.Services
             var paperUser = await _examQuestionnaireUserRepository.GetAsync(paper.Id, user.Id);
             paper.Set("ExamStartDateTimeStr", DateUtils.Format(paper.ExamBeginDateTime, DateUtils.FormatStringDateTimeCN));
             paper.Set("ExamEndDateTimeStr", DateUtils.Format(paper.ExamEndDateTime, DateUtils.FormatStringDateTimeCN));
-            paperUser.Set("State", paperUser.SubmitType);
+            paper.Set("SubmitType", paperUser.SubmitType);
+            paper.Set("State", DateTime.Now >= paper.ExamBeginDateTime && DateTime.Now <= paper.ExamEndDateTime);
 
         }
         public async Task<(bool Success, string msg)> CheckExam(int paperId, int userId)

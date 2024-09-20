@@ -20,10 +20,10 @@
     </div>
     <el-scrollbar class="scrollbar" :style="{ height: ($(window).height()-136) + 'px' }">
         <div class="pe-3" v-if="total>0">
-            <div class="ms-5 position-relative card-hover-with-icon" v-for="(paper,index) in list" v-on:click="btnViewClick(paper.id)">
+            <div class="ms-5 position-relative card-hover-with-icon" v-for="(paper,index) in list" v-on:click="btnViewClick(paper)">
                 <div class="position-absolute top-50 start-0 translate-middle">
                     <div class="position-relative">
-                        <i class="bi bi-person-check fs-1 rounded-3 px-1 card-icon text-success"></i>
+                        <i class="bi bi-person-check fs-1 rounded-3 px-1 card-icon" :class="paper.submitType==='Submit'?'text-success':'text-warning'"></i>
                         <span class="position-absolute top-100 start-100 translate-middle mt-1 fs-6">{{ index+1 }}</span>
                     </div>
                 </div>
@@ -31,8 +31,8 @@
                     <div class="row align-items-center g-3 ms-6">
                         <div class="col">
                             <div class="mb-2">
-                                <el-link :underline="false" v-on:click.stop="btnViewClick(paper.id)">
-                                    <span class="text-success">{{ paper.title }}</span>
+                                <el-link :underline="false" v-on:click.stop="btnViewClick(paper)">
+                                    <span :class="paper.submitType==='Submit'?'text-success':''">{{ paper.title }}</span>
                                 </el-link>
                             </div>
                             <ul class="list-inline fw-light">
@@ -43,7 +43,8 @@
                         </div>
                         <div class="col-auto">
                             <div class="bg-light p-2 rounded-pill">
-                                <el-button type="warning" plain icon="el-icon-s-order" class="rounded-pill" v-on:click.stop="btnViewClick(paper.id)">去填写</el-button>
+                                <el-button type="success" plain icon="el-icon-s-order" class="rounded-pill" disabled v-if="paper.submitType==='Submit'">已提交</el-button>
+                                <el-button type="warning" plain icon="el-icon-s-order" class="rounded-pill" v-on:click.stop="btnViewClick(paper)" v-else>去填写</el-button>
                             </div>
                         </div>
                     </div>

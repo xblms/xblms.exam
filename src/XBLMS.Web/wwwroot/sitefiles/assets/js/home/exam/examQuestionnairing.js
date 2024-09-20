@@ -71,7 +71,10 @@ var methods = {
     top.utils.alertWarning({
       title: '确定提交吗？',
       callback: function () {
-        $this.apiSubmitPaper();
+        let check = $this.checkAnswer();
+        if (check) {
+          $this.apiSubmitPaper();
+        }
       }
     });
   },
@@ -82,12 +85,15 @@ var methods = {
     this.$refs['answerScrollbar'].wrap.scrollTop = scrollTop;
   },
   checkAnswer: function () {
-    this.tmList.forEach(tm => {
-      if (!tm.answerStatus) {
-        this.tmDidScroll(tm.id);
+    for (let i = 0; i < this.tmList.length; i++) {
+      let letTm = this.tmList[i];
+      if (!letTm.answerStatus) {
+        this.tmDidScroll(letTm.id);
         utils.error('请完善问卷', { layer: true });
+        return false;
       }
-    });
+    }
+    return true;
   }
 };
 

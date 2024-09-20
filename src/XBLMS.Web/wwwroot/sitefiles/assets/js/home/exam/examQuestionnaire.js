@@ -46,18 +46,26 @@ var methods = {
     this.form.pageIndex++;
     this.apiGet();
   },
-  btnViewClick: function (id) {
-    var $this = this;
-    top.utils.openLayer({
-      title: false,
-      closebtn: 0,
-      url: utils.getExamUrl('examQuestionnairing', { id: id }),
-      width: "100%",
-      height: "100%",
-      end: function () {
+  btnViewClick: function (paper) {
+    if (paper.submitType === 'Submit') {
+      utils.success("已提交")
+    }
+    else if (!paper.state) {
+      utils.success("不在有效期内！")
+    }
+    else {
+      var $this = this;
+      top.utils.openLayer({
+        title: false,
+        closebtn: 0,
+        url: utils.getExamUrl('examQuestionnairing', { id: paper.id }),
+        width: "100%",
+        height: "100%",
+        end: function () {
 
-      }
-    });
+        }
+      });
+    }
   },
 };
 

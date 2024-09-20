@@ -26,13 +26,18 @@
     </div>
     <el-card class="p-3">
         <el-scrollbar class="scrollbar" :style="{ height: ($(window).height()-205) + 'px' }" ref="answerScrollbar">
-            <el-card v-for="(tm,tmIndex) in tmList" class="me-3 mb-3" :ref="'tm_'+tm.id">
-                <div slot="header" class="d-flex justify-content-start align-items-start">
-                    <div>{{ tmIndex+1 }}、</div>
-                    <div>{{ tm.title }}</div>
+            <el-card v-for="(tm,tmIndex) in tmList" class="me-3 mb-3" :ref="'tm_'+tm.id" :id="'tm_'+tm.id">
+                <div slot="header">
+                    <div class="d-flex justify-content-start align-items-start fw-bold">
+                        <div>{{ tmIndex+1 }}、</div>
+                        <div>{{ tm.title }}（<span v-if="tm.tx==='Duoxuanti'">多选</span><span v-else-if="tm.tx==='Danxuanti'">单选</span><span v-else>简答</span>）</div>
+                    </div>
+                    <div class="mt-2" v-if="!tm.answerStatus">
+                        <span class="bg-danger text-white px-2 py-1 rounded-pill fs-6"><i class="el-icon-info me-2"></i>请完善该项</span>
+                    </div>
                 </div>
                 <div>
-                    <div :class="tm.answerStatus ? '' : 'card border-top-5 card-hover border-danger' ">
+                    <div>
                         <div class="list-group">
                             <div v-if="tm.tx==='Danxuanti'">
                                 <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.optionsRandom">
@@ -65,7 +70,7 @@
         </el-scrollbar>
     </el-card>
     <div class="d-flex justify-content-between align-items-center pt-3">
-        <div class="w-100">
+        <div class="w-50">
             <el-progress status="success" :stroke-width="18" :percentage="utils.formatPercentFloat(answerTotal,tmTotal)"></el-progress>
         </div>
         <div>
