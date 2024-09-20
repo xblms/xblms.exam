@@ -1,0 +1,61 @@
+﻿@page
+@{ Layout = "_Layout"; }
+<el-card class="box-card">
+    <el-form :inline="true" :size="euiSize">
+        <el-form-item label="">
+            <el-input v-model="search"
+                      prefix-icon="el-icon-search" clearable
+                      placeholder="输入关键字进行过滤">
+            </el-input>
+        </el-form-item>
+        <el-form-item label="">
+            <el-button icon="el-icon-refresh" circle :size="euiSize" v-on:click="btnSearch"></el-button>
+        </el-form-item>
+    </el-form>
+    <el-table :data="treeTable" ref="companysTable"
+              :expand-row-keys="expandRowKeys"
+              v-on:row-click="rowClick"
+              row-key="guid"
+              :size="euiSize"
+              :height="($(window).height() - 115)"
+              :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
+        <el-table-column prop="name"
+                         label="组织名称">
+            <template slot="header" slot-scope="scope">
+                组织名称
+                <el-button type="text" :size="euiSize" v-on:click.stop="btnExpand"><span v-if="defaultExpandAll">收起全部 <i class="el-icon-arrow-down"></i></span><span v-else>展开全部 <i class="el-icon-arrow-right"></i></span></el-button>
+            </template>
+            <template slot-scope="scope">
+                {{ scope.row.name }}
+            </template>
+        </el-table-column>
+        <el-table-column prop="organTypeName"
+                         label="类型" width="118">
+        </el-table-column>
+        <el-table-column label="管理员" width="118">
+            <template slot-scope="scope">
+                {{ scope.row.adminCount }}/{{ scope.row.adminAllCount }}
+            </template>
+        </el-table-column>
+        <el-table-column label="用户" width="118">
+            <template slot-scope="scope">
+                {{ scope.row.userCount }}/{{ scope.row.userAllCount }}
+            </template>
+        </el-table-column>
+        <el-table-column align="right" width="288">
+            <template slot-scope="scope">
+                <el-button-group>
+                    <el-button :size="euiSize" v-if="scope.row.organType==='company'" v-on:click.stop="btnEdit(scope.row,true,'company')">添加单位</el-button>
+                    <el-button :size="euiSize" v-if="scope.row.organType==='company' || scope.row.organType==='department'" v-on:click.stop="btnEdit(scope.row,true,'department')">添加部门</el-button>
+                    <el-button :size="euiSize" v-if="scope.row.organType==='duty' || scope.row.organType==='department'" v-on:click.stop="btnEdit(scope.row,true,'duty')">添加岗位</el-button>
+                    <el-button :size="euiSize" v-on:click.stop="btnEdit(scope.row,false)">修改</el-button>
+                    <el-button :size="euiSize" type="danger" :disabled="scope.row.id===1 && scope.row.organType==='company'" v-on:click.stop="btnDelete(scope.row)">删除</el-button>
+                </el-button-group>
+            </template>
+        </el-table-column>
+        @await Html.PartialAsync("_PartialTableEmpty")
+    </el-table>
+</el-card>
+@section Scripts{
+    <script src="/sitefiles/assets/js/admin/settings/organs.js" type="text/javascript"></script>
+}

@@ -1,0 +1,98 @@
+@page
+@{ Layout = "_LayoutHome"; }
+
+<el-card>
+    <div slot="header" class="clearfix text-center">
+        <span class="fw-bold"><i class="el-icon-s-order me-2"></i><span v-if="item.success">{{ item.title }}：</span>考试正常结束</span>
+    </div>
+    <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-120) + 'px' }">
+        <div v-if="item.success">
+            <div v-if="!item.isMark">
+                <el-result>
+                    <template slot="title">
+                        交卷成功
+                    </template>
+                    <template slot="icon">
+                        <i class="el-icon-lock display-1 text-warning"></i>
+                    </template>
+                    <template slot="subTitle">
+                        请等待阅卷
+                    </template>
+                    <template slot="extra">
+                        <el-button icon="el-icon-switch-button" type="primary" plain v-on:click="utils.closeLayerSelf">安全退出</el-button>
+                    </template>
+                </el-result>
+            </div>
+            <div v-else>
+                <div v-if="item.isShowScore">
+                    <el-result v-if="item.isPass">
+                        <template slot="title">
+                            交卷成功
+                        </template>
+                        <template slot="icon">
+                            <i class="bi bi-emoji-smile display-1 text-success"></i>
+                        </template>
+                        <template slot="subTitle">
+                            成绩
+                            <div class="p-3 fs-1">
+                                {{ item.score }}
+                            </div>
+                        </template>
+                        <template slot="extra">
+                            <el-button icon="el-icon-switch-button" type="primary" plain v-on:click="utils.closeLayerSelf">安全退出</el-button>
+                        </template>
+                    </el-result>
+                    <el-result v-else>
+                        <template slot="title">
+                            交卷成功
+                        </template>
+                        <template slot="icon">
+                            <i class="bi bi-emoji-frown display-1 text-warning"></i>
+                        </template>
+                        <template slot="subTitle">
+                            成绩
+                            <div class="p-3 fs-1">
+                                {{ item.score }}
+                            </div>
+                        </template>
+                        <template slot="extra">
+                            <el-button icon="el-icon-switch-button" type="primary" plain v-on:click="utils.closeLayerSelf">安全退出</el-button>
+                        </template>
+                    </el-result>
+                </div>
+                <div v-else>
+                    <el-result>
+                        <template slot="title">
+                            交卷成功
+                        </template>
+                        <template slot="icon">
+                            <i class="el-icon-lock display-1 text-warning"></i>
+                        </template>
+                        <template slot="subTitle">
+                            成绩未公布
+                        </template>
+                        <template slot="extra">
+                            <el-button icon="el-icon-switch-button" type="primary" plain v-on:click="utils.closeLayerSelf">安全退出</el-button>
+                        </template>
+                    </el-result>
+                </div>
+            </div>
+
+        </div>
+        <div v-else>
+            <el-result>
+                <template slot="title">
+                    正在交卷：{{ item.queue }}
+                </template>
+                <template slot="icon">
+                    <i class="el-icon-loading display-1 text-success"></i>
+                </template>
+                <template slot="extra">
+                    <el-button icon="el-icon-switch-button" type="primary" plain v-on:click="utils.closeLayerSelf">安全退出</el-button>
+                </template>
+            </el-result>
+        </div>
+    </el-scrollbar>
+</el-card>
+@section Scripts{
+<script src="/sitefiles/assets/js/home/exam/examPaperSubmitResult.js" type="text/javascript"></script> }

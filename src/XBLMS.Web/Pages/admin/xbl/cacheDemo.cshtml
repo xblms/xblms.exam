@@ -1,0 +1,31 @@
+﻿@page
+@{ Layout = "_Layout"; }
+
+<el-card :style="{height: ($(window).height() - 25) + 'px'}">
+
+        <el-form v-on:submit.native.prevent ref="form" :model="form"  :size="euiSize" status-icon label-width="120px">
+            <el-form-item label="key" prop="key" :rules="[{ required: true, message: 'key不能为空' }]">
+                <el-input v-model="form.key"></el-input>
+            </el-form-item>
+            <el-form-item label="value" prop="value">
+                <el-input v-model="form.value"></el-input>
+            </el-form-item>
+            <el-form-item>
+               <div class="tips">
+                key value 存储之后 为 hash 类型<br />
+                获取key的hash：hkeys key<br />
+                获取key的value：hget key value<br />
+                以上命令适用于redis
+            </div>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" v-on:click="btnSetValueClick" :size="euiSize">设置</el-button>
+                <el-button type="primary" v-on:click="btnGetValueClick" :size="euiSize">获取</el-button>
+            </el-form-item>
+        </el-form>
+
+        </el-card>
+
+@section Scripts{
+    <script src="/sitefiles/assets/js/admin/xbl/cacheDemo.js" type="text/javascript"></script>
+}

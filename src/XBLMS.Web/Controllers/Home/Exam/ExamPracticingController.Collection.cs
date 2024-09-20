@@ -1,0 +1,56 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using XBLMS.Configuration;
+using XBLMS.Core.Utils;
+using XBLMS.Dto;
+using XBLMS.Models;
+using XBLMS.Utils;
+
+namespace XBLMS.Web.Controllers.Home.Exam
+{
+    public partial class ExamPracticingController
+    {
+        [HttpPost, Route(RouteCollection)]
+        public async Task<ActionResult<BoolResult>> SetCollection([FromBody] IdRequest request)
+        {
+            var user = await _authManager.GetUserAsync();
+            var collection = await _examPracticeCollectRepository.GetAsync(user.Id);
+            if (collection == null) {
+                await _examPracticeCollectRepository.InsertAsync(new ExamPracticeCollect
+                {
+                    TmIds = new List<int> { request.Id },
+                    UserId=user.Id,
+                });
+            }
+            else
+            {
+                collection.TmIds.Add(request.Id);
+                await _examPracticeCollectRepository.UpdateAsync(collection);
+            }
+            return new BoolResult
+            {
+                Value = true
+            };
+        }
+        [HttpPost, Route(RouteCollectionRemove)]
+        public async Task<ActionResult<BoolResult>> RemoveCollection([FromBody] IdRequest request)
+        {
+            var user = await _authManager.GetUserAsync();
+            var collection = await _examPracticeCollectRepository.GetAsync(user.Id);
+            collection.TmIds.Remove(request.Id);
+            await _examPracticeCollectRepository.UpdateAsync(collection);
+
+            return new BoolResult
+            {
+                Value = true
+            };
+        }
+
+
+    }
+}
+
+
+

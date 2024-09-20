@@ -1,0 +1,239 @@
+@page
+@{ Layout = "_LayoutHome"; }
+@section Styles{
+    <style>
+        .number{
+            color:red;
+            font-size:28px;
+        }
+    </style>
+}
+<el-card>
+    <div slot="header" class="clearfix text-center">
+        <span class="fw-bold"><i class="el-icon-s-order me-2"></i>{{ item.title }}</span>
+        <el-button style="float: right;padding:3px 0;" type="text" v-on:click="utils.closeLayerSelf"><i class="el-icon-close"></i></el-button>
+    </div>
+    <el-scrollbar class="scrollbar" :style="{ height: ($(window).height()-186) + 'px' }">
+        <div :class="isCientIn?'py-3 px-21':'p-3'">
+            <div>
+                <div class="row px-5">
+                    <div class="col-md-12 col-12">
+                        <div class="row text-center" v-if="item.examStartDateTimeLong>0">
+                            <div class="col-md-12 mb-5">
+                                <div>
+                                    <el-statistic :value="item.examStartDateTimeLong" class="text-warning"
+                                                  time-indices format="DD天HH小时mm分钟ss秒"
+                                                  title="距离开考还剩：">
+                                    </el-statistic>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row gy-3">
+                            <div class="col-xl-3 col-lg-3 col-md-3 col-3">
+                                <div class="card rounded-0 bg-white border-top border-muted border-5 card-hover-with-icon">
+                                    <div class="card-body p-3">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <div class="mb-3 fw-bold">
+                                                    <span>{{ item.totalScore }}</span>
+                                                    分</div>
+                                                <p class="text-muted fs-6">试卷总分</p>
+                                            </div>
+                                            <div class="icon-shape icon-sm rounded-circle text-muted card-icon">
+                                                <i class="bi bi-check-circle-fill fs-3"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-3 col-md-3 col-3">
+                                <div class="card rounded-0 bg-white border-top border-muted border-5 card-hover-with-icon">
+                                    <div class="card-body p-3">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <div class="mb-3 fw-bold">
+                                                    <span>{{ item.passScore }}</span>
+                                                    分
+                                                    </div>
+                                                <p class="text-muted fs-6">及格分</p>
+                                            </div>
+                                            <div class="icon-shape icon-sm rounded-circle text-muted card-icon">
+                                                <i class="bi bi-check-circle fs-3"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-6">
+                                <div class="card rounded-0 bg-white border-top border-muted border-5 card-hover-with-icon">
+                                    <div class="card-body p-3">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div v-if="item.cerId>0">
+                                                <div class="mb-3 fw-bold"><span>{{item.cerName}}</span></div>
+                                                <p class="text-muted fs-6">考试通过可获得证书</p>
+                                            </div>
+                                            <div v-else>
+                                                <div class="mb-3"><span>无证书</span></div>
+                                                <p class="text-muted fs-6">考试通过可获得证书</p>
+                                            </div>
+                                            <div class="icon-shape icon-sm rounded-circle text-muted card-icon">
+                                                <i class="bi bi-award-fill fs-3"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-3 col-md-3 col-3">
+                                <div class="card rounded-0 bg-white border-top border-muted border-5 card-hover-with-icon">
+                                    <div class="card-body p-3">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <div class="mb-3 fw-bold" v-if="item.isTiming"><span>{{item.timingMinute}}</span>分钟</div>
+                                                <div class="mb-3 fw-bold" v-else>不限时</div>
+                                                <p class="text-muted fs-6">考试限时</p>
+                                            </div>
+                                            <div class="icon-shape icon-sm rounded-circle text-muted card-icon">
+                                                <i class="bi bi-clock-fill fs-3"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-3 col-md-3 col-3">
+                                <div class="card rounded-0 bg-white border-top border-muted border-5 card-hover-with-icon">
+                                    <div class="card-body p-3">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <div class="mb-3">
+                                                <span class="text-success fw-bold" v-if="(item.userExamTimes-item.myExamTimes)>0">
+                                                     {{item.userExamTimes-item.myExamTimes}}
+                                                </span>
+                                                    <span class="mb-3 text-danger fw-bold" v-else>
+                                                    0
+                                                </span>
+                                                /{{item.userExamTimes}}
+                                                </div>
+                                                <p class="text-muted  fs-6">剩余考试次数</p>
+                                            </div>
+                                            <div class="icon-shape icon-sm rounded-circle text-muted card-icon">
+                                                <i class="bi bi-circle-half fs-3"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-6">
+                                <div class="card rounded-0 bg-white border-top border-muted border-5 card-hover-with-icon">
+                                    <div class="card-body p-3">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <div class="mb-3 fw-bold">{{ item.examStartDateTimeStr }} - {{ item.examEndDateTimeStr }}</div>
+                                                <p class="text-muted fs-6">考试时间</p>
+                                            </div>
+                                            <div class="icon-shape icon-sm rounded-circle text-muted card-icon">
+                                                <i class="bi bi-calendar-check-fill fs-3"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-12" v-if="(item.cjList && item.cjList.length>0) || (item.subject && item.subject.length>0)">
+                                <div class="card rounded-0 bg-white border-top border-muted border-5 card-hover-with-icon">
+                                    <div class="card-body p-3">
+                                        <el-collapse accordion>
+                                            <el-collapse-item v-if="item.cjList && item.cjList.length>0">
+                                                <template slot="title">
+                                                    <span class="fs-4"><i class="bi bi-clock-history me-2"></i>考试记录（{{ item.cjList.length }}）</span>
+                                                </template>
+                                                <div>
+                                                    <el-table :data="item.cjList" v-if="item.cjList"
+                                                              stripe size="mini"
+                                                              style="width: 100%">
+                                                        <el-table-column prop="beginDateTime"
+                                                                         label="开考时间">
+                                                        </el-table-column>
+                                                        <el-table-column prop="endDateTime"
+                                                                         label="交卷时间">
+                                                        </el-table-column>
+                                                        <el-table-column label="用时" prop="useTime" v-if="item.isTiming">
+                                                        </el-table-column>
+                                                        <el-table-column prop="score"
+                                                                         width="100"
+                                                                         label="成绩">
+                                                            <template slot-scope="scope">
+                                                                <span v-if="item.secrecyScore">{{ scope.row.score }}</span>
+                                                                <span v-else class="text-warning">未公布</span>
+                                                            </template>
+                                                        </el-table-column>
+                                                        <el-table-column width="160" align="right">
+                                                            <template slot-scope="scope">
+                                                                <el-button icon="el-icon-view" size="mini" plain v-if="item.secrecyPaperContent" v-on:click="btnViewClick(scope.row.id)">查看答卷</el-button>
+                                                                <el-button class="text-warning" icon="el-icon-view" size="mini" plain v-else disabled>不允许查看答卷</el-button>
+                                                            </template>
+                                                        </el-table-column>
+                                                        <div slot="empty">
+                                                            <el-empty description="暂无考试记录"></el-empty>
+                                                        </div>
+                                                    </el-table>
+                                                </div>
+                                            </el-collapse-item>
+                                            <el-collapse-item v-if="item.subject && item.subject.length>0">
+                                                <template slot="title">
+                                                    <span class="fw-bold"><i class="el-icon-info me-2"></i>考试须知</span>
+                                                </template>
+                                                <div>
+                                                    <p v-html="item.subject"></p>
+                                                </div>
+                                            </el-collapse-item>
+                                        </el-collapse>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-center mt-3 mb-13 gy-3 px-5" v-if="item.isClientExam && !isCientIn &&!isClientRead">
+                    <div class="col-lg-12 col-md-12 col-12">
+                        <div class="text-center">
+                            <el-result icon="warning">
+                                <template slot="title">
+                                    客户端考试提醒
+                                </template>
+                                <template slot="subTitle">
+                                    <div class="text-warning">本场考试要求启用客户端，如未安装将无法启动考试。</div>
+                                    <div class="py-3">
+                                        <el-link href="/sitefiles/assets/uploadtemplates/XBLMES-考试客户端.zip">下载客户端工具</el-link>
+                                    </div>
+                                    <div>
+                                        <el-button plain v-on:click="btnOkClient"><i class="bi bi-tools me-2"></i>我已安装</el-button>
+                                    </div>
+                                </template>
+                            </el-result>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </el-scrollbar>
+</el-card>
+<el-row align="center" style="margin-top:18px;">
+    <el-col :span="24" align="center" v-if="item.examSubmiting">
+        <el-button icon="el-icon-s-promotion" type="warning" plain :loading="item.examSubmiting">正在交卷...</el-button>
+        <el-button icon="el-icon-close" v-on:click="utils.closeLayerSelf">关 闭</el-button>
+    </el-col>
+    <el-col :span="24" align="center" v-else>
+
+        <template v-if="isCientIn || !item.isClientExam">
+            <el-button icon="el-icon-s-promotion" type="warning" plain v-on:click="btnStartExamClick" v-if="item.startId>0 && isStart">准备就绪，恢复考试</el-button>
+            <el-button icon="el-icon-s-promotion" type="success" plain v-on:click="btnStartExamClick" v-else-if="isStart">准备就绪，开始考试</el-button>
+        </template>
+     
+        <el-button icon="el-icon-s-promotion" :disabled="!isClientRead" type="success" plain v-on:click="btnStartClient" v-if="item.isClientExam && !isCientIn">启动客户端</el-button>
+
+        <el-button icon="el-icon-close" v-on:click="window.close()" v-if="isCientIn">退出客户端</el-button>
+        <el-button icon="el-icon-close" v-on:click="utils.closeLayerSelf" v-else>关 闭</el-button>
+    </el-col>
+</el-row>
+@section Scripts{
+<script src="/sitefiles/assets/js/home/exam/examPaperInfo.js" type="text/javascript"></script> }

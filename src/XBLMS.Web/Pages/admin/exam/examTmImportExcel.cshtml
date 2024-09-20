@@ -1,0 +1,62 @@
+@page
+@{ Layout = "_Layout"; }
+
+<el-card>
+    <div slot="header" class="clearfix">
+        <span>题目导入 <i class="el-icon-loading" style="margin-left:10px;" v-if="importTmCache && !uploadExcelTmimportMessageShow"></i></span>
+        <el-button style="float: right;padding:3px 0;" type="text" v-on:click="utils.closeLayerSelf"><i class="el-icon-close"></i></el-button>
+    </div>
+    <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-180) + 'px' }">
+        <div style="margin-right:18px;">
+            <el-card class="box-card" v-show="uploadExcelTmimportMessageShow" v-if="uploadExcelTmImportResult" style="margin-bottom:10px;">
+                <span>导入明细（成功：{{uploadExcelTmImportResult.success}}条，失败：{{uploadExcelTmImportResult.failure}}条）</span>
+            </el-card>
+            <el-form ref="uploadExcelTmForm">
+                <el-upload ref="importTmUpload" v-show="uploadShow"
+                           :drag="true"
+                           :limit="1"
+                           :action="urlImport"
+                           :auto-upload="true"
+                           :headers="{Authorization: 'Bearer ' + $token}"
+                           :file-list="uploadExcelTmList"
+                           :before-upload="uploadExcelTmBefore"
+                           :on-progress="uploadExcelTmProgress"
+                           :on-success="uploadExcelTmSuccess"
+                           :on-error="uploadExcelTmError"
+                           :multiple="false">
+                    <i class="el-icon-upload"></i>
+                    <div class="el-upload__text">将文件拖到此处，或 <em>点击上传</em></div>
+                    <div class="el-upload__tip" slot="tip">
+                        <el-link :underline="false" type="primary" :href="utils.getAssetsUrl('uploadtemplates/题目导入模版.xlsx')" target="_blank">
+                            <i class="el-icon-download"></i>
+                            下载题目导入模版
+                        </el-link>
+                    </div>
+                </el-upload>
+            </el-form>
+            <el-card class="box-card" v-if="importTmCache">
+                <div slot="header" class="clearfix">
+                    <el-row>
+                        <el-col :span="21">
+                            <el-progress :text-inside="true" :stroke-width="24" :percentage="utils.formatPercentFloat(importTmCache.tmCurrent,importTmCache.tmTotal)" status="success"></el-progress>
+                        </el-col>
+                        <el-col :span="3" style="text-align:right;">{{ importTmCache.tmCurrent }} / {{ importTmCache.tmTotal }}</el-col>
+                    </el-row>
+                </div>
+                <div v-if="importTmCache.errors.length>0" style="color:red;">
+                    <div style="overflow-x:hidden;overflow-y:auto;" :style="{ height: ($(window).innerHeight()-380) + 'px' }">
+                        <div v-for="error in importTmCache.errors">{{ error }}</div>
+                    </div>
+                </div>
+            </el-card>
+        </div>
+    </el-scrollbar>
+</el-card>
+<el-row align="center" style="margin-top:18px;">
+    <el-col :span="24" align="center">
+        <el-button v-on:click="utils.closeLayerSelf" :size="euiSize">关 闭</el-button>
+    </el-col>
+</el-row>
+@section Scripts{
+    <script src="/sitefiles/assets/js/admin/exam/examTmImportExcel.js" type="text/javascript"></script>
+ }

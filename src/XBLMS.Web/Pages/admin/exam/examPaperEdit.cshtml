@@ -1,0 +1,438 @@
+@page
+@{ Layout = "_Layout"; }
+
+<el-form :model="form" ref="form" v-if="form" size="mini" label-width="90px">
+    <el-row :gutter="3">
+        <el-col :span="8">
+            <el-card>
+                <div slot="header" class="clearfix">
+                    <span>基本信息</span>
+                </div>
+                <div>
+                    <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-180) + 'px' }">
+                        <div style="margin-right:18px;">
+                            <el-form-item label="试卷分类" prop="treeId" :rules="{ required: true, message: '请选择试卷分类' }">
+                                <el-cascader ref="tree" style="width:100%"
+                                             v-model="form.treeId"
+                                             :options="paperTree"
+                                             :props="{ emitPath:false,checkStrictly: true,expandTrigger:'hover' }"
+                                             placeholder="请选择试卷分类"
+                                             :show-all-levels="false">
+                                </el-cascader>
+                            </el-form-item>
+                            <el-form-item label="试卷名称" prop="title" :rules="{ required: true, message: '请输入试卷名称' }">
+                                <el-input v-model.trim="form.title" placeholder="请输入试卷名称"></el-input>
+                            </el-form-item>
+                            <el-form-item label="考试时间" prop="examBeginDateTime" :rules="{ required: true, message: '请选择考试开始时间' }">
+                                <el-date-picker v-model="form.examBeginDateTime"
+                                                type="datetime"
+                                                placeholder="开始时间"
+                                                value-format="yyyy-MM-dd HH:mm:ss">
+                                </el-date-picker>
+                            </el-form-item>
+                            <el-form-item prop="examEndDateTime" :rules="{ required: true, message: '请选择考试截止时间' }">
+                                <el-date-picker v-model="form.examEndDateTime"
+                                                type="datetime"
+                                                placeholder="截止时间"
+                                                value-format="yyyy-MM-dd HH:mm:ss">
+                                </el-date-picker>
+                                <div class="tips">发布后如需修改请到控制台修改。</div>
+                            </el-form-item>
+                            <el-form-item label="考生范围" prop="userGroupIds">
+                                <el-select ref="selectUserGroup" v-model="form.userGroupIds" filterable multiple placeholder="请选择用户组" clearable style="width:100%">
+                                    <el-option v-for="userGroup in userGroupList"
+                                               :key="userGroup.id"
+                                               :label="userGroup.groupName"
+                                               :value="userGroup.id">
+                                    </el-option>
+                                </el-select>
+                                <div class="tips">根据选择的用户组匹配需要参加考试的考生，多个组为并集。默认安排所有用户。</div>
+                            </el-form-item>
+                            <el-form-item label="考试次数" prop="examTimes">
+                                <el-input-number v-model="form.examTimes" :min="1"></el-input-number>
+                                <div class="tips">发布后如需修改请到控制台修改。</div>
+                            </el-form-item>
+                            <el-collapse>
+                                <el-collapse-item>
+                                    <template slot="title">
+                                        <i class="el-icon-s-operation" style="font-size:18px;margin-right:5px;"></i>更多配置
+                                    </template>
+                                    <div>
+                                        <el-form-item label="证书" prop="cerId">
+                                            <el-select v-model="form.cerId" placeholder="请选择证书" filterable clearable style="width:100%">
+                                                <el-option v-for="cer in cerList"
+                                                           :key="cer.id"
+                                                           :label="cer.name"
+                                                           :value="cer.id">
+                                                </el-option>
+                                            </el-select>
+                                            <div class="tips">考生通过本场考试即可获得证书</div>
+                                        </el-form-item>
+                                        <el-form-item label="考试须知" prop="subject">
+                                            <el-input ref="subject" type="textarea" :autosize="{ minRows: 3}" v-model="form.subject"></el-input>
+                                            <el-link type="primary" icon="el-icon-document" v-on:click="btnOpenEditClick('subject','form')">富文本编辑</el-link>
+                                        </el-form-item>
+                                        <el-form-item label="计时方式" prop="isTiming">
+                                            <el-radio v-model="form.isTiming" :label="true">计时答题</el-radio>
+                                            <el-radio v-model="form.isTiming" :label="false">不计时答题</el-radio>
+                                        </el-form-item>
+                                        <el-form-item prop="timingMinute" v-if="form.isTiming">
+                                            <el-input-number v-model="form.timingMinute" :min="1"></el-input-number>
+                                            <small class="tips">单位分钟，计时结束自动交卷</small>
+                                        </el-form-item>
+                                        <el-form-item label="考试类型" prop="isClientExam">
+                                            <el-radio v-model="form.isClientExam" :label="false">普通考试</el-radio>
+                                            <el-radio v-model="form.isClientExam" :label="true">严肃考试</el-radio>
+                                            <div class="tips">严肃考试需要安装考试客户端，仅适用于Windows操作系统</div>
+                                        </el-form-item>
+                                        <el-form-item label="允许退出">
+                                            <el-switch v-model="form.openExist" active-color="#13ce66"
+                                                       active-text="允许退出">
+                                            </el-switch>
+                                            <div class="tips">考试页面是否显示退出按钮，退出后再次进入可以恢复考试，适用于布置模拟自测。</div>
+                                        </el-form-item>
+                                        <el-form-item label="查看权限">
+                                            <el-switch v-model="form.secrecyScore" active-color="#13ce66"
+                                                       active-text="允许查看成绩">
+                                            </el-switch>
+                                            <br />
+                                            <el-switch v-model="form.secrecyPaperContent" active-color="#13ce66"
+                                                       active-text="允许查看答卷">
+                                            </el-switch>
+                                            <br />
+                                            <el-switch v-model="form.secrecyPaperAnswer" active-color="#13ce66"
+                                                       active-text="允许查看题目正确答案">
+                                            </el-switch>
+                                        </el-form-item>
+                                        <el-form-item label="考试难度">
+                                            <el-switch v-model="form.isExamingTmRandomView" active-color="#13ce66"
+                                                       active-text="题目顺序随机">
+                                            </el-switch>
+                                            <br />
+                                            <el-switch v-model="form.isExamingTmOptionRandomView" active-color="#13ce66"
+                                                       active-text="候选项顺序随机">
+                                            </el-switch>
+                                        </el-form-item>
+                                        <el-form-item>
+                                            <el-switch v-model="form.isAutoScore" active-color="#13ce66"
+                                                       active-text="主观题自动判分">
+                                            </el-switch>
+                                        </el-form-item>
+                                    </div>
+                                </el-collapse-item>
+                            </el-collapse>
+                        </div>
+                    </el-scrollbar>
+                </div>
+            </el-card>
+        </el-col>
+        <el-col :span="16">
+            <el-card>
+                <div slot="header" class="clearfix">
+                    <span>出题策略</span>
+                </div>
+                <div>
+                    <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-180) + 'px' }">
+                        <div style="margin-right:18px;">
+                            <el-form-item label="出题方式" prop="tmRandomType">
+                                <el-radio-group v-model="form.tmRandomType" v-on:input="tmRandomTypeChange">
+                                    <el-radio label="RandomNone">固定试卷</el-radio>
+                                    <el-radio label="RandomNow">随机组卷</el-radio>
+                                    <el-radio label="RandomExaming">考前随机</el-radio>
+                                </el-radio-group>
+                                <br />
+                                <el-tooltip placement="top">
+                                    <div slot="content">
+                                        随机组卷：发布 N 份套题，考生随机一份进行考试；<br />
+                                        考前随机：开考的时候随机出题，每次开考都不一样，同时适用于模拟自测；<br />
+                                        固定试卷：固定试题，需要先配置题目组；
+                                    </div>
+                                    <i class="el-icon-info"></i>
+                                </el-tooltip>
+                            </el-form-item>
+                            <el-form-item v-if="form.tmRandomType==='RandomExaming'">
+                                <el-switch v-model="form.moni" active-color="#13ce66"
+                                           active-text="启用模拟自测">
+                                </el-switch>
+                            </el-form-item>
+                            <el-form-item label="题型范围" prop="txIds" v-if="form.tmRandomType!=='RandomNone'">
+                                <el-select ref="selectTx" v-model="form.txIds" filterable multiple placeholder="全部题型" style="width:100%">
+                                    <el-option v-for="tx in txList"
+                                               :key="tx.id"
+                                               :label="tx.name"
+                                               :value="tx.id">
+                                    </el-option>
+                                </el-select>
+                            </el-form-item>
+                            <el-form-item label="题目范围" prop="tmGroupIds">
+                                <el-select ref="selectTmGroup" v-model="form.tmGroupIds" filterable multiple placeholder="全部题目" style="width:100%">
+                                    <el-option v-for="tmGroup in tmGroupList"
+                                               :key="tmGroup.id"
+                                               :label="tmGroup.groupName"
+                                               :value="tmGroup.id">
+                                    </el-option>
+                                </el-select>
+                                <div class="tips">从题目组包含的题目范围内抽题，多个题目组是并集关系。默认从全部题库抽题</div>
+                            </el-form-item>
+                            <template v-if="form.tmRandomType!=='RandomNone'">
+                                <el-form-item label="">
+                                    <el-button :size="euiSize" icon="el-icon-refresh-right" plain type="success" v-on:click="btnGetConfigClick">加载题目配置数据</el-button>
+                                </el-form-item>
+                                    <el-form-item label="题目配置">
+                                    <el-table ref="tableTmRandomConfig" v-if="tmRandomConfig"
+                                              :data="tmRandomConfig" :summary-method="getSummaries"
+                                              show-summary
+                                                  :row-key="Math.random()"
+                                                  border
+                                                  height="300"
+                                              empty-text="请点击加载题目配置数据"
+                                                  size="small" :default-sort="{ prop: 'txTaxis', order: 'asc' }">
+                                            <el-table-column prop="txName"
+                                                             label="题型">
+                                            </el-table-column>
+                                            <el-table-column label="难度" width="280">
+                                                <template slot-scope="scope">
+                                                <div>
+                                                    <div style="margin-bottom:3px;display:flex;align-items:start;align-content:start;justify-items:start;justify-content:start;">
+                                                        <div>
+                                                            1<i class="el-icon-star-on" style="color:#FF9900;margin:0 3px;font-size:14px;"></i>
+                                                        </div>
+                                                        <div style="margin:0 3px;">
+                                                            <el-input-number size="mini" :min="0" :max="scope.row.nandu1TmTotal" v-model="scope.row.nandu1TmCount" style="width:120px;"></el-input-number>
+                                                        </div>
+                                                        <div>共{{scope.row.nandu1TmTotal}}题</div>
+                                                    </div>
+                                                    <div style="margin-bottom:3px;display:flex;align-items:start;align-content:start;justify-items:start;justify-content:start;">
+                                                        <div>
+                                                            2<i class="el-icon-star-on" style="color:#FF9900;margin:0 3px;font-size:14px;"></i>
+                                                        </div>
+                                                        <div style="margin:0 3px;">
+                                                            <el-input-number size="mini" :min="0" :max="scope.row.nandu2TmTotal" v-model="scope.row.nandu2TmCount" style="width:120px;"></el-input-number>
+                                                        </div>
+                                                        <div>共{{scope.row.nandu2TmTotal}}题</div>
+                                                    </div>
+                                                    <div style="margin-bottom:3px;display:flex;align-items:start;align-content:start;justify-items:start;justify-content:start;">
+                                                        <div>
+                                                            3<i class="el-icon-star-on" style="color:#FF9900;margin:0 3px;font-size:14px;"></i>
+                                                        </div>
+                                                        <div style="margin:0 3px;">
+                                                            <el-input-number size="mini" :min="0" :max="scope.row.nandu3TmTotal" v-model="scope.row.nandu3TmCount" style="width:120px;"></el-input-number>
+                                                        </div>
+                                                        <div>共{{scope.row.nandu3TmTotal}}题</div>
+                                                    </div>
+                                                    <div style="margin-bottom:3px;display:flex;align-items:start;align-content:start;justify-items:start;justify-content:start;">
+                                                        <div>
+                                                            4<i class="el-icon-star-on" style="color:#FF9900;margin:0 3px;font-size:14px;"></i>
+                                                        </div>
+                                                        <div style="margin:0 3px;">
+                                                            <el-input-number size="mini" :min="0" :max="scope.row.nandu4TmTotal" v-model="scope.row.nandu4TmCount" style="width:120px;"></el-input-number>
+                                                        </div>
+                                                        <div>共{{scope.row.nandu4TmTotal}}题</div>
+                                                    </div>
+                                                    <div style="margin-bottom:3px;display:flex;align-items:start;align-content:start;justify-items:start;justify-content:start;">
+                                                        <div>
+                                                            5<i class="el-icon-star-on" style="color:#FF9900;margin:0 3px;font-size:14px;"></i>
+                                                        </div>
+                                                        <div style="margin:0 3px;">
+                                                            <el-input-number size="mini" :min="0" :max="scope.row.nandu5TmTotal" v-model="scope.row.nandu5TmCount" style="width:120px;"></el-input-number>
+                                                        </div>
+                                                        <div>共{{scope.row.nandu5TmTotal}}题</div>
+                                                    </div>
+                                                    </div>
+                                                </template>
+                                            </el-table-column>
+                                            <el-table-column label="题型分数" width="120">
+                                                <template slot-scope="scope">
+                                                    <el-input-number controls-position="right" size="mini" v-model="scope.row.txScore" :min="0" :max="100" style="width:90px;"></el-input-number>
+                                                </template>
+                                            </el-table-column>
+                                            <el-table-column prop="taxis" width="120"
+                                                             label="排序">
+                                                <template slot-scope="scope">
+                                                    <el-input-number controls-position="right" size="mini" v-model="scope.row.txTaxis" :min="0" :max="100" style="width:90px;"></el-input-number>
+                                                </template>
+                                            </el-table-column>
+                                        </el-table>
+                                         <div class="tis" v-if="tmRandomConfig && tmRandomConfig.length>0">
+                                            <el-link icon="el-icon-d-caret" type="primary" v-on:click="tmConfigDialogVisible=!tmConfigDialogVisible">放大后编辑</el-link>
+                                        </div>
+                                    </el-form-item>
+                                    <template v-if="form.tmRandomType==='RandomNow'">
+                                        <el-form-item label="随机份数" prop="randomCount" :rules="{ required: true, message: '随机份数不能为空' }">
+                                            <el-input-number v-model="form.randomCount" :min="1" :max="10000"></el-input-number>
+                                            <div class="tips">根据题目配置随机生成 N 份套题，考生随机一份进行考试</div>
+                                        </el-form-item>
+                                    </template>
+                            </template>
+                            <el-form-item label="题目分数" prop="tmScoreType">
+                                <el-radio-group v-model="form.tmScoreType" v-on:input="scoreTypeChange">
+                                    <el-radio label="ScoreTypeTm">按原题分数计算</el-radio>
+                                    <el-radio label="ScoreTypeTx">按题型分数计算</el-radio>
+                                    <el-radio label="ScoreTypeRate">按总分折算</el-radio>
+                                </el-radio-group>
+                                <div class="tips">总分折算：题目分数=（题目原分数/(所有题目的分数总和)*试卷总分）</div>
+                            </el-form-item>
+                            <el-form-item label="总分" prop="totalScore" :rules="{ required: true, message: '总分不能为空' }">
+                                <el-input-number :min="0" v-model="form.totalScore"></el-input-number>
+                                <div class="tips">按原题分数或题型分数计算可能会有变动，请保存后关注数据并及时调整出题策略</div>
+                            </el-form-item>
+                            <el-form-item label="及格分" prop="passScore" :rules="{ required: true, message: '及格分不能为空' }">
+                                <el-input-number v-model="form.passScore" :min="0" :max="form.totalScore"></el-input-number>
+                            </el-form-item>
+                        </div>
+                    </el-scrollbar>
+                </div>
+            </el-card>
+        </el-col>
+    </el-row>
+</el-form>
+<el-row align="center" style="margin-top:18px;">
+    <el-col :span="24" align="center">
+        <el-tooltip placement="top">
+            <div slot="content">
+                每次发布新的试卷，系统会默认配置好所有参数，理论上直接保存或者发布即可。
+                <br />
+                保存：只会保存基本配置信息，不会生成试卷内容和安排考生；
+                <br />
+                发布：保存基本信息并生成试卷内容和安排考生；
+            </div>
+            <i class="el-icon-info" style="padding:0 3px;color:red;"></i>
+        </el-tooltip>
+        <el-button :size="euiSize" type="primary" v-on:click="btnSaveClick">保 存</el-button>
+        <el-button :size="euiSize" plain type="primary" v-on:click="btnSubmitClick">
+            <span v-if="form.submitType==='Save'">
+                <span>发 布</span>
+            </span>
+            <span v-else>
+                <span>重新发布</span>
+            </span>
+        </el-button>
+        <el-button :size="euiSize" icon="el-icon-close" plain type="info" v-on:click="utils.closeLayerSelf">取消编辑</el-button>
+    </el-col>
+</el-row>
+<template>
+    <el-dialog title="重新发布提醒"
+               :visible.sync="submitDialogVisible"
+               center width="35%">
+        <div>
+            重新发布是否清空历史数据？<br /><br />
+            <el-card>
+                <div slot="header" class="clearfix">
+                    <span>历史数据包括</span>
+                </div>
+                <div>
+                    <el-alert title="已经安排的考生数据"
+                              type="warning" :closable="false"
+                              description=""
+                              show-icon>
+                    </el-alert>
+                    <br />
+                    <el-alert title="已经提交的答卷的答案数据"
+                              type="warning" :closable="false"
+                              description=""
+                              show-icon>
+                    </el-alert>
+                    <br />
+                    <el-alert title="已经生成的试卷和题目数据"
+                              type="warning" :closable="false"
+                              description=""
+                              show-icon>
+                    </el-alert>
+                </div>
+            </el-card>
+        </div>
+        <span slot="footer" class="dialog-footer">
+            <el-button :size="euiSize" plain type="warning" v-on:click="btnSubmitClear">清空后发布</el-button>
+            <el-button :size="euiSize" type="primary" v-on:click="btnSubmit">发 布</el-button>
+            <el-button :size="euiSize" plain type="info" v-on:click="submitDialogVisible=!submitDialogVisible">取 消</el-button>
+        </span>
+    </el-dialog>
+</template>
+<template>
+    <el-dialog title="题目配置"
+               :visible.sync="tmConfigDialogVisible" fullscreen
+               center width="98%">
+        <div>
+            <el-card>
+                <el-table ref="tableTmRandomConfig"
+                          :data="tmRandomConfig" :summary-method="getSummaries"
+                          show-summary
+                          :row-key="Math.random()"
+                          border
+                          style="width: 100%" :height="$(window).height()-220"
+                          empty-text="无题目数据"
+                          size="small" :default-sort="{ prop: 'txTaxis', order: 'asc' }">
+                    <el-table-column prop="txName"
+                                     label="题型">
+                    </el-table-column>
+                    <el-table-column label="难度">
+                        <el-table-column>
+                            <template slot="header" slot-scope="scope">
+                                1<i class="el-icon-star-on" style="color:#FF9900;margin:0 3px;font-size:14px;"></i>
+                            </template>
+                            <template slot-scope="scope">
+                                <el-input-number size="mini" :min="0" :max="scope.row.nandu1TmTotal" v-model="scope.row.nandu1TmCount"></el-input-number>
+                                <div class="tips">共{{scope.row.nandu1TmTotal}}题</div>
+                            </template>
+                        </el-table-column>
+                        <el-table-column>
+                            <template slot="header" slot-scope="scope">
+                                2<i class="el-icon-star-on" style="color:#FF9900;margin:0 3px;font-size:14px;"></i>
+                            </template>
+                            <template slot-scope="scope">
+                                <el-input-number size="mini" :min="0" :max="scope.row.nandu2TmTotal" v-model="scope.row.nandu2TmCount"></el-input-number>
+                                <div class="tips">共{{scope.row.nandu2TmTotal}}题</div>
+                            </template>
+                        </el-table-column>
+                            <el-table-column>
+                            <template slot="header" slot-scope="scope">
+                                3<i class="el-icon-star-on" style="color:#FF9900;margin:0 3px;font-size:14px;"></i>
+                            </template>
+                            <template slot-scope="scope">
+                                <el-input-number size="mini" :min="0" :max="scope.row.nandu3TmTotal" v-model="scope.row.nandu3TmCount"></el-input-number>
+                                <div class="tips">共{{scope.row.nandu3TmTotal}}题</div>
+                            </template>
+                        </el-table-column>
+                            <el-table-column>
+                            <template slot="header" slot-scope="scope">
+                                4<i class="el-icon-star-on" style="color:#FF9900;margin:0 3px;font-size:14px;"></i>
+                            </template>
+                            <template slot-scope="scope">
+                                <el-input-number size="mini" :min="0" :max="scope.row.nandu4TmTotal" v-model="scope.row.nandu4TmCount"></el-input-number>
+                                <div class="tips">共{{scope.row.nandu4TmTotal}}题</div>
+                            </template>
+                        </el-table-column>
+                        <el-table-column>
+                            <template slot="header" slot-scope="scope">
+                                5<i class="el-icon-star-on" style="color:#FF9900;margin:0 3px;font-size:14px;"></i>
+                            </template>
+                            <template slot-scope="scope">
+                                <el-input-number size="mini" :min="0" :max="scope.row.nandu5TmTotal" v-model="scope.row.nandu5TmCount"></el-input-number>
+                                <div class="tips">共{{ scope.row.nandu5TmTotal }}题</div>
+                            </template>
+                        </el-table-column>
+                    </el-table-column>
+                    <el-table-column label="题型分数">
+                        <template slot-scope="scope">
+                            <el-input-number controls-position="right" size="mini" v-model="scope.row.txScore" :min="0" :max="100"></el-input-number>
+                            <div class="tips">题型分数:{{ scope.row.txScore }}</div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="taxis"
+                                     label="排序">
+                        <template slot-scope="scope">
+                            <el-input-number controls-position="right" size="mini" v-model="scope.row.txTaxis" :min="0" :max="100"></el-input-number>
+                            <div class="tips">排序:{{ scope.row.txTaxis }}</div>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </el-card>
+        </div>
+        <span slot="footer" class="dialog-footer" style="padding:0;margin-bottom:10px;">
+            <el-button :size="euiSize" plain v-on:click="tmConfigDialogVisible=!tmConfigDialogVisible">关 闭</el-button>
+        </span>
+    </el-dialog>
+</template>
+@section Scripts{
+    <script src="/sitefiles/assets/js/admin/exam/examPaperEdit.js" type="text/javascript"></script>
+}

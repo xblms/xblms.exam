@@ -1,0 +1,72 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+using XBLMS.Dto;
+using XBLMS.Enums;
+
+namespace XBLMS.Web.Controllers.Admin.Exam
+{
+    public partial class ExamQuestionnaireEditController
+    {
+        [RequestSizeLimit(long.MaxValue)]
+        [HttpPost, Route(Route)]
+        public async Task<ActionResult<BoolResult>> Submit([FromBody] GetSubmitRequest request)
+        {
+            var admin = await _authManager.GetAdminAsync();
+            var paper = request.Item;
+
+
+            if (paper.Id > 0)
+            {
+
+                if (request.SubmitType == SubmitType.Submit)
+                {
+                    paper.SubmitType = request.SubmitType;
+
+                    await _examManager.ClearQuestionnaire(paper.Id);
+
+                    await _examManager.ArrangeQuestionnaire(paper);
+
+                    await _examManager.SetQuestionnairTm(request.TmList,paper.Id);
+
+                    await _authManager.AddAdminLogAsync("重新发布调查问卷", $"{paper.Title}");
+                }
+                else
+                {
+                    await _authManager.AddAdminLogAsync("修改调查问卷", $"{paper.Title}");
+                }
+
+                await _questionnaireRepository.UpdateAsync(paper);
+
+            }
+            else
+            {
+                paper.SubmitType = request.SubmitType;
+                paper.CompanyId = admin.CompanyId;
+                paper.CreatorId = admin.Id;
+                paper.DepartmentId = admin.DepartmentId;
+
+                var paperId = await _questionnaireRepository.InsertAsync(paper);
+                paper.Id = paperId;
+
+                await _examManager.SetQuestionnairTm(request.TmList, paperId);
+
+         
+                if (request.SubmitType == SubmitType.Submit)
+                {
+                    await _examManager.ArrangeQuestionnaire(paper);
+
+                    await _authManager.AddAdminLogAsync("发布调查问卷", $"{paper.Title}");
+                }
+                else
+                {
+                    await _authManager.AddAdminLogAsync("保存调查问卷", $"{paper.Title}");
+                }
+            }
+
+            return new BoolResult
+            {
+                Value = true
+            };
+        }
+    }
+}

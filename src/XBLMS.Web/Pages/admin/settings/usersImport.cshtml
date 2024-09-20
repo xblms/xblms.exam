@@ -1,0 +1,84 @@
+﻿@page
+@{ Layout = "_Layout"; }
+@section Styles{
+    <style>
+        .el-descriptions__title {
+            color: red;
+        }
+    </style>
+}
+<el-card>
+    <div slot="header" class="clearfix">
+        <span>导入用户账号</span>
+        <el-button style="float: right;padding:3px 0;" type="text" v-on:click="utils.closeLayer(false)"><i class="el-icon-close"></i></el-button>
+    </div>
+    <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-180) + 'px' }">
+        <div style="margin-right:18px;">
+            <el-form :size="euiSize" v-on:submit.native.prevent ref="uploadForm" label-width="200px" v-if="uploadForm">
+                <el-upload :drag="true"
+                           :limit="1"
+                           :action="$urlUploadCheck"
+                           :auto-upload="true"
+                           :headers="{Authorization: 'Bearer ' + $token}"
+                           :file-list="uploadList"
+                           :before-upload="uploadBefore"
+                           :on-progress="uploadProgress"
+                           :on-success="uploadSuccess"
+                           :on-error="uploadError"
+                           :multiple="false">
+                    <i class="el-icon-upload"></i>
+                    <div class="el-upload__text">将文件拖到此处，或 <em>点击上传</em></div>
+                    <div class="el-upload__tip" slot="tip">
+                        <el-link :underline="false" type="primary" :href="utils.getAssetsUrl('uploadtemplates/用户导入模版.xlsx')" target="_blank">
+                            <i class="el-icon-download"></i>
+                            下载导入模版
+                        </el-link>
+                    </div>
+                </el-upload>
+            </el-form>
+            <div v-if="checkSuccess">
+                <el-result icon="success" title="模板数据验证通过" :size="euiSize">
+                    <template slot="subTitle">
+                        发现账户数据 {{ successCount+failCount }} 条，有效数据 {{ successCount }} 条，请点击安全导入按钮完成导入
+                    </template>
+                    <template slot="extra">
+                        <el-button type="primary" :size="euiSize" v-on:click="btnImport">安全导入</el-button>
+                    </template>
+                </el-result>
+            </div>
+            <div v-if="checkError">
+                <el-result icon="error" title="模板数据验证不通过" :size="euiSize">
+                    <template slot="extra">
+                        <el-button type="primary" :size="euiSize" v-if="successCount>0" v-on:click="btnImport">继续导入，仅导入验证通过的账户</el-button>
+                        <el-button :size="euiSize" v-on:click="btnCancelClick">修改模板后重新上传</el-button>
+                    </template>
+                </el-result>
+                <template>
+                    <el-descriptions :title="'发现账户数据'+ (successCount+failCount) + '条，有效数据'+ successCount + '条'" border column="1">
+                        <el-descriptions-item  v-for="fail in failList" :label="'第 '+fail.key+' 行'">{{ fail.value }}</el-descriptions-item>
+                    </el-descriptions>
+                </template>
+            </div>
+            <div v-if="importView">
+                <el-result icon="success" title="导入完成" :size="euiSize">
+                    <template slot="subTitle">
+                        发现账户数据 {{ successCount+failCount }} 条，导入数据 {{ successCount }} 条
+                    </template>
+                    <template slot="extra">
+                        <el-button type="primary" :size="euiSize" v-on:click="btnCancelClick">退 出</el-button>
+                    </template>
+                </el-result>
+            </div>
+        </div>
+    </el-scrollbar>
+</el-card>
+<el-row align="center" style="margin-top:18px;">
+    <el-col :span="24" align="center">
+        <el-button :size="euiSize" v-on:click="btnCancelClick">关 闭</el-button>
+    </el-col>
+</el-row>
+
+
+@section Scripts{
+    <script src="/sitefiles/assets/js/admin/settings/usersImport.js" type="text/javascript"></script>
+}

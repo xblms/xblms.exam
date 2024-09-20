@@ -1,0 +1,37 @@
+@page
+@{ Layout = "_Layout"; }
+
+<el-card>
+    <div slot="header" class="clearfix">
+        <span>添加ip地址</span>
+        <el-button style="float: right;padding:3px 0;" type="text" v-on:click="utils.closeLayer(false)"><i class="el-icon-close"></i></el-button>
+    </div>
+    <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-180) + 'px' }">
+        <div style="margin-right:18px;">
+            <el-alert>
+                <p>
+                    精确匹配 xxx.xxx.xxx.xxx
+                    <br />
+                    范围匹配 xxx.xxx.xxx.xxx-xxx.xxx.xxx.xxx
+                    <br />
+                    末尾匹配 xxx.xxx.xxx.*
+                </p>
+            </el-alert>
+            <div style="height:10px;"></div>
+            <el-form ref="form" :model="form" :size="euiSize" status-icon label-width="140px">
+                <el-form-item label="IP访问规则" prop="range" :rules="[{ required: true, message: '请输入IP访问规则' }]">
+                    <el-input v-model="form.range" name="range" autocomplete="off"></el-input>
+                </el-form-item>
+            </el-form>
+        </div>
+    </el-scrollbar>
+</el-card>
+<el-row align="center" style="margin-top:18px;">
+    <el-col :span="24" align="center">
+        <el-button :size="euiSize" type="primary" v-on:click="btnSubmitClick">确 定</el-button>
+        <el-button :size="euiSize" v-on:click="utils.closeLayerSelf">关 闭</el-button>
+    </el-col>
+</el-row>
+@section Scripts{
+    <script src="/sitefiles/assets/js/block/js/addLayerRangeAdd.js" type="text/javascript"></script>
+}

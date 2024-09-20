@@ -1,0 +1,15 @@
+@page
+@{ Layout = "_Layout"; }
+<el-card class="box-card">
+    <div slot="header" class="clearfix">
+        <span>近一月访问拦截统计</span>
+    </div>
+    <el-scrollbar class="scrollbar" :style="{ height: ($(window).height()-120) + 'px' }">
+        <line-chart :chart-data="chartData"></line-chart>
+    </el-scrollbar>
+</el-card>
+@section Scripts{
+    <script src="/sitefiles/assets/lib/chartjs/chart-2.7.1.min.js"></script>
+    <script src="/sitefiles/assets/lib/chartjs/vue-chartjs.min.js"></script>
+    <script src="/sitefiles/assets/js/block/js/analysis.js" type="text/javascript"></script>
+}

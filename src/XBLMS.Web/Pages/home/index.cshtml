@@ -1,0 +1,173 @@
+@page
+@{ Layout = "_LayoutHome"; }
+@section Styles{
+    <link href="/sitefiles/assets/css/menu.css" rel="stylesheet" type="text/css" />
+    <link href="/sitefiles/assets/lib/animate/animate.min.css" rel="stylesheet" type="text/css" />
+    <style>
+        .el-tabs--border-card > .el-tabs__header .el-tabs__item.is-active {
+            border-radius:3px;
+            border-start-end-radius: 50rem !important;
+            color:#ffffff;
+            background-color:#6600ff;
+        }
+
+        .el-tabs--top.el-tabs--border-card > .el-tabs__header .el-tabs__item:last-child{
+           width:138px;
+       }
+
+            .el-tabs--border-card > .el-tabs__header .el-tabs__item.is-active:hover {
+                color: #ffffff;
+        }
+
+        #sidebar .el-menu-item {
+            border-left: 5px solid #f1f1f1;
+        }
+
+        .el-menu-item:focus, .el-menu-item:hover{
+            border-left: 5px solid #6600ff !important;
+        }
+        #sidebar .el-menu-item.is-active{
+            border-left:5px solid #6600ff;
+        }
+        #sidebar .title{
+            padding-left:25px;
+        }
+
+        .el-submenu {
+            border-left: 5px solid #f1f1f1;
+        }
+        #sidebar .el-menu-item, .el-submenu__title{
+            height: 50px;
+            line-height: 50px;
+        }
+        #sidebar .el-submenu .el-menu-item{
+            height: 50px;
+            line-height: 50px;
+        }
+        .logoStyle{
+            filter:opacity(0.1);
+        }
+
+        .logoStyle:hover {
+            filter: none;
+        }
+        </style>
+}
+<div class="position-relative">
+    <div class="position-absolute top-0 end-0 z-3 d-flex justify-content-between  align-items-center pt-1 me-1">
+        <div class="me-2">
+            <el-dropdown :show-timeout="0" v-on:command="btnUserMenuClick">
+                <el-link :underline="false">{{ user.displayName }}<i class="el-icon-arrow-down el-icon--right"></i></el-link>
+                <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="profile"><i class="el-icon-edit-outline me-2"></i>修改资料</el-dropdown-item>
+                    <el-dropdown-item command="password"><i class="el-icon-key me-2"></i>更改密码</el-dropdown-item>
+                    <el-dropdown-item command="logout"><i class="el-icon-switch-button me-2"></i>退出系统</el-dropdown-item>
+                </el-dropdown-menu>
+            </el-dropdown>
+        </div>
+        <div class="me-1 mt-2">
+            <el-avatar icon="el-icon-user-solid" size="small" :src="user.avatarUrl || DEFAULT_AVATAR_URL"></el-avatar>
+        </div>
+    </div>
+    <div id="sidebar" :style="{width: leftWidth + 'px'}" >
+        <div class="title">
+            <span>
+                <span v-if="!isCollapse">
+                    <el-link v-if="!isMobileMenu" :underline="false" v-on:click="isCollapse = true;">
+                        <i class="el-icon-s-fold" style="font-size: 16px;"></i><span style="font-size: 16px;margin-left:8px;">用户中心</span>
+                    </el-link>
+                </span>
+                <span v-else>
+                    <el-link v-if="!isMobileMenu" :underline="false" v-on:click="isCollapse = false;">
+                        <i class="el-icon-s-unfold" style="font-size: 16px;"></i>
+                    </el-link>
+                </span>
+            </span>
+        </div>
+        <el-container style="padding-top: 0; padding-bottom: 0; overflow:hidden;">
+            <el-main style="padding: 0; margin: 0;">
+                <el-scrollbar class="scrollbar" :style="{height: ($(window).height() - 150) + 'px'}">
+                    <el-menu v-if="menus"
+                             :default-openeds="defaultOpeneds"
+                             :unique-opened="true"
+                             :collapse="isCollapse"
+                             :collapse-transition="false"
+                             v-on:select="btnSideMenuClick">
+
+                        <template v-for="level1 in menus">
+                            <template v-if="level1.children && level1.children.length > 0">
+
+                                <el-submenu :index="level1.id">
+                                    <template slot="title">
+                                        <i v-if="level1.iconClass" :class="level1.iconClass"></i>
+                                        <span>{{ level1.text }}</span>
+                                    </template>
+
+                                    <template v-for="level2 in level1.children">
+
+                                        <template v-if="level2.children && level2.children.length > 0">
+
+                                            <el-submenu :index="level2.id">
+                                                <template slot="title">
+                                                    <i v-if="level2.iconClass" :class="level2.iconClass"></i>
+                                                    <span>{{ level2.text }}</span>
+                                                </template>
+
+                                                <template v-for="level3 in level2.children">
+                                                    <el-menu-item :class="{'is-active': level3.id === defaultActive }" :index="getIndex(level1, level2, level3)">
+                                                        <i v-if="level3.iconClass" :class="level3.iconClass"></i>
+                                                        <span>{{ level3.text }}</span>
+                                                    </el-menu-item>
+                                                </template>
+
+                                            </el-submenu>
+
+                                        </template>
+                                        <template v-else>
+                                            <el-menu-item :class="{'is-active': level2.id === defaultActive }" :index="getIndex(level1, level2)">
+                                                <i v-if="level2.iconClass" :class="level2.iconClass"></i>
+                                                <span>{{ level2.text }}</span>
+                                            </el-menu-item>
+                                        </template>
+                                    </template>
+                                </el-submenu>
+                            </template>
+                            <template v-else>
+                                <el-menu-item :class="{'is-active': level1.id === defaultActive }" :index="getIndex(level1)">
+                                    <i :class="level1.iconClass"></i>
+                                    <span>{{ level1.text }}</span>
+                                </el-menu-item>
+                            </template>
+                        </template>
+                    </el-menu>
+                </el-scrollbar>
+                <div v-if="!isCollapse" class="mt-3 text-center animate__animated animate__bounce">
+                    <img src="~/sitefiles/assets/images/logo.png" height="38" class="logoStyle" />
+                    <div class="mt-2 fs-6 text-gray-300">
+                        {{ DOCUMENTTITLE }}
+                    </div>
+                </div>
+            </el-main>
+        </el-container>
+    </div>
+    <div v-if="tabs && tabs.length > 0" id="tabs" :style="{width: (winWidth - leftWidth) + 'px', marginLeft: leftWidth + 'px',marginTop:8+'px'}">
+        <el-tabs v-on:contextmenu.prevent.native="openContextMenu($event)" v-model="tabName" type="border-card">
+            <el-tab-pane :key="item.name"
+                         v-for="(item, index) in tabs"
+                         :label="item.title"
+                         :name="item.name">
+                <span slot="label"><span v-html="item.title"></span></span>
+                <iframe class="animate__animated animate__fadeInRight" :id="'frm-' + item.name" :src="item.url" style="width: 100%; height: 100%; border: none" :style="{height: (winHeight - 40) + 'px'}"></iframe>
+            </el-tab-pane>
+        </el-tabs>
+    </div>
+
+    <ul v-show="contextMenuVisible" :style="{left: contextLeft + 'px', top: contextTop + 'px'}" class="el-dropdown-menu" style="z-index: 2001; position: absolute; display: none;">
+        <li v-on:click="btnContextClick('reload')" class="el-dropdown-menu__item">刷新</li>
+        <li v-on:click="btnContextClick('all')" class="el-dropdown-menu__item">关闭其他</li>
+    </ul>
+</div>
+
+@section Scripts{
+    <script src="/sitefiles/assets/js/home/index.js" type="text/javascript"></script>
+}

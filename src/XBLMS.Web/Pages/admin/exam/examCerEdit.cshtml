@@ -1,0 +1,155 @@
+@page
+@{ Layout = "_Layout"; }
+@section Styles{
+<link rel="stylesheet" href="/sitefiles/assets/lib/drag/context.standalone.css">
+<style>
+    body {
+        overflow: hidden;
+    }
+
+    #canvasEmpty {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        z-index: 9;
+        border: 1px dashed #ccc;
+        background: #fff;
+    }
+
+    #canvas {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        z-index: 9;
+        border: 1px dashed #ccc;
+        background: #fff;
+
+    }
+
+    .transparent {
+        filter: alpha(opacity=50);
+        -moz-opacity: 0.5;
+        -khtml-opacity: 0.5;
+        opacity: 0.5;
+    }
+
+    .box {
+        cursor: move;
+        position: absolute;
+        z-index: 99;
+        background-color:#000000;
+        color:#ffffff;
+        padding:5px;
+    }
+
+        .box .bg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .box .coor {
+            width: 10px;
+            height: 10px;
+            overflow: hidden;
+            cursor: se-resize;
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            background-color: #ffffff;
+        }
+
+        .box .content {
+            position: absolute;
+            z-index: 99;
+            text-align: center;
+            font: bold 14px/1.5em simsun;
+        }
+
+    #debug {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        z-index: 88;
+        border: 1px solid #ccc;
+        width: 100px;
+        height: 100px;
+        background: #fff;
+    }
+
+    #toolbar {
+        position: absolute;
+        right: 10px;
+        top: 20px;
+        z-index: 88;
+        width: 20%;
+    }
+
+</style>
+}
+<div>
+    <el-empty id="canvasEmpty" v-if="backgroundImg===''" description="请选择证书背景图" style="width:78%;height:100%;"></el-empty>
+    <div v-else id="canvasMain">
+        <div id="canvas" v-on:mousedown="mousedown">
+            <img :src="backgroundImg" style="left:0;top:0;" />
+        </div>
+    </div>
+    <div id="toolbar">
+        <div style="text-align:center;margin-bottom:15px;">
+            {{ id>0 ? "修改" :"新增" }}证书模板
+        </div>
+        <el-card class="box-card">
+            <el-scrollbar class="scrollbar" :style="{height: ($(window).height() - 160) + 'px'}">
+                <el-form size="small" ref="form" :model="form" label-position="top" style="margin-right:20px;">
+                    <el-form-item>
+                        <el-upload ref="upload"
+                                   :show-file-list="false"
+                                   :action="uploadUrl"
+                                   :headers="{Authorization: 'Bearer ' + $token}"
+                                   :before-upload="uploadBefore"
+                                   :on-progress="uploadProgress"
+                                   :on-success="uploadSuccess"
+                                   :on-error="uploadError"
+                                   limit="1">
+                            <el-button plain size="small" type="primary" style="width:100%;" :loading="uploadLoading">
+                                请选择证书模板背景图
+                            </el-button>
+                        </el-upload>
+                    </el-form-item>
+                    <el-form-item prop="name" :rules="{ required: true, message: '请输入证书名称' }" label="证书名称">
+                        <el-input v-model.trim="form.name" placeholder="请输入证书名称"></el-input>
+                    </el-form-item>
+                    <el-form-item prop="prefix" :rules="{ required: true, message: '请输入证书号前缀' }" label="证书号前缀">
+                        <el-input v-model.trim="form.prefix" placeholder="请输入证书号前缀"></el-input>
+                    </el-form-item>
+                    <el-form-item prop="organName" :rules="{ required: true, message: '请输入颁发单位' }" label="颁发单位">
+                        <el-input v-model.trim="form.organName" placeholder="请输入颁发单位"></el-input>
+                    </el-form-item>
+                    <el-form-item prop="fontSize" :rules="{ required: true, message: '请输入字体大小' }">
+                        <el-input-number v-model="form.fontSize" :min="12" :max="40" placeholder="请输入字体大小"></el-input-number>
+                        <span class="tips">字体大小</span>
+                    </el-form-item>
+                    <el-form-item prop="markList">
+                        <el-tooltip content="选中之后可以在区域内进行拖拽定位" placement="left" effect="light">
+                            <el-checkbox-group v-model="form.markList" v-on:change="typeChange">
+                                <el-checkbox label="name" :disabled="backgroundImg===''">姓名</el-checkbox>
+                                <el-checkbox label="picture" :disabled="backgroundImg===''">证件照</el-checkbox>
+                                <el-checkbox label="number" :disabled="backgroundImg===''">证书编号</el-checkbox>
+                                <el-checkbox label="date" :disabled="backgroundImg===''">认证日期</el-checkbox>
+                                <el-checkbox label="organName" :disabled="backgroundImg===''">颁发单位</el-checkbox>
+                            </el-checkbox-group>
+                        </el-tooltip>
+                    </el-form-item>
+                </el-form>
+            </el-scrollbar>
+        </el-card>
+        <div style="text-align:center;margin-top:15px;">
+            <el-button type="primary" v-on:click="btnSubmitClick" size="small">确 认</el-button>
+            <el-button size="small" v-on:click="utils.closeLayerSelf">取 消</el-button>
+        </div>
+    </div>
+</div>
+@section Scripts{
+<script src="/sitefiles/assets/lib/drag/context.js" type="text/javascript"></script>
+<script src="/sitefiles/assets/lib/drag/drag.js" type="text/javascript"></script>
+<script src="/sitefiles/assets/js/admin/exam/examCerEdit.js" type="text/javascript"></script>
+ }

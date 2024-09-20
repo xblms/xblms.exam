@@ -1,0 +1,55 @@
+@page
+@{ Layout = "_Layout"; }
+
+<el-card class="box-card">
+    <el-form :inline="true" :size="euiSize">
+        <el-form-item label="证书名称">
+            <el-input prefix-icon="el-icon-search" v-model="form.title" placeholder="证书名称" clearable></el-input>
+        </el-form-item>
+        <el-form-item>
+            <el-button :size="euiSize" type="primary" icon="el-icon-search" v-on:click="btnSearchClick">查 询</el-button>
+            <el-button :size="euiSize" plain type="primary" icon="el-icon-plus" v-on:click="btnAddClick">
+                新增证书模板
+            </el-button>
+        </el-form-item>
+    </el-form>
+    <el-table :data="list" :size="euiSize" :height="($(window).height() - 115)">
+        <el-table-column label="#" type="index" :default-sort="{prop: 'createdDate', order: 'descending'}" width="40">
+        </el-table-column>
+        <el-table-column label="" width="80">
+              <template slot-scope="scope">
+                 <el-tooltip content="点击预览" placement="right">
+                    <el-image style="width: 50px;height: 30px;" v-on:click="btnViewCer(scope.row)"
+                              :src="scope.row.backgroundImg.replace('/cer/','/cer/preview_cer_')+ '?r=' + Math.random()"
+                              class="image" lazy></el-image>
+                </el-tooltip>
+              </template>
+        </el-table-column>
+        <el-table-column label="证书名称" prop="name" sortable>
+              <template slot-scope="scope">
+                  {{ scope.row.name }}
+              </template>
+        </el-table-column>
+        <el-table-column label="证书编码" prop="prefix" sortable></el-table-column>
+        <el-table-column label="颁发单位" prop="organName" sortable></el-table-column>
+        <el-table-column label="获证人数" prop="organName" width="150" sortable></el-table-column>
+        <el-table-column label="创建时间" prop="createdDate" width="150" sortable></el-table-column>
+        <el-table-column width="100" align="right">
+            <template slot-scope="scope">
+                <el-dropdown :show-timeout="0" placement="left">
+                    <el-button :size="euiSize" v-on:click.stop="return false">
+                        操作<i class="el-icon-arrow-down el-icon--right"></i>
+                    </el-button>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item v-on:click.native="btnEditClick(scope.row)">修改</el-dropdown-item>
+                        <el-dropdown-item v-on:click.native="btnDeleteClick(scope.row)" style="color:red;">删除</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+            </template>
+        </el-table-column>
+        @await Html.PartialAsync("_PartialTableEmpty")
+    </el-table>
+</el-card>
+@section Scripts{
+<script src="/sitefiles/assets/js/admin/exam/examCer.js" type="text/javascript"></script>
+ }

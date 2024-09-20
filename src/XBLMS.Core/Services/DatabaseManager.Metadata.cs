@@ -1,0 +1,178 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Datory;
+using Datory.Utils;
+using XBLMS.Core.Utils;
+using XBLMS.Enums;
+using XBLMS.Models;
+using XBLMS.Utils;
+
+namespace XBLMS.Core.Services
+{
+    public partial class DatabaseManager
+    {
+        public async Task<(bool success, string errorMessage)> InstallAsync(string companyName, string userName, string password, string email, string mobile)
+        {
+            try
+            {
+                await SyncDatabaseAsync();
+
+                var administrator = new Administrator
+                {
+                    CompanyId = 1,
+                    Auth = AuthorityType.Admin,
+                    UserName = userName,
+                    Email = email,
+                    Mobile = mobile
+                };
+
+                await AdministratorRepository.InsertAsync(administrator, password);
+
+                var company = new OrganCompany
+                {
+                    Name = companyName,
+                    ParentId = 0
+                };
+                await OrganCompanyRepository.InsertAsync(company);
+
+
+                return (true, string.Empty);
+            }
+            catch (Exception ex)
+            {
+                return (false, ex.Message);
+            }
+        }
+
+        public async Task SyncDatabaseAsync()
+        {
+            var repositories = GetAllRepositories();
+
+            foreach (var repository in repositories)
+            {
+                if (string.IsNullOrEmpty(repository.TableName) || repository.TableColumns == null || repository.TableColumns.Count <= 0) continue;
+
+                if (!await _settingsManager.Database.IsTableExistsAsync(repository.TableName))
+                {
+                    await CreateTableAsync(repository.TableName, repository.TableColumns);
+                }
+                else
+                {
+                    await AlterTableAsync(repository.TableName, repository.TableColumns);
+                }
+            }
+
+            var config = await ConfigRepository.GetAsync();
+            if (config.Id == 0)
+            {
+                await ConfigRepository.InsertAsync(config);
+            }
+
+            await UpdateConfigVersionAsync();
+        }
+
+        private async Task UpdateConfigVersionAsync()
+        {
+            var configInfo = await ConfigRepository.GetAsync();
+
+            if (configInfo.Id > 0)
+            {
+                configInfo.DatabaseVersion = _settingsManager.Version;
+                configInfo.UpdateDate = DateTime.UtcNow;
+                await ConfigRepository.UpdateAsync(configInfo);
+            }
+        }
+
+        private async Task<(bool IsSuccess, Exception Ex)> CreateTableAsync(string tableName, IList<TableColumn> tableColumns)
+        {
+            try
+            {
+                await _settingsManager.Database.CreateTableAsync(tableName, tableColumns);
+
+                if (tableName == ExamCerUserRepository.TableName)
+                {
+                    await _settingsManager.Database.CreateIndexAsync(tableName, $"IX_{tableName}_General", $"{nameof(ExamCerUser.UserId)} DESC", $"{nameof(ExamCerUser.CerId)} DESC");
+                }
+             
+            }
+            catch (Exception ex)
+            {
+                await ErrorLogRepository.AddErrorLogAsync(ex, string.Empty);
+                return (false, ex);
+            }
+
+            return (true, null);
+        }
+
+        private async Task AlterTableAsync(string tableName, IList<TableColumn> tableColumns, IList<string> dropColumnNames = null)
+        {
+            try
+            {
+                await _settingsManager.Database.AlterTableAsync(tableName,
+                    GetRealTableColumns(tableColumns), dropColumnNames);
+            }
+            catch (Exception ex)
+            {
+                await ErrorLogRepository.AddErrorLogAsync(ex, string.Empty);
+            }
+        }
+
+        private IList<TableColumn> GetRealTableColumns(IEnumerable<TableColumn> tableColumns)
+        {
+            var realTableColumns = new List<TableColumn>();
+            foreach (var tableColumn in tableColumns)
+            {
+                if (string.IsNullOrEmpty(tableColumn.AttributeName) ||
+                StringUtils.EqualsIgnoreCase(tableColumn.AttributeName, nameof(Entity.Id)) ||
+                StringUtils.EqualsIgnoreCase(tableColumn.AttributeName, nameof(Entity.Guid)) ||
+                StringUtils.EqualsIgnoreCase(tableColumn.AttributeName, "ExtendValues") ||
+                StringUtils.EqualsIgnoreCase(tableColumn.AttributeName, nameof(Entity.CreatedDate)) ||
+                StringUtils.EqualsIgnoreCase(tableColumn.AttributeName, nameof(Entity.LastModifiedDate)))
+                {
+                    continue;
+                }
+
+                if (tableColumn.DataType == DataType.VarChar && tableColumn.DataLength == 0)
+                {
+                    tableColumn.DataLength = 2000;
+                }
+                realTableColumns.Add(tableColumn);
+            }
+
+            realTableColumns.InsertRange(0, new List<TableColumn>
+            {
+                new TableColumn
+                {
+                    AttributeName = nameof(Entity.Id),
+                    DataType = DataType.Integer,
+                    IsIdentity = true,
+                    IsPrimaryKey = true
+                },
+                new TableColumn
+                {
+                    AttributeName = nameof(Entity.Guid),
+                    DataType = DataType.VarChar,
+                    DataLength = 50
+                },
+                new TableColumn
+                {
+                    AttributeName = "ExtendValues",
+                    DataType = DataType.Text,
+                },
+                new TableColumn
+                {
+                    AttributeName = nameof(Entity.CreatedDate),
+                    DataType = DataType.DateTime
+                },
+                new TableColumn
+                {
+                    AttributeName = nameof(Entity.LastModifiedDate),
+                    DataType = DataType.DateTime
+                }
+            });
+
+            return realTableColumns;
+        }
+    }
+}

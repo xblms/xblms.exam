@@ -1,0 +1,223 @@
+@page
+@{ Layout = "_LayoutHome"; }
+
+@section Styles{
+    <style>
+        .el-descriptions-item__label.is-bordered-label {
+            width: 180px;
+        }
+    </style>
+}
+
+<el-card>
+    <el-row :gutter="15">
+        <el-col :span="8" style="text-align:center;">
+            <el-card>
+                <div slot="header">
+                    <div class="d-flex justify-content-between align-items-center px-3">
+                        <div class="text-center">
+                            <el-avatar :size="128" :src="user.avatarUrl || DEFAULT_AVATAR_URL"></el-avatar>
+                        </div>
+                        <div class="text-center">
+                            <div>欢迎回来</div>
+                            <div class="mt-3 fs-3 text-warning me-3"><i class="el-icon-s-custom me-2"></i>{{ user.displayName }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="fw-light fs-5 px-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>累计考试<span class="mx-2 text-success fs-4">{{ examTotal }}</span>场</span>
+                        <span>及格率<span class="ms-2 text-success fs-4">{{ examPercent }}<span class="fs-6 fw-light ms-1">%</span></span></span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mt-1">
+                        <span>累计模拟<span class="mx-2 text-success fs-4">{{ examMoniTotal }}</span>场</span>
+                        <span>及格率<span class="ms-2 text-success fs-4">{{ examMoniPercent }}<span class="fs-6 fw-light ms-1">%</span></span></span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mt-1">
+                        <span>累计刷题<span class="mx-2 text-success fs-4">{{ practiceAnswerTmTotal }}</span>道</span>
+                        <span>正确率<span class="ms-2 text-success fs-4">{{ practiceAnswerPercent }}<span class="fs-6 fw-light ms-1">%</span></span></span>
+                    </div>
+                </div>
+            </el-card>
+            <div class="card card-hover-with-icon border-top border-5 border-light mt-3" style="cursor:default;">
+                <apexchart type="radialBar" :options="passChartOptions" :series="passSeries" :height="$(window).innerHeight()-345"></apexchart>
+            </div>
+        </el-col>
+        <el-col :span="16">
+            <el-scrollbar class="scrollbar" :style="{ height: ($(window).height()-63) + 'px' }">
+                <div class="px-3 pb-5">
+                    <div class="card card-hover-with-icon border-top border-5 border-warning p-3 mb-3" style="cursor:default;">
+                        <el-card shadow="hover">
+                            <div slot="header" class="d-flex justify-content-between align-items-center">
+                                <span class="fw-bold">
+                                    <i class="el-icon-s-order me-2 text-warning bg-light p-2 card-icon rounded-circle"></i>刷题练习
+                                </span>
+                                <el-link :underline="false" v-on:click="btnMoreMenuClick('practice')">更多<i class="el-icon-more ms-2"></i></el-link>
+                            </div>
+                            <div>
+                                <div class="row text-center">
+                                    <div class="col p-3">
+                                        <div class="mb-3">
+                                            <el-progress type="dashboard" :percentage="practiceAllPercent" color="#5cb87a" :width="88" :stroke-width="4"></el-progress>
+                                            <div class="fs-6">正确率</div>
+                                        </div>
+                                        <div class="mb-3 p-2 bg-light w-100 rounded-pill">
+                                            <el-button type="warning" plain class="py-4 w-100 rounded-pill" v-on:click="btnCreatePracticeClick('All')"><i class="bi bi-fast-forward-circle-fill me-2"></i>快速开始</el-button>
+                                        </div>
+                                        <div class="fs-6 fw-light">共<span class="fs-4 fw-bold mx-2">{{ practiceAllTmTotal }}</span>道题</div>
+                                    </div>
+                                    <div class="col p-3">
+                                        <div class="mb-3">
+                                            <el-progress type="dashboard" :percentage="practiceCollectPercent" color="#5cb87a" :width="88" :stroke-width="4"></el-progress>
+                                            <div class="fs-6">正确率</div>
+                                        </div>
+                                        <div class="mb-3 p-2 bg-light w-100 rounded-pill">
+                                            <el-button type="primary" plain class="py-4 w-100 rounded-pill" v-on:click="btnCreatePracticeClick('Collect')"><i class="bi bi-person-hearts me-2"></i>收藏练习</el-button>
+                                        </div>
+                                        <div class="fs-6 fw-light">共<span class="fs-4 fw-bold mx-2">{{ practiceCollectTmTotal }}</span>道题</div>
+                                    </div>
+                                    <div class="col p-3">
+                                        <div class="mb-3">
+                                            <el-progress type="dashboard" :percentage="practiceWrongPercent" color="#5cb87a" :width="88" :stroke-width="4"></el-progress>
+                                            <div class="fs-6">正确率</div>
+                                        </div>
+                                        <div class="mb-3 p-2 bg-light w-100 rounded-pill">
+                                            <el-button type="success" plain class="py-4 w-100 rounded-pill" v-on:click="btnCreatePracticeClick('Wrong')"><i class="bi bi-backspace-reverse me-2"></i>错题练习</el-button>
+                                        </div>
+                                        <div class="fs-6 fw-light">共<span class="fs-4 fw-bold mx-2">{{ practiceWrongTmTotal }}</span>道题</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </el-card>
+                    </div>
+                    <div class="card card-hover-with-icon border-top border-5 border-light p-3 mb-3" style="cursor:default;">
+                        <el-card shadow="hover">
+                            <div slot="header" class="d-flex justify-content-between align-items-center">
+                                <span class="fw-bold"><i class="el-icon-platform-eleme me-2 text-warning bg-light p-2 card-icon rounded-circle"></i>最近一场考试安排</span>
+                                <el-link :underline="false" v-on:click="btnMoreMenuClick('exam')">更多<i class="el-icon-more ms-2"></i></el-link>
+                            </div>
+                            <div class="row align-items-center g-3" v-if="examPaper">
+                                <div class="col">
+                                    <div class="mb-2">
+                                        <el-link :underline="false" v-on:click="btnViewPaperClick(examPaper.id)">
+                                            <span class="fw-bold">{{ examPaper.title }}</span>
+                                        </el-link>
+                                    </div>
+                                    <ul class="list-inline fw-light">
+                                        <li class="list-inline-item fs-5">
+                                            总分：{{ examPaper.totalScore }}
+                                        </li>
+                                        <li class="list-inline-item fs-5">
+                                            及格分：{{ examPaper.passScore }}
+                                        </li>
+                                        <li class="list-inline-item fs-5">
+                                            剩余考试次数：
+                                            <span class="fs-3 text-success fw-bold" v-if="(examPaper.userExamTimes-examPaper.myExamTimes)>0">
+                                                {{ examPaper.userExamTimes-examPaper.myExamTimes }}
+                                            </span>
+                                            <span class="fs-3 text-danger fw-bold" v-else>
+                                                0
+                                            </span>
+                                            /{{ examPaper.userExamTimes }}
+                                        </li>
+                                    </ul>
+                                    <ul class="list-inline fw-light">
+                                        <li class="list-inline-item fs-5">
+                                            <i class="el-icon-date me-2"></i>开考时间：{{ examPaper.examStartDateTimeStr }}
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="bg-light p-2 rounded-pill">
+                                        <el-button type="primary" plain icon="el-icon-s-order" class="rounded-pill" v-on:click="btnViewPaperClick(examPaper.id)">详 细</el-button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else>
+                                <div class="p-3 bg-light"><el-empty description="暂无考试安排"></el-empty></div>
+                            </div>
+                        </el-card>
+                    </div>
+                    <div class="card card-hover-with-icon border-top border-5 border-light p-3 mb-3" style="cursor:default;">
+                        <el-card shadow="hover">
+                            <div slot="header" class="d-flex justify-content-between align-items-center">
+                                <span class="fw-bold"><i class="el-icon-eleme me-2 text-warning bg-light p-2 card-icon rounded-circle"></i>最新一场模拟自测</span>
+                                <el-link :underline="false" v-on:click="btnMoreMenuClick('moni')">更多<i class="el-icon-more ms-2"></i></el-link>
+                            </div>
+                            <div class="row align-items-center g-3" v-if="examMoni">
+                                <div class="col">
+                                    <div class="mb-2">
+                                        <el-link :underline="false" v-on:click="btnViewPaperClick(examMoni.id)">
+                                            <span class="fw-bold">{{ examMoni.title }}</span>
+                                        </el-link>
+                                    </div>
+                                    <ul class="list-inline fw-light">
+                                        <li class="list-inline-item fs-5">
+                                            总分：{{ examMoni.totalScore }}
+                                        </li>
+                                        <li class="list-inline-item fs-5">
+                                            及格分：{{ examMoni.passScore }}
+                                        </li>
+                                        <li class="list-inline-item fs-5">
+                                            剩余考试次数：
+                                            <span class="fs-3 text-success fw-bold" v-if="(examMoni.userExamTimes-examMoni.myExamTimes)>0">
+                                                {{ examMoni.userExamTimes-examMoni.myExamTimes }}
+                                            </span>
+                                            <span class="fs-3 text-danger fw-bold" v-else>
+                                                0
+                                            </span>
+                                            /{{ examMoni.userExamTimes }}
+                                        </li>
+                                    </ul>
+                                    <ul class="list-inline fw-light">
+                                        <li class="list-inline-item fs-5">
+                                           <i class="el-icon-date me-2"></i>有效期：{{ examMoni.examStartDateTimeStr }}-{{ examMoni.examEndDateTimeStr }}
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="bg-light p-2 rounded-pill">
+                                        <el-button type="primary" plain icon="el-icon-s-order" class="rounded-pill" v-on:click="btnViewPaperClick(examMoni.id)">详 细</el-button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else>
+                                <div class="p-3 bg-light"><el-empty description="管理员未开放模拟自测"></el-empty></div>
+                            </div>
+                        </el-card>
+                    </div>
+           
+                    
+                        <div class="card card-hover-with-icon border-top border-5 border-light p-3" style="cursor:default;">
+                        <el-card shadow="hover">
+                            <div class="mb-2">
+                                <span><i class="el-icon-user-solid me-2 text-warning bg-light p-2 card-icon"></i>个人信息</span>
+                            </div>
+                            <div>
+                                <el-descriptions title="" border column="1">
+                                    <el-descriptions-item label="账 号">{{ user.userName }}</el-descriptions-item>
+                                    <el-descriptions-item label="姓 名">{{ user.displayName }}</el-descriptions-item>
+                                    <el-descriptions-item label="组 织">{{ user.organNames }}</el-descriptions-item>
+                                    <el-descriptions-item label="手 机">{{ user.mobile }}</el-descriptions-item>
+                                    <el-descriptions-item label="邮 箱">{{ user.email }}</el-descriptions-item>
+                                    <el-descriptions-item label="上次登录时间">{{ user.lastActivityDate }}</el-descriptions-item>
+                                    <el-descriptions-item label="登录次数">{{ user.countOfLogin }}</el-descriptions-item>
+                                </el-descriptions>
+                            </div>
+                        </el-card>
+                        </div>
+               
+                    <div class="my-5 text-center fs-5">
+                        <el-divider></el-divider>
+                        <span class="fw-light mt-3">这是底线</span>
+                    </div>
+                </div>
+            </el-scrollbar>
+        </el-col>
+    </el-row>
+</el-card>
+
+@section Scripts{
+<script src="/sitefiles/assets/lib/apexcharts/dist/apexcharts.js" type="text/javascript"></script>
+<script src="/sitefiles/assets/lib/apexcharts/dist/vue-apexcharts.js" type="text/javascript"></script>
+<script src="/sitefiles/assets/js/home/dashboard.js" type="text/javascript"></script> }

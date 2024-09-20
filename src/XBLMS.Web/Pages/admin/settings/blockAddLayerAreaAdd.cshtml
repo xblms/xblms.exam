@@ -1,0 +1,37 @@
+﻿@page
+@{ Layout = "_Layout"; }
+
+<el-card>
+    <div slot="header" class="clearfix">
+        <span>添加拦截区域</span>
+        <el-button style="float: right;padding:3px 0;" type="text" v-on:click="utils.closeLayer(false)"><i class="el-icon-close"></i></el-button>
+    </div>
+    <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-180) + 'px' }">
+        <div style="margin-right:18px;">
+            <el-form :size="euiSize" ref="form" :model="form" label-width="120px">
+                <el-form-item v-if="areas" label="拦截区域" prop="areaIds" :rules="{ required: true, message: '请选择拦截区域' }">
+                    <el-select multiple
+                               v-model="form.areaIds"
+                               filterable
+                               placeholder="请选择拦截区域">
+                        <el-option v-for="item in areas"
+                                   :key="item.value"
+                                   :label="item.label"
+                                   :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+            </el-form>
+        </div>
+    </el-scrollbar>
+</el-card>
+<el-row align="center" style="margin-top:18px;">
+    <el-col :span="24" align="center">
+        <el-button :size="euiSize" type="primary" v-on:click="btnSubmitClick">确 定</el-button>
+        <el-button :size="euiSize" v-on:click="btnCancelClick">取 消</el-button>
+    </el-col>
+</el-row>
+
+@section Scripts{
+    <script src="/sitefiles/assets/js/block/js/addLayerAreaAdd.js" type="text/javascript"></script>
+}

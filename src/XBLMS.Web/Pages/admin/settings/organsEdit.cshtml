@@ -1,0 +1,29 @@
+﻿@page
+@{ Layout = "_Layout"; }
+
+<el-card>
+    <div slot="header" class="clearfix">
+        <span>{{ id > 0 ? "修改" : "新增" }}{{ type==="company" ? "单位" : (type==="department" ? "部门" : "岗位") }}</span>
+        <el-button style="float: right;padding:3px 0;" type="text" v-on:click="utils.closeLayer(false)"><i class="el-icon-close"></i></el-button>
+    </div>
+    <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-180) + 'px' }">
+        <div style="margin-right:18px;">
+            <el-form :size="euiSize" v-on:submit.native.prevent ref="form" :model="form" status-icon label-width="140px">
+                <el-form-item :label="type==='company' ? '单位名称' : (type==='department' ? '部门名称' : '岗位名称' )" prop="name" :rules="[{ required: true, message: '请输入名称' }]">
+                    <el-input v-model="form.name"></el-input>
+                </el-form-item>
+            </el-form>
+        </div>
+
+    </el-scrollbar>
+</el-card>
+<el-row align="center" style="margin-top:18px;">
+    <el-col :span="24" align="center">
+        <el-button :size="euiSize" type="primary" v-on:click="btnSubmitClick">确 定</el-button>
+        <el-button :size="euiSize" v-on:click="btnCancelClick">关 闭</el-button>
+    </el-col>
+</el-row>
+
+@section Scripts{
+    <script src="/sitefiles/assets/js/admin/settings/organsEdit.js" type="text/javascript"></script>
+}

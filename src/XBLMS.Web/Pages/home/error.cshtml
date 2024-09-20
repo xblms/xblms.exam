@@ -1,0 +1,26 @@
+﻿@page
+@{ Layout = "_LayoutHome"; }
+
+<el-card>
+    <div slot="header" class="clearfix">
+        <span style="color:red;">系统错误，请联系技术支持</span>
+        <el-button style="float: right;padding:3px 0;" type="text" v-on:click="utils.closeLayerSelf"><i class="el-icon-close"></i></el-button>
+    </div>
+    <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-180) + 'px' }">
+        <div style="margin-right:18px;">
+            <blockquote class="blockquote mb-0">
+                <p v-if="message" v-html="message" style="word-wrap: break-word; font-size: 14px; font-weight: bold;"></p>
+                <p v-if="stackTrace" v-html="stackTrace" style="word-wrap: break-word; font-size: 14px;"></p>
+                <p v-if="createdDate" v-html="createdDate" style="word-wrap: break-word; font-size: 14px;"></p>
+            </blockquote>
+        </div>
+    </el-scrollbar>
+</el-card>
+<el-row align="center" style="margin-top:18px;">
+    <el-col :span="24" align="center">
+        <el-button :size="euiSize" v-on:click="utils.closeLayerSelf">关 闭</el-button>
+    </el-col>
+</el-row>
+
+@section Scripts{
+  <script src="/sitefiles/assets/js/home/error.js" type="text/javascript"></script> }

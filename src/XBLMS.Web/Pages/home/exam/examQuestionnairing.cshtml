@@ -1,0 +1,81 @@
+@page
+@{ Layout = "_LayoutHome"; }
+@section Styles{
+    <style>
+        .el-radio {
+            white-space: normal;
+        }
+
+        .el-checkbox__label {
+            display: inline-grid;
+            word-wrap: break-word;
+            line-height: 20px;
+            white-space: pre-line;
+        }
+
+        html {
+            background-color: #f1f1f1;
+        }
+    </style>
+    <link href="/sitefiles/assets/css/watermark.css" rel="stylesheet" type="text/css" />
+}
+@await Html.PartialAsync("_PartialWatermark")
+<template v-if="paper">
+    <div class="text-center py-2 pb-3">
+        <div>{{ paper.title }}</div>
+    </div>
+    <el-card class="p-3">
+        <el-scrollbar class="scrollbar" :style="{ height: ($(window).height()-205) + 'px' }" ref="answerScrollbar">
+            <el-card v-for="(tm,tmIndex) in tmList" class="me-3 mb-3" :ref="'tm_'+tm.id">
+                <div slot="header" class="d-flex justify-content-start align-items-start">
+                    <div>{{ tmIndex+1 }}、</div>
+                    <div>{{ tm.title }}</div>
+                </div>
+                <div>
+                    <div :class="tm.answerStatus ? '' : 'card border-top-5 card-hover border-danger' ">
+                        <div class="list-group">
+                            <div v-if="tm.tx==='Danxuanti'">
+                                <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.optionsRandom">
+                                    <div>
+                                        <el-radio :label="option.key" v-model="tm.answer" v-on:change="answerChange(tm)">
+                                            <span v-html="option.value"></span>
+                                        </el-radio>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else-if="tm.tx==='Duoxuanti'">
+                                <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.optionsRandom">
+                                    <div>
+                                        <div>
+                                            <el-checkbox :true-label="option.key" false-label="" v-model="tm.optionsValues[optionsABC.indexOf(option.key)]" v-on:change="answerChange(tm)">
+                                                <span v-html="option.value"></span>
+                                            </el-checkbox>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else-if="tm.tx==='Jiandati'">
+                                <el-input :key="tm.id" type="textarea" resize="none" v-model.trim="tm.answer" :autosize="{ minRows: 3}" maxlength="333" style="width:100%;"
+                                          show-word-limit v-on:change="answerChange(tm)"></el-input>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </el-card>
+        </el-scrollbar>
+    </el-card>
+    <div class="d-flex justify-content-between align-items-center pt-3">
+        <div class="w-100">
+            <el-progress status="success" :stroke-width="18" :percentage="utils.formatPercentFloat(answerTotal,tmTotal)"></el-progress>
+        </div>
+        <div>
+            <el-button v-on:click="utils.closeLayerSelf" v-if="!paper.published"><i class="el-icon-close me-2"></i>退 出</el-button>
+            <el-button type="primary" class="bg-light-gradient-top" v-on:click="btnPaperSubmit">
+                <i class="el-icon-upload me-2"></i>提 交
+            </el-button>
+        </div>
+    </div>
+</template>
+@section Scripts{
+    <script src="/sitefiles/assets/js/home/exam/examQuestionnairing.js" type="text/javascript"></script>
+}

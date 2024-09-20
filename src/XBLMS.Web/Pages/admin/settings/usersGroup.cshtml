@@ -1,0 +1,72 @@
+﻿@page
+@{ Layout = "_Layout"; }
+
+<el-card class="box-card">
+    <el-form :inline="true" :size="euiSize">
+        <el-form-item label="">
+            <el-input v-model="search"
+                      prefix-icon="el-icon-search" clearable
+                      placeholder="输入关键字进行过滤" v-on:input="btnSearch">
+            </el-input>
+        </el-form-item>
+        <el-form-item label="">
+            <el-button icon="el-icon-refresh" circle :size="euiSize" v-on:click="btnSearch"></el-button>
+        </el-form-item>
+        <el-form-item label="">
+            <el-button :size="euiSize" plain type="primary" icon="el-icon-plus" v-on:click="btnEditClick(0)">
+                新增用户组
+            </el-button>
+        </el-form-item>
+    </el-form>
+
+    <el-table :data="groups" style="width: 100%;" :size="euiSize"
+              :height="($(window).height() - 115)">
+        <el-table-column label="用户组" prop="groupName"></el-table-column>
+        <el-table-column width="130" prop="userTotal">
+            <template slot="header" slot-scope="scope">
+                <el-tooltip content="仅包含启用状态的账户" placement="top" effect="light">
+                    <span><i class="el-icon-info"></i>用户数</span>
+                </el-tooltip>
+            </template>
+        </el-table-column>
+        <el-table-column width="130" label="类型" prop="typeName"></el-table-column>
+        <el-table-column width="130" label="创建人">
+            <template slot-scope="scope">
+                <el-button-group>
+                    <el-link :underline="false" type="primary" v-on:click="btnAdminViewClick(scope.row.creatorId)">{{scope.row.creatorDisplayName}}</el-link>
+                </el-button-group>
+            </template>
+        </el-table-column>
+        <el-table-column width="150"
+                         prop="createdDate"
+                         label="创建时间">
+        </el-table-column>
+        <el-table-column prop="description"
+                         label="备注">
+        </el-table-column>
+        <el-table-column label="状态" width="80">
+            <template slot-scope="scope">
+                <span v-if="scope.row.locked"><el-tag size="mini" type="danger" effect="dark">已停用</el-tag></span>
+                <span v-else><el-tag size="mini" type="success" effect="dark">启用</el-tag></span>
+            </template>
+        </el-table-column>
+        <el-table-column label="" align="right" width="93">
+            <template slot-scope="scope">
+                <el-dropdown :show-timeout="0" placement="left">
+                    <el-button :size="euiSize" v-on:click.stop="return false">
+                        <i class="el-icon-arrow-left el-icon--right"></i>操作
+                    </el-button>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item v-on:click.native="btnEditClick(scope.row.id)">编辑</el-dropdown-item>
+                        <el-dropdown-item v-on:click.native="btnRangeClick(scope.row.id)" v-if="scope.row.groupType==='Fixed'">安排用户</el-dropdown-item>
+                        <!--<el-dropdown-item v-on:click.native="btnListClick(scope.row)">用户列表</el-dropdown-item>-->
+                        <el-dropdown-item style="color:red;" v-on:click.native="btnDeleteClick(scope.row)">删除</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+            </template>
+        </el-table-column>
+        @await Html.PartialAsync("_PartialTableEmpty")
+</el-table>
+</el-card>
+@section Scripts{
+<script src="/sitefiles/assets/js/admin/settings/usersGroup.js" type="text/javascript"></script> }

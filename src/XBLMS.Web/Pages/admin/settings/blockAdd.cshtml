@@ -1,0 +1,110 @@
+@page
+@{ Layout = "_Layout"; }
+
+@section Styles{
+<style>
+    .el-tag {
+        height: auto;
+        white-space: inherit;
+        margin-bottom: 5px;
+        margin-right: 5px;
+    }
+</style>
+}
+<el-card>
+    <div slot="header" class="clearfix">
+        <span>{{ ruleId > 0 ? "修改" : "新增" }}拦截</span>
+        <el-button style="float: right;padding:3px 0;" type="text" v-on:click="utils.closeLayer(false)"><i class="el-icon-close"></i></el-button>
+    </div>
+    <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-180) + 'px' }">
+        <div style="margin-right:18px;">
+            <el-form ref="form" :model="form" :size="euiSize" label-width="180px">
+                <el-form-item label="规则名称" prop="ruleName" name="ruleName" :rules="{ required: true, message: '请输入规则名称' }">
+                    <el-input v-model="form.ruleName"></el-input>
+                </el-form-item>
+                <el-form-item label="拦截类型" prop="blockType" name="blockType" :rules="{ required: true, message: '请选择拦截类型' }">
+                    <el-select v-model="form.blockType">
+                        <el-option label="拦截用户端" :value="1"></el-option>
+                        <el-option label="拦截管理端" :value="2"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="拦截区域">
+                    <el-select v-model="form.areaType">
+                        <el-option v-for="areaType in areaTypes" :key="areaType.value" :label="areaType.label" :value="areaType.value"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item v-if="form.areaType != 'None'" label="拦截区域">
+                    <el-tag v-for="blockArea in blockAreas"
+                            :key="blockArea.id"
+                            closable
+                            size="mini"
+                            v-on:close="handleAreaClose(blockArea.id)"
+                            type="primary">
+                        {{blockArea.name}}
+                    </el-tag>
+                    <div></div>
+                    <el-button size="mini" icon="el-icon-circle-plus-outline" v-on:click="btnAreaAddClick">
+                        新增拦截区域
+                    </el-button>
+                </el-form-item>
+                <el-form-item label="IP地址白名单">
+                    <el-tag v-for="range in form.allowList"
+                            :key="range"
+                            closable
+                            size="mini"
+                            v-on:close="handleRangeClose(true, range)"
+                            type="primary">
+                        {{range}}
+                    </el-tag>
+
+                    <div class="tips">设置IP地址白名单后，系统将阻止不在此白名单中的IP地址访问页面</div>
+
+                    <el-button size="mini" icon="el-icon-circle-plus-outline" v-on:click="btnRangeAddClick(true)">
+                        新增IP地址白名单
+                    </el-button>
+                </el-form-item>
+                <el-form-item label="IP地址黑名单">
+                    <el-tag v-for="range in form.blockList"
+                            :key="range"
+                            closable
+                            size="mini"
+                            v-on:close="handleRangeClose(false, range)"
+                            type="primary">
+                        {{range}}
+                    </el-tag>
+                    <div class="tips">设置IP地址黑名单后，系统将阻止在此黑名单中的IP地址访问页面</div>
+                    <el-button size="mini" icon="el-icon-circle-plus-outline" v-on:click="btnRangeAddClick(false)">
+                        新增IP地址黑名单
+                    </el-button>
+                </el-form-item>
+                <el-form-item label="拦截方式" prop="blockMethod" name="blockMethod" :rules="{ required: true, message: '请选择拦截方式' }">
+                    <el-select v-model="form.blockMethod">
+                        <el-option label="转至指定网址" value="RedirectUrl"></el-option>
+                        <el-option label="显示拦截信息" value="Warning"></el-option>
+                        <el-option label="输入密码验证" value="Password"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item v-if="form.blockMethod === 'Password'" label="输入密码验证" prop="password" name="password" :rules="{ required: true, message: '请输入密码验证' }">
+                    <el-input v-model="form.password"></el-input>
+                </el-form-item>
+                <el-form-item v-if="form.blockMethod === 'Warning'" label="显示拦截信息" prop="warning" name="warning" :rules="{ required: true, message: '请输入显示拦截信息' }">
+                    <el-input v-model="form.warning"></el-input>
+                </el-form-item>
+                <el-form-item v-if="form.blockMethod === 'RedirectUrl'" label="转至指定网址" prop="redirectUrl" name="redirectUrl" :rules="{ required: true, message: '请输入转至指定网址' }">
+                    <el-input v-model="form.redirectUrl"></el-input>
+                </el-form-item>
+            </el-form>
+        </div>
+
+    </el-scrollbar>
+</el-card>
+<el-row align="center" style="margin-top:18px;">
+    <el-col :span="24" align="center">
+        <el-button :size="euiSize" type="primary" v-on:click="btnSubmitClick">确 定</el-button>
+        <el-button :size="euiSize" v-on:click="utils.closeLayerSelf">关 闭</el-button>
+    </el-col>
+</el-row>
+
+@section Scripts{
+    <script src="/sitefiles/assets/js/block/js/add.js" type="text/javascript"></script>
+}

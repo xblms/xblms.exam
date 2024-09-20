@@ -1,0 +1,93 @@
+@page
+@{ Layout = "_LayoutHome"; }
+@section Styles{
+    <style>
+        .el-form-item {
+            margin-bottom: 0px;
+        }
+        .el-progress-bar__outer{
+            background-color:orangered !important;
+        }
+
+    </style>
+}
+<el-card>
+    <div slot="header">
+        <div class="pt-1 pb-3">
+            <el-page-header v-on:back="goBack" content="练习记录">
+            </el-page-header>
+        </div>
+        <el-form :inline="true" :model="form">
+            <el-form-item label="练习时间：从">
+                <el-date-picker v-model="form.dateFrom"
+                                type="datetime"
+                                value-format="yyyy-MM-dd HH:mm:ss"
+                                placeholder="选择开始日期">
+                </el-date-picker>
+            </el-form-item>
+            <el-form-item label="到">
+                <el-date-picker v-model="form.dateTo"
+                                type="datetime"
+                                value-format="yyyy-MM-dd HH:mm:ss"
+                                placeholder="选择结束日期">
+                </el-date-picker>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" plain icon="el-icon-search" v-on:click="btnSearchClick">查询</el-button>
+                <el-button type="warning" plain icon="el-icon-delete" v-on:click="btnClearClick">清空练习记录</el-button>
+            </el-form-item>
+        </el-form>
+    </div>
+    <el-scrollbar class="scrollbar" :style="{ height: ($(window).height()-182) + 'px' }">
+        <div class="pe-3" v-if="total>0">
+            <div class="ms-5 position-relative card-hover-with-icon" v-for="(practice,index) in list" v-on:click="goPracticeResult(practice.id)">
+                <div class="position-absolute top-50 start-0 translate-middle">
+                    <div class="position-relative">
+                        <i class="el-icon-finished fs-2"></i>
+                        <span class="position-absolute top-100 start-100 translate-middle mt-1 fs-6">{{ index+1 }}</span>
+                    </div>
+                </div>
+                <el-card shadow="hover" class="mb-2">
+                    <div class="row align-items-center g-3 ms-6">
+                        <div class="col">
+                            <div class="mb-3">
+                                <span>{{ practice.title }}</span>
+                            </div>
+                            <ul class="list-inline fw-light">
+                                <li class="list-inline-item fs-5">
+                                    <el-tag>{{ utils.getFriendlyDateTime(practice.createdDate) }}</el-tag>
+                                </li>
+                                <li class="list-inline-item fs-5">
+                                    共：{{ practice.tmCount }}题
+                                </li>
+                                <li class="list-inline-item fs-5">
+                                    答题：{{ practice.answerCount }}
+                                </li>
+                                <li class="list-inline-item fs-5">
+                                    正确：{{ practice.rightCount }}
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-auto" style="min-width:30%;">
+                            <div>
+                                <span class="fs-6 fw-light">正确率</span>
+                                <el-progress :text-inside="true" :stroke-width="28" :percentage="utils.formatPercentFloat(practice.rightCount, practice.answerCount)" status="success"></el-progress>
+                            </div>
+                        </div>
+                    </div>
+                </el-card>
+            </div>
+            <div class="my-5 text-center me-5">
+                <el-button icon="el-icon-refresh-right" v-if="list.length>0 && list.length<total" v-on:click="btnLoadMoreClick" :loading="loadMoreLoading">加载更多</el-button>
+                <span v-else class="fw-light">没有更多了</span>
+            </div>
+        </div>
+        <div class="pt-10" v-else>
+            <el-empty description="暂无练习记录"></el-empty>
+        </div>
+    </el-scrollbar>
+</el-card>
+
+@section Scripts{
+    <script src="/sitefiles/assets/js/home/exam/examPracticeLog.js" type="text/javascript"></script>
+}

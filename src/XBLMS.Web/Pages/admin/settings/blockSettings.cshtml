@@ -1,0 +1,41 @@
+@page
+@{ Layout = "_Layout"; }
+<el-card class="box-card">
+    <div slot="header" class="clearfix">
+        <el-button :size="euiSize"
+                   type="primary" plain  icon="el-icon-plus"
+                   v-on:click="btnEdit(0)">
+            添加拦截规则
+        </el-button>
+    </div>
+    <el-table :data="rules" :size="euiSize" :height="($(window).height() - 135)">
+        <el-table-column prop="ruleName" label="规则名称"></el-table-column>
+        <el-table-column prop="areaType" label="拦截区域" width="200">
+            <template slot-scope="scope">
+                <span v-if="scope.row.areaType==='None'">不拦截区域</span>
+                <span v-else-if="scope.row.areaType==='None'">拦截指定区域</span>
+                <span v-else>拦截指定区域外其他区域</span>
+            </template>
+        </el-table-column>
+        <el-table-column prop="blockMethod" label="拦截方式" width="200">
+            <template slot-scope="scope">
+                <span v-if="scope.row.areaType==='RedirectUrl'">跳转至指定网址</span>
+                <span v-else-if="scope.row.areaType==='Warning'">显示拦截信息</span>
+                <span v-else>输入密码验证</span>
+            </template>
+        </el-table-column>
+        <el-table-column prop="createdDate" label="添加日期" width="160"></el-table-column>
+        <el-table-column label="操作" width="150">
+            <template slot-scope="scope">
+                <el-button-group>
+                    <el-button :size="euiSize" v-on:click.stop="btnEdit(scope.row.id)">修改</el-button>
+                    <el-button :size="euiSize" type="danger" v-on:click.stop="btnDeleteClick(scope.row)">删除</el-button>
+                </el-button-group>
+            </template>
+        </el-table-column>
+        @await Html.PartialAsync("_PartialTableEmpty")
+    </el-table>
+</el-card>
+@section Scripts{
+    <script src="/sitefiles/assets/js/block/js/settings.js" type="text/javascript"></script>
+}

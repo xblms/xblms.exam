@@ -1,0 +1,115 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing.Printing;
+using System.IO;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using XBLMS.Configuration;
+using XBLMS.Core.Utils;
+using XBLMS.Core.Utils.Office;
+using XBLMS.Dto;
+using XBLMS.Enums;
+using XBLMS.Models;
+using XBLMS.Utils;
+
+namespace XBLMS.Web.Controllers.Admin.Exam
+{
+    public partial class ExamPaperEditController
+    {
+        [RequestSizeLimit(long.MaxValue)]
+        [HttpPost, Route(Route)]
+        public async Task<ActionResult<BoolResult>> Submit([FromBody] GetSubmitRequest request)
+        {
+            var admin = await _authManager.GetAdminAsync();
+            var paper = request.Item;
+
+            if (paper.TmRandomType != ExamPaperTmRandomType.RandomExaming)
+            {
+                paper.Moni = false;
+            }
+
+            if (paper.Id > 0)
+            {
+
+                if (request.SubmitType == SubmitType.Submit)
+                {
+                    paper.SubmitType = request.SubmitType;
+
+                    await _examManager.ClearRandom(paper.Id, request.IsClear);
+
+                    await SetRandomConfigs(request.ConfigList, paper);
+
+                    await _examManager.PaperRandomSet(paper);
+                    await _examManager.Arrange(paper);
+                    await _authManager.AddAdminLogAsync("重新发布试卷", $"{paper.Title}");
+                }
+                else
+                {
+                    await _authManager.AddAdminLogAsync("修改试卷", $"{paper.Title}");
+                }
+
+                await _examPaperRepository.UpdateAsync(paper);
+
+            }
+            else
+            {
+                paper.SubmitType = request.SubmitType;
+                paper.CompanyId = admin.CompanyId;
+                paper.CreatorId = admin.Id;
+                paper.DepartmentId = admin.DepartmentId;
+
+                var paperId = await _examPaperRepository.InsertAsync(paper);
+
+
+                paper = await _examPaperRepository.GetAsync(paperId);
+                await SetRandomConfigs(request.ConfigList, paper);
+                await _examPaperRepository.UpdateAsync(paper);
+
+
+                if (request.SubmitType == SubmitType.Submit)
+                {
+                    await _examManager.PaperRandomSet(paper);
+                    await _examManager.Arrange(paper);
+                    await _authManager.AddAdminLogAsync("发布试卷", $"{paper.Title}");
+                }
+                else
+                {
+                    await _authManager.AddAdminLogAsync("保存试卷", $"{paper.Title}");
+                }
+            }
+
+            return new BoolResult
+            {
+                Value = true
+            };
+        }
+
+        private async Task SetRandomConfigs(List<ExamPaperRandomConfig> randomConfigs, ExamPaper paper)
+        {
+            await _examPaperRandomConfigRepository.DeleteByPaperAsync(paper.Id);
+
+            if (paper.TmRandomType != ExamPaperTmRandomType.RandomNone)
+            {
+                var txIds = new List<int>();
+                if (randomConfigs != null && randomConfigs.Count > 0)
+                {
+                    foreach (var randomConfig in randomConfigs)
+                    {
+                        if (randomConfig.Nandu1TmCount > 0 || randomConfig.Nandu2TmCount > 0 || randomConfig.Nandu3TmCount > 0 || randomConfig.Nandu4TmCount > 0 || randomConfig.Nandu5TmCount > 0)
+                        {
+                            randomConfig.ExamPaperId = paper.Id;
+                            txIds.Add(randomConfig.TxId);
+                            await _examPaperRandomConfigRepository.InsertAsync(randomConfig);
+                        }
+
+                    }
+                }
+                paper.TxIds = txIds;
+            }
+        }
+    }
+
+
+}

@@ -1,0 +1,52 @@
+@page
+@{ Layout = "_Layout"; }
+<el-card>
+    <div slot="header" class="clearfix">
+        <el-form :size="euiSize">
+            <el-form-item label="数据库表">
+                <el-select v-model="table" placeholder="数据库表">
+                    <el-option v-for="tableName in tableNames"
+                               :key="tableName"
+                               :label="tableName"
+                               :value="tableName">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+        </el-form>
+    </div>
+    <el-scrollbar class="scrollbar" :style="{ height: ($(window).height()-150) + 'px' }">
+        <template v-if="table && tableColumns">
+            <el-alert type="success" show-icon>
+                表名：<el-tag type="danger">{{ table }}</el-tag>
+                数据量：<el-tag type="danger">{{ count }}</el-tag>
+            </el-alert>
+            <el-table :data="tableColumns"
+                      :size="euiSize"
+                      style="width: 100%">
+                <el-table-column prop="attributeName"
+                                 label="字段名">
+                </el-table-column>
+                <el-table-column prop="dataType"
+                                 label="数据类型"
+                                 width="180">
+                </el-table-column>
+                <el-table-column label="数据长度"
+                                 width="180">
+                    <template slot-scope="scope">
+                        {{ getColumnLength(scope.row) }}
+                    </template>
+                </el-table-column>
+                <el-table-column label="属性"
+                                 width="180">
+                    <template slot-scope="scope">
+                        {{ getColumnAttributes(scope.row) }}
+                    </template>
+                </el-table-column>
+            </el-table>
+        </template>
+    </el-scrollbar>
+
+</el-card>
+@section Scripts{
+<script src="/sitefiles/assets/js/admin/settings/databaseTables.js" type="text/javascript"></script>
+ }

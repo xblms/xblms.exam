@@ -1,0 +1,219 @@
+html {
+    overflow: hidden;
+}
+
+body, #main {
+    margin: 0;
+}
+
+#header {
+    height: 51px;
+    line-height: 51px;
+    overflow: hidden;
+    padding-left:8px;
+}
+
+    #header i {
+        font-size: 16px;
+        margin-right: 5px;
+    }
+
+    #header .el-badge__content.is-fixed {
+        top: 10px;
+        right: 27px;
+    }
+
+    #header .el-badge__content {
+        border: 0;
+    }
+
+    #header .logo {
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        float: left;
+        width: 200px;
+        text-align: center;
+    }
+
+        #header .logo img {
+            height: 33px;
+            margin-top: 8px;
+        }
+
+    #header .nav {
+        padding: 0 25px;
+        color: #fff;
+        float: left;
+    }
+
+    #header .right {
+        float: right;
+        margin-right: 10px;
+    }
+
+    #header .search {
+        position: relative;
+        display: inline;
+        margin: 0 10px;
+    }
+
+        #header .search .form-control, #header .search .form-control:focus {
+            border: none;
+            font-size: 13px;
+            color: #ffffff;
+            padding-left: 20px;
+            padding-right: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: none;
+            border-radius: 30px;
+            outline: none;
+            height: 28px;
+            width: 130px;
+            top: -2px;
+            position: relative;
+        }
+
+            #header .search .form-control::placeholder {
+                color: #fff;
+            }
+
+        #header .search a {
+            position: absolute;
+            top: -11px;
+            right: 14px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+    #header .el-dropdown {
+        padding: 0 10px;
+    }
+
+    #header .el-dropdown-link {
+        cursor: pointer;
+    }
+
+#tabs {
+    top: 0;
+    position: fixed;
+    overflow: hidden;
+    background: #fff;
+    height: 100%;
+    margin-top: 0;
+}
+
+
+#sidebar {
+    top: 0;
+    position: fixed;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 100%;
+    background-color: #fff;
+    z-index: 2;
+    /*box-shadow: -4px 4px 20px rgba(0, 0, 0, 0.15);*/
+}
+
+    #sidebar .title {
+        text-align: left;
+        padding: 15px 0 15px 22px;
+        border-bottom:1px solid #f1f1f1;
+    }
+
+    #sidebar .el-submenu .el-menu-item {
+        height: 35px;
+        line-height: 35px;
+    }
+
+    #sidebar .el-menu {
+        border: none;
+        background-color: #fff;
+    }
+
+    #sidebar .el-menu-item, .el-submenu__title {
+        height: 40px;
+        line-height: 40px;
+    }
+
+        #sidebar .el-submenu__title i, #sidebar .el-menu-item i {
+            font-size: 18px;
+            margin-right: 5px;
+            width: 15px;
+            display: inline-block;
+        }
+
+            #sidebar .el-submenu__title i.fa, #sidebar .el-menu-item i.fa {
+                font-size: 16px;
+            }
+
+            #sidebar .el-submenu__title i.el-submenu__icon-arrow, #sidebar .el-menu-item i.el-submenu__icon-arrow {
+                font-size: 12px;
+            }
+
+    #sidebar .el-submenu .el-menu-item, #sidebar > ul > li.el-submenu.is-opened > ul > li.el-submenu {
+        background-color: #fff;
+    }
+
+        #sidebar .el-submenu .el-menu-item:hover {
+            color: #6600FF;
+        }
+
+    #sidebar .el-menu-item.is-active {
+        color: #6600FF;
+        background-color: #fff;
+    }
+
+
+    #sidebar .el-submenu .el-submenu__title:hover {
+        color: #6600FF;
+        background-color: #fff;
+    }
+.el-tabs--border-card > .el-tabs__content {
+    padding: 0;
+}
+
+.el-upload, .el-upload-dragger {
+    width: 158px;
+    height: 158px;
+}
+
+.el-tabs--border-card {
+    border: none;
+    box-shadow:none;
+    -webkit-box-shadow:none;
+}
+
+.avatar {
+    width: 158px;
+    height: 158px;
+    display: block;
+}
+
+.el-tabs__header{
+    padding-left:8px;
+    padding-right:18px;
+}
+
+.el-tabs--border-card > .el-tabs__header {
+    background-color: #ffffff;
+    border: none;
+}
+
+    .el-tabs--border-card > .el-tabs__header .el-tabs__item.is-active {
+        background-color: #f1f1f1;
+        color: #6600FF;
+    }
+
+    .el-tabs--border-card > .el-tabs__header .el-tabs__item {
+        border: none;
+    }
+
+.el-tabs__item {
+    height: 38px;
+    line-height: 38px;
+}
+.el-tabs__nav-next, .el-tabs__nav-prev {
+    line-height: 38px;
+    font-size:18px;
+    font-weight:bolder;
+}

@@ -1,0 +1,106 @@
+<el-card>
+    <div slot="header" class="clearfix">
+        <span>{{ treeName }}</span>
+        <el-tooltip placement="top" manual v-model="treeTopAddPopover">
+            <div slot="content" style="width:400px;">
+                <el-card>
+                    <el-form :size="euiSize">
+                        <el-form-item label="">
+                            添加分类
+                        </el-form-item>
+                        <el-form-item label="">
+                            <el-input type="textarea"
+                                      placeholder="分类之间用换行分割，下级分类前添加“-”字符，示例：&#10;一级分类&#10;-二级分类&#10;--三级分类"
+                                      v-model="treeAddForm.names"
+                                      show-word-limit rows="8">
+                            </el-input>
+                            <div class="el-form-item__error" v-if="treeEditValid">请输入分类内容</div>
+                        </el-form-item>
+                        <el-form-item label="" style="text-align:right;">
+                            <el-button size="mini" type="primary" v-on:click="treeBtnAddSubmitClick(0)">确 定</el-button>
+                            <el-button plain size="mini" type="primary" v-on:click="treeTopAddPopover=false">取 消</el-button>
+                        </el-form-item>
+                    </el-form>
+                </el-card>
+            </div>
+            <el-button style="float: right; padding: 3px 0" type="text" v-on:click="treeTopAddPopover=!treeTopAddPopover">添加分类</el-button>
+        </el-tooltip>
+    </div>
+    <el-form :size="euiSize">
+        <el-form-item label="">
+            <el-input placeholder="分类关键字查询" v-model="treeFilterText" prefix-icon="el-icon-search" clearable>
+                <template slot="append">
+                    <el-tooltip content="右侧列表查询是否包含下级" placement="top">
+                        <el-checkbox v-model="formInline.treeIsChildren"></el-checkbox>
+                    </el-tooltip>
+                </template>
+            </el-input>
+        </el-form-item>
+    </el-form>
+    <el-scrollbar class="scrollbar" :style="{height: $(window).height()-175 + 'px'}">
+        <el-tree class="filter-tree"
+                 :data="treeItems" :expand-on-click-node="false"
+                 v-on:node-click="treeNodeClick"
+                 v-on:node-contextmenu="treeNodeContextmenu"
+                 v-on:node-expand="treeNodeExpand"
+                 v-on:node-collapse="treeNodeCollapse"
+                 node-key="value"
+                 accordion
+                 :default-expanded-keys="treeDefaultExpandedKeys"
+                 :filter-node-method="treeFilterNode"
+                 ref="tree">
+            <template slot-scope="{ node,data }">
+                <el-tooltip placement="right" v-model="treePopoverVisibles[node.id]" manual>
+                    <div slot="content">
+                        <el-card>
+                            <div v-if="treeAdd" style="width:400px;">
+                                <el-form :size="euiSize">
+                                    <el-form-item label="">
+                                        添加分类
+                                    </el-form-item>
+                                    <el-form-item label="">
+                                        <el-input type="textarea"
+                                                  placeholder="分类之间用换行分割，下级分类前添加“-”字符，示例：&#10;一级分类&#10;-二级分类&#10;--三级分类"
+                                                  v-model="treeAddForm.names"
+                                                  show-word-limit rows="8">
+                                        </el-input>
+                                        <div class="el-form-item__error" v-if="treeEditValid">请输入分类名称</div>
+                                    </el-form-item>
+                                    <el-form-item label="" style="text-align:right;">
+                                        <el-button size="mini" type="primary" v-on:click="treeBtnAddSubmitClick(data.id)">确 定</el-button>
+                                        <el-button plain size="mini" type="primary" v-on:click="treeBtnHidePopover">取 消</el-button>
+                                    </el-form-item>
+                                </el-form>
+                            </div>
+                            <div v-else-if="treeUpdate" style="width:300px;">
+                                <el-form :size="euiSize">
+                                    <el-form-item label="">
+                                        修改分类
+                                    </el-form-item>
+                                    <el-form-item label="">
+                                        <el-input v-model="treeUpdateForm.name" placeholder="请输入分类名称"></el-input>
+                                        <div class="el-form-item__error" v-if="treeEditValid">请输入分类名称</div>
+                                    </el-form-item>
+                                    <el-form-item label="" style="text-align:right;">
+                                        <el-button plain size="mini" type="primary" v-on:click="treeBtnUpdateSubmitClick(data.id)">确 定</el-button>
+                                        <el-button plain size="mini" v-on:click="treeClearPopover">取 消</el-button>
+                                    </el-form-item>
+                                </el-form>
+                            </div>
+                            <div v-else>
+                                <el-button icon="el-icon-plus" plain size="mini" type="primary" v-on:click="treeBtnEditClick(node,true)">添加下级</el-button>
+                                <div style="height:8px;"></div>
+                                <el-button icon="el-icon-edit" plain size="mini" type="primary" v-on:click="treeBtnEditClick(node,false)">修 改</el-button>
+                                <div style="height:8px;"></div>
+                                <el-button icon="el-icon-delete" plain size="mini" type="danger" v-on:click="treeBtnDeleteClick(node,data)">删 除</el-button>
+                                <div style="height:8px;"></div>
+                                <el-button icon="el-icon-close" plain size="mini" type="info" v-on:click="treeClearPopover">取 消</el-button>
+                            </div>
+                        </el-card>
+                    </div>
+                    <span style="width:100%">{{ node.label }}<span style="color:darkgray;font-size:12px;">({{ data.selfTotal }}/{{ data.total }})</span></span>
+                </el-tooltip>
+            </template>
+        </el-tree>
+    </el-scrollbar>
+</el-card>

@@ -1,0 +1,363 @@
+{
+  "extensions": {
+    "menus": [
+      {
+        "id": "home",
+        "order": 1,
+        "text": "首页",
+        "link": "/admin/dashboard/",
+        "iconClass": "el-icon-home",
+        "children": [
+        ]
+      },
+      {
+        "id": "exam",
+        "order": 2,
+        "text": "考试管理",
+        "link": "",
+        "iconClass": "el-icon-eleme",
+        "Permissions": [],
+        "children": [
+          {
+            "id": "examtx",
+            "order": 1,
+            "text": "题型管理",
+            "link": "/admin/exam/examTx/",
+            "iconClass": "el-icon-s-custom",
+            "Permissions": [ "Select", "Add", "Update", "Delete" ],
+            "children": [
+            ]
+          },
+          {
+            "id": "examtm",
+            "order": 2,
+            "text": "题目管理",
+            "link": "/admin/exam/examTm/",
+            "iconClass": "el-icon-s-custom",
+            "Permissions": [ "Select", "Add", "Update", "Delete" ],
+            "children": [
+            ]
+          },
+          {
+            "id": "examcer",
+            "order": 3,
+            "text": "证书管理",
+            "link": "/admin/exam/examCer/",
+            "iconClass": "el-icon-s-custom",
+            "Permissions": [ "Select", "Add", "Update", "Delete" ],
+            "children": [
+            ]
+          },
+          {
+            "id": "exampaper",
+            "order": 4,
+            "text": "试卷管理",
+            "link": "/admin/exam/examPaper/",
+            "iconClass": "el-icon-s-custom",
+            "Permissions": [ "Select", "Add", "Update", "Delete" ],
+            "children": [
+            ]
+          },
+          {
+            "id": "examtmgroup",
+            "order": 4,
+            "text": "题目组",
+            "link": "/admin/exam/examTmGroup/",
+            "iconClass": "el-icon-s-custom",
+            "Permissions": [ "Select", "Add", "Update", "Delete" ],
+            "children": [
+            ]
+          }
+        ]
+      },
+      {
+        "id": "questionnaire",
+        "order": 3,
+        "text": "调查问卷",
+        "link": "/admin/exam/examQuestionnaire",
+        "iconClass": "el-icon-document-checked",
+        "children": [
+        ]
+      },
+      {
+        "id": "account",
+        "order": 4,
+        "text": "企业管理",
+        "link": "",
+        "iconClass": "el-icon-s-custom",
+        "Permissions": [],
+        "children": [
+          {
+            "id": "accountusers",
+            "order": 1,
+            "text": "用户管理",
+            "link": "/admin/settings/users/",
+            "iconClass": "el-icon-s-custom",
+            "Permissions": [ "Select", "Add", "Update", "Delete", "Export", "Import" ],
+            "children": [
+            ]
+          },
+          {
+            "id": "accountusergroup",
+            "order": 2,
+            "text": "用户组",
+            "link": "/admin/settings/usersGroup/",
+            "iconClass": "el-icon-s-custom",
+            "Permissions": [ "Select", "Add", "Update", "Delete" ],
+            "children": [
+            ]
+          },
+          {
+            "id": "accountadministrator",
+            "order": 3,
+            "text": "管理员管理",
+            "link": "/admin/settings/administrators/",
+            "iconClass": "el-icon-s-custom",
+            "Permissions": [ "Select", "Add", "Update", "Delete" ],
+            "children": [
+            ]
+          },
+          {
+            "id": "accountroles",
+            "order": 4,
+            "text": "角色管理",
+            "link": "/admin/settings/administratorsRole/",
+            "iconClass": "el-icon-s-custom",
+            "Permissions": [ "Select", "Add", "Update", "Delete" ],
+            "children": [
+            ]
+          },
+          {
+            "id": "accountorgans",
+            "order": 5,
+            "text": "组织管理",
+            "link": "/admin/settings/organs/",
+            "iconClass": "el-icon-s-custom",
+            "Permissions": [ "Select", "Add", "Update", "Delete" ],
+            "children": [
+            ]
+          }
+        ]
+      },
+      {
+        "id": "system",
+        "order": 5,
+        "text": "系统管理",
+        "link": "",
+        "iconClass": "el-icon-s-tools",
+        "Permissions": [],
+        "children": [
+          {
+            "id": "systeminfo",
+            "order": 1,
+            "text": "系统信息",
+            "link": "/admin/settings/utilitiesParameters/",
+            "iconClass": "el-icon-s-custom",
+            "Permissions": [ "Select" ],
+            "children": [
+            ]
+          },
+          {
+            "id": "systemcache",
+            "order": 2,
+            "text": "缓存管理",
+            "link": "/admin/settings/utilitiesCache/",
+            "iconClass": "el-icon-s-custom",
+            "Permissions": [ "Select", "SystemClearCache", "SystemRestart" ],
+            "children": [
+            ]
+          },
+          {
+            "id": "systemblocksettings",
+            "order": 3,
+            "text": "访问拦截",
+            "link": "/admin/settings/blockSettings/",
+            "iconClass": "el-icon-s-custom",
+            "Permissions": [ "Select", "Add", "Update", "Delete" ],
+            "children": [
+            ]
+          },
+          {
+            "id": "systemblockquery",
+            "order": 4,
+            "text": "拦截查询",
+            "link": "/admin/settings/blockQuery/",
+            "iconClass": "el-icon-s-custom",
+            "Permissions": [ "Select" ],
+            "children": [
+            ]
+          },
+          {
+            "id": "systemdatabase",
+            "order": 5,
+            "text": "数据库管理",
+            "iconClass": "el-icon-s-data",
+            "Permissions": [],
+            "children": [
+              {
+                "id": "systemdatabasetables",
+                "order": 1,
+                "text": "表查询",
+                "link": "/admin/settings/databaseTables/",
+                "iconClass": "el-icon-s-custom",
+                "Permissions": [ "Select" ],
+                "children": []
+              },
+              {
+                "id": "systemdatabasequery",
+                "order": 1,
+                "text": "数据查询",
+                "link": "/admin/settings/databaseQuery/",
+                "iconClass": "el-icon-s-custom",
+                "Permissions": [ "Select" ],
+                "children": [
+                ]
+              },
+              {
+                "id": "systemdatabasebackup",
+                "order": 1,
+                "text": "备份与恢复",
+                "link": "/admin/settings/databaseBackup/",
+                "iconClass": "el-icon-s-custom",
+                "Permissions": [ "Select", "Add", "Update", "Delete" ],
+                "children": [
+                ]
+              },
+              {
+                "id": "systemdatabaseupdate",
+                "order": 1,
+                "text": "升级数据库",
+                "link": "/admin/syncDatabase/",
+                "iconClass": "el-icon-s-custom",
+                "target": "_blank",
+                "Permissions": [ "Select" ],
+                "children": [
+                ]
+              }
+            ]
+          },
+          {
+            "id": "systemaminconfig",
+            "order": 6,
+            "text": "管理员设置",
+            "link": "/admin/settings/administratorsConfig/",
+            "iconClass": "el-icon-s-custom",
+            "Permissions": [ "Select", "Update" ],
+            "children": [
+            ]
+          },
+          {
+            "id": "systemuserconfig",
+            "order": 7,
+            "text": "用户设置",
+            "link": "/admin/settings/usersConfig/",
+            "iconClass": "el-icon-s-custom",
+            "Permissions": [ "Select", "Update" ],
+            "children": [
+            ]
+          },
+          {
+            "id": "systemhomemenus",
+            "order": 8,
+            "text": "用户菜单设置",
+            "link": "/admin/settings/homeMenus/",
+            "iconClass": "el-icon-s-custom",
+            "Permissions": [ "Select", "Add", "Update", "Delete" ],
+            "children": [
+            ]
+          },
+          {
+            "id": "systemencrypt",
+            "order": 9,
+            "text": "加密工具",
+            "link": "/admin/settings/utilitiesEncrypt/",
+            "iconClass": "el-icon-s-custom",
+            "Permissions": [ "Select" ],
+            "children": [
+            ]
+          }
+        ]
+      },
+      {
+        "id": "logs",
+        "order": 6,
+        "text": "日志管理",
+        "link": "",
+        "iconClass": "el-icon-warning",
+        "Permissions": [],
+        "children": [
+          {
+            "id": "logsadministratorlog",
+            "order": 1,
+            "text": "管理员日志",
+            "link": "/admin/settings/logsAdmin/",
+            "iconClass": "el-icon-s-custom",
+            "Permissions": [ "Select", "Delete" ],
+            "children": [
+            ]
+          },
+          {
+            "id": "logsuserlog",
+            "order": 2,
+            "text": "用户日志",
+            "link": "/admin/settings/logsUser/",
+            "iconClass": "el-icon-s-custom",
+            "Permissions": [ "Select", "Delete" ],
+            "children": [
+            ]
+          },
+          {
+            "id": "logserrorlog",
+            "order": 3,
+            "text": "系统错误日志",
+            "link": "/admin/settings/logsError/",
+            "iconClass": "el-icon-s-custom",
+            "Permissions": [ "Select", "Delete" ],
+            "children": [
+            ]
+          },
+          {
+            "id": "logslogconfig",
+            "order": 4,
+            "text": "日志设置",
+            "link": "/admin/settings/logsConfig/",
+            "iconClass": "el-icon-s-custom",
+            "Permissions": [ "Select", "Delete" ],
+            "children": [
+            ]
+          }
+        ]
+      },
+      {
+        "id": "analysis",
+        "order": 7,
+        "text": "统计图表",
+        "link": "",
+        "iconClass": "el-icon-s-operation",
+        "Permissions": [],
+        "children": [
+          {
+            "id": "analysisadminlogin",
+            "order": 1,
+            "text": "登录统计",
+            "link": "/admin/settings/analysisAdminLogin/",
+            "iconClass": "el-icon-s-custom",
+            "Permissions": [ "Select" ],
+            "children": [
+            ]
+          },
+          {
+            "id": "analysisblock",
+            "order": 1,
+            "text": "访问拦截统计",
+            "link": "/admin/settings/blockAnalysis/",
+            "iconClass": "el-icon-s-custom",
+            "Permissions": [ "Select" ],
+            "children": [
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

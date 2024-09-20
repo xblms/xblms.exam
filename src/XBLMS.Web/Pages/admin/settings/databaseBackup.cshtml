@@ -1,0 +1,120 @@
+@page
+@{ Layout = "_Layout"; }
+<el-card class="box-card">
+    <el-tabs>
+        <el-tab-pane label="数据备份与恢复">
+            <el-form :inline="true" :size="euiSize">
+                <el-form-item>
+                    <el-button plain icon="el-icon-connection" type="primary" v-on:click="btnAsyncClick">
+                        手动执行一次备份
+                    </el-button>
+                </el-form-item>
+            </el-form>
+            <el-divider></el-divider>
+            <el-table ref="jobTable" :size="euiSize" :height="($(window).height() - 225)"
+                      :data="list">
+                <el-table-column type="index" label="#" width="60">
+                </el-table-column>
+                <el-table-column label="任务ID" width="80" prop="id">
+                </el-table-column>
+                <el-table-column prop="createdDate" label="备份时间" width="158">
+                </el-table-column>
+                <el-table-column prop="beginTime" label="开始时间" width="158">
+                </el-table-column>
+                <el-table-column prop="endTime" label="结束时间" width="158">
+                </el-table-column>
+                <el-table-column label="状态" width="120">
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.status===0"><i class="el-icon-loading"></i> 备份中...</span>
+                        <span v-else><i class="el-icon-coin" style="color:green;"></i> 已完成</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="大小" width="80" prop="dataSize">
+                </el-table-column>
+                <el-table-column label="异常数据表">
+                    <template slot-scope="scope">
+                        <el-tag type="danger" v-for="errtb in scope.errorTables" :size="euiSize" style="margin-right:3px;margin-top:3px;">{{errtb}}</el-tag>
+                    </template>
+                </el-table-column>
+                <el-table-column label="异常日志" prop="errorLog">
+                </el-table-column>
+                <el-table-column width="100">
+                    <template slot-scope="scope">
+                        <el-dropdown :show-timeout="0" placement="left" >
+                            <el-button :size="euiSize" v-on:click.stop="return false">
+                                <i class="el-icon-arrow-left el-icon--right"></i>操作
+                            </el-button>
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item icon="el-icon-printer" v-on:click.native="handleCommand('recover',scope.row)">还原此备份</el-dropdown-item>
+                                <el-dropdown-item icon="el-icon-delete" v-on:click.native="handleCommand('delete',scope.row)" style="color:red;">删除备份</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
+                    </template>
+                </el-table-column>
+                @await Html.PartialAsync("_PartialTableEmpty")
+            </el-table>
+            <div style="height:15px;"></div>
+            <div style="text-align: center;">
+                <el-pagination background
+                               v-on:size-change="handleSizeChange"
+                               v-on:current-change="handleCurrentChange"
+                               :current-page="formInline.pageIndex"
+                               :page-size="formInline.pageSize"
+                               layout="total, prev, pager, next, jumper"
+                               :total="total">
+                </el-pagination>
+            </div>
+        </el-tab-pane>
+        <el-tab-pane label="恢复记录">
+            <el-form :inline="true" :size="euiSize">
+                <el-form-item>
+                    <el-button plain icon="el-icon-delete" type="danger" v-on:click="btnClearLogClick">
+                        清理恢复日志
+                    </el-button>
+                </el-form-item>
+            </el-form>
+            <el-divider></el-divider>
+            <el-table ref="jobRecoverTable" :size="euiSize" :height="($(window).height() - 225)"
+                      :data="recoverList">
+                <el-table-column type="index" label="#" width="60">
+                </el-table-column>
+                <el-table-column label="任务ID" width="80" prop="jobId">
+                </el-table-column>
+                <el-table-column prop="createdDate" label="恢复时间" width="158">
+                </el-table-column>
+                <el-table-column prop="beginTime" label="开始时间" width="158">
+                </el-table-column>
+                <el-table-column prop="endTime" label="结束时间" width="158">
+                </el-table-column>
+                <el-table-column label="状态" width="120">
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.status===1"><el-tag type="success" :size="euiSize">成功</el-tag></span>
+                        <span v-else><el-tag type="danger" :size="euiSize">失败</el-tag></span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="异常数据表">
+                    <template slot-scope="scope">
+                        <el-tag type="danger" v-for="errtb in scope.errorTables" :size="euiSize" style="margin-right:3px;margin-top:3px;">{{errtb}}</el-tag>
+                    </template>
+                </el-table-column>
+                <el-table-column label="异常日志" prop="errorLog">
+                </el-table-column>
+                @await Html.PartialAsync("_PartialTableEmpty")
+            </el-table>
+            <div style="height:15px;"></div>
+            <div style="text-align: center;">
+                <el-pagination background
+                               v-on:size-change="handleSizeChangeRecover"
+                               v-on:current-change="handleCurrentChangeRecover"
+                               :current-page="formRecover.pageIndex"
+                               :page-size="formRecover.pageSize"
+                               layout="total, prev, pager, next, jumper"
+                               :total="recoverTotal">
+                </el-pagination>
+            </div>
+        </el-tab-pane>
+    </el-tabs>
+</el-card>
+@section Scripts{
+<script src="/sitefiles/assets/js/admin/settings/databaseBackup.js" type="text/javascript"></script>
+ }
