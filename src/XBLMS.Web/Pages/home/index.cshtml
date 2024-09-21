@@ -5,10 +5,13 @@
     <link href="/sitefiles/assets/lib/animate/animate.min.css" rel="stylesheet" type="text/css" />
     <style>
         .el-tabs--border-card > .el-tabs__header .el-tabs__item.is-active {
-            border-start-end-radius: 50rem !important;
-            border-end-end-radius: 50rem !important;
+            border-radius:5px;
             color:#ffffff;
             background-color:#6600ff;
+        }
+
+        .el-tabs--border-card > .el-tabs__header .el-tabs__item:first-child{
+            margin-left:0 !important;
         }
 
         .el-tabs--top.el-tabs--border-card > .el-tabs__header .el-tabs__item:last-child{
@@ -20,7 +23,7 @@
         }
 
         #sidebar .el-menu-item {
-            border-left: 5px solid #f1f1f1;
+            border-left: 5px solid #fafafa;
         }
 
         .el-menu-item:focus, .el-menu-item:hover{
@@ -28,13 +31,14 @@
         }
         #sidebar .el-menu-item.is-active{
             border-left:5px solid #6600ff;
+            background-color: #fafafa !important;
         }
         #sidebar .title{
             padding-left:25px;
         }
 
         .el-submenu {
-            border-left: 5px solid #f1f1f1;
+            border-left: 5px solid #fafafa;
         }
         #sidebar .el-menu-item, .el-submenu__title{
             height: 50px;
@@ -52,11 +56,28 @@
             filter: none;
         }
 
+        #tabs{
+            background-color: #fafafa !important;
+        }
+        #sidebar{
+            background-color: #fafafa !important;
+        }
+
+            #sidebar .el-menu{
+                background-color: #fafafa !important;
+            }
+        .el-tabs--border-card > .el-tabs__header{
+            background-color:#fafafa !important;
+        }
+        .el-tabs--border-card{
+            background-color: #fafafa !important;
+        }
+        
         </style>
 }
 <div class="position-relative">
     <div class="position-absolute top-0 end-0 z-3 d-flex justify-content-between  align-items-center pt-1 me-1">
-        <div class="me-2">
+        <div class="me-2 mb-1">
             <el-dropdown :show-timeout="0" v-on:command="btnUserMenuClick">
                 <el-link :underline="false">{{ user.displayName }}<i class="el-icon-arrow-down el-icon--right"></i></el-link>
                 <el-dropdown-menu slot="dropdown">
@@ -66,8 +87,8 @@
                 </el-dropdown-menu>
             </el-dropdown>
         </div>
-        <div class="me-1 mt-2">
-            <el-avatar icon="el-icon-user-solid" size="small" :src="user.avatarUrl || DEFAULT_AVATAR_URL"></el-avatar>
+        <div class="me-1 mt-0">
+            <el-avatar icon="el-icon-user-solid" :src="user.avatarUrl || DEFAULT_AVATAR_URL"></el-avatar>
         </div>
     </div>
     <div id="sidebar" :style="{width: leftWidth + 'px'}" >
