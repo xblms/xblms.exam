@@ -12,7 +12,7 @@
         <el-col :span="18">
             <el-scrollbar class="scrollbar" :style="{ height: ($(window).height()-63) + 'px' }">
                 <div class="pe-3" v-if="total>0">
-                    <div class="ms-5 position-relative card-hover-with-icon" v-for="(item,index) in list">
+                    <div class="ms-5 position-relative card-hover-with-icon" v-for="(item,index) in list" style="cursor:default;">
                         <div class="position-absolute top-50 start-0 translate-middle">
                             <div class="position-relative">
                                 <i class="bi bi-pencil-square fs-2"></i>

@@ -19,5 +19,6 @@ namespace XBLMS.Repositories
         Task<bool> UpdateAsync(ExamQuestionnaireUser item);
         Task<bool> ExistsAsync(int paperId, int userId);
         Task<List<int>> GetPaperIdsByUser(int userId);
+        Task<List<int>> GetPaperIdsAsync(int userId);
     }
 }

@@ -93,8 +93,6 @@ namespace XBLMS.Core.Repositories
                 query.Where(nameof(ExamPaperUser.ExamBeginDateTime), "<=", dateToStr);
             }
 
-
-
             return await _repository.GetAllAsync<int>(query);
         }
 
@@ -112,6 +110,17 @@ namespace XBLMS.Core.Repositories
             return await _repository.GetAsync(query.
                 OrderByDesc(nameof(ExamPaperUser.Id)).
                 Limit(1));
+        }
+
+        public async Task<List<int>> GetPaperIdsByUser(int userId)
+        {
+            var query = Q.
+                Select(nameof(ExamPaperUser.ExamPaperId)).
+                Where(nameof(ExamPaperUser.ExamBeginDateTime), "<", DateTime.Now).
+                Where(nameof(ExamPaperUser.ExamEndDateTime), ">", DateTime.Now).
+                Where(nameof(ExamPaperUser.UserId), userId);
+
+            return await _repository.GetAllAsync<int>(query);
         }
     }
 }

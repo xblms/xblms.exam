@@ -2,6 +2,7 @@ using Datory;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using XBLMS.Core.Utils;
+using XBLMS.Enums;
 using XBLMS.Models;
 using XBLMS.Repositories;
 using XBLMS.Services;
@@ -83,6 +84,17 @@ namespace XBLMS.Core.Repositories
             return await _repository.GetAsync(query.
                 OrderByDesc(nameof(ExamQuestionnaireUser.Id)).
                 Limit(1));
+        }
+
+
+        public async Task<List<int>> GetPaperIdsAsync(int userId)
+        {
+            var query = Q.
+                Select(nameof(ExamQuestionnaireUser.ExamPaperId)).
+                Where(nameof(ExamQuestionnaireUser.UserId), userId).
+                Where(nameof(ExamQuestionnaireUser.SubmitType),SubmitType.Save.GetValue());
+
+            return await _repository.GetAllAsync<int>(query);
         }
     }
 }

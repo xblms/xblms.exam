@@ -19,18 +19,37 @@ namespace XBLMS.Web.Controllers.Home
         private readonly IAuthManager _authManager;
         private readonly IConfigRepository _configRepository;
         private readonly IUserMenuRepository _userMenuRepository;
+        private readonly IExamPaperRepository _examPaperRepository;
+        private readonly IExamPaperUserRepository _examPaperUserRepository;
+        private readonly IExamPaperStartRepository _examPaperStartRepository;
+        private readonly IExamQuestionnaireUserRepository _examQuestionnaireUserRepository;
+        private readonly IExamQuestionnaireRepository _examQuestionnaireRepository;
 
-        public IndexController(IAuthManager authManager, IConfigRepository configRepository, IUserMenuRepository userMenuRepository)
+        public IndexController(IAuthManager authManager,
+            IConfigRepository configRepository,
+            IUserMenuRepository userMenuRepository,
+            IExamPaperRepository examPaperRepository,
+            IExamPaperUserRepository examPaperUserRepository,
+            IExamPaperStartRepository examPaperStartRepository,
+            IExamQuestionnaireUserRepository examQuestionnaireUserRepository,
+            IExamQuestionnaireRepository examQuestionnaireRepository)
         {
             _authManager = authManager;
             _configRepository = configRepository;
             _userMenuRepository = userMenuRepository;
+            _examPaperRepository = examPaperRepository;
+            _examPaperUserRepository = examPaperUserRepository;
+            _examPaperStartRepository = examPaperStartRepository;
+            _examQuestionnaireUserRepository = examQuestionnaireUserRepository;
+            _examQuestionnaireRepository = examQuestionnaireRepository;
         }
 
         public class GetResult
         {
             public User User { get; set; }
             public List<Menu> Menus { get; set; }
+            public int PaperTotal { get; set; }
+            public int QPaperTotal { get; set; }
         }
     }
 }

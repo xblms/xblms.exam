@@ -52,7 +52,7 @@
                                 <span class="fw-bold">
                                     <i class="el-icon-s-order me-2 text-warning bg-light p-2 card-icon rounded-circle"></i>刷题练习
                                 </span>
-                                <el-link :underline="false" v-on:click="btnMoreMenuClick('practice')">更多<i class="el-icon-more ms-2"></i></el-link>
+                                <el-link :underline="false" v-on:click="btnMoreMenuClick('examPractice')">更多<i class="el-icon-more ms-2"></i></el-link>
                             </div>
                             <div>
                                 <div class="row text-center">
@@ -94,7 +94,7 @@
                         <el-card shadow="hover">
                             <div slot="header" class="d-flex justify-content-between align-items-center">
                                 <span class="fw-bold"><i class="el-icon-platform-eleme me-2 text-warning bg-light p-2 card-icon rounded-circle"></i>最近一场考试安排</span>
-                                <el-link :underline="false" v-on:click="btnMoreMenuClick('exam')">更多<i class="el-icon-more ms-2"></i></el-link>
+                                <el-link :underline="false" v-on:click="btnMoreMenuClick('examPaper')">更多<i class="el-icon-more ms-2"></i></el-link>
                             </div>
                             <div class="row align-items-center g-3" v-if="examPaper">
                                 <div class="col">
@@ -142,7 +142,7 @@
                         <el-card shadow="hover">
                             <div slot="header" class="d-flex justify-content-between align-items-center">
                                 <span class="fw-bold"><i class="el-icon-eleme me-2 text-warning bg-light p-2 card-icon rounded-circle"></i>最新一场模拟自测</span>
-                                <el-link :underline="false" v-on:click="btnMoreMenuClick('moni')">更多<i class="el-icon-more ms-2"></i></el-link>
+                                <el-link :underline="false" v-on:click="btnMoreMenuClick('examPaperMoni')">更多<i class="el-icon-more ms-2"></i></el-link>
                             </div>
                             <div class="row align-items-center g-3" v-if="examMoni">
                                 <div class="col">

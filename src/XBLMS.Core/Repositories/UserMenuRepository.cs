@@ -61,16 +61,18 @@ namespace XBLMS.Core.Repositories
 
             var parentId = await InsertAsync(new UserMenu
             {
-                Guid = "index",
+                Name = "index",
                 Text = "首页",
                 IconClass = "el-icon-s-home",
                 Link = "/home/dashboard/",
-                Taxis = 1
+                Taxis = 1,
+                
             });
 
 
             parentId = await InsertAsync(new UserMenu
             {
+                Name = "examPaper",
                 Text = "考试中心",
                 Link = "/home/exam/examPaper",
                 IconClass = "el-icon-platform-eleme",
@@ -79,6 +81,7 @@ namespace XBLMS.Core.Repositories
 
             parentId = await InsertAsync(new UserMenu
             {
+                Name = "examPaperMoni",
                 Text = "模拟自测",
                 Link = "/home/exam/examPaperMoni",
                 IconClass = "el-icon-eleme",
@@ -87,6 +90,7 @@ namespace XBLMS.Core.Repositories
 
             parentId = await InsertAsync(new UserMenu
             {
+                Name = "examQuestionnaire",
                 Text = "调查问卷",
                 Link = "/home/exam/examQuestionnaire",
                 IconClass = "el-icon-question",
@@ -95,6 +99,7 @@ namespace XBLMS.Core.Repositories
 
             parentId = await InsertAsync(new UserMenu
             {
+                Name = "examPractice",
                 Text = "刷题练习",
                 Link = "/home/exam/examPractice",
                 IconClass = "el-icon-s-order",
@@ -103,6 +108,7 @@ namespace XBLMS.Core.Repositories
 
             parentId = await InsertAsync(new UserMenu
             {
+                Name = "examPaperScore",
                 Text = "考试成绩",
                 Link = "/home/exam/examPaperScore",
                 IconClass = "el-icon-notebook-2",
@@ -110,6 +116,7 @@ namespace XBLMS.Core.Repositories
             });
             parentId = await InsertAsync(new UserMenu
             {
+                Name = "examPaperCer",
                 Text = "获得证书",
                 Link = "/home/exam/examPaperCer",
                 IconClass = "el-icon-medal",
@@ -118,6 +125,7 @@ namespace XBLMS.Core.Repositories
 
             parentId = await InsertAsync(new UserMenu
             {
+                Name = "logout",
                 Text = "退出系统",
                 IconClass = "el-icon-switch-button",
                 Link = "/home/logout/",

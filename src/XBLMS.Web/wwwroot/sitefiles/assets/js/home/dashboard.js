@@ -131,30 +131,7 @@ var methods = {
     });
   },
   btnMoreMenuClick: function (command) {
-
-    parent.$vue.tabs = [];
-    var newTitle = "";
-    var newLink = "";
-
-    if (command === 'practice') {
-
-      newTitle = '<i class="el-icon-s-order"><span class="me-2"></span>刷题练习';
-      newLink = utils.getPageUrl('exam', 'examPractice');
-
-    }
-    if (command === 'exam') {
-
-      newTitle = '<i class="el-icon-platform-eleme"><span class="me-2"></span>考试中心';
-      newLink = utils.getPageUrl('exam', 'examPaper');
-
-    }
-    if (command === 'moni') {
-
-      newTitle = '<i class="el-icon-eleme"><span class="me-2"></span>模拟自测';
-      newLink = utils.getPageUrl('exam', 'examPaperMoni');
-
-    }
-    utils.addTab(newTitle, newLink);
+    top.$vue.btnTopMenuClick(command);
   },
   btnCreatePracticeClick: function (practiceType) {
     if (practiceType === 'All') {

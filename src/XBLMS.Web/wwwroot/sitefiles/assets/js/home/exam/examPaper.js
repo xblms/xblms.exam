@@ -56,6 +56,7 @@ var methods = {
       width: "78%",
       height: "98%",
       end: function () {
+        top.$vue.apiGetTask();
         //$this.apiGet();
       }
     });

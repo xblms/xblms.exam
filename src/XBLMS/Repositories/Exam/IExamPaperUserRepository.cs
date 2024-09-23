@@ -18,5 +18,6 @@ namespace XBLMS.Repositories
         Task<int> InsertAsync(ExamPaperUser item);
         Task<bool> ExistsAsync(int paperId, int userId);
         Task<List<int>> GetPaperIdsByUser(int userId, string date);
+        Task<List<int>> GetPaperIdsByUser(int userId);
     }
 }

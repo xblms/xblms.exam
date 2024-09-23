@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using XBLMS.Configuration;
@@ -44,7 +45,9 @@ namespace XBLMS.Web.Controllers.Home
                         Text = menuInfo2.Text,
                         IconClass = menuInfo2.IconClass,
                         Link = menuInfo2.Link,
-                        Target = menuInfo2.Target
+                        Target = menuInfo2.Target,
+                        Name= menuInfo2.Name,
+                        
                     });
                 }
 
@@ -56,14 +59,50 @@ namespace XBLMS.Web.Controllers.Home
                     IconClass = menuInfo1.IconClass,
                     Link = menuInfo1.Link,
                     Target = menuInfo1.Target,
-                    Children = children
+                    Children = children,
+                    Name = menuInfo1.Name,
                 });
             }
 
+            var paperTotal = 0;
+
+            var paperIds = await _examPaperUserRepository.GetPaperIdsByUser(user.Id);
+            if (paperIds != null && paperIds.Count > 0)
+            {
+                foreach (var paperId in paperIds)
+                {
+                    var myExamTimes = await _examPaperStartRepository.CountAsync(paperId, user.Id);
+                    if (myExamTimes <= 0)
+                    {
+                        paperTotal++;
+                    }
+                }
+
+            }
+
+            var qPaperTotal = 0;
+            var qPaperIds = await _examQuestionnaireUserRepository.GetPaperIdsAsync(user.Id);
+            if (qPaperIds != null && qPaperIds.Count > 0)
+            {
+                foreach (var qPaperId in qPaperIds)
+                {
+                    var paper = await _examQuestionnaireRepository.GetAsync(qPaperId);
+                    if (paper != null)
+                    {
+                        if ((paper.ExamBeginDateTime.Value < DateTime.Now && paper.ExamEndDateTime.Value > DateTime.Now))
+                        {
+                            qPaperTotal++;
+                        }
+                    }
+                
+                }
+            }
             return new GetResult
             {
                 User = user,
-                Menus = menus
+                Menus = menus,
+                PaperTotal = paperTotal,
+                QPaperTotal = qPaperTotal,
             };
         }
     }

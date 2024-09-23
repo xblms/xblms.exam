@@ -12,6 +12,7 @@ var data = utils.init({
 
   defaultOpeneds: [],
   defaultActive: '',
+  defaultActiveIndex:'',
   tabName: null,
   tabs: [],
   winHeight: 0,
@@ -23,7 +24,9 @@ var data = utils.init({
   contextMenuVisible: false,
   contextTabName: null,
   contextLeft: 0,
-  contextTop: 0
+  contextTop: 0,
+  paperTotal: 0,
+  qPaperTotal:0
 });
 
 var methods = {
@@ -34,15 +37,14 @@ var methods = {
       var res = response.data;
       if (res.user) {
 
+        $this.paperTotal = res.paperTotal;
+        $this.qPaperTotal = res.qPaperTotal;
+
         $this.user = res.user;
         $this.menus = res.menus;
         $this.getLevelMenus($this.menus);
 
-        var home = $this.menus[0];
-
-        $this.defaultActive = home.id;
-        $this.defaultOpeneds.push(home.id);
-        $this.btnMenuClick(home);
+        $this.btnTopMenuClick('index');
 
         setTimeout($this.ready, 100);
       } else {
@@ -52,7 +54,17 @@ var methods = {
       utils.error(error);
     });
   },
+  apiGetTask: function () {
+    var $this = this;
 
+    $api.get($url).then(function (response) {
+      var res = response.data;
+      $this.paperTotal = res.paperTotal;
+      $this.qPaperTotal = res.qPaperTotal;
+    }).catch(function (error) {
+      utils.error(error);
+    });
+  },
   ready: function () {
     window.onresize = this.winResize;
     window.onresize();
@@ -129,27 +141,9 @@ var methods = {
     else if (level1) return level1.id;
     return '';
   },
-
-  btnTopMenuClick: function (menu) {
-    if (menu.children && menu.children.length > 0) {
-      for (var i = 0; i < menu.children.length; i++) {
-        var child = menu.children[i];
-        if (child.children) {
-          this.defaultOpeneds = [child.id];
-          break;
-        }
-      }
-    } else {
-      this.btnMenuClick(menu);
-    }
-    this.menu = menu;
-  },
-
   btnSideMenuClick: function (sideMenuIds) {
-
     var ids = sideMenuIds.split('/');
     var defaultOpeneds = [];
-
 
     var curMenu = null;
     for (var i = 0; i < ids.length; i++) {
@@ -168,11 +162,20 @@ var methods = {
     }
     this.defaultOpeneds = defaultOpeneds;
     if (curMenu) {
-      this.defaultActive = curMenu.id;
+      this.defaultActiveIndex = this.getIndex(curMenu);
       this.btnMenuClick(curMenu);
     }
   },
-
+  btnTopMenuClick: function (command) {
+    var lcurMenu = _.find(this.levelMenus, function (x) {
+      return x.name == command;
+    });
+    if (lcurMenu)
+    {
+      this.defaultActiveIndex = this.getIndex(lcurMenu);
+      this.btnMenuClick(lcurMenu)
+    }
+  },
   btnMenuClick: function (menu) {
     if (menu.target == "_blank") {
       top.location.href = menu.link;
@@ -197,17 +200,20 @@ var methods = {
     var newTitle = "";
     var newLink = "";
 
+
     if (command === 'profile') {
 
       newTitle = '<i class="el-icon-edit-outline"><span class="me-2"></span>修改资料';
       newLink = utils.getPageUrl(null, 'profile');
 
-    } else if (command === 'password') {
+    }
+    else if (command === 'password') {
 
       newTitle = '<i class="el-icon-key"><span class="me-2"></span>更改密码';
       newLink = utils.getPageUrl(null, 'password');
 
-    } else if (command === 'logout') {
+    }
+    else if (command === 'logout') {
 
       newTitle = '<i class="el-icon-switch-button"><span class="me-2"></span>退出系统';
       newLink = utils.getPageUrl(null, 'logout');

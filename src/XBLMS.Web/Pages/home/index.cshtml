@@ -77,9 +77,13 @@
 }
 <div class="position-relative">
     <div class="position-absolute top-0 end-0 z-3 d-flex justify-content-between  align-items-center pt-1 me-1">
-        <div class="me-2 mb-1">
+        <div>
+            <button type="button" class="btn btn-outline-danger btn-sm me-2 rounded-pill" v-if="paperTotal>0" v-on:click="btnTopMenuClick('examPaper')">剩余<span class="mx-1 fw-bold">（{{ paperTotal }}）</span> 份待考试卷</button>
+            <button type="button" class="btn btn-outline-warning btn-sm me-2 rounded-pill" v-if="qPaperTotal>0" v-on:click="btnTopMenuClick('examQuestionnaire')">剩余<span class="mx-1 fw-bold">（{{ qPaperTotal }}）</span> 份待填写问卷</button>
+        </div>
+        <div class="me-2">
             <el-dropdown :show-timeout="0" v-on:command="btnUserMenuClick">
-                <el-link :underline="false">{{ user.displayName }}<i class="el-icon-arrow-down el-icon--right"></i></el-link>
+                <button type="button" class="btn btn-outline-success btn-sm rounded-pill">{{ user.displayName }}<i class="el-icon-arrow-down el-icon--right"></i></button>
                 <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item command="profile"><i class="el-icon-edit-outline me-2"></i>修改资料</el-dropdown-item>
                     <el-dropdown-item command="password"><i class="el-icon-key me-2"></i>更改密码</el-dropdown-item>
@@ -113,6 +117,7 @@
                              :default-openeds="defaultOpeneds"
                              :unique-opened="true"
                              :collapse="isCollapse"
+                             :default-active="defaultActiveIndex"
                              :collapse-transition="false"
                              v-on:select="btnSideMenuClick">
 

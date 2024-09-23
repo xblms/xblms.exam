@@ -28,5 +28,7 @@ namespace XBLMS.Models
 
         [DataColumn]
         public string Target { get; set; }
+        [DataColumn]
+        public string Name { get; set; }
     }
 }
