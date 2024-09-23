@@ -2,10 +2,12 @@ var $url = "/exam/examQuestionnairing";
 var $urlSubmitPaper = $url + "/submitPaper";
 var data = utils.init({
   id: utils.getQueryInt('id'),
+  pr: utils.getQueryString('pr'),
+  ps: utils.getQueryString('ps'),
   paper: null,
-  watermark:null,
+  watermark: null,
   answerTotal: 0,
-  tmTotal:0,
+  tmTotal: 0,
   tmList: []
 });
 
@@ -14,16 +16,22 @@ var methods = {
     var $this = this;
 
     utils.loading(this, true, "正在加载问卷内容...");
-    $api.get($url, { params: { id: $this.id } }).then(function (response) {
+    $api.get($url, { params: { id: $this.id, ps: $this.ps } }).then(function (response) {
       var res = response.data;
 
       $this.watermark = res.watermark;
       $this.paper = res.item;
+
+      if ($this.paper.published) {
+        $this.watermark = DOCUMENTTITLE + "-" + res.watermark;
+        $this.id = $this.paper.id;
+      }
+
       $this.tmList = res.tmList;
 
       $this.tmTotal = $this.paper.tmTotal;
 
-      
+
 
     }).catch(function (error) {
       utils.error(error, { layer: true });
@@ -55,7 +63,7 @@ var methods = {
   },
   apiSubmitPaper: function () {
     var $this = this;
-    utils.loading($this, true,"正在提交问卷...");
+    utils.loading($this, true, "正在提交问卷...");
     $api.post($urlSubmitPaper, { id: this.id, tmList: this.tmList }).then(function (response) {
       var res = response.data;
       if (res.value) {

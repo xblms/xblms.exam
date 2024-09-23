@@ -1,17 +1,7 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using NPOI.SS.UserModel;
-using Ubiety.Dns.Core;
-using XBLMS.Configuration;
-using XBLMS.Core.Utils;
-using XBLMS.Dto;
-using XBLMS.Enums;
-using XBLMS.Models;
 using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Home.Exam
@@ -19,11 +9,21 @@ namespace XBLMS.Web.Controllers.Home.Exam
     public partial class ExamQuestionnairingController
     {
         [HttpGet, Route(Route)]
-        public async Task<ActionResult<GetResult>> GetList([FromQuery] IdRequest request)
+        public async Task<ActionResult<GetResult>> GetList([FromQuery] GetRequest request)
         {
             var paper = await _examQuestionnaireRepository.GetAsync(request.Id);
+            if (!string.IsNullOrEmpty(request.ps))
+            {
+                paper = await _examQuestionnaireRepository.GetAsync(request.ps);
+            }
 
             if (paper == null) { return this.Error("无效的问卷"); }
+
+            if (paper.ExamEndDateTime < DateTime.Now || paper.ExamBeginDateTime >= DateTime.Now)
+            {
+                return this.Error("不在有效期内");
+            }
+
 
             var tmTotal = 0;
             var tmList = await _examQuestionnaireTmRepository.GetListAsync(paper.Id);
@@ -33,7 +33,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
                 {
                     tmTotal++;
                     tm.Set("OptionsValues", new List<string>());
-                    tm.Set("Answer","");
+                    tm.Set("Answer", "");
 
                     var optionsRandom = new List<KeyValuePair<string, string>>();
                     var options = ListUtils.ToList(tm.Get("options"));

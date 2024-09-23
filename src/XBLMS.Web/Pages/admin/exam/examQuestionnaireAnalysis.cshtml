@@ -38,13 +38,13 @@
                                 <div class="list-group">
                                     <div v-if="tm.tx==='Danxuanti'">
                                         <div class="d-flex justify-content-start align-items-center">
-                                            <div>
+                                            <div v-if="paper.answerTotal>0">
                                                 <apexchart type="pie" :options="{labels:tm.optionsValues,legend:{show:false},colors:pieChartColors}" :series="tm.optionsAnswer" height="200"></apexchart>
                                             </div>
                                             <div class="w-100">
                                                 <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.options">
                                                     <div class="d-flex justify-content-start align-items-start">
-                                                        <div style="width:150px;">
+                                                        <div style="width:150px;" v-if="paper.answerTotal>0">
                                                             <el-progress :stroke-width="18" :percentage="utils.formatPercentFloat(tm.optionsAnswer[optionIndex],tm.tmAnswerTotal)" :show-text="false" color="#67c23a"></el-progress>
                                                         </div>
                                                         <div class="mx-2">
@@ -60,13 +60,13 @@
                                     </div>
                                     <div v-if="tm.tx==='Duoxuanti'">
                                         <div class="d-flex justify-content-start align-items-center">
-                                            <div>
+                                            <div v-if="paper.answerTotal>0">
                                                 <apexchart type="pie" :options="{labels:tm.optionsValues,legend:{show:false},colors:pieChartColors}" :series="tm.optionsAnswer" height="200"></apexchart>
                                             </div>
                                             <div class="w-100">
                                                 <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.options">
                                                     <div class="d-flex justify-content-start align-items-start">
-                                                        <div style="width:150px;">
+                                                        <div style="width:150px;" v-if="paper.answerTotal>0">
                                                             <el-progress :stroke-width="18" :percentage="utils.formatPercentFloat(tm.optionsAnswer[optionIndex],tm.tmAnswerTotal)" :show-text="false" color="#67c23a"></el-progress>
                                                         </div>
                                                         <div class="mx-2">

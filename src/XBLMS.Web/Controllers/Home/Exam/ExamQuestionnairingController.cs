@@ -38,6 +38,13 @@ namespace XBLMS.Web.Controllers.Home.Exam
             _examQuestionnaireTmRepository = examQuestionnaireTmRepository;
             _examQuestionnaireUserRepository = examQuestionnaireUserRepository;
         }
+
+        public class GetRequest
+        {
+            public int Id { get; set; }
+            public string ps { get; set; }
+        }
+
         public class GetResult
         {
             public string Watermark { get; set; }

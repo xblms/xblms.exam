@@ -33,7 +33,7 @@
                             <el-form-item label="调查范围" prop="published">
                                 <el-radio v-model="form.published" :label="true">公开</el-radio>
                                 <el-radio v-model="form.published" :label="false">内部</el-radio>
-                                <div class="tips">内部问卷需要指定用户组，公开问卷只能通过二维码公布。</div>
+                                <div class="tips">内部问卷需要指定用户组，需要用户登录系统填写；公开问卷只能通过二维码公布，获得二维码或者链接的用户都可以填写，不需要登录。</div>
                             </el-form-item>
                             <el-form-item label="调查范围" prop="userGroupIds" v-if="!form.published" :rules="{ required: true, message: '请选择用户组' }">
                                 <el-select ref="selectUserGroup" v-model="form.userGroupIds" filterable multiple placeholder="请选择用户组" clearable style="width:100%">

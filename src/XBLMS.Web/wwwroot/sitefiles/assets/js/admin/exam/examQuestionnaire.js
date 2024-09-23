@@ -171,8 +171,18 @@ var methods = {
       }
     });
   },
-  btnQrcodeClick: function () {
-
+  btnQrcodeClick: function (id) {
+    var $this = this;
+    top.utils.openLayer({
+      title: false,
+      closebtn: 0,
+      url: utils.getExamUrl('examQuestionnaireQrcode', { id: id }),
+      width: "58%",
+      height: "88%",
+      end: function () {
+        $this.btnSearchClick();
+      }
+    });
   }
 };
 

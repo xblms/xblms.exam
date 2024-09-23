@@ -54,6 +54,10 @@ namespace XBLMS.Core.Repositories
         {
             return await _repository.GetAsync(id);
         }
+        public async Task<ExamQuestionnaire> GetAsync(string guId)
+        {
+            return await _repository.GetAsync(Q.Where(nameof(ExamQuestionnaire.Guid), guId));
+        }
         public async Task<bool> DeleteAsync(int Id)
         {
             var result = await _repository.DeleteAsync(Id);

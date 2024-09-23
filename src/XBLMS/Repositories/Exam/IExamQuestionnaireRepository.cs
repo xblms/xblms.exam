@@ -9,6 +9,7 @@ namespace XBLMS.Repositories
     public partial interface IExamQuestionnaireRepository : IRepository
     {
         Task<ExamQuestionnaire> GetAsync(int id);
+        Task<ExamQuestionnaire> GetAsync(string guId);
         Task<int> InsertAsync(ExamQuestionnaire item);
         Task<bool> UpdateAsync(ExamQuestionnaire item);
         Task<(int total, List<ExamQuestionnaire> list)> GetListAsync(string keyword, int pageIndex, int pageSize);
