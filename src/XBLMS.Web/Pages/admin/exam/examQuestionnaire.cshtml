@@ -46,6 +46,8 @@
                         <el-dropdown-item icon="el-icon-unlock" v-if="scope.row.locked" v-on:click.native="btnUnLockClick(scope.row.id)">启用</el-dropdown-item>
                         <el-dropdown-item icon="el-icon-lock" v-else v-on:click.native="btnLockClick(scope.row.id)">停用</el-dropdown-item>
                         <el-dropdown-item icon="el-icon-delete" style="color:red;" v-on:click.native="btnDeleteClick(scope.row.id)">删除</el-dropdown-item>
+                        <el-dropdown-item icon="el-icon-picture-outline" v-on:click.native="btnQrcodeClick(scope.row)">二维码</el-dropdown-item>
+                        <el-dropdown-item icon="el-icon-view" v-on:click.native="btnViewClick(scope.row)">预览统计</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
             </template>

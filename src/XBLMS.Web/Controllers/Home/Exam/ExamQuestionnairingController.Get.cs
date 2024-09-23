@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using NPOI.SS.UserModel;
 using Ubiety.Dns.Core;
 using XBLMS.Configuration;
@@ -22,7 +23,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
         {
             var paper = await _examQuestionnaireRepository.GetAsync(request.Id);
 
-            if (paper == null) { return NotFound(); }
+            if (paper == null) { return this.Error("无效的问卷"); }
 
             var tmTotal = 0;
             var tmList = await _examQuestionnaireTmRepository.GetListAsync(paper.Id);
@@ -49,7 +50,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
 
             return new GetResult
             {
-                Watermark = await _authManager.GetWatermark(),
+                Watermark = DateTime.Now.ToString(),
                 Item = paper,
                 TmList = tmList
             };

@@ -10,7 +10,6 @@ using XBLMS.Services;
 namespace XBLMS.Web.Controllers.Home.Exam
 {
     [OpenApiIgnore]
-    [Authorize(Roles = Types.Roles.User)]
     [Route(Constants.ApiHomePrefix)]
     public partial class ExamQuestionnairingController : ControllerBase
     {

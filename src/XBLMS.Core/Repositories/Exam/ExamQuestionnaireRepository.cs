@@ -93,5 +93,10 @@ namespace XBLMS.Core.Repositories
             }
             return 0;
         }
+
+        public async Task IncrementAsync(int id)
+        {
+            await _repository.IncrementAsync(nameof(ExamQuestionnaire.AnswerTotal),Q.Where(nameof(ExamQuestionnaire.Id), id));
+        }
     }
 }

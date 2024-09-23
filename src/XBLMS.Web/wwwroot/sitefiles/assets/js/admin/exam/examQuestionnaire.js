@@ -137,7 +137,7 @@ var methods = {
     top.utils.openLayer({
       title: false,
       closebtn: 0,
-      url: utils.getCommonUrl('examQuestionnaireLayerView', { id: row.id }),
+      url: utils.getExamUrl('examQuestionnaireAnalysis', { id: row.id }),
       width: "98%",
       height: "98%"
     });
@@ -170,6 +170,9 @@ var methods = {
         $this.btnSearchClick();
       }
     });
+  },
+  btnQrcodeClick: function () {
+
   }
 };
 

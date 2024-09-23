@@ -23,6 +23,8 @@ var methods = {
 
       $this.tmTotal = $this.paper.tmTotal;
 
+      
+
     }).catch(function (error) {
       utils.error(error, { layer: true });
     }).then(function () {
@@ -62,8 +64,15 @@ var methods = {
     }).catch(function (error) {
       utils.error(error, { layer: true });
     }).then(function () {
-      utils.closeLayerSelf();
-      utils.loading($this, false);
+      if ($this.paper.published) {
+        document.body.innerHTML = "已提交问卷，可以安全离开此页面";
+        document.body.style.display = "block";
+
+      }
+      else {
+        utils.closeLayerSelf();
+        utils.loading($this, false);
+      }
     });
   },
   btnPaperSubmit: function () {
@@ -103,5 +112,6 @@ var $vue = new Vue({
   methods: methods,
   created: function () {
     this.apiGet();
+    document.title = "调查问卷";
   },
 });

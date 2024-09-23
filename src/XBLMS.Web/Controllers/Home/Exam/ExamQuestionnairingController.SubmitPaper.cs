@@ -14,9 +14,26 @@ namespace XBLMS.Web.Controllers.Home.Exam
     public partial class ExamQuestionnairingController
     {
         [HttpPost, Route(RouteSubmitPaper)]
-        public async Task<BoolResult> SubmitPaper([FromBody] GetSubmitRequest request)
+        public async Task<ActionResult<BoolResult>> SubmitPaper([FromBody] GetSubmitRequest request)
         {
-            var user = await _authManager.GetUserAsync();
+            var paper = await _examQuestionnaireRepository.GetAsync(request.Id);
+            if (paper == null)
+            {
+                return this.NotFound();
+            }
+
+            var user = new User();
+            user.Id = 0;
+
+            if (!paper.Published)
+            {
+                user = await _authManager.GetUserAsync();
+
+                var paperUser = await _examQuestionnaireUserRepository.GetAsync(request.Id, user.Id);
+                paperUser.SubmitType = SubmitType.Submit;
+                await _examQuestionnaireUserRepository.UpdateAsync(paperUser);
+            }
+          
 
             if (request.TmList != null && request.TmList.Count > 0)
             {
@@ -31,10 +48,9 @@ namespace XBLMS.Web.Controllers.Home.Exam
                     });
                 }
             }
+   
 
-            var paperUser = await _examQuestionnaireUserRepository.GetAsync(request.Id, user.Id);
-            paperUser.SubmitType = SubmitType.Submit;
-            await _examQuestionnaireUserRepository.UpdateAsync(paperUser);
+            await _examQuestionnaireRepository.IncrementAsync(request.Id);
 
             return new BoolResult
             {

@@ -33,7 +33,7 @@
                         <div>{{ tm.title }}（<span v-if="tm.tx==='Duoxuanti'">多选</span><span v-else-if="tm.tx==='Danxuanti'">单选</span><span v-else>简答</span>）</div>
                     </div>
                     <div class="mt-2" v-if="!tm.answerStatus">
-                        <span class="bg-danger text-white px-2 py-1 rounded-pill fs-6"><i class="el-icon-info me-2"></i>请完善该项</span>
+                        <span class="text-warning fs-6"><i class="el-icon-info me-2"></i>请完善该项内容</span>
                     </div>
                 </div>
                 <div>

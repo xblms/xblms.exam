@@ -49,10 +49,29 @@ namespace XBLMS.Core.Repositories
             await _repository.DeleteAsync(Q.Where(nameof(ExamQuestionnaireAnswer.ExamPaperId), paperId));
         }
 
-        public async Task ClearByPaperAndUserAsync(int paperId,int userId)
+        public async Task ClearByPaperAndUserAsync(int paperId, int userId)
         {
             await _repository.DeleteAsync(Q.Where(nameof(ExamQuestionnaireAnswer.ExamPaperId), paperId).Where(nameof(ExamQuestionnaireAnswer.UserId), userId));
         }
 
+
+        public async Task<List<string>> GetListAnswer(int paperId,int tmId)
+        {
+            return await _repository.GetAllAsync<string>(Q.
+                 Select(nameof(ExamQuestionnaireAnswer.Answer)).
+                 Where(nameof(ExamQuestionnaireAnswer.TmId), tmId).
+                 Where(nameof(ExamQuestionnaireAnswer.ExamPaperId), paperId).
+                 OrderBy(nameof(ExamQuestionnaireAnswer.Id)));
+        }
+        public async Task<int> GetCountSubmitUser(int paperId,int tmId,string answer)
+        {
+            answer = $"%{answer}%";
+
+            return await _repository.CountAsync(Q.
+                 Select(nameof(ExamQuestionnaireAnswer.Id)).
+                 Where(nameof(ExamQuestionnaireAnswer.TmId), tmId).
+                 WhereLike(nameof(ExamQuestionnaireAnswer.Answer), answer).
+                 Where(nameof(ExamQuestionnaireAnswer.ExamPaperId), paperId));
+        }
     }
 }

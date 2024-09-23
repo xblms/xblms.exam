@@ -15,5 +15,6 @@ namespace XBLMS.Repositories
         Task<bool> DeleteAsync(int Id);
         Task<List<int>> GetIdsAsync(List<int> ids, string keyword);
         Task<int> MaxIdAsync();
+        Task IncrementAsync(int id);
     }
 }

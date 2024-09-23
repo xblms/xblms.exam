@@ -23,5 +23,7 @@ namespace XBLMS.Models
         public bool Locked { get; set; } = false;
         [DataColumn]
         public SubmitType SubmitType { get; set; } = SubmitType.Save;
+        [DataColumn]
+        public int AnswerTotal { get; set; } = 0;
     }
 }

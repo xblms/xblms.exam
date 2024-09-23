@@ -4,6 +4,7 @@ var data = utils.init({
   id: utils.getQueryInt('id'),
   paper:null,
   list: null,
+  pieChartColors: ['#67c23a', '#1989fa', '#5cb87a', '#e6a23c'],
 });
 
 var methods = {
@@ -19,7 +20,8 @@ var methods = {
       var res = response.data;
 
       $this.paper = res.item;
-      $this.list = res.txList;
+      $this.list = res.tmList;
+
     }).catch(function (error) {
       utils.error(error, { layer:true });
     }).then(function () {
@@ -27,6 +29,9 @@ var methods = {
     });
   }
 };
+Vue.component("apexchart", {
+  extends: VueApexCharts
+});
 
 var $vue = new Vue({
   el: '#main',

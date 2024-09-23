@@ -65,6 +65,20 @@ var methods = {
     this.apiGet();
   },
   btnViewClick: function (paper) {
+    //var $this = this;
+    //top.utils.openLayer({
+    //  title: false,
+    //  closebtn: 0,
+    //  url: utils.getExamUrl('examQuestionnairing', { id: paper.id }),
+    //  width: "100%",
+    //  height: "100%",
+    //  end: function () {
+    //    $this.apiGetItem(paper.id);
+    //  }
+    //});
+
+
+
     if (paper.submitType === 'Submit') {
       utils.success("已提交")
     }
