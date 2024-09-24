@@ -1,25 +1,26 @@
 var $url = "/exam/examPaper";
+var $urlItem = $url + "/item";
 
 var data = utils.init({
   form: {
     keyWords: '',
-    date:'',
+    date: '',
     pageIndex: 1,
     pageSize: PER_PAGE
   },
   list: [],
   total: 0,
-  loadMoreLoading:false
+  loadMoreLoading: false
 });
 
 var methods = {
-  apiGet: function() {
+  apiGet: function () {
     var $this = this;
-    
+
     if (this.total === 0) {
       utils.loading(this, true);
     }
- 
+
     $api.get($url, { params: this.form }).then(function (response) {
       var res = response.data;
 
@@ -35,6 +36,23 @@ var methods = {
     }).then(function () {
       utils.loading($this, false);
       $this.loadMoreLoading = false;
+    });
+  },
+  apiGetItem: function (id) {
+    var $this = this;
+
+    $api.get($urlItem, { params: { id: id } }).then(function (response) {
+      var res = response.data;
+
+      let pIndex = $this.list.findIndex(item => {
+        return item.id === id;
+      });
+
+      $this.$set($this.list, pIndex, res.item);
+
+
+    }).catch(function (error) {
+    }).then(function () {
     });
   },
   btnSearchClick: function () {
@@ -57,7 +75,7 @@ var methods = {
       height: "98%",
       end: function () {
         top.$vue.apiGetTask();
-        //$this.apiGet();
+        $this.apiGetItem(id);
       }
     });
   },

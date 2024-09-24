@@ -1,5 +1,5 @@
 var $url = "/exam/examQuestionnaire";
-var $urlItem = "/exam/examQuestionnaire/item";
+var $urlItem = $url + "/item";
 
 var data = utils.init({
   form: {
@@ -9,17 +9,17 @@ var data = utils.init({
   },
   list: [],
   total: 0,
-  loadMoreLoading:false
+  loadMoreLoading: false
 });
 
 var methods = {
-  apiGet: function() {
+  apiGet: function () {
     var $this = this;
 
     if (this.total === 0) {
       utils.loading(this, true);
     }
- 
+
     $api.get($url, { params: this.form }).then(function (response) {
       var res = response.data;
 
@@ -40,7 +40,7 @@ var methods = {
   apiGetItem: function (id) {
     var $this = this;
 
-    $api.get($urlItem, { params: {id:id} }).then(function (response) {
+    $api.get($urlItem, { params: { id: id } }).then(function (response) {
       var res = response.data;
 
       let pIndex = $this.list.findIndex(item => {

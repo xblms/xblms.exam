@@ -1,6 +1,9 @@
 ﻿using System.Threading.Tasks;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Mvc;
 using XBLMS.Configuration;
+using XBLMS.Dto;
+using XBLMS.Models;
 using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Home.Exam
@@ -25,6 +28,18 @@ namespace XBLMS.Web.Controllers.Home.Exam
             {
                 Total = total,
                 List = list
+            };
+        }
+
+        [HttpGet, Route(RouteItem)]
+        public async Task<ActionResult<ItemResult<ExamPaper>>> GetItem([FromQuery] IdRequest request)
+        {
+            var user = await _authManager.GetUserAsync();
+            var paper = await _examPaperRepository.GetAsync(request.Id);
+            await _examManager.GetPaperInfo(paper, user);
+            return new ItemResult<ExamPaper>
+            {
+                Item = paper
             };
         }
     }

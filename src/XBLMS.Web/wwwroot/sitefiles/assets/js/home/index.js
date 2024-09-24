@@ -26,7 +26,8 @@ var data = utils.init({
   contextLeft: 0,
   contextTop: 0,
   paperTotal: 0,
-  qPaperTotal:0
+  qPaperTotal: 0,
+  taskTotal:0
 });
 
 var methods = {
@@ -39,6 +40,7 @@ var methods = {
 
         $this.paperTotal = res.paperTotal;
         $this.qPaperTotal = res.qPaperTotal;
+        $this.taskTotal = $this.paperTotal + $this.qPaperTotal;
 
         $this.user = res.user;
         $this.menus = res.menus;
@@ -61,6 +63,7 @@ var methods = {
       var res = response.data;
       $this.paperTotal = res.paperTotal;
       $this.qPaperTotal = res.qPaperTotal;
+      $this.taskTotal = $this.paperTotal + $this.qPaperTotal;
     }).catch(function (error) {
       utils.error(error);
     });

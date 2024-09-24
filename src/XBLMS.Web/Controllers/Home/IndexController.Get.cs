@@ -64,6 +64,7 @@ namespace XBLMS.Web.Controllers.Home
                 });
             }
 
+            var paperTmoniTotal = 0;
             var paperTotal = 0;
 
             var paperIds = await _examPaperUserRepository.GetPaperIdsByUser(user.Id);
@@ -71,10 +72,18 @@ namespace XBLMS.Web.Controllers.Home
             {
                 foreach (var paperId in paperIds)
                 {
+                    var paper = await _examPaperRepository.GetAsync(paperId);
                     var myExamTimes = await _examPaperStartRepository.CountAsync(paperId, user.Id);
                     if (myExamTimes <= 0)
                     {
-                        paperTotal++;
+                        if (paper.Moni)
+                        {
+                            paperTmoniTotal++;
+                        }
+                        else
+                        {
+                            paperTotal++;
+                        }
                     }
                 }
 

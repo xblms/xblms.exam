@@ -15,6 +15,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
     public partial class ExamPaperController : ControllerBase
     {
         private const string Route = "exam/examPaper";
+        private const string RouteItem = Route + "/item";
 
         private readonly IConfigRepository _configRepository;
         private readonly IAuthManager _authManager;

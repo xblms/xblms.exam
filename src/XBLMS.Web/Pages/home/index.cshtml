@@ -78,8 +78,25 @@
 <div class="position-relative">
     <div class="position-absolute top-0 end-0 z-3 d-flex justify-content-between  align-items-center pt-1 me-1">
         <div>
-            <button type="button" class="btn btn-outline-danger btn-sm me-2 rounded-pill" v-if="paperTotal>0" v-on:click="btnTopMenuClick('examPaper')">剩余<span class="mx-1 fw-bold">（{{ paperTotal }}）</span> 份待考试卷</button>
-            <button type="button" class="btn btn-outline-warning btn-sm me-2 rounded-pill" v-if="qPaperTotal>0" v-on:click="btnTopMenuClick('examQuestionnaire')">剩余<span class="mx-1 fw-bold">（{{ qPaperTotal }}）</span> 份待填写问卷</button>
+            <el-tooltip placement="bottom-start">
+                <div slot="content">
+                    <div class="p-2">
+                        <el-card>
+                            <div>
+                                <div v-if="paperTotal>0" class="mb-2">
+                                    <el-link :underline="true" v-on:click="btnTopMenuClick('examPaper')" type="warning">剩余<span class="text-danger mx-2">{{ paperTotal }}</span>份试卷未参考</el-link>
+                                 </div>
+                                <div v-if="qPaperTotal>0">
+                                    <el-link :underline="true" v-on:click="btnTopMenuClick('examQuestionnaire')" type="warning">剩余<span class="text-danger mx-2">{{ qPaperTotal }}</span>份问卷未填写</el-link>
+                                </div>
+                            </div>
+                        </el-card>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-outline-danger btn-sm me-2 rounded-pill" v-if="taskTotal>0">
+                    <span class="mx-1 fw-bold">{{ taskTotal }}</span> 个待办任务
+                </button>
+            </el-tooltip>
         </div>
         <div class="me-2">
             <el-dropdown :show-timeout="0" v-on:command="btnUserMenuClick">

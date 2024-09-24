@@ -39,14 +39,14 @@
                     </div>
                 </div>
             </el-card>
-            <div class="card card-hover-with-icon border-top border-5 border-light mt-3" style="cursor:default;">
+            <div class="card card-hover-with-icon border-top border-5 border-light mt-3 bg-light" style="cursor:default;">
                 <apexchart type="radialBar" :options="passChartOptions" :series="passSeries" :height="$(window).innerHeight()-345"></apexchart>
             </div>
         </el-col>
         <el-col :span="16">
             <el-scrollbar class="scrollbar" :style="{ height: ($(window).height()-63) + 'px' }">
                 <div class="px-3 pb-5">
-                    <div class="card card-hover-with-icon border-top border-5 border-warning p-3 mb-3" style="cursor:default;">
+                    <div class="card card-hover-with-icon border-top border-5 border-warning p-3 mb-3 bg-light" style="cursor:default;">
                         <el-card shadow="hover">
                             <div slot="header" class="d-flex justify-content-between align-items-center">
                                 <span class="fw-bold">
@@ -134,7 +134,7 @@
                                 </div>
                             </div>
                             <div v-else>
-                                <div class="p-3 bg-light"><el-empty description="暂无考试安排"></el-empty></div>
+                                <el-empty></el-empty>
                             </div>
                         </el-card>
                     </div>
@@ -182,16 +182,17 @@
                                 </div>
                             </div>
                             <div v-else>
-                                <div class="p-3 bg-light"><el-empty description="管理员未开放模拟自测"></el-empty></div>
+                                <el-empty></el-empty>
                             </div>
                         </el-card>
                     </div>
-           
-                    
                         <div class="card card-hover-with-icon border-top border-5 border-light p-3" style="cursor:default;">
                         <el-card shadow="hover">
-                            <div class="mb-2">
-                                <span><i class="el-icon-user-solid me-2 text-warning bg-light p-2 card-icon"></i>个人信息</span>
+                            <div class="mb-2 d-flex justify-content-start align-items-center">
+                                <el-avatar icon="el-icon-user-solid" :src="user.avatarUrl || DEFAULT_AVATAR_URL"></el-avatar>
+                                <div class="ms-2">
+                                    <span>个人信息</span>
+                                </div>
                             </div>
                             <div>
                                 <el-descriptions title="" border column="1">
