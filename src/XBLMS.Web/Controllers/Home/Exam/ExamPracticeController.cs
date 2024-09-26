@@ -29,6 +29,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
         private readonly IExamPracticeRepository _examPracticeRepository;
         private readonly IExamPracticeCollectRepository _examPracticeCollectRepository;
         private readonly IExamPracticeWrongRepository _examPracticeWrongRepository;
+        private readonly IOrganManager _organManager;
 
         public ExamPracticeController(IConfigRepository configRepository,
             IAuthManager authManager,
@@ -39,7 +40,8 @@ namespace XBLMS.Web.Controllers.Home.Exam
             IExamTmRepository examTmRepository,
             IExamPracticeRepository examPracticeRepository,
             IExamPracticeCollectRepository examPracticeCollectRepository,
-            IExamPracticeWrongRepository examPracticeWrongRepository)
+            IExamPracticeWrongRepository examPracticeWrongRepository,
+            IOrganManager organManager)
         {
             _configRepository = configRepository;
             _authManager = authManager;
@@ -51,6 +53,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
             _examPracticeRepository = examPracticeRepository;
             _examPracticeCollectRepository = examPracticeCollectRepository;
             _examPracticeWrongRepository = examPracticeWrongRepository;
+            _organManager = organManager;
         }
         public class GetSubmitRequest
         {

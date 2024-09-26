@@ -31,6 +31,12 @@ namespace Datory
 
         [DataColumn]
         public DateTime? LastModifiedDate { get; set; }
+        [JsonIgnore]
+        [DataColumn(Text = true)]
+        public string KeyWords { get; set; }
+        [JsonIgnore]
+        [DataColumn(Text = true)]
+        public string KeyWordsAdmin { get; set; }
 
         private readonly Type _type;
 

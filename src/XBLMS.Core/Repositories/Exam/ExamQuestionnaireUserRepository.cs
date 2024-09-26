@@ -1,5 +1,7 @@
 using Datory;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using XBLMS.Core.Utils;
 using XBLMS.Enums;
@@ -59,15 +61,22 @@ namespace XBLMS.Core.Repositories
             return await _repository.ExistsAsync(Q.Where(nameof(ExamQuestionnaireUser.ExamPaperId), paperId).Where(nameof(ExamQuestionnaireUser.UserId), userId));
         }
 
-        public async Task<List<int>> GetPaperIdsByUser(int userId)
+        public async Task<(int total, List<ExamQuestionnaireUser> list)> GetListAsync(int userId, string keyWords, int pageIndex, int pageSize)
         {
             var query = Q.
-                Select(nameof(ExamQuestionnaireUser.ExamPaperId)).
-                Where(nameof(ExamQuestionnaireUser.UserId), userId);
+                WhereNullOrFalse(nameof(ExamQuestionnaireUser.Locked)).
+                Where(nameof(ExamQuestionnaireUser.UserId),userId);
 
+            if (!string.IsNullOrWhiteSpace(keyWords))
+            {
+                keyWords = $"%{keyWords}%";
+                query.WhereLike(nameof(ExamQuestionnaireUser.KeyWords), keyWords);
+            }
+            query.OrderByDesc(nameof(ExamQuestionnaireUser.Id));
 
-
-            return await _repository.GetAllAsync<int>(query);
+            var total = await _repository.CountAsync(query);
+            var list = await _repository.GetAllAsync(query.ForPage(pageIndex, pageSize));
+            return (total, list);
         }
 
         public async Task<ExamQuestionnaireUser> GetAsync(int paperId, int userId)
@@ -92,9 +101,37 @@ namespace XBLMS.Core.Repositories
             var query = Q.
                 Select(nameof(ExamQuestionnaireUser.ExamPaperId)).
                 Where(nameof(ExamQuestionnaireUser.UserId), userId).
+                WhereNullOrFalse(nameof(ExamQuestionnaireUser.Locked)).
+                Where(nameof(ExamQuestionnaireUser.ExamEndDateTime), ">", DateTime.Now).
                 Where(nameof(ExamQuestionnaireUser.SubmitType),SubmitType.Save.GetValue());
 
             return await _repository.GetAllAsync<int>(query);
+        }
+
+        public async Task UpdateLockedAsync(int paperId, bool locked)
+        {
+            await _repository.UpdateAsync(Q.
+                Set(nameof(ExamQuestionnaireUser.Locked), locked).
+                Where(nameof(ExamQuestionnaireUser.ExamPaperId), paperId));
+        }
+        public async Task UpdateKeyWordsAsync(int paperId, string keyWords)
+        {
+            await _repository.UpdateAsync(Q.
+                Set(nameof(ExamQuestionnaireUser.KeyWords), keyWords).
+                Where(nameof(ExamQuestionnaireUser.ExamPaperId), paperId));
+        }
+        public async Task UpdateKeyWordsAdminAsync(int id, string keyWords)
+        {
+            await _repository.UpdateAsync(Q.
+                Set(nameof(ExamQuestionnaireUser.KeyWordsAdmin), keyWords).
+                Where(nameof(ExamQuestionnaireUser.Id), id));
+        }
+        public async Task UpdateExamDateTimeAsync(int paperId, DateTime beginDateTime, DateTime endDateTime)
+        {
+            await _repository.UpdateAsync(Q.
+                Set(nameof(ExamQuestionnaireUser.ExamBeginDateTime), beginDateTime).
+                Set(nameof(ExamQuestionnaireUser.ExamEndDateTime), endDateTime).
+                Where(nameof(ExamQuestionnaireUser.ExamPaperId), paperId));
         }
     }
 }

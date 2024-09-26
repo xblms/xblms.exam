@@ -1,13 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using Datory;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Datory;
-using Microsoft.AspNetCore.Mvc;
-using XBLMS.Configuration;
-using XBLMS.Dto;
 using XBLMS.Enums;
 using XBLMS.Models;
-using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Home.Exam
 {
@@ -104,12 +101,13 @@ namespace XBLMS.Web.Controllers.Home.Exam
             {
                 practiceId = await _examPracticeRepository.InsertAsync(new ExamPractice
                 {
-                    Title= request.PracticeType.GetDisplayName(),
+                    Title = request.PracticeType.GetDisplayName(),
                     PracticeType = request.PracticeType,
                     UserId = user.Id,
                     TmCount = tmIds.Count,
                     TmIds = tmIds,
-                    Zsds = zsds
+                    Zsds = zsds,
+                    KeyWords = await _organManager.GetUserKeyWords(user.Id)
                 });
                 if (practiceId <= 0)
                 {

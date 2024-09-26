@@ -23,12 +23,21 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         private readonly IExamManager _examManager;
         private readonly IExamPaperRepository _examPaperRepository;
         private readonly IExamPaperTreeRepository _examPaperTreeRepository;
-        public ExamPaperController(IAuthManager authManager, IExamManager examManager, IExamPaperRepository examPaperRepository, IExamPaperTreeRepository examPaperTreeRepository)
+        private readonly IExamPaperUserRepository _examPaperUserRepository;
+        private readonly IExamPaperStartRepository _examPaperStartRepository;
+        public ExamPaperController(IAuthManager authManager,
+            IExamManager examManager,
+            IExamPaperRepository examPaperRepository,
+            IExamPaperTreeRepository examPaperTreeRepository,
+            IExamPaperUserRepository examPaperUserRepository,
+            IExamPaperStartRepository examPaperStartRepository)
         {
             _authManager = authManager;
             _examManager = examManager;
             _examPaperRepository = examPaperRepository;
             _examPaperTreeRepository = examPaperTreeRepository;
+            _examPaperUserRepository = examPaperUserRepository;
+            _examPaperStartRepository = examPaperStartRepository;
         }
         public class GetLockedRequest
         {

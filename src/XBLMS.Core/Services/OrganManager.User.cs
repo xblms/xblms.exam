@@ -42,11 +42,31 @@ namespace XBLMS.Core.Services
 
             var organNames = await GetOrganName(user.DutyId, user.DepartmentId, user.CompanyId);
             user.Set("OrganNames", organNames);
+            user.KeyWordsAdmin = await GetUserKeyWords(user);
             return user;
+        }
+        public async Task GetUser(User user)
+        {
+            user.Remove("confirmPassword");
+            var organNames = await GetOrganName(user.DutyId, user.DepartmentId, user.CompanyId);
+            user.Set("OrganNames", organNames);
         }
         private static string GetAdminAuthName(Administrator admin)
         {
-            return admin.Auth.GetDisplayName(); ;
+            return admin.Auth.GetDisplayName(); 
+        }
+        public async Task<string> GetUserKeyWords(int userId)
+        {
+            var user = await _userRepository.GetByUserIdAsync(userId);
+            var organNames = await GetOrganName(user.DutyId, user.DepartmentId, user.CompanyId);
+
+            return $"{user.UserName}-{user.DisplayName}-{organNames}";
+        }
+        public async Task<string> GetUserKeyWords(User user)
+        {
+            var organNames = await GetOrganName(user.DutyId, user.DepartmentId, user.CompanyId);
+
+            return $"{user.UserName}-{user.DisplayName}-{organNames}";
         }
     }
 }

@@ -1,9 +1,8 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using XBLMS.Configuration;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using XBLMS.Dto;
 using XBLMS.Models;
-using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Home.Exam
 {
@@ -14,19 +13,21 @@ namespace XBLMS.Web.Controllers.Home.Exam
         {
             var user = await _authManager.GetUserAsync();
 
-            var paperIds = await _examQuestionnaireUserRepository.GetPaperIdsByUser(user.Id);
-            var (total, list) = await _examQuestionnaireRepository.GetListByUserAsync(paperIds, request.KeyWords, request.PageIndex, request.PageSize);
+            var resultList = new List<ExamQuestionnaire>();
+            var (total, list) = await _examQuestionnaireUserRepository.GetListAsync(user.Id, request.KeyWords, request.PageIndex, request.PageSize);
             if (total > 0)
             {
                 foreach (var item in list)
                 {
-                    await _examManager.GetQuestionnaireInfo(item, user);
+                    var paper = await _examQuestionnaireRepository.GetAsync(item.ExamPaperId);
+                    await _examManager.GetQuestionnaireInfo(paper, user);
+                    resultList.Add(paper);
                 }
             }
             return new GetResult
             {
                 Total = total,
-                List = list
+                List = resultList
             };
         }
 

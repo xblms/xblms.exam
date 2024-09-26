@@ -27,6 +27,11 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             paper.Locked = false;
 
             await _examQuestionnaireRepository.UpdateAsync(paper);
+            if (!paper.Published)
+            {
+                await _examQuestionnaireUserRepository.UpdateLockedAsync(paper.Id, paper.Locked);
+            }
+
             await _authManager.AddAdminLogAsync("解锁问卷调查", $"名称：{paper.Title}");
 
             return new BoolResult

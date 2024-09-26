@@ -19,6 +19,10 @@ namespace XBLMS.Models
         public DateTime? ExamBeginDateTime { get; set; }
         [DataColumn]
         public DateTime? ExamEndDateTime { get; set; }
+        [DataColumn]
+        public bool Moni { get; set; }
+        [DataColumn]
+        public bool Locked { get; set; } 
 
     }
 }

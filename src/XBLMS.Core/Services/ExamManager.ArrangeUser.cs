@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using XBLMS.Enums;
 using XBLMS.Models;
@@ -42,10 +43,6 @@ namespace XBLMS.Core.Services
                     }
                 }
             }
-            else
-            {
-                userIds = await _userRepository.GetUserIdsWithOutLockedAsync();
-            }
 
             if (userIds != null && userIds.Count > 0)
             {
@@ -61,9 +58,33 @@ namespace XBLMS.Core.Services
                             ExamEndDateTime = paper.ExamEndDateTime,
                             ExamPaperId = paper.Id,
                             UserId = userId,
+                            KeyWordsAdmin = await _organManager.GetUserKeyWords(userId),
+                            KeyWords = paper.Title,
+                            Locked = paper.Locked,
+                            Moni = paper.Moni
                         });
                     }
                 }
+            }
+        }
+        public async Task Arrange(int paperId, int userId)
+        {
+            var paper = await _examPaperRepository.GetAsync(paperId);
+            var exists = await _examPaperUserRepository.ExistsAsync(paperId, userId);
+            if (!exists)
+            {
+                await _examPaperUserRepository.InsertAsync(new ExamPaperUser
+                {
+                    ExamTimes = paper.ExamTimes,
+                    ExamBeginDateTime = paper.ExamBeginDateTime,
+                    ExamEndDateTime = paper.ExamEndDateTime,
+                    ExamPaperId = paper.Id,
+                    UserId = userId,
+                    KeyWordsAdmin = await _organManager.GetUserKeyWords(userId),
+                    KeyWords = paper.Title,
+                    Locked = paper.Locked,
+                    Moni = paper.Moni
+                });
             }
         }
     }

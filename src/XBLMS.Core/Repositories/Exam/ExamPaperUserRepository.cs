@@ -102,9 +102,14 @@ namespace XBLMS.Core.Repositories
                 Where(nameof(ExamPaperUser.ExamPaperId), paperId).
                 Where(nameof(ExamPaperUser.UserId), userId));
         }
+        public async Task<ExamPaperUser> GetAsync(int id)
+        {
+            return await _repository.GetAsync(id);
+        }
         public async Task<ExamPaperUser> GetOnlyOneAsync(int userId)
         {
             var query = Q.
+                WhereNullOrFalse(nameof(ExamPaperUser.Locked)).
                 Where(nameof(ExamPaperUser.UserId), userId);
 
             return await _repository.GetAsync(query.
@@ -116,11 +121,131 @@ namespace XBLMS.Core.Repositories
         {
             var query = Q.
                 Select(nameof(ExamPaperUser.ExamPaperId)).
-                Where(nameof(ExamPaperUser.ExamBeginDateTime), "<", DateTime.Now).
+                WhereNullOrFalse(nameof(ExamPaperUser.Locked)).
                 Where(nameof(ExamPaperUser.ExamEndDateTime), ">", DateTime.Now).
                 Where(nameof(ExamPaperUser.UserId), userId);
 
             return await _repository.GetAllAsync<int>(query);
+        }
+
+
+        public async Task<(int total, List<ExamPaperUser> list)> GetListAsync(int paperId, string keyWords, int pageIndex, int pageSize)
+        {
+            var query = Q.
+                Where(nameof(ExamPaperUser.ExamPaperId), paperId);
+
+            if (!string.IsNullOrEmpty(keyWords))
+            {
+                var like = $"%{keyWords}%";
+                query.WhereLike(nameof(ExamPaperUser.KeyWordsAdmin), like);
+            }
+
+            var total = await _repository.CountAsync(query);
+            var list = await _repository.GetAllAsync(query.ForPage(pageIndex, pageSize));
+
+            return (total, list);
+        }
+        public async Task<(int total, List<ExamPaperUser> list)> GetListAsync(int userId,bool isMoni, string date, string keyWords, int pageIndex, int pageSize)
+        {
+            var query = Q.
+                WhereNullOrFalse(nameof(ExamPaperUser.Locked)).
+                Where(nameof(ExamPaperUser.UserId), userId);
+            if (isMoni)
+            {
+                query.WhereTrue(nameof(ExamPaperUser.Moni));
+            }
+            else
+            {
+                query.WhereNullOrFalse(nameof(ExamPaperUser.Moni));
+            }
+            if (!string.IsNullOrWhiteSpace(date))
+            {
+                var dateFrom = DateTime.Now;
+                var dateTo = DateTime.Now;
+
+                if (date == "three")
+                {
+                    dateTo = dateTo.AddDays(2);
+                }
+                if (date == "week")
+                {
+                    dateTo = dateTo.AddDays(6);
+                }
+                if (date == "month")
+                {
+                    dateTo = dateTo.AddMonths(1);
+                }
+                if (date == "year")
+                {
+                    dateTo = dateTo.AddYears(1);
+                }
+                var dateFromStr = dateFrom.ToString("yyyy-MM-dd 00:00:00");
+                var dateToStr = dateTo.ToString("yyyy-MM-dd 23:59:59");
+
+                query.Where(nameof(ExamPaperUser.ExamBeginDateTime), ">=", dateFromStr);
+                query.Where(nameof(ExamPaperUser.ExamBeginDateTime), "<=", dateToStr);
+            }
+            if (!string.IsNullOrEmpty(keyWords))
+            {
+                var like = $"%{keyWords}%";
+                query.WhereLike(nameof(ExamPaperUser.KeyWords), like);
+            }
+            var count = await _repository.CountAsync(query);
+            var list = await _repository.GetAllAsync(query.ForPage(pageIndex, pageSize));
+
+            return (count, list);
+        }
+
+
+
+
+        public async Task IncrementAsync(int id)
+        {
+            await _repository.IncrementAsync(nameof(ExamPaperUser.ExamTimes), Q.Where(nameof(ExamPaperUser.Id), id));
+        }
+        public async Task DecrementAsync(int id)
+        {
+            await _repository.DecrementAsync(nameof(ExamPaperUser.ExamTimes), Q.
+                Where(nameof(ExamPaperUser.ExamTimes), ">", 0).
+                Where(nameof(ExamPaperUser.Id), id));
+        }
+
+        public async Task UpdateExamDateTimeAsync(int paperId, DateTime beginDateTime, DateTime endDateTime)
+        {
+            await _repository.UpdateAsync(Q.
+                Set(nameof(ExamPaperUser.ExamBeginDateTime), beginDateTime).
+                Set(nameof(ExamPaperUser.ExamEndDateTime), endDateTime).
+                Where(nameof(ExamPaperUser.ExamPaperId), paperId));
+        }
+        public async Task UpdateExamTimesAsync(int paperId, int examTimes)
+        {
+            await _repository.UpdateAsync(Q.
+                Set(nameof(ExamPaperUser.ExamTimes), examTimes).
+                Where(nameof(ExamPaperUser.ExamPaperId), paperId));
+        }
+        public async Task UpdateLockedAsync(int paperId, bool locked)
+        {
+            await _repository.UpdateAsync(Q.
+                Set(nameof(ExamPaperUser.Locked), locked).
+                Where(nameof(ExamPaperUser.ExamPaperId), paperId));
+        }
+        public async Task UpdateMoniAsync(int paperId, bool moni)
+        {
+            await _repository.UpdateAsync(Q.
+                Set(nameof(ExamPaperUser.Moni), moni).
+                Where(nameof(ExamPaperUser.ExamPaperId), paperId));
+        }
+        public async Task UpdateKeyWordsAsync(int paperId, string keyWords)
+        {
+            await _repository.UpdateAsync(Q.
+                Set(nameof(ExamPaperUser.KeyWords), keyWords).
+                Where(nameof(ExamPaperUser.ExamPaperId), paperId));
+        }
+        public async Task UpdateKeyWordsAdminAsync(int id, string keyWords)
+        {
+            await _repository.UpdateAsync(Q.
+                Set(nameof(ExamPaperUser.KeyWordsAdmin), keyWords).
+                Where(nameof(ExamPaperUser.Id), id));
         }
     }
 }

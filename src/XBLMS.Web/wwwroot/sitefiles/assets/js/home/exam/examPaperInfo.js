@@ -120,6 +120,10 @@ var methods = {
       height: "100%"
     });
   },
+  timingFinish: function () {
+    utils.success("倒计时结束，可以进入考试", { layer: true });
+    this.isStart = true;
+  },
 };
 
 var $vue = new Vue({

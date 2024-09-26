@@ -13,6 +13,8 @@ namespace XBLMS.Services
 
         Task<Administrator> GetAdministrator(int adminId);
         Task<User> GetUser(int userId);
+        Task GetUser(User user);
+        Task<string> GetUserKeyWords(int userId);
 
         Task<string> GetOrganName(int dutyId,int departmentId, int companyId);
 

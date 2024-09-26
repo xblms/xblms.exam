@@ -28,7 +28,6 @@ namespace XBLMS.Web.Controllers.Home.Exam
 
             var randomId = start.ExamPaperRandomId;
             var startId = request.Id;
-            var isNewExam = true;
 
             if (randomId == 0) { return this.Error("试卷发布有问题，请联系管理员：找不到随机策略！"); }
 
@@ -47,19 +46,6 @@ namespace XBLMS.Web.Controllers.Home.Exam
 
                     foreach (var item in tms)
                     {
-                        if (isNewExam)
-                        {
-                            var examAnswer = new ExamPaperAnswer
-                            {
-                                UserId = user.Id,
-                                ExamPaperId = paper.Id,
-                                ExamStartId = startId,
-                                RandomTmId = item.Id
-                            };
-                            examAnswer.Set("OptionsValues", new List<string>());
-                            await _examPaperAnswerRepository.InsertAsync(examAnswer);
-                        }
-
                         await _examManager.GetTmInfoByPaperUser(item, paper, startId, true);
                         item.Set("TmIndex", tmIndex);
                         tmIndex++;

@@ -133,6 +133,13 @@ namespace XBLMS.Core.Repositories
             var list = await _repository.GetAllAsync(query.ForPage(pageIndex, pageSize));
             return (count, list);
         }
+        public async Task<(int total, List<ExamTm> list)> GetListAsync(ExamTmGroup group, int pageIndex, int pageSize)
+        {
+            var query = await GetQuery(null, 0, 0, "", "", "", false, null, group);
+            var count = await _repository.CountAsync(query);
+            var list = await _repository.GetAllAsync(query.ForPage(pageIndex, pageSize));
+            return (count, list);
+        }
         public async Task<int> GetCountAsync(ExamTmGroup group, List<int> treeIds, int txId, int nandu, string keyword, string order, string orderType, bool? isStop, int pageIndex, int pageSize)
         {
             var query = await GetQuery(treeIds, txId, nandu, keyword, order, orderType, isStop, null, group);

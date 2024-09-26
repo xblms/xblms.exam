@@ -28,6 +28,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         private readonly IExamQuestionnaireRepository _questionnaireRepository;
         private readonly IExamQuestionnaireTmRepository _questionnaireTmRepository;
         private readonly IExamQuestionnaireUserRepository _questionnaireUserRepository;
+       
 
 
         public ExamQuestionnaireEditController(IAuthManager authManager,

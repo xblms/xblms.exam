@@ -11,11 +11,20 @@
         ]
       },
       {
-        "id": "exam",
+        "id": "exampaper",
         "order": 2,
+        "text": "发布考试",
+        "link": "/admin/exam/examPaper/",
+        "iconClass": "el-icon-platform-eleme",
+        "children": [
+        ]
+      },
+      {
+        "id": "exam",
+        "order": 3,
         "text": "考试管理",
         "link": "",
-        "iconClass": "el-icon-eleme",
+        "iconClass": "el-icon-document-checked",
         "Permissions": [],
         "children": [
           {
@@ -49,16 +58,6 @@
             ]
           },
           {
-            "id": "exampaper",
-            "order": 4,
-            "text": "试卷管理",
-            "link": "/admin/exam/examPaper/",
-            "iconClass": "el-icon-s-custom",
-            "Permissions": [ "Select", "Add", "Update", "Delete" ],
-            "children": [
-            ]
-          },
-          {
             "id": "examtmgroup",
             "order": 4,
             "text": "题目组",
@@ -72,8 +71,8 @@
       },
       {
         "id": "questionnaire",
-        "order": 3,
-        "text": "调查问卷",
+        "order": 4,
+        "text": "发布问卷",
         "link": "/admin/exam/examQuestionnaire",
         "iconClass": "el-icon-document-checked",
         "children": [
@@ -81,7 +80,7 @@
       },
       {
         "id": "account",
-        "order": 4,
+        "order": 5,
         "text": "企业管理",
         "link": "",
         "iconClass": "el-icon-s-custom",
@@ -141,7 +140,7 @@
       },
       {
         "id": "system",
-        "order": 5,
+        "order": 6,
         "text": "系统管理",
         "link": "",
         "iconClass": "el-icon-s-tools",
@@ -280,7 +279,7 @@
       },
       {
         "id": "logs",
-        "order": 6,
+        "order": 7,
         "text": "日志管理",
         "link": "",
         "iconClass": "el-icon-warning",
@@ -330,7 +329,7 @@
       },
       {
         "id": "analysis",
-        "order": 7,
+        "order": 8,
         "text": "统计图表",
         "link": "",
         "iconClass": "el-icon-s-operation",

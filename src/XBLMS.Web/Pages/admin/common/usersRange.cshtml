@@ -1,0 +1,122 @@
+﻿@page
+@{ Layout = "_Layout"; }
+
+@section Styles{
+    <style>
+
+        .el-table th.el-table__cell > .cell {
+            padding-left: 14px;
+        }
+
+        .el-tree-node {
+            white-space: normal;
+            outline: 0;
+            .el-tree-node__content
+
+        {
+            text-align: left;
+            align-items: start;
+            height: 100%;
+            .el-tree-node
+
+        {
+            white-space: normal;
+            outline: 0;
+            .el-tree-node__content
+
+        {
+            text-align: left;
+            align-items: start;
+            height: 100%;
+        }
+
+        }
+        }
+        }</style>
+}
+<el-card>
+    <div slot="header" class="clearfix">
+        <span>{{ title }}</span>
+        <el-button style="float: right;padding:3px 0;" type="text" v-on:click="utils.closeLayer(false)"><i class="el-icon-close"></i></el-button>
+    </div>
+    <el-row :gutter="18">
+        <el-col :span="6">
+            <el-card shadow="hover">
+                <el-form :size="euiSize">
+                    <el-form-item label="">
+                        <el-input placeholder="输入关键字进行过滤"
+                                  v-model="filterText" prefix-icon="el-icon-search" clearable>
+                        </el-input>
+                    </el-form-item>
+                </el-form>
+                <el-scrollbar class="scrollbar" :style="{height: $(window).innerHeight()-280 + 'px'}">
+                    <el-tree class="filter-tree"
+                             :data="organs"
+                             v-on:node-click="btnTreeClick"
+                             node-key="id"
+                             accordion
+                             :props="defaultProps"
+                             :filter-node-method="filterNode"
+                             ref="tree">
+                    </el-tree>
+                </el-scrollbar>
+            </el-card>
+        </el-col>
+        <el-col :span="18">
+            <el-form v-on:submit.native.prevent :inline="true" :model="formInline" :size="euiSize">
+                <el-form-item label="关键字">
+                    <el-input v-model="formInline.keyword" placeholder="关键字"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" v-on:click="btnSearchClick">查询</el-button>
+                    <el-button :size="euiSize" plain type="primary" icon="el-icon-plus" v-on:click="btnRangeClick">
+                        安 排
+                    </el-button>
+                </el-form-item>
+            </el-form>
+
+            <el-table :data="items" :size="euiSize" ref="userTable" v-on:selection-change="handleSelectionChange"
+                      style="width: 100%" :height="$(window).innerHeight()-370">
+                <el-table-column type="selection"
+                                 width="55">
+                </el-table-column>
+                <el-table-column label="账号">
+                    <template slot-scope="scope">
+                        <el-link :underline="false" type="primary" v-on:click="btnViewClick(scope.row)">{{scope.row.userName}}</el-link>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="displayName"
+                                 label="姓名">
+                </el-table-column>
+                <el-table-column
+                                 prop="organNames"
+                                 label="组织">
+                </el-table-column>
+                <el-table-column label="">
+                    <template slot-scope="scope">
+                        <el-tag type="success" size="mini" v-if="scope.row.isRange">已安排</el-tag>
+                        <el-tag type="info" size="mini" v-else>待安排</el-tag>
+                    </template>
+                </el-table-column>
+                @await Html.PartialAsync("_PartialTableEmpty")
+            </el-table>
+
+            <div style="text-align: center; margin-top: 10px;">
+                <el-pagination v-on:current-change="handleCurrentChange" background
+                               :current-page="formInline.currentPage"
+                               :page-size="formInline.limit"
+                               layout="total, prev, pager, next, jumper"
+                               :total="count">
+                </el-pagination>
+            </div>
+            </el-col></el-row>
+
+</el-card>
+<el-row align="center" style="margin-top:18px;">
+    <el-col :span="24" align="center">
+        <el-button :size="euiSize" v-on:click="utils.closeLayer(false)">关 闭</el-button>
+    </el-col>
+</el-row>
+@section Scripts{
+    <script src="/sitefiles/assets/js/admin/common/usersRange.js" type="text/javascript"></script>
+}

@@ -20,7 +20,9 @@ var data = utils.init({
   submitDialogVisible: false,
   submitSubmitType: 'Save',
   submitSubmitIsClear: false,
-  tmConfigDialogVisible:false
+  tmConfigDialogVisible: false,
+  isUpdateDateTime: false,
+  isUpdateExamTimes:false,
 });
 
 var methods = {
@@ -183,7 +185,14 @@ var methods = {
 
     var $this = this;
     utils.loading($this, true);
-    $api.post($url, { isClear: this.submitSubmitIsClear, submitType: this.submitSubmitType, item: $this.form, configList: $this.tmRandomConfig }).then(function (response) {
+    $api.post($url, {
+      isClear: this.submitSubmitIsClear,
+      submitType: this.submitSubmitType,
+      item: $this.form,
+      configList: $this.tmRandomConfig,
+      isUpdateDateTime: $this.isUpdateDateTime,
+      isUpdateExamTimes: $this.isUpdateExamTimes
+    }).then(function (response) {
       var res = response.data;
       if (res.value) {
         utils.success("操作成功");

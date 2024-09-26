@@ -33,6 +33,9 @@ namespace XBLMS.Core.Services
                                 ExamStartId = startId,
                                 CerNumber = GetCertificateNumber(cerInfo.Prefix),
                                 CerDateTime = DateTime.Now,
+                                KeyWords = paper.Title,
+                                KeyWordsAdmin = await _organManager.GetUserKeyWords(userId)
+
                             });
                             if (cerId > 0)
                             {
@@ -44,7 +47,7 @@ namespace XBLMS.Core.Services
                 }
             }
         }
-        private async Task AwardCerImg(ExamPaper paper, ExamCer cerInfo,ExamCerUser cerUser,User user)
+        private async Task AwardCerImg(ExamPaper paper, ExamCer cerInfo, ExamCerUser cerUser, User user)
         {
             if (string.IsNullOrWhiteSpace(cerUser.CerImg))
             {

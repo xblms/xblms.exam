@@ -1,5 +1,6 @@
 ﻿using Datory;
 using Datory.Annotations;
+using System;
 using XBLMS.Enums;
 
 namespace XBLMS.Models
@@ -13,6 +14,12 @@ namespace XBLMS.Models
         public int ExamPaperId { get; set; }
         [DataColumn]
         public SubmitType SubmitType { get; set; }
+        [DataColumn]
+        public DateTime? ExamBeginDateTime { get; set; }
+        [DataColumn]
+        public DateTime? ExamEndDateTime { get; set; }
+        [DataColumn]
+        public bool Locked { get; set; }
 
     }
 }

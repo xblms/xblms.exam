@@ -27,6 +27,9 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             paper.Locked = true;
 
             await _examPaperRepository.UpdateAsync(paper);
+            await _examPaperUserRepository.UpdateLockedAsync(paper.Id, paper.Locked);
+            await _examPaperStartRepository.UpdateLockedAsync(paper.Id, paper.Locked);
+
             await _authManager.AddAdminLogAsync("锁定试卷", $"试卷：{paper.Title}");
 
             return new BoolResult

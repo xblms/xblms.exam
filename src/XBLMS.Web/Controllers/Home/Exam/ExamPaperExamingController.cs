@@ -24,6 +24,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
         private readonly IConfigRepository _configRepository;
         private readonly IAuthManager _authManager;
         private readonly ICreateManager _createManager;
+        private readonly IOrganManager _organManager;
         private readonly IExamPaperUserRepository _examPaperUserRepository;
         private readonly IExamPaperRepository _examPaperRepository;
         private readonly IExamPaperRandomConfigRepository _examPaperRandomConfigRepository;
@@ -32,6 +33,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
         private readonly IExamPaperAnswerRepository _examPaperAnswerRepository;
         private readonly IExamPaperStartRepository _examPaperStartRepository;
         private readonly IExamManager _examManager;
+        private readonly IExamTxRepository _examTxRepository;
 
         public ExamPaperExamingController(IConfigRepository configRepository,
             ICreateManager createManager,
@@ -43,7 +45,9 @@ namespace XBLMS.Web.Controllers.Home.Exam
             IExamPaperRandomTmRepository examPaperRandomTmRepository,
             IExamManager examManager,
             IExamPaperAnswerRepository examPaperAnswerRepository,
-            IExamPaperStartRepository examPaperStartRepository)
+            IExamPaperStartRepository examPaperStartRepository,
+            IOrganManager organManager,
+            IExamTxRepository examTxRepository)
         {
             _configRepository = configRepository;
             _authManager = authManager;
@@ -56,6 +60,8 @@ namespace XBLMS.Web.Controllers.Home.Exam
             _examManager = examManager;
             _examPaperAnswerRepository = examPaperAnswerRepository;
             _examPaperStartRepository = examPaperStartRepository;
+            _organManager = organManager;
+            _examTxRepository = examTxRepository;
         }
         public class GetResult
         {

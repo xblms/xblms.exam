@@ -13,32 +13,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
         public async Task<ActionResult<GetResult>> Get([FromQuery] GetRequest request)
         {
             var user = await _authManager.GetUserAsync();
-
-            var paperIds = new List<int>();
-            if (!string.IsNullOrWhiteSpace(request.KeyWords))
-            {
-                var myPaperIds = await _examPaperStartRepository.GetPaperIdsAsync(user.Id);
-                if (myPaperIds == null || myPaperIds.Count == 0)
-                {
-                    return new GetResult
-                    {
-                        Total = 0,
-                        List = null
-                    };
-                }
-                paperIds = await _examPaperRepository.GetIdsAsync(myPaperIds, request.KeyWords);
-
-                if (paperIds == null || paperIds.Count == 0)
-                {
-                    return new GetResult
-                    {
-                        Total = 0,
-                        List = null
-                    };
-                }
-            }
-
-            var (total, list) = await _examPaperStartRepository.GetListAsync(paperIds, user.Id, request.DateFrom, request.DateTo, request.PageIndex, request.PageSize);
+            var (total, list) = await _examPaperStartRepository.GetListAsync(user.Id, request.DateFrom, request.DateTo, request.KeyWords, request.PageIndex, request.PageSize);
             if (total > 0)
             {
                 foreach (var item in list)

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using XBLMS.Enums;
 using XBLMS.Models;
+using XBLMS.Utils;
 
 namespace XBLMS.Core.Services
 {
@@ -11,10 +12,66 @@ namespace XBLMS.Core.Services
         public async Task ExecuteSubmitAnswerAsync(ExamPaperAnswer examPaperAnswer)
         {
             var tm = await _databaseManager.ExamPaperRandomTmRepository.GetAsync(examPaperAnswer.RandomTmId);
-            if(tm.Answer== examPaperAnswer.Answer)
+            if (examPaperAnswer.ExamTmType == ExamTmType.Objective)
             {
-                examPaperAnswer.Score = tm.Score;
+                if (StringUtils.Equals(tm.Answer, examPaperAnswer.Answer))
+                {
+                    examPaperAnswer.Score = tm.Score;
+                }
             }
+            else
+            {
+                if (!string.IsNullOrEmpty(tm.Answer))
+                {
+                    var answerList = ListUtils.GetStringList(tm.Answer);
+                    var allTrue = true;
+                    foreach (var answer in answerList)
+                    {
+                        if (!StringUtils.Contains(examPaperAnswer.Answer, answer))
+                        {
+                            allTrue = false;
+                        }
+                    }
+                    if (!allTrue)
+                    {
+                        answerList = ListUtils.GetStringList(tm.Answer, ";");
+                        foreach (var answer in answerList)
+                        {
+                            if (!StringUtils.Contains(examPaperAnswer.Answer, answer))
+                            {
+                                allTrue = false;
+                            }
+                        }
+                    }
+                    if (!allTrue)
+                    {
+                        answerList = ListUtils.GetStringList(tm.Answer, "，");
+                        foreach (var answer in answerList)
+                        {
+                            if (!StringUtils.Contains(examPaperAnswer.Answer, answer))
+                            {
+                                allTrue = false;
+                            }
+                        }
+                    }
+                    if (!allTrue)
+                    {
+                        answerList = ListUtils.GetStringList(tm.Answer, "；");
+                        foreach (var answer in answerList)
+                        {
+                            if (!StringUtils.Contains(examPaperAnswer.Answer, answer))
+                            {
+                                allTrue = false;
+                            }
+                        }
+                    }
+                    if (allTrue)
+                    {
+                        examPaperAnswer.Score = tm.Score;
+                    }
+                }
+            }
+         
             await _databaseManager.ExamPaperAnswerRepository.UpdateAsync(examPaperAnswer);
         }
         public async Task ExecuteSubmitPaperAsync(int startId)
@@ -60,7 +117,22 @@ namespace XBLMS.Core.Services
             start.EndDateTime = DateTime.Now;
 
             var sumScore = await _databaseManager.ExamPaperAnswerRepository.ScoreSumAsync(startId);
-            start.Score = sumScore;
+            var objectiveSocre = await _databaseManager.ExamPaperAnswerRepository.ObjectiveScoreSumAsync(startId);
+            var subjectiveScore = await _databaseManager.ExamPaperAnswerRepository.SubjectiveScoreSumAsync(startId);
+
+            start.ObjectiveScore = objectiveSocre;
+        
+            if (start.IsMark)
+            {
+                start.SubjectiveScore = subjectiveScore;
+                start.Score = sumScore;
+            }
+            else
+            {
+                start.SubjectiveScore = 0;
+                start.Score = objectiveSocre;
+            }
+        
             await _databaseManager.ExamPaperStartRepository.UpdateAsync(start);
 
             if(start.IsMark && start.IsSubmit && start.Score >= paper.PassScore)

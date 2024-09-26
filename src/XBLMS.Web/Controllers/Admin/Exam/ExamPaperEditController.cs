@@ -29,6 +29,9 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         private readonly IUserGroupRepository _userGroupRepository;
         private readonly IExamTmRepository _examTmRepository;
         private readonly IExamPaperRandomConfigRepository _examPaperRandomConfigRepository;
+        private readonly IExamPaperUserRepository _examPaperUserRepository;
+        private readonly IExamPaperStartRepository _examPaperStartRepository;
+
         public ExamPaperEditController(IAuthManager authManager,
             IExamPaperRepository examPaperRepository,
             IExamPaperTreeRepository examPaperTreeRepository,
@@ -38,7 +41,9 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             IExamManager examManager,
             IUserGroupRepository userGroupRepository,
             IExamTmRepository examTmRepository,
-            IExamPaperRandomConfigRepository examPaperRandomConfigRepository)
+            IExamPaperRandomConfigRepository examPaperRandomConfigRepository,
+            IExamPaperUserRepository examPaperUserRepository,
+            IExamPaperStartRepository examPaperStartRepository)
         {
             _authManager = authManager;
             _examPaperRepository = examPaperRepository;
@@ -50,6 +55,8 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             _userGroupRepository = userGroupRepository;
             _examTmRepository = examTmRepository;
             _examPaperRandomConfigRepository = examPaperRandomConfigRepository;
+            _examPaperUserRepository = examPaperUserRepository;
+            _examPaperStartRepository = examPaperStartRepository;
         }
         public class GetConfigRequest
         {
@@ -77,6 +84,8 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             public ExamPaper Item { get; set; }
             public List<ExamPaperRandomConfig> ConfigList { get; set; }
             public bool IsClear { get; set; }
+            public bool IsUpdateDateTime { get; set; }
+            public bool IsUpdateExamTimes { get; set; }
         }
 
     }

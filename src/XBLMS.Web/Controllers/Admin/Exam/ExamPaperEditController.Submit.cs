@@ -32,6 +32,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
             if (paper.Id > 0)
             {
+                var oldPaper = await _examPaperRepository.GetAsync(paper.Id);
 
                 if (request.SubmitType == SubmitType.Submit)
                 {
@@ -52,6 +53,23 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
                 await _examPaperRepository.UpdateAsync(paper);
 
+                if (request.IsUpdateDateTime)
+                {
+                    await _examPaperUserRepository.UpdateExamDateTimeAsync(paper.Id, paper.ExamBeginDateTime.Value, paper.ExamEndDateTime.Value);
+                }
+                if (request.IsUpdateExamTimes)
+                {
+                    await _examPaperUserRepository.UpdateExamTimesAsync(paper.Id, paper.ExamTimes);
+                }
+                if (oldPaper.Title != paper.Title)
+                {
+                    await _examPaperUserRepository.UpdateKeyWordsAsync(paper.Id, paper.Title);
+                    await _examPaperStartRepository.UpdateKeyWordsAsync(paper.Id, paper.Title);
+                }
+                if (oldPaper.Moni != paper.Moni)
+                {
+                    await _examPaperUserRepository.UpdateMoniAsync(paper.Id, paper.Moni);
+                }
             }
             else
             {

@@ -1,13 +1,8 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using NPOI.SS.UserModel;
-using Ubiety.Dns.Core;
-using XBLMS.Configuration;
-using XBLMS.Core.Utils;
 using XBLMS.Dto;
 using XBLMS.Enums;
 using XBLMS.Models;
@@ -72,12 +67,13 @@ namespace XBLMS.Web.Controllers.Home.Exam
                     UserId = user.Id,
                     ExamPaperId = paper.Id,
                     ExamPaperRandomId = randomId,
-                    BeginDateTime = DateTime.Now
+                    BeginDateTime = DateTime.Now,
+                    KeyWords = await _organManager.GetUserKeyWords(user.Id),
                 });
             }
 
 
-            if (randomId == 0) { return this.Error("试卷发布有问题，请联系管理员：找不到随机策略！"); }
+            if (randomId == 0) { return this.Error("试卷发布有问题，找不到任何题目，请联系管理员！"); }
 
 
             var configs = await _examPaperRandomConfigRepository.GetListAsync(paper.Id);
@@ -89,6 +85,13 @@ namespace XBLMS.Web.Controllers.Home.Exam
             var tmIndex = 1;
             foreach (var config in configs)
             {
+                var tx = await _examTxRepository.GetAsync(config.TxId);
+                ExamTmType tmType = ExamTmType.Objective;
+                if (tx.ExamTxBase == ExamTxBase.Tiankongti || tx.ExamTxBase == ExamTxBase.Jiandati)
+                {
+                    tmType = ExamTmType.Subjective;
+                }
+
                 var tms = await _examPaperRandomTmRepository.GetListAsync(randomId, config.TxId);
                 if (tms != null && tms.Count > 0)
                 {
@@ -106,7 +109,8 @@ namespace XBLMS.Web.Controllers.Home.Exam
                                 UserId = user.Id,
                                 ExamPaperId = paper.Id,
                                 ExamStartId = startId,
-                                RandomTmId = item.Id
+                                RandomTmId = item.Id,
+                                ExamTmType = tmType
                             };
                             examAnswer.Set("OptionsValues", new List<string>());
                             await _examPaperAnswerRepository.InsertAsync(examAnswer);

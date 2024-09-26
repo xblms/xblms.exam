@@ -51,7 +51,7 @@ namespace XBLMS.Repositories
 
         Task<User> DeleteAsync(int userId);
 
-
+        Task<(int total, List<User> list)> GetListAsync(List<int> companyIds, List<int> departmentIds, List<int> dutyIds, string keyWords, int pageIndex, int pageSize);
         Task<int> GetCountAsync(List<int> companyIds, List<int> departmentIds, List<int> dutyIds, List<int> userIds, int range, int dayOfLastActivity, string keyword);
         Task<List<User>> GetUsersAsync(List<int> companyIds, List<int> departmentIds, List<int> dutyIds, List<int> userIds, int range, int dayOfLastActivity, string keyword, string order,
         int offset, int limit);
@@ -59,6 +59,7 @@ namespace XBLMS.Repositories
         Task<List<int>> GetUserIdsAsync(List<int> companyIds, List<int> departmentIds, List<int> dutyIds, List<int> userIds, int dayOfLastActivity, string keyword, string order);
         Task<List<int>> GetUserIdsAsync(List<int> companyIds, List<int> departmentIds, List<int> dutyIds);
         Task<List<int>> GetUserIdsWithOutLockedAsync(List<int> companyIds, List<int> departmentIds, List<int> dutyIds);
+        Task<List<int>> GetUserIdsWithOutLockedAsync(List<int> companyIds, List<int> departmentIds, List<int> dutyIds, string keyWords);
         Task<List<int>> GetUserIdsWithOutLockedAsync();
     }
 }

@@ -9,15 +9,17 @@ namespace XBLMS.Core.Services
     {
         private readonly IPathManager _pathManager;
         private readonly ITaskManager _taskManager;
+        private readonly IOrganManager _organManager;
         private readonly ISettingsManager _settingsManager;
         private readonly IDatabaseManager _databaseManager;
 
-        public CreateManager(IPathManager pathManager, ITaskManager taskManager, IDatabaseManager databaseManager, ISettingsManager settingsManager)
+        public CreateManager(IPathManager pathManager, ITaskManager taskManager, IDatabaseManager databaseManager, ISettingsManager settingsManager, IOrganManager organManager)
         {
             _pathManager = pathManager;
             _taskManager = taskManager;
             _databaseManager = databaseManager;
             _settingsManager = settingsManager;
+            _organManager = organManager;
         }
 
         public void CreateSubmitAnswerAsync(ExamPaperAnswer answer)

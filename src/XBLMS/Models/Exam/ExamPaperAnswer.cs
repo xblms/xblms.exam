@@ -20,5 +20,7 @@ namespace XBLMS.Models
         public string Answer { get; set; }
         [DataColumn]
         public decimal Score { get; set; }
+        [DataColumn]
+        public ExamTmType ExamTmType { get; set; }
     }
 }

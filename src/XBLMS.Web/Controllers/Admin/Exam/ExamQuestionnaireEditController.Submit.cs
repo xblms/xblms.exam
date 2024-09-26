@@ -26,14 +26,25 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
                     await _examManager.ArrangeQuestionnaire(paper);
 
-                    await _examManager.SetQuestionnairTm(request.TmList,paper.Id);
+                    await _examManager.SetQuestionnairTm(request.TmList, paper.Id);
 
                     await _authManager.AddAdminLogAsync("重新发布调查问卷", $"{paper.Title}");
+
+
                 }
                 else
                 {
                     await _authManager.AddAdminLogAsync("修改调查问卷", $"{paper.Title}");
                 }
+
+
+
+                if (!paper.Published)
+                {
+                    await _questionnaireUserRepository.UpdateKeyWordsAsync(paper.Id, paper.Title);
+                    await _questionnaireUserRepository.UpdateExamDateTimeAsync(paper.Id, paper.ExamBeginDateTime.Value, paper.ExamEndDateTime.Value);
+                }
+          
 
                 await _questionnaireRepository.UpdateAsync(paper);
 
@@ -50,7 +61,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
                 await _examManager.SetQuestionnairTm(request.TmList, paperId);
 
-         
+
                 if (request.SubmitType == SubmitType.Submit)
                 {
                     await _examManager.ArrangeQuestionnaire(paper);

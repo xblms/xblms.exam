@@ -623,6 +623,38 @@ namespace XBLMS.Core.Repositories
             return query;
         }
 
+        public async Task<(int total, List<User> list)> GetListAsync(List<int> companyIds, List<int> departmentIds, List<int> dutyIds, string keyWords, int pageIndex, int pageSize)
+        {
+            var query = Q.NewQuery();
+
+            if (companyIds != null && companyIds.Count > 0)
+            {
+                query.WhereIn(nameof(User.CompanyId), companyIds);
+            }
+            if (departmentIds != null && departmentIds.Count > 0)
+            {
+                query.WhereIn(nameof(User.DepartmentId), departmentIds);
+            }
+            if (dutyIds != null && dutyIds.Count > 0)
+            {
+                query.WhereIn(nameof(User.DutyId), dutyIds);
+            }
+
+            if (!string.IsNullOrEmpty(keyWords))
+            {
+                var like = $"%{keyWords}%";
+                query.Where(q => q
+                    .WhereLike(nameof(User.UserName), like)
+                    .OrWhereLike(nameof(User.Email), like)
+                    .OrWhereLike(nameof(User.Mobile), like)
+                    .OrWhereLike(nameof(User.DisplayName), like)
+                );
+            }
+            var count = await _repository.CountAsync(query);
+            var list = await _repository.GetAllAsync(query.ForPage(pageIndex, pageSize));
+            return (count, list);
+        }
+
         public async Task<int> GetCountAsync(List<int> companyIds, List<int> departmentIds, List<int> dutyIds, List<int> userIds, int dayOfLastActivity, string keyword)
         {
             var query = GetQuery(companyIds, departmentIds, dutyIds, userIds, dayOfLastActivity, keyword, string.Empty);
@@ -667,6 +699,35 @@ namespace XBLMS.Core.Repositories
         {
             var query = Q.Select(nameof(User.Id));
 
+
+            if (companyIds != null && companyIds.Count > 0)
+            {
+                query.WhereIn(nameof(User.CompanyId), companyIds);
+            }
+            if (departmentIds != null && departmentIds.Count > 0)
+            {
+                query.WhereIn(nameof(User.DepartmentId), departmentIds);
+            }
+            if (dutyIds != null && dutyIds.Count > 0)
+            {
+                query.WhereIn(nameof(User.DutyId), dutyIds);
+            }
+            query.WhereNullOrFalse(nameof(User.Locked));
+            return await _repository.GetAllAsync<int>(query);
+        }
+        public async Task<List<int>> GetUserIdsWithOutLockedAsync(List<int> companyIds, List<int> departmentIds, List<int> dutyIds,string keyWords)
+        {
+            var query = Q.Select(nameof(User.Id));
+            if (!string.IsNullOrEmpty(keyWords))
+            {
+                var like = $"%{keyWords}%";
+                query.Where(q => q
+                    .WhereLike(nameof(User.UserName), like)
+                    .OrWhereLike(nameof(User.Email), like)
+                    .OrWhereLike(nameof(User.Mobile), like)
+                    .OrWhereLike(nameof(User.DisplayName), like)
+                );
+            }
 
             if (companyIds != null && companyIds.Count > 0)
             {
@@ -749,7 +810,7 @@ namespace XBLMS.Core.Repositories
                 return await _repository.CountAsync(query);
             }
             return 0;
-       
+
         }
         public async Task<int> GetCountByUserGroupAsync(List<int> companyIds, List<int> departmentIds, List<int> dutyIds)
         {

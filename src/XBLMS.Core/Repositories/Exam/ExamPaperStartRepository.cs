@@ -95,7 +95,7 @@ namespace XBLMS.Core.Repositories
                 Where(nameof(ExamPaperStart.UserId), userId).
                 OrderByDesc(nameof(ExamPaperStart.Id)));
         }
-        public async Task<(int total, List<ExamPaperStart> list)> GetListAsync(List<int> paperIds,int userId, string dateFrom, string dateTo, int pageIndex, int pageSize)
+        public async Task<(int total, List<ExamPaperStart> list)> GetListAsync(int userId, string dateFrom, string dateTo,string keyWords, int pageIndex, int pageSize)
         {
             var query = Q.
                 WhereTrue(nameof(ExamPaperStart.IsSubmit)).
@@ -110,9 +110,10 @@ namespace XBLMS.Core.Repositories
             {
                 query.Where(nameof(ExamPaperStart.EndDateTime), "<=", dateTo);
             }
-            if(paperIds!=null && paperIds.Count > 0)
+            if(!string.IsNullOrEmpty(keyWords))
             {
-                query.WhereIn(nameof(ExamPaperStart.ExamPaperId), paperIds);
+                var like = $"%{keyWords}%";
+                query.WhereLike(nameof(ExamPaperStart.KeyWords), like);
             }
 
             var total = await _repository.CountAsync(query);
@@ -136,6 +137,18 @@ namespace XBLMS.Core.Repositories
                 WhereTrue(nameof(ExamPaperStart.IsMark)).
                 Where(nameof(ExamPaperStart.UserId), userId).
                  Where(nameof(ExamPaperStart.ExamPaperId), paperId));
+        }
+        public async Task UpdateLockedAsync(int paperId, bool locked)
+        {
+            await _repository.UpdateAsync(Q.
+                Set(nameof(ExamPaperStart.Locked), locked).
+                Where(nameof(ExamPaperStart.ExamPaperId), paperId));
+        }
+        public async Task UpdateKeyWordsAsync(int paperId, string keyWords)
+        {
+            await _repository.UpdateAsync(Q.
+                Set(nameof(ExamPaperStart.KeyWords), keyWords).
+                Where(nameof(ExamPaperStart.ExamPaperId), paperId));
         }
     }
 }

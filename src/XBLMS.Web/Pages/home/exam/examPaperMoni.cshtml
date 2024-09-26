@@ -11,7 +11,7 @@
     <div slot="header">
         <el-form :inline="true" :model="form">
             <el-form-item label="模糊查询">
-                <el-input prefix-icon="el-icon-search" v-model="form.keyWords" placeholder="关键字"></el-input>
+                <el-input prefix-icon="el-icon-search" v-model="form.keyWords" placeholder="试卷"></el-input>
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" plain icon="el-icon-search" v-on:click="btnSearchClick">查询</el-button>
@@ -32,7 +32,7 @@
                         <div class="col">
                             <div class="mb-2">
                                 <el-link :underline="false" v-on:click.stop="btnViewClick(paper.id)">
-                                    <span>{{ paper.title }}</span>
+                                    <span class="fw-bold">{{ paper.title }}</span>
                                 </el-link>
                             </div>
                             <ul class="list-inline fw-light">

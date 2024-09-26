@@ -23,7 +23,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
                 {
                     if (tmGroup.OpenUser)
                     {
-                        var (total, tmList) = await _examTmRepository.GetListAsync(tmGroup, null, 0, 0, "", "", "", false, 0, int.MaxValue);
+                        var (total, tmList) = await _examTmRepository.GetListAsync(tmGroup, 0, int.MaxValue);
                         if (total > 0)
                         {
                             resultTotal++;

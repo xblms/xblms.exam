@@ -70,9 +70,21 @@ namespace XBLMS.Core.Repositories
         }
 
 
-        public async Task<int> ScoreSumAsync(int startId)
+        public async Task<decimal> ScoreSumAsync(int startId)
         {
             return await _repository.SumAsync(nameof(ExamPaperAnswer.Score), Q.Where(nameof(ExamPaperAnswer.ExamStartId), startId));
+        }
+        public async Task<decimal> ObjectiveScoreSumAsync(int startId)
+        {
+            return await _repository.SumAsync(nameof(ExamPaperAnswer.Score), Q.
+                    Where(nameof(ExamPaperAnswer.ExamTmType), ExamTmType.Objective).
+                Where(nameof(ExamPaperAnswer.ExamStartId), startId));
+        }
+        public async Task<decimal> SubjectiveScoreSumAsync(int startId)
+        {
+            return await _repository.SumAsync(nameof(ExamPaperAnswer.Score), Q.
+                Where(nameof(ExamPaperAnswer.ExamTmType), ExamTmType.Subjective).
+                Where(nameof(ExamPaperAnswer.ExamStartId), startId));
         }
     }
 }

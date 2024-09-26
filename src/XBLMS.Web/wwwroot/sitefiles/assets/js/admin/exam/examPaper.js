@@ -213,7 +213,20 @@ var methods = {
       }
     });
   },
+  btnManagerClick: function (id) {
 
+    top.utils.openLayer({
+      title: false,
+      closebtn: 0,
+      url: utils.getExamUrl('examPaperManager', { id: id }),
+      width: "98%",
+      height: "98%",
+      end: function () {
+        $this.btnSearchClick();
+      }
+    });
+
+  },
 
 
   //tree

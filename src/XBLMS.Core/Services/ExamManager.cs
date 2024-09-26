@@ -40,8 +40,11 @@ namespace XBLMS.Core.Services
         private readonly IExamQuestionnaireTmRepository _examQuestionnaireTmRepository;
         private readonly IExamQuestionnaireUserRepository _examQuestionnaireUserRepository;
 
+        private readonly IOrganManager _organManager;
+
 
         public ExamManager(ISettingsManager settingsManager,
+            IOrganManager organManager,
             IPathManager pathManager,
             ICreateManager createManager,
             IExamTmRepository examTmRepository,
@@ -69,6 +72,7 @@ namespace XBLMS.Core.Services
             IExamQuestionnaireUserRepository examQuestionnaireUserRepository)
         {
             _settingsManager = settingsManager;
+            _organManager = organManager;
             _createManager = createManager;
             _pathManager = pathManager;
             _examTmRepository = examTmRepository;
@@ -243,7 +247,7 @@ namespace XBLMS.Core.Services
             paper.Set("ExamStartDateTimeStr", DateUtils.Format(examUser.ExamBeginDateTime, DateUtils.FormatStringDateTimeCN));
             paper.Set("ExamEndDateTimeStr", DateUtils.Format(examUser.ExamEndDateTime, DateUtils.FormatStringDateTimeCN));
 
-            paper.Set("MyExamTimes", myExamTimes);
+            paper.Set("MyExamTimes", myExamTimes > examUser.ExamTimes ? examUser.ExamTimes : myExamTimes);
             paper.Set("UserExamTimes", examUser.ExamTimes);
 
             double longTime = 0;

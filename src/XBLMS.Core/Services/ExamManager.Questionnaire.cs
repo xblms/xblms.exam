@@ -43,11 +43,11 @@ namespace XBLMS.Core.Services
                     {
                         if (group.GroupType == UsersGroupType.Fixed)
                         {
-                            if(group.UserIds!=null &&  group.UserIds.Count > 0)
+                            if (group.UserIds != null && group.UserIds.Count > 0)
                             {
                                 userIds.AddRange(group.UserIds);
                             }
-                    
+
                         }
                         if (group.GroupType == Enums.UsersGroupType.Range)
                         {
@@ -81,6 +81,11 @@ namespace XBLMS.Core.Services
                         {
                             ExamPaperId = paper.Id,
                             UserId = userId,
+                            KeyWords = paper.Title,
+                            KeyWordsAdmin = await _organManager.GetUserKeyWords(userId),
+                            Locked = paper.Locked,
+                            ExamBeginDateTime = paper.ExamBeginDateTime,
+                            ExamEndDateTime = paper.ExamEndDateTime,
                         });
                     }
                 }

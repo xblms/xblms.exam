@@ -16,6 +16,8 @@ namespace XBLMS.Repositories
         Task DeleteAsync(int id);
         Task<ExamPaperAnswer> GetAsync(int tmId);
         Task<ExamPaperAnswer> GetAsync(int tmId, int startId, int paperId);
-        Task<int> ScoreSumAsync(int startId);
+        Task<decimal> ScoreSumAsync(int startId);
+        Task<decimal> ObjectiveScoreSumAsync(int startId);
+        Task<decimal> SubjectiveScoreSumAsync(int startId);
     }
 }

@@ -19,6 +19,11 @@ namespace XBLMS.Web.Controllers.Home.Exam
 
             if (paper == null) { return this.Error("无效的问卷"); }
 
+            if (paper.Locked)
+            {
+                return this.Error("无效的问卷");
+            }
+
             if (paper.ExamEndDateTime < DateTime.Now || paper.ExamBeginDateTime >= DateTime.Now)
             {
                 return this.Error("不在有效期内");

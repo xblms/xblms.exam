@@ -33,4 +33,11 @@ namespace XBLMS.Enums
         [DataEnum(DisplayName = "简答题", Value = "Jiandati")]
         Jiandati
     }
+    public enum ExamTmType
+    {
+        [DataEnum(DisplayName = "客观题", Value = "Objective")]
+        Objective,
+        [DataEnum(DisplayName = "主观题", Value = "Subjective")]
+        Subjective,
+    }
 }

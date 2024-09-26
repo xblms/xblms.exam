@@ -18,11 +18,11 @@
             <div>
                 <div class="row px-5">
                     <div class="col-md-12 col-12">
-                        <div class="row text-center" v-if="item.examStartDateTimeLong>0">
+                        <div class="row text-center" v-if="item.examStartDateTimeLong>0 && !isStart">
                             <div class="col-md-12 mb-5">
                                 <div>
                                     <el-statistic :value="item.examStartDateTimeLong" class="text-warning"
-                                                  time-indices format="DD天HH小时mm分钟ss秒"
+                                                  time-indices format="DD天HH小时mm分钟ss秒" v-on:finish="timingFinish"
                                                   title="距离开考还剩：">
                                     </el-statistic>
                                 </div>

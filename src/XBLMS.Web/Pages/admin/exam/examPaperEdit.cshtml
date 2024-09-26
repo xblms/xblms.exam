@@ -36,7 +36,9 @@
                                                 placeholder="截止时间"
                                                 value-format="yyyy-MM-dd HH:mm:ss">
                                 </el-date-picker>
-                                <div class="tips">发布后如需修改请到控制台修改。</div>
+                            </el-form-item>
+                            <el-form-item v-if="id>0">
+                                <el-checkbox v-model="isUpdateDateTime">修改已安排的考生数据</el-checkbox>
                             </el-form-item>
                             <el-form-item label="考生范围" prop="userGroupIds">
                                 <el-select ref="selectUserGroup" v-model="form.userGroupIds" filterable multiple placeholder="请选择用户组" clearable style="width:100%">
@@ -46,11 +48,13 @@
                                                :value="userGroup.id">
                                     </el-option>
                                 </el-select>
-                                <div class="tips">根据选择的用户组匹配需要参加考试的考生，多个组为并集。默认安排所有用户。</div>
+                                <div class="tips">根据选择的用户组匹配需要参加考试的考生，多个组为并集。默认不安排考生。</div>
                             </el-form-item>
                             <el-form-item label="考试次数" prop="examTimes">
                                 <el-input-number v-model="form.examTimes" :min="1"></el-input-number>
-                                <div class="tips">发布后如需修改请到控制台修改。</div>
+                            </el-form-item>
+                            <el-form-item v-if="id>0">
+                                <el-checkbox v-model="isUpdateExamTimes">修改已安排的考生数据</el-checkbox>
                             </el-form-item>
                             <el-collapse>
                                 <el-collapse-item>

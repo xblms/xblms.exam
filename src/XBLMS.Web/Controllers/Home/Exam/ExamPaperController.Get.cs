@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Mvc;
 using XBLMS.Configuration;
@@ -15,19 +16,21 @@ namespace XBLMS.Web.Controllers.Home.Exam
         {
             var user = await _authManager.GetUserAsync();
 
-            var paperIds = await _examPaperUserRepository.GetPaperIdsByUser(user.Id, request.Date);
-            var (total, list) = await _examPaperRepository.GetListByUserAsync(paperIds,request.KeyWords, request.PageIndex, request.PageSize);
+            var (total, list) = await _examPaperUserRepository.GetListAsync(user.Id,false, request.Date, request.KeyWords, request.PageIndex, request.PageSize);
+            var resultList = new List<ExamPaper>();
             if (total > 0)
             {
                 foreach (var item in list)
                 {
-                    await _examManager.GetPaperInfo(item, user);
+                    var paper = await _examPaperRepository.GetAsync(item.ExamPaperId);
+                    await _examManager.GetPaperInfo(paper, user);
+                    resultList.Add(paper);
                 }
             }
             return new GetResult
             {
                 Total = total,
-                List = list
+                List = resultList
             };
         }
 

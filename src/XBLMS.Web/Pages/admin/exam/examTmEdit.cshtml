@@ -109,7 +109,7 @@
                                 <el-form-item label="答案" prop="answer">
                                     <el-input ref="answer" type="textarea" :autosize="{ minRows: 3}" v-model.trim="form.answer"></el-input>
                                     <el-link type="primary" icon="el-icon-document" v-on:click="btnOpenEditClick('answer','form')">富文本编辑</el-link>
-                                    <div class="tips">主观题多个答案用英文全角分号";"分隔，自动判分时会进行标准答案匹配。</div>
+                                    <div class="tips">主观题答案用(，,；;)等分隔，自动判分时会进行标准答案匹配。</div>
                                 </el-form-item>
                             </template>
                         </template>
