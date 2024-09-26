@@ -1,20 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json.Serialization;
+﻿using Datory;
 using System.Threading.Tasks;
-using Datory;
-using Datory.Annotations;
-using DocumentFormat.OpenXml.ExtendedProperties;
-using DocumentFormat.OpenXml.Office2010.ExcelAc;
-using Newtonsoft.Json.Converters;
-using NPOI.POIFS.Properties;
-using XBLMS.Dto;
-using XBLMS.Enums;
 using XBLMS.Models;
-using XBLMS.Repositories;
-using XBLMS.Services;
-using XBLMS.Utils;
 
 namespace XBLMS.Core.Services
 {
@@ -42,7 +28,7 @@ namespace XBLMS.Core.Services
 
             var organNames = await GetOrganName(user.DutyId, user.DepartmentId, user.CompanyId);
             user.Set("OrganNames", organNames);
-            user.KeyWordsAdmin = await GetUserKeyWords(user);
+
             return user;
         }
         public async Task GetUser(User user)

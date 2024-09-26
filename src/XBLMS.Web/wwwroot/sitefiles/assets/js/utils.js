@@ -70,7 +70,6 @@ var utils = {
     }
     return [];
   },
-
   loadExternals: function (cssUrls, jsUrls) {
     if (cssUrls) {
       var head = document.getElementsByTagName('head')[0];

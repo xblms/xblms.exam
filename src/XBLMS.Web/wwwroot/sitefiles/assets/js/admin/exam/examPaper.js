@@ -220,10 +220,7 @@ var methods = {
       closebtn: 0,
       url: utils.getExamUrl('examPaperManager', { id: id }),
       width: "98%",
-      height: "98%",
-      end: function () {
-        $this.btnSearchClick();
-      }
+      height: "98%"
     });
 
   },

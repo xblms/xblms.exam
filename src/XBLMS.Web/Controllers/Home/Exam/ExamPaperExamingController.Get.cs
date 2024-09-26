@@ -68,7 +68,8 @@ namespace XBLMS.Web.Controllers.Home.Exam
                     ExamPaperId = paper.Id,
                     ExamPaperRandomId = randomId,
                     BeginDateTime = DateTime.Now,
-                    KeyWords = await _organManager.GetUserKeyWords(user.Id),
+                    KeyWords = paper.Title,
+                    KeyWordsAdmin = await _organManager.GetUserKeyWords(user.Id)
                 });
             }
 

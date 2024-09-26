@@ -3,6 +3,17 @@
 @section Styles{
 <link href="/sitefiles/assets/css/menu.css" rel="stylesheet" type="text/css" />
 <link href="/sitefiles/assets/lib/animate/animate.min.css" rel="stylesheet" type="text/css" />
+<style>
+        #sidebar .el-menu-item, .el-submenu__title {
+            height: 50px;
+            line-height: 50px;
+        }
+
+        #sidebar .el-submenu .el-menu-item {
+            height: 50px;
+            line-height: 50px;
+        }
+</style>
 }
 <div id="sidebar" :style="{width: leftWidth + 'px'}">
     <div class="title">

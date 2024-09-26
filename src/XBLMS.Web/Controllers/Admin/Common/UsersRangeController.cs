@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using DocumentFormat.OpenXml.Bibliography;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
@@ -28,6 +29,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
         private readonly IOrganManager _organManager;
         private readonly IExamPaperUserRepository _examPaperUserRepository;
         private readonly IExamManager _examManager;
+        private readonly IExamPaperRepository _examPaperRepository;
 
         public UsersRangeController(IAuthManager authManager,
             IPathManager pathManager,
@@ -36,7 +38,8 @@ namespace XBLMS.Web.Controllers.Admin.Common
             IUserGroupRepository userGroupRepository,
             IOrganManager organManager,
             IExamManager examManager,
-            IExamPaperUserRepository examPaperUserRepository)
+            IExamPaperUserRepository examPaperUserRepository,
+            IExamPaperRepository examPaperRepository)
         {
             _authManager = authManager;
             _pathManager = pathManager;
@@ -46,6 +49,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
             _organManager = organManager;
             _examManager = examManager;
             _examPaperUserRepository = examPaperUserRepository;
+            _examPaperRepository = examPaperRepository;
         }
 
         public class GetRequest
@@ -61,6 +65,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
 
         public class GetResults
         {
+            public string Title { get; set; }
             public List<OrganTree> Organs { get; set; }
             public List<User> List { get; set; }
             public int Total { get; set; }

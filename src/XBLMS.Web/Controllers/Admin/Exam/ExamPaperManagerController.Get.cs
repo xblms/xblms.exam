@@ -1,21 +1,43 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using XBLMS.Dto;
-using XBLMS.Enums;
-using XBLMS.Models;
-using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Admin.Exam
 {
     public partial class ExamPaperManagerController
     {
         [HttpGet, Route(Route)]
-        public async Task<ActionResult<BoolResult>> Get()
+        public async Task<ActionResult<GetResult>> Get([FromQuery] IdRequest request)
         {
-            var admin = await _authManager.GetAdminAsync();
-            return new BoolResult
+            var paper = await _examPaperRepository.GetAsync(request.Id);
+            var maxScore = await _examPaperStartRepository.GetMaxScoreAsync(request.Id);
+            var minScore = await _examPaperStartRepository.GetMinScoreAsync(request.Id);
+
+            var sumScore = await _examPaperStartRepository.SumScoreAsync(request.Id);
+            var sumScoreDistinct = await _examPaperStartRepository.SumScoreDistinctAsync(request.Id);
+
+            var scoreCount = await _examPaperStartRepository.CountAsync(request.Id);
+            var scoreCountDistinct = await _examPaperStartRepository.CountDistinctAsync(request.Id);
+
+
+            var userTotal = await _examPaperUserRepository.CountAsync(request.Id);
+
+            var passTotal = await _examPaperStartRepository.CountByPassAsync(request.Id, paper.PassScore);
+            var passTotalDistinct = await _examPaperStartRepository.CountByPassDistinctAsync(request.Id, paper.PassScore);
+
+            return new GetResult
             {
-                Value = true
+                Title = paper.Title,
+                TotalScore = paper.TotalScore,
+                PassScore = paper.PassScore,
+                TotalUser = userTotal,
+                MaxScore = maxScore,
+                MinScore = minScore,
+                TotalPass = passTotal,
+                TotalPassDistinct = passTotalDistinct,
+                TotalUserScore = sumScore,
+                TotalExamTimes = scoreCount,
+                TotalExamTimesDistinct = scoreCountDistinct,
             };
         }
     }

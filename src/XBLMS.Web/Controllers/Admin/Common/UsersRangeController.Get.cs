@@ -45,6 +45,8 @@ namespace XBLMS.Web.Controllers.Admin.Common
                     item.Set("IsRange", isRange);
                 }
             }
+
+
             return new GetResults
             {
                 List = list,
@@ -53,11 +55,23 @@ namespace XBLMS.Web.Controllers.Admin.Common
         }
 
         [HttpGet, Route(RouteOtherData)]
-        public async Task<ActionResult<GetResults>> GetOtherData()
+        public async Task<ActionResult<GetResults>> GetOtherData([FromQuery] GetRequest request)
         {
             var organs = await _organManager.GetOrganTreeTableDataAsync();
+
+            var title = "请选择用户";
+            if (request.RangeType == RangeType.Exam)
+            {
+                var paper = await _examPaperRepository.GetAsync(request.Id);
+                if (paper != null)
+                {
+                    title = $"{paper.Title}-安排考生";
+                }
+            }
+
             return new GetResults
             {
+                Title = title,
                 Organs = organs,
             };
         }

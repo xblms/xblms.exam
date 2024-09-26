@@ -1,65 +1,248 @@
 ﻿@page
 @{ Layout = "_Layout"; }
-
+@section Styles{
+    <link href="/sitefiles/assets/lib/geeks/css/theme.min.css" rel="stylesheet" type="text/css" />
+}
 <template>
     <el-card>
         <div slot="header" class="clearfix">
-            <span>试卷-管理</span>
-            <el-button style="float: right;padding:3px 0;" type="text" v-on:click="utils.closeLayerSelf"><i class="el-icon-close"></i></el-button>
+            <span>{{title}}-管理</span>
+            <el-link style="float: right;padding:3px 0;" icon="el-icon-close" v-on:click="utils.closeLayerSelf">退出管理</el-link>
         </div>
         <el-tabs tab-position="left">
+            <el-tab-pane label="统计分析">
+                <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-120) + 'px' }">
+                    <div style="margin-right:18px;">
+                        <el-row :gutter="5">
+                            <el-col :span="8" class="text-center">
+                                <apexchart type="radialBar" :options="passChartOptions" :series="passSeries" height="310"></apexchart>
+                                <div class="py-1"></div>
+                                <apexchart type="radialBar" :options="nopassChartOptions" :series="nopassSeries" height="310"></apexchart>
+                            </el-col>
+                            <el-col :span="16">
+                                <el-card>
+                                    <el-row :gutter="8">
+                                        <el-col :span="8">
+                                            <div class="card rounded-0 bg-white border-top border-muted border-3 card-hover-with-icon">
+                                                <div class="card-body p-3">
+                                                    <div class="d-flex align-items-center justify-content-between">
+                                                        <div class="fw-bold">
+                                                            <span>{{ totalScore }}</span>
+                                                        </div>
+                                                        <span class="px-3 py-2 rounded-pill card-icon">总分</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </el-col>
+                                        <el-col :span="8">
+                                            <div class="card rounded-0 bg-white border-top border-muted border-3 card-hover-with-icon">
+                                                <div class="card-body p-3">
+                                                    <div class="d-flex align-items-center justify-content-between">
+                                                        <div class="fw-bold">
+                                                            <span>{{ passScore }}</span>
+                                                        </div>
+                                                        <span class="px-3 py-2 rounded-pill card-icon">及格分</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </el-col>
+                                        <el-col :span="8">
+                                            <div class="card rounded-0 bg-white border-top border-muted border-3 card-hover-with-icon">
+                                                <div class="card-body p-3">
+                                                    <div class="d-flex align-items-center justify-content-between">
+                                                        <div class="fw-bold">
+                                                            <span>{{ totalUser }}</span>
+                                                        </div>
+                                                        <span class="px-3 py-2 rounded-pill card-icon">考生数量</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </el-col>
+                                    </el-row>
+                                    <el-row :gutter="8" class="mt-3">
+                                        <el-col :span="8">
+                                            <div class="card rounded-0 bg-white border-top border-muted border-3 card-hover-with-icon">
+                                                <div class="card-body p-3">
+                                                    <div class="d-flex align-items-center justify-content-between">
+                                                        <div class="fw-bold">
+                                                            <span>{{ maxScore }}</span>
+                                                        </div>
+                                                        <span class="px-3 py-2 rounded-pill card-icon">最高分</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </el-col>
+                                        <el-col :span="8">
+                                            <div class="card rounded-0 bg-white border-top border-muted border-3 card-hover-with-icon">
+                                                <div class="card-body p-3">
+                                                    <div class="d-flex align-items-center justify-content-between">
+                                                        <div class="fw-bold">
+                                                            <span>{{ minScore }}</span>
+                                                        </div>
+                                                        <span class="px-3 py-2 rounded-pill card-icon">最低分</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </el-col>
+                                        <el-col :span="8">
+                                            <div class="card rounded-0 bg-white border-top border-muted border-3 card-hover-with-icon">
+                                                <div class="card-body p-3">
+                                                    <div class="d-flex align-items-center justify-content-between">
+                                                        <div class="fw-bold">
+                                                            <span>{{ (totalUserScore/totalExamTimes).toFixed(2) }}</span>
+                                                        </div>
+                                                        <span class="px-3 py-2 rounded-pill card-icon">平均分</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </el-col>
+                                    </el-row>
+                                    <el-row :gutter="8" class="mt-3 d-flex align-items-top justify-content-between">
+                                        <el-col :span="8">
+                                            <div class="card rounded-0 bg-white border-top border-muted border-3 card-hover-with-icon">
+                                                <div class="card-body p-3">
+                                                    <div class="d-flex align-items-center justify-content-between">
+                                                        <div class="fw-bold">
+                                                            <span>{{ totalExamTimesDistinct }}</span>
+                                                        </div>
+                                                        <span class="px-3 py-2 rounded-pill card-icon">参考人数</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </el-col>
+                                        <el-col :span="8">
+                                            <div class="card rounded-0 bg-white border-top border-muted border-3 card-hover-with-icon">
+                                                <div class="card-body p-3">
+                                                    <div class="d-flex align-items-center justify-content-between">
+                                                        <div class="fw-bold">
+                                                            <span>{{ totalPassDistinct }}</span>
+                                                        </div>
+                                                        <span class="px-3 py-2 rounded-pill card-icon">及格人数</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </el-col>
+                                        <el-col :span="8">
+                                            <div class="card rounded-0 bg-white border-top border-muted border-3 card-hover-with-icon">
+                                                <div class="card-body p-3">
+                                                    <div class="d-flex align-items-center justify-content-between">
+                                                        <div class="fw-bold">
+                                                            <el-progress type="circle" :percentage="utils.formatPercentFloat(totalPassDistinct,totalExamTimesDistinct)" :stroke-width="10" color="#67C23A"></el-progress>
+                                                        </div>
+                                                        <span class="px-3 py-2 rounded-pill card-icon">及格率</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </el-col>
+                                    </el-row>
+                                    <el-row :gutter="8" class="mt-3 d-flex align-items-top justify-content-between">
+                                        <el-col :span="8">
+                                            <div class="card rounded-0 bg-white border-top border-muted border-3 card-hover-with-icon">
+                                                <div class="card-body p-3">
+                                                    <div class="d-flex align-items-center justify-content-between">
+                                                        <div class="fw-bold">
+                                                            <span>{{ totalExamTimes }}</span>
+                                                        </div>
+                                                        <span class="px-3 py-2 rounded-pill card-icon">参考人次</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </el-col>
+                                        <el-col :span="8">
+                                            <div class="card rounded-0 bg-white border-top border-muted border-3 card-hover-with-icon">
+                                                <div class="card-body p-3">
+                                                    <div class="d-flex align-items-center justify-content-between">
+                                                        <div class="fw-bold">
+                                                            <span>{{ totalPass }}</span>
+                                                        </div>
+                                                        <span class="px-3 py-2 rounded-pill card-icon">及格人次</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </el-col>
+                                        <el-col :span="8">
+                                            <div class="card rounded-0 bg-white border-top border-muted border-3 card-hover-with-icon">
+                                                <div class="card-body p-3">
+                                                    <div class="d-flex align-items-center justify-content-between">
+                                                        <div class="fw-bold">
+                                                            <el-progress type="circle" :percentage="utils.formatPercentFloat(totalPass,totalExamTimes)" :stroke-width="10" color="#67C23A"></el-progress>
+                                                        </div>
+                                                        <span class="px-3 py-2 rounded-pill card-icon">及格率</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </el-col>
+                                    </el-row>
+                                </el-card>
+                            </el-col>
+                        </el-row>
+                    </div>
+                </el-scrollbar>
+             
+            </el-tab-pane>
             <el-tab-pane label="考生管理">
                 <el-card class="box-card">
-                    <div slot="header" class="clearfix">
+                    <div>
                         <el-form :inline="true" :size="euiSize">
                             <el-form-item label="关键字">
                                 <el-input v-model="form.keywords" placeholder="组织、用户名、姓名" prefix-icon="el-icon-search" clearable></el-input>
                             </el-form-item>
                             <el-form-item>
-                                <el-button icon="el-icon-search" type="primary" v-on:click="btnSearchClick">查 询</el-button>
-                                <el-button plain type="primary" v-on:click="btnUserArrange">安排考生</el-button>
-                                <el-button plain type="primary" v-on:clic="btnUserUpdateDatetime">修改考试时间</el-button>
-                                <el-button plain type="primary" v-on:click="btnUserUpdateExamTimes(1)">增加考试次数</el-button>
-                                <el-button plain type="primary" v-on:click="btnUserUpdateExamTimes(0)">减少考试次数</el-button>
-                                <el-button type="warning" plain v-on:click="btnUserRemove">移出考生</el-button>
+                                <el-button :size="euiSize" icon="el-icon-search" type="primary" v-on:click="btnUserSearchClick">查 询</el-button>
+                                <el-button :size="euiSize" plain type="primary" v-on:click="btnUserArrange" icon="el-icon-plus">安排考生</el-button>
+                                <el-button :size="euiSize" plain type="primary" v-on:click="btnUserUpdateDatetime">修改考试时间</el-button>
+                                <el-button :size="euiSize" plain type="primary" v-on:click="btnUserUpdateExamTimes(1)" icon="el-icon-plus">考试次数</el-button>
+                                <el-button :size="euiSize" plain type="warning" v-on:click="btnUserUpdateExamTimes(0)" icon="el-icon-minus">考试次数</el-button>
+                                <el-button :size="euiSize" type="danger" plain v-on:click="btnUserRemove" icon="el-icon-delete">移出考生</el-button>
+                                <el-button :size="euiSize" plain type="primary" icon="el-icon-download" v-on:click="btnUserExportClick">
+                                    导 出
+                                </el-button>
                             </el-form-item>
                         </el-form>
                     </div>
                     <div>
                         <el-table ref="userTable" :data="userList" :size="euiSize" v-on:selection-change="userHandleSelectionChange"
-                                  style="width: 100%" :height="$(window).height()-290">
+                                  style="width: 100%" :height="$(window).height()-260">
                             <el-table-column type="selection"
                                              width="55">
                             </el-table-column>
-                            <el-table-column type="index" label="#" width="60">
+                            <el-table-column label="#"
+                                             type="index"
+                                             width="60"
+                                             align="center">
+                                <template scope="scope">
+                                    <span>{{(form.pageIndex - 1) * form.pageSize + scope.$index + 1}}</span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="账号">
+                                <template slot-scope="scope">
+                                    <el-link :underline="false" type="primary" v-on:click="btnViewClick(scope.row.user.id)">{{scope.row.user.userName}}</el-link>
+                                </template>
                             </el-table-column>
                             <el-table-column prop="user.displayName" label="姓名">
                             </el-table-column>
-                            <el-table-column prop="user.userName" label="用户名">
+                            <el-table-column prop="user.organNames" label="组织" show-overflow-toolti>
                             </el-table-column>
-                            <el-table-column prop="user.organNames" label="组织">
-                            </el-table-column>
-                            <el-table-column label="考试次数">
+                            <el-table-column label="考试次数" width="120">
                                 <template slot-scope="scope">
                                     {{ scope.row.user.examTimes }}/{{ scope.row.examTimes }}
                                 </template>
                             </el-table-column>
-                            <el-table-column label="考试时间" width="150">
+                            <el-table-column label="考试时间" width="270" show-overflow-toolti>
                                 <template slot-scope="scope">
-                                    <div>{{ scope.row.examBeginDateTime }}</div>
-                                    <div>{{ scope.row.examEndDateTime }}</div>
+                                    {{ scope.row.examBeginDateTime }}/{{ scope.row.examEndDateTime }}
                                 </template>
                             </el-table-column>
-                            <el-table-column prop="user.maxScore" label="最高分">
+                            <el-table-column prop="user.maxScore" label="最高分" width="100">
                             </el-table-column>
-                            <el-table-column width="93">
+                            <el-table-column width="100">
                                 <template slot-scope="scope">
                                     <el-dropdown :show-timeout="0" placement="left">
-                                        <el-button size="mini" v-on:click.stop="return false">
-                                            操作<i class="el-icon-arrow-down el-icon--right"></i>
+                                        <el-button icon="el-icon-arrow-left" :size="euiSize" v-on:click.stop="return false">
+                                            操作
                                         </el-button>
                                         <el-dropdown-menu slot="dropdown">
-                                            <el-dropdown-item icon="el-icon-view" v-on:click.native="btnUserDelete(scope.row)">移出考生</el-dropdown-item>
+                                            <el-dropdown-item style="color:red;" icon="el-icon-delete" v-on:click.native="btnUserDelete(scope.row)">移出考生</el-dropdown-item>
                                         </el-dropdown-menu>
                                     </el-dropdown>
                                 </template>
@@ -68,25 +251,107 @@
                         </el-table>
 
                         <div style="text-align: center; margin-top: 10px;">
-                            <el-pagination v-on:current-change="handleCurrentChange" background
+                            <el-pagination v-on:current-change="userHandleCurrentChange" background
                                            :current-page="form.pageIndex"
                                            :page-size="form.pageSize"
-                                           layout="total, prev, pager, next, jumper"
+                                           layout="total, prev, pager, next"
                                            :total="userTotal">
                             </el-pagination>
                         </div>
                     </div>
                 </el-card>
             </el-tab-pane>
-            <el-tab-pane label="阅卷管理">阅卷管理</el-tab-pane>
-            <el-tab-pane label="成绩管理">成绩管理</el-tab-pane>
-            <el-tab-pane label="综合统计">综合统计</el-tab-pane>
+            <el-tab-pane label="阅卷">阅卷管理</el-tab-pane>
+            <el-tab-pane label="考试成绩">
+                <el-card class="box-card">
+                    <div>
+                        <el-form :inline="true" :size="euiSize">
+                            <el-form-item label="关键字">
+                                <el-input v-model="formScore.keywords" placeholder="组织、用户名、姓名" prefix-icon="el-icon-search" clearable></el-input>
+                            </el-form-item>
+                            <el-form-item label="交卷时间：从">
+                                <el-date-picker v-model="formScore.dateFrom"
+                                                type="datetime"
+                                                value-format="yyyy-MM-dd HH:mm:ss"
+                                                placeholder="选择开始日期">
+                                </el-date-picker>
+                            </el-form-item>
+                            <el-form-item label="到">
+                                <el-date-picker v-model="formScore.dateTo"
+                                                type="datetime"
+                                                value-format="yyyy-MM-dd HH:mm:ss"
+                                                placeholder="选择结束日期">
+                                </el-date-picker>
+                            </el-form-item>
+                            <el-form-item>
+                                <el-button :size="euiSize" icon="el-icon-search" type="primary" v-on:click="btnScoreSearchClick">查 询</el-button>
+                                <el-button :size="euiSize" plain type="primary" icon="el-icon-download" v-on:click="btnScoreExportClick">
+                                    导 出
+                                </el-button>
+                            </el-form-item>
+                        </el-form>
+                    </div>
+                    <div>
+                        <el-table ref="scoreTable" :data="scoreList" :size="euiSize"
+                                  style="width: 100%" :height="$(window).height()-260">
+                            <el-table-column type="index" label="#" width="60">
+                            </el-table-column>
+                            <el-table-column label="账号">
+                                <template slot-scope="scope">
+                                    <el-link :underline="false" type="primary" v-on:click="btnViewClick(scope.row.user.id)">{{scope.row.user.userName}}</el-link>
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="user.displayName" label="姓名">
+                            </el-table-column>
+                            <el-table-column prop="user.organNames" label="组织" show-overflow-toolti>
+                            </el-table-column>
+                            <el-table-column label="开考时间" prop="beginDateTime" width="140">
+                            </el-table-column>
+                            <el-table-column label="交卷时间" prop="endDateTime" width="140">
+                            </el-table-column>
+                            <el-table-column prop="user.useTime" label="用时" width="100">
+                            </el-table-column>
+                            <el-table-column prop="user.maxScore" label="最高分" width="100">
+                            </el-table-column>
+                            <el-table-column prop="subjectiveScore" label="主观题成绩" width="100">
+                            </el-table-column>
+                            <el-table-column prop="objectiveScore" label="客观题成绩" width="100">
+                            </el-table-column>
+                            <el-table-column prop="score" label="成绩" width="100">
+                            </el-table-column>
+                            <el-table-column width="100">
+                                <template slot-scope="scope">
+                                    <el-dropdown :show-timeout="0" placement="left">
+                                        <el-button icon="el-icon-arrow-left" :size="euiSize" v-on:click.stop="return false">
+                                            操作
+                                        </el-button>
+                                        <el-dropdown-menu slot="dropdown">
+                                            <el-dropdown-item icon="el-icon-view" v-on:click.native="btnUserDelete(scope.row)">查看答卷</el-dropdown-item>
+                                            <el-dropdown-item icon="el-icon-edit" v-on:click.native="btnUserDelete(scope.row)">修改成绩</el-dropdown-item>
+                                        </el-dropdown-menu>
+                                    </el-dropdown>
+                                </template>
+                            </el-table-column>
+                            @await Html.PartialAsync("_PartialTableEmpty")
+                        </el-table>
+
+                        <div style="text-align: center; margin-top: 10px;">
+                            <el-pagination v-on:current-change="scoreHandleCurrentChange" background
+                                           :current-page="formScore.pageIndex"
+                                           :page-size="formScore.pageSize"
+                                           layout="total, prev, pager, next"
+                                           :total="scoreTotal">
+                            </el-pagination>
+                        </div>
+                    </div>
+                </el-card>
+            </el-tab-pane>
         </el-tabs>
     </el-card>
 </template>
 <template>
     <el-dialog title="修改考试时间" :visible.sync="userUpdateDateTimeDialogVisible">
-        <el-form ref="userUpdateDateTimeForm" :model="userUpdateDateTimeForm">
+        <el-form ref="userUpdateDateTimeForm" :model="userUpdateDateTimeForm" :inline="true">
             <el-form-item label="考试时间" prop="examBeginDateTime" :rules="{ required: true, message: '请选择考试开始时间' }">
                 <el-date-picker v-model="userUpdateDateTimeForm.examBeginDateTime"
                                 type="datetime"
@@ -109,5 +374,7 @@
     </el-dialog>
 </template>
 @section Scripts{
-  <script src="/sitefiles/assets/js/admin/exam/examPaperManager.js" type="text/javascript"></script>
+    <script src="/sitefiles/assets/lib/apexcharts/dist/apexcharts.js" type="text/javascript"></script>
+    <script src="/sitefiles/assets/lib/apexcharts/dist/vue-apexcharts.js" type="text/javascript"></script>
+    <script src="/sitefiles/assets/js/admin/exam/examPaperManager.js" type="text/javascript"></script>
 }

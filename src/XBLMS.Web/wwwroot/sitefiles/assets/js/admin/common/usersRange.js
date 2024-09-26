@@ -1,11 +1,12 @@
-﻿var $url = '/settings/usersRange';
+﻿var $url = '/common/usersRange';
 var $urlRange = $url + "/range";
 
 var $urlOtherData = $url + '/actions/otherData';
 
 var data = utils.init({
-  items: null,
-  count: null,
+  title:'',
+  list: null,
+  total: null,
   organs: null,
   form: {
     id: 0,
@@ -28,8 +29,12 @@ var methods = {
   apiGetOtherData: function () {
     var $this = this;
 
-    $api.get($urlOtherData).then(function (response) {
+    $api.get($urlOtherData, {
+      params: this.form
+    }).then(function (response) {
       var res = response.data;
+
+      $this.title = res.title;
       $this.organs = res.organs;
     }).catch(function (error) {
       utils.error(error, { layer: true });
@@ -46,8 +51,8 @@ var methods = {
     }).then(function (response) {
       var res = response.data;
 
-      $this.items = res.users;
-      $this.count = res.count;
+      $this.list = res.list;
+      $this.total = res.total;
 
     }).catch(function (error) {
       utils.error(error, { layer: true });
@@ -55,27 +60,27 @@ var methods = {
       utils.loading($this, false);
     });
   },
-
+  selectable: function (row) {
+    return !row.isRange;
+  },
   handleSelectionChange(val) {
     this.multipleSelection = val;
   },
-  btnRangeClick: function (rangeType, id) {
+  btnRangeClick: function () {
     var $this = this;
+    var userIds = [];
 
-    var selectedUsers = $this.multipleSelection;
-    if (selectedUsers.length > 0) {
-      selectedUsers.forEach(user => {
-        $this.formInline.rangeUserIds.push(user.id);
+    if (this.multipleSelection && this.multipleSelection.length > 0) {
+      this.multipleSelection.forEach(user => {
+        userIds.push(user.id);
       })
-    }
 
-    if (selectedUsers.length > 0) {
       top.utils.alertSuccess({
         title: '安排考生',
-        text: '确定安排安排吗？',
+        text: '确定安排选中的考生吗？',
         showCancelButton: true,
         callback: function () {
-          $this.apiRange(selectedUsers);
+          $this.apiRange(userIds);
         }
       });
     }
@@ -89,7 +94,7 @@ var methods = {
     $api.post($urlRange, { id: this.form.id, rangeType: this.form.rangeType, ids: ids }).then(function (response) {
       var res = response.data;
       if (res.value) {
-        utils.success("操作成功");
+        utils.success("操作成功", { layer: true });
         $this.apiGet();
       }
 
@@ -99,8 +104,8 @@ var methods = {
       utils.loading($this, false);
     });
   },
-  btnViewClick: function (user) {
-    utils.openUserView(user.id);
+  btnViewClick: function (id) {
+    utils.openUserView(id);
   },
 
   btnSearchClick() {
@@ -110,7 +115,7 @@ var methods = {
 
   handleCurrentChange: function (val) {
     this.form.pageIndex = val;
-    this.btnSearchClick();
+    this.apiGet();
   },
 
   filterNode(value, data) {
@@ -136,7 +141,6 @@ var $vue = new Vue({
   created: function () {
     this.form.id = utils.getQueryInt("id");
     this.form.rangeType = utils.getQueryString("rangeType"),
-
-      this.apiGetOtherData();
+    this.apiGetOtherData();
   }
 });

@@ -1,5 +1,5 @@
-using DocumentFormat.OpenXml.Office2010.Excel;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using XBLMS.Dto;
 using XBLMS.Utils;
@@ -22,14 +22,9 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                     user.Set("ExamTimes", userExamTimes);
 
                     var maxScore = await _examPaperStartRepository.GetMaxScoreAsync(user.Id, item.ExamPaperId);
-                    user.Set("MaxScore", userExamTimes);
+                    user.Set("MaxScore", maxScore.HasValue ? maxScore.Value : 0);
 
                     item.Set("User", user);
-
-                    if (!StringUtils.Equals(user.KeyWordsAdmin, item.KeyWords))
-                    {
-                        await _examPaperUserRepository.UpdateKeyWordsAdminAsync(item.Id, user.KeyWordsAdmin);
-                    }
                 }
             }
             return new GetUserResult
@@ -39,13 +34,13 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             };
         }
         [HttpPost, Route(RouteUserUpdateDateTime)]
-        public async Task<ActionResult<BoolResult>> UpdateDateTime([FromQuery] GetUserUpdateRequest request)
+        public async Task<ActionResult<BoolResult>> UpdateDateTime([FromBody] GetUserUpdateRequest request)
         {
             if (request.Ids != null && request.Ids.Count > 0)
             {
                 foreach (var id in request.Ids)
                 {
-                    await _examPaperUserRepository.UpdateExamDateTimeAsync(id, request.ExamBeginDateTime, request.ExamEndDateTime);
+                    await _examPaperUserRepository.UpdateExamDateTimeByIdAsync(id, request.ExamBeginDateTime, request.ExamEndDateTime);
                 }
             }
 
@@ -56,7 +51,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         }
 
         [HttpPost, Route(RouteUserUpdateExamTimes)]
-        public async Task<ActionResult<BoolResult>> UpdateExamTimes([FromQuery] GetUserUpdateRequest request)
+        public async Task<ActionResult<BoolResult>> UpdateExamTimes([FromBody] GetUserUpdateRequest request)
         {
             if (request.Ids != null && request.Ids.Count > 0)
             {
@@ -81,7 +76,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
 
         [HttpPost, Route(RouteUserDelete)]
-        public async Task<ActionResult<BoolResult>> Delete([FromQuery] GetUserUpdateRequest request)
+        public async Task<ActionResult<BoolResult>> Delete([FromBody] GetUserUpdateRequest request)
         {
             var admin = await _authManager.GetAdminAsync();
 
@@ -106,7 +101,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             };
         }
         [HttpPost, Route(RouteUserDeleteOne)]
-        public async Task<ActionResult<BoolResult>> DeleteOne([FromQuery] IdRequest request)
+        public async Task<ActionResult<BoolResult>> DeleteOne([FromBody] IdRequest request)
         {
             var paperUser = await _examPaperUserRepository.GetAsync(request.Id);
 
@@ -120,6 +115,72 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             return new BoolResult
             {
                 Value = true
+            };
+        }
+
+
+
+        [HttpPost, Route(RouteUserExport)]
+        public async Task<ActionResult<StringResult>> UserExport([FromBody] GetUserRequest request)
+        {
+            var (total, list) = await _examPaperUserRepository.GetListAsync(request.Id, request.Keywords, 1, int.MaxValue);
+       
+
+            var paper = await _examPaperRepository.GetAsync(request.Id);
+
+            var fileName = $"{paper.Title}-考生列表.xlsx";
+            var filePath = _pathManager.GetDownloadFilesPath(fileName);
+
+            DirectoryUtils.CreateDirectoryIfNotExists(DirectoryUtils.GetDirectoryPath(filePath));
+            FileUtils.DeleteFileIfExists(filePath);
+
+            var head = new List<string>
+            {
+                "序号",
+                "账号",
+                "姓名",
+                "组织",
+                "参考次数",
+                "考试次数",
+                "考试时间",
+                "最高分"
+            };
+            var rows = new List<List<string>>();
+
+
+            if (total > 0)
+            {
+                var index = 1;
+                foreach (var item in list)
+                {
+                    var user = await _organManager.GetUser(item.UserId);
+
+                    var userExamTimes = await _examPaperStartRepository.CountAsync(item.ExamPaperId, user.Id);
+                    var maxScore = await _examPaperStartRepository.GetMaxScoreAsync(user.Id, item.ExamPaperId);
+
+                    rows.Add(new List<string>
+                    {
+                        index.ToString(),
+                        user.UserName,
+                        user.DisplayName,
+                        user.Get("OrganNames").ToString(),
+                        $"{userExamTimes}",
+                        $"{item.ExamTimes}",
+                        $"{item.ExamBeginDateTime.Value}-{item.ExamEndDateTime.Value}",
+                        (maxScore.HasValue ? maxScore.Value : 0).ToString()
+                    });
+                    index++;
+
+                }
+            }
+
+            ExcelUtils.Write(filePath, head, rows);
+
+            var downloadUrl = _pathManager.GetDownloadFilesUrl(fileName);
+
+            return new StringResult
+            {
+                Value = downloadUrl
             };
         }
     }

@@ -60,7 +60,11 @@
                       style="width: 100%" :height="$(window).height()-160">
                 <el-table-column type="index" label="#" width="60">
                 </el-table-column>
-                <el-table-column prop="title" label="试卷名称" show-overflow-tooltip>
+                <el-table-column label="试卷名称" show-overflow-toolti>
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.moni"><el-tag type="warning" size="mini">模拟</el-tag>{{ scope.row.title }}</span>
+                        <span v-else>{{ scope.row.title }}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column prop="examBeginDateTime" label="开考时间" width="150">
                 </el-table-column>
@@ -78,11 +82,11 @@
                         </span>
                     </template>
                 </el-table-column>
-                <el-table-column width="93">
+                <el-table-column width="100">
                     <template slot-scope="scope">
                         <el-dropdown :show-timeout="0" placement="left">
-                            <el-button size="mini" v-on:click.stop="return false">
-                                操作<i class="el-icon-arrow-down el-icon--right"></i>
+                            <el-button icon="el-icon-arrow-left" size="mini" v-on:click.stop="return false">
+                                操作
                             </el-button>
                             <el-dropdown-menu slot="dropdown">
                                 <el-dropdown-item icon="el-icon-view" v-on:click.native="btnViewClick(scope.row)">预览</el-dropdown-item>
@@ -91,7 +95,7 @@
                                 <el-dropdown-item icon="el-icon-unlock" v-if="scope.row.locked" v-on:click.native="btnUnLockClick(scope.row.id)">启用</el-dropdown-item>
                                 <el-dropdown-item icon="el-icon-lock" v-else v-on:click.native="btnLockClick(scope.row.id)">停用</el-dropdown-item>
                                 <el-dropdown-item icon="el-icon-delete" style="color:red;" v-on:click.native="btnDeleteClick(scope.row.id)">删除</el-dropdown-item>
-                                <el-dropdown-item icon="el-icon-s-data" v-on:click.native="btnManagerClick(scope.row.id)">考试管理</el-dropdown-item>
+                                <el-dropdown-item icon="el-icon-s-data" v-on:click.native="btnManagerClick(scope.row.id)" divided>考试管理</el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
                     </template>

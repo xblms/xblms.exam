@@ -191,7 +191,7 @@ namespace XBLMS.Core.Repositories
                 query.WhereLike(nameof(ExamPaperUser.KeyWords), like);
             }
             var count = await _repository.CountAsync(query);
-            var list = await _repository.GetAllAsync(query.ForPage(pageIndex, pageSize));
+            var list = await _repository.GetAllAsync(query.OrderByDesc(nameof(ExamPaperUser.Id)).ForPage(pageIndex, pageSize));
 
             return (count, list);
         }
@@ -209,7 +209,13 @@ namespace XBLMS.Core.Repositories
                 Where(nameof(ExamPaperUser.ExamTimes), ">", 0).
                 Where(nameof(ExamPaperUser.Id), id));
         }
-
+        public async Task UpdateExamDateTimeByIdAsync(int id, DateTime beginDateTime, DateTime endDateTime)
+        {
+            await _repository.UpdateAsync(Q.
+                Set(nameof(ExamPaperUser.ExamBeginDateTime), beginDateTime).
+                Set(nameof(ExamPaperUser.ExamEndDateTime), endDateTime).
+                Where(nameof(ExamPaperUser.Id), id));
+        }
         public async Task UpdateExamDateTimeAsync(int paperId, DateTime beginDateTime, DateTime endDateTime)
         {
             await _repository.UpdateAsync(Q.
@@ -246,6 +252,12 @@ namespace XBLMS.Core.Repositories
             await _repository.UpdateAsync(Q.
                 Set(nameof(ExamPaperUser.KeyWordsAdmin), keyWords).
                 Where(nameof(ExamPaperUser.Id), id));
+        }
+
+
+        public async Task<int> CountAsync(int paperId)
+        {
+            return await _repository.CountAsync(Q.Where(nameof(ExamPaperUser.ExamPaperId), paperId));
         }
     }
 }

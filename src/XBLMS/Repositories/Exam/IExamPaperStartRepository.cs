@@ -21,9 +21,19 @@ namespace XBLMS.Repositories
         Task IncrementAsync(int id);
         Task<List<ExamPaperStart>> GetListAsync(int paperId, int userId);
         Task<(int total, List<ExamPaperStart> list)> GetListAsync(int userId, string dateFrom, string dateTo, string keyWords, int pageIndex, int pageSize);
+        Task<(int total, List<ExamPaperStart> list)> GetListByAdminAsync(int paperId, string dateFrom, string dateTo, string keyWords, int pageIndex, int pageSize);
         Task<List<int>> GetPaperIdsAsync(int userId);
         Task<int?> GetMaxScoreAsync(int userId, int paperId);
         Task UpdateLockedAsync(int paperId, bool locked);
         Task UpdateKeyWordsAsync(int paperId, string keyWords);
+
+        Task<decimal> GetMaxScoreAsync(int paperId);
+        Task<decimal> GetMinScoreAsync(int paperId);
+        Task<int> CountAsync(int paperId);
+        Task<int> CountDistinctAsync(int paperId);
+        Task<decimal> SumScoreAsync(int paperId);
+        Task<decimal> SumScoreDistinctAsync(int paperId);
+        Task<int> CountByPassAsync(int paperId, int passScore);
+        Task<int> CountByPassDistinctAsync(int paperId, int passScore);
     }
 }
