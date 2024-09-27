@@ -22,7 +22,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                     user.Set("UseTime", DateUtils.SecondToHms(item.ExamTimeSeconds));
 
                     var maxScore = await _examPaperStartRepository.GetMaxScoreAsync(user.Id, item.ExamPaperId);
-                    user.Set("MaxScore", maxScore.HasValue ? maxScore.Value : 0);
+                    user.Set("MaxScore", maxScore);
 
                     item.Set("User", user);
                 }
@@ -81,7 +81,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                         $"{item.BeginDateTime.Value}",
                         $"{item.EndDateTime.Value}",
                         DateUtils.SecondToHms(item.ExamTimeSeconds),
-                        (maxScore.HasValue ? maxScore.Value : 0).ToString(),
+                        (maxScore).ToString(),
                         $"{item.ObjectiveScore}",
                         $"{item.SubjectiveScore}",
                         $"{item.Score}"

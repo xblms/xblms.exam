@@ -461,5 +461,7 @@ var $vue = new Vue({
   created: function () {
     this.id = this.form.id = this.formScore.id = utils.getQueryInt("id");
     this.apiGet();
+    this.apiGetUser();
+    this.apiGetScore();
   }
 });

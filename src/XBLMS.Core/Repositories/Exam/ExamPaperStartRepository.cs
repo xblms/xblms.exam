@@ -157,14 +157,7 @@ namespace XBLMS.Core.Repositories
                 WhereTrue(nameof(ExamPaperStart.IsMark)).
                 Where(nameof(ExamPaperStart.UserId), userId));
         }
-        public async Task<int?> GetMaxScoreAsync(int userId, int paperId)
-        {
-            return await _repository.MaxAsync(nameof(ExamPaperStart.Score), Q.
-                WhereTrue(nameof(ExamPaperStart.IsSubmit)).
-                WhereTrue(nameof(ExamPaperStart.IsMark)).
-                Where(nameof(ExamPaperStart.UserId), userId).
-                Where(nameof(ExamPaperStart.ExamPaperId), paperId));
-        }
+
         public async Task UpdateLockedAsync(int paperId, bool locked)
         {
             await _repository.UpdateAsync(Q.
@@ -179,7 +172,20 @@ namespace XBLMS.Core.Repositories
         }
 
 
-
+        public async Task<decimal> GetMaxScoreAsync(int userId, int paperId)
+        {
+            var maxItem = await _repository.GetAsync(Q.
+                 WhereTrue(nameof(ExamPaperStart.IsSubmit)).
+                 WhereTrue(nameof(ExamPaperStart.IsMark)).
+                 Where(nameof(ExamPaperStart.ExamPaperId), paperId).
+                 Where(nameof(ExamPaperStart.UserId), userId).
+                 OrderByDesc(nameof(ExamPaperStart.Score)).Limit(1));
+            if (maxItem != null)
+            {
+                return maxItem.Score;
+            }
+            return 0;
+        }
 
 
         public async Task<decimal> GetMaxScoreAsync(int paperId)

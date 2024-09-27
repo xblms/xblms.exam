@@ -19,7 +19,6 @@ namespace XBLMS.Services
         /// <param name="userId"></param>
         /// <returns></returns>
         Task<(double allPassPercent, int allTotal, double moniPassPercent, int moniTotal, double paperPassPercent, int paperTotal)> AnalysisMorePass(int userId);
-        Task<double> AnalysisPass(int userId);
     }
 
 }

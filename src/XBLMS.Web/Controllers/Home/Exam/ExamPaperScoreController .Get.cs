@@ -14,6 +14,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
         {
             var user = await _authManager.GetUserAsync();
             var (total, list) = await _examPaperStartRepository.GetListAsync(user.Id, request.DateFrom, request.DateTo, request.KeyWords, request.PageIndex, request.PageSize);
+
             if (total > 0)
             {
                 foreach (var item in list)

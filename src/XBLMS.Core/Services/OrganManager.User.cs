@@ -10,8 +10,6 @@ namespace XBLMS.Core.Services
         {
             var admin = await _administratorRepository.GetByUserIdAsync(adminId);
 
-            admin.Remove("confirmPassword");
-
             var roleNames = await _administratorRepository.GetRoleNames(admin.Id);
             var organNames = await GetOrganName(admin.DutyId, admin.DepartmentId, admin.CompanyId);
             admin.Set("RoleNames", roleNames);
@@ -24,8 +22,6 @@ namespace XBLMS.Core.Services
         {
             var user = await _userRepository.GetByUserIdAsync(userId);
 
-            user.Remove("confirmPassword");
-
             var organNames = await GetOrganName(user.DutyId, user.DepartmentId, user.CompanyId);
             user.Set("OrganNames", organNames);
 
@@ -33,7 +29,6 @@ namespace XBLMS.Core.Services
         }
         public async Task GetUser(User user)
         {
-            user.Remove("confirmPassword");
             var organNames = await GetOrganName(user.DutyId, user.DepartmentId, user.CompanyId);
             user.Set("OrganNames", organNames);
         }

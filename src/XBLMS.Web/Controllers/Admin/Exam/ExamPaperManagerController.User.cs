@@ -22,7 +22,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                     user.Set("ExamTimes", userExamTimes);
 
                     var maxScore = await _examPaperStartRepository.GetMaxScoreAsync(user.Id, item.ExamPaperId);
-                    user.Set("MaxScore", maxScore.HasValue ? maxScore.Value : 0);
+                    user.Set("MaxScore", maxScore);
 
                     item.Set("User", user);
                 }
@@ -167,7 +167,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                         $"{userExamTimes}",
                         $"{item.ExamTimes}",
                         $"{item.ExamBeginDateTime.Value}-{item.ExamEndDateTime.Value}",
-                        (maxScore.HasValue ? maxScore.Value : 0).ToString()
+                        (maxScore).ToString()
                     });
                     index++;
 
