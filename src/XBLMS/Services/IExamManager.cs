@@ -13,6 +13,7 @@ namespace XBLMS.Services
         Task GetTmInfoByPaper(ExamTm tm);
         Task GetTmInfoByPaperUser(ExamPaperRandomTm tm, ExamPaper paper, int startId, bool paperView = false);
         Task GetTmInfoByPaperViewAdmin(ExamPaperRandomTm tm, ExamPaper paper, int startId);
+        Task GetTmInfoByPaperMark(ExamPaperRandomTm tm, ExamPaper paper, int startId);
         Task GetTmInfoByPracticing(ExamTm tm);
 
         Task<List<Cascade<int>>> GetExamTmTreeCascadesAsync(bool isTotal = false);

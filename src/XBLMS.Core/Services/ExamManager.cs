@@ -218,10 +218,7 @@ namespace XBLMS.Core.Services
             {
                 optionsRandom.Add(new KeyValuePair<string, string>(abcList[i], options[i]));
             }
-            if (paper.IsExamingTmOptionRandomView)
-            {
-                optionsRandom = ListUtils.GetRandomList(optionsRandom);
-            }
+  
             tm.Set("OptionsRandom", optionsRandom);
 
             var answerStatus = true;
@@ -233,6 +230,31 @@ namespace XBLMS.Core.Services
 
             tm.Set("AnswerInfo", answer);
             tm.Set("AnswerStatus", answerStatus);
+            tm.Set("IsRight", StringUtils.Equals(tm.Answer, answer.Answer));
+
+        }
+        public async Task GetTmInfoByPaperMark(ExamPaperRandomTm tm, ExamPaper paper, int startId)
+        {
+            await GetTmInfoByPaper(tm);
+
+            var optionsRandom = new List<KeyValuePair<string, string>>();
+            var options = ListUtils.ToList(tm.Get("options"));
+            var abcList = StringUtils.GetABC();
+            for (var i = 0; i < options.Count; i++)
+            {
+                optionsRandom.Add(new KeyValuePair<string, string>(abcList[i], options[i]));
+            }
+      
+            tm.Set("OptionsRandom", optionsRandom);
+
+            var answer = await _examPaperAnswerRepository.GetAsync(tm.Id, startId, paper.Id);
+    
+
+            var markState = TranslateUtils.ToBool(answer.Get("MarkState").ToString());
+    
+
+            tm.Set("AnswerInfo", answer);
+            tm.Set("MarkState", markState);
             tm.Set("IsRight", StringUtils.Equals(tm.Answer, answer.Answer));
 
         }
