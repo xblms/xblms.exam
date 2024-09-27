@@ -89,7 +89,7 @@
                                                 <div class="card-body p-3">
                                                     <div class="d-flex align-items-center justify-content-between">
                                                         <div class="fw-bold">
-                                                            <span>{{ (totalUserScore/totalExamTimes).toFixed(2) }}</span>
+                                                            <span>{{ utils.formatFloat(totalUserScore,totalExamTimes) }}</span>
                                                         </div>
                                                         <span class="px-3 py-2 rounded-pill card-icon">平均分</span>
                                                     </div>
@@ -261,7 +261,79 @@
                     </div>
                 </el-card>
             </el-tab-pane>
-            <el-tab-pane label="阅卷">阅卷管理</el-tab-pane>
+            <el-tab-pane label="阅卷">
+                <span slot="label">阅卷<span class="text-danger ms-2" v-if="markTotal>0">（{{ markTotal }}）</span></span>
+                <el-card class="box-card">
+                    <div>
+                        <el-form :inline="true" :size="euiSize">
+                            <el-form-item label="关键字">
+                                <el-input v-model="formMark.keywords" placeholder="组织、用户名、姓名" prefix-icon="el-icon-search" clearable></el-input>
+                            </el-form-item>
+                            <el-form-item label="交卷时间：从">
+                                <el-date-picker v-model="formMark.dateFrom"
+                                                type="datetime"
+                                                value-format="yyyy-MM-dd HH:mm:ss"
+                                                placeholder="选择开始日期">
+                                </el-date-picker>
+                            </el-form-item>
+                            <el-form-item label="到">
+                                <el-date-picker v-model="formMark.dateTo"
+                                                type="datetime"
+                                                value-format="yyyy-MM-dd HH:mm:ss"
+                                                placeholder="选择结束日期">
+                                </el-date-picker>
+                            </el-form-item>
+                            <el-form-item>
+                                <el-button :size="euiSize" icon="el-icon-search" type="primary" v-on:click="btnMarkSearchClick">查 询</el-button>
+                            </el-form-item>
+                        </el-form>
+                    </div>
+                    <div>
+                        <el-table ref="markTable" :data="markList" :size="euiSize"
+                                  style="width: 100%" :height="$(window).height()-260">
+                            <el-table-column type="index" label="#" width="60">
+                            </el-table-column>
+                            <el-table-column label="账号">
+                                <template slot-scope="scope">
+                                    <el-link :underline="false" type="primary" v-on:click="btnViewClick(scope.row.user.id)">{{scope.row.user.userName}}</el-link>
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="user.displayName" label="姓名">
+                            </el-table-column>
+                            <el-table-column prop="user.organNames" label="组织" show-overflow-toolti>
+                            </el-table-column>
+                            <el-table-column label="开考时间" prop="beginDateTime" width="140">
+                            </el-table-column>
+                            <el-table-column label="交卷时间" prop="endDateTime" width="140">
+                            </el-table-column>
+                            <el-table-column prop="user.useTime" label="用时" width="100">
+                            </el-table-column>
+                            <el-table-column width="100">
+                                <template slot-scope="scope">
+                                    <el-dropdown :show-timeout="0" placement="left">
+                                        <el-button icon="el-icon-arrow-left" :size="euiSize" v-on:click.stop="return false">
+                                            操作
+                                        </el-button>
+                                        <el-dropdown-menu slot="dropdown">
+                                            <el-dropdown-item icon="el-icon-edit" v-on:click.native="btnPaperSocreView(scope.row.id)">阅 卷</el-dropdown-item>
+                                        </el-dropdown-menu>
+                                    </el-dropdown>
+                                </template>
+                            </el-table-column>
+                            @await Html.PartialAsync("_PartialTableEmpty")
+                        </el-table>
+
+                        <div style="text-align: center; margin-top: 10px;">
+                            <el-pagination v-on:current-change="scoreHandleCurrentChange" background
+                                           :current-page="formMark.pageIndex"
+                                           :page-size="formMark.pageSize"
+                                           layout="total, prev, pager, next"
+                                           :total="markTotal">
+                            </el-pagination>
+                        </div>
+                    </div>
+                </el-card>
+            </el-tab-pane>
             <el-tab-pane label="考试成绩">
                 <el-card class="box-card">
                     <div>
@@ -326,7 +398,7 @@
                                             操作
                                         </el-button>
                                         <el-dropdown-menu slot="dropdown">
-                                            <el-dropdown-item icon="el-icon-view" v-on:click.native="btnUserDelete(scope.row)">查看答卷</el-dropdown-item>
+                                            <el-dropdown-item icon="el-icon-view" v-on:click.native="btnPaperSocreView(scope.row.id)">查看答卷</el-dropdown-item>
                                         </el-dropdown-menu>
                                     </el-dropdown>
                                 </template>

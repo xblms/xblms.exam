@@ -6,7 +6,7 @@ using XBLMS.Models;
 
 namespace XBLMS.Repositories
 {
-    public  interface IExamPaperStartRepository : IRepository
+    public interface IExamPaperStartRepository : IRepository
     {
         Task<ExamPaperStart> GetAsync(int id);
         Task<int> CountAsync(int paperId, int userId);
@@ -21,7 +21,7 @@ namespace XBLMS.Repositories
         Task IncrementAsync(int id);
         Task<List<ExamPaperStart>> GetListAsync(int paperId, int userId);
         Task<(int total, List<ExamPaperStart> list)> GetListAsync(int userId, string dateFrom, string dateTo, string keyWords, int pageIndex, int pageSize);
-        Task<(int total, List<ExamPaperStart> list)> GetListByAdminAsync(int paperId, string dateFrom, string dateTo, string keyWords, int pageIndex, int pageSize);
+        Task<(int total, List<ExamPaperStart> list)> GetListByAdminAsync(int paperId, string dateFrom, string dateTo, string keyWords, int pageIndex, int pageSize, bool isMark = true);
         Task<List<int>> GetPaperIdsAsync(int userId);
         Task<decimal> GetMaxScoreAsync(int userId, int paperId);
         Task UpdateLockedAsync(int paperId, bool locked);

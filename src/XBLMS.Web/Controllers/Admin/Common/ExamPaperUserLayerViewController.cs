@@ -1,22 +1,20 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NPOI.SS.Formula.Functions;
 using NSwag.Annotations;
 using System.Collections.Generic;
 using XBLMS.Configuration;
-using XBLMS.Core.Services;
 using XBLMS.Models;
 using XBLMS.Repositories;
 using XBLMS.Services;
 
-namespace XBLMS.Web.Controllers.Home.Exam
+namespace XBLMS.Web.Controllers.Admin.Common
 {
     [OpenApiIgnore]
-    [Authorize(Roles = Types.Roles.User)]
-    [Route(Constants.ApiHomePrefix)]
-    public partial class ExamPaperViewController : ControllerBase
+    [Authorize(Roles = Types.Roles.Administrator)]
+    [Route(Constants.ApiAdminPrefix)]
+    public partial class ExamPaperUserLayerViewController : ControllerBase
     {
-        private const string Route = "exam/examPaperView";
+        private const string Route = "common/examPaperUserLayerView";
 
         private readonly IConfigRepository _configRepository;
         private readonly IAuthManager _authManager;
@@ -29,8 +27,9 @@ namespace XBLMS.Web.Controllers.Home.Exam
         private readonly IExamPaperAnswerRepository _examPaperAnswerRepository;
         private readonly IExamPaperStartRepository _examPaperStartRepository;
         private readonly IExamManager _examManager;
+        private readonly IUserRepository _userRepository;
 
-        public ExamPaperViewController(IConfigRepository configRepository,
+        public ExamPaperUserLayerViewController(IConfigRepository configRepository,
             ICreateManager createManager,
             IAuthManager authManager,
             IExamPaperRepository examPaperRepository,
@@ -40,7 +39,8 @@ namespace XBLMS.Web.Controllers.Home.Exam
             IExamPaperRandomTmRepository examPaperRandomTmRepository,
             IExamManager examManager,
             IExamPaperAnswerRepository examPaperAnswerRepository,
-            IExamPaperStartRepository examPaperStartRepository)
+            IExamPaperStartRepository examPaperStartRepository,
+            IUserRepository userRepository)
         {
             _configRepository = configRepository;
             _authManager = authManager;
@@ -53,6 +53,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
             _examManager = examManager;
             _examPaperAnswerRepository = examPaperAnswerRepository;
             _examPaperStartRepository = examPaperStartRepository;
+            _userRepository = userRepository;
         }
         public class GetResult
         {

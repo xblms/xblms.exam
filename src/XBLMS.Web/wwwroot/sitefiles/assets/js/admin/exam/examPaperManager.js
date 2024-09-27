@@ -10,9 +10,11 @@ var $urlUserExport = $urlUser + '/export';
 var $urlScore = $url + '/score';
 var $urlScoreExport = $urlScore + '/export';
 
+var $urlMark = $url + '/mark';
+
 var data = utils.init({
   id: 0,
-  title:'',
+  title: '',
   form: {
     id: 0,
     keywords: '',
@@ -184,7 +186,18 @@ var data = utils.init({
   totalPassDistinct: 0,
   totalUserScore: 0,
   totalExamTimes: 0,
-  totalExamTimesDistinct:0
+  totalExamTimesDistinct: 0,
+
+  formMark: {
+    id: 0,
+    keywords: '',
+    dateFrom: '',
+    dateTo: '',
+    pageIndex: 1,
+    pageSize: PER_PAGE
+  },
+  markList: null,
+  markTotal: 0,
 });
 
 var methods = {
@@ -206,11 +219,17 @@ var methods = {
       $this.totalExamTimesDistinct = res.totalExamTimesDistinct;
 
       setTimeout(function () {
-        var passS = utils.formatPercentFloat($this.totalPass, $this.totalExamTimes);
-        $this.passSeries = [passS];
-        $this.nopassSeries = [100 - passS];
+        if ($this.totalExamTimes > 0) {
+          var passS = utils.formatPercentFloat($this.totalPass, $this.totalExamTimes);
+          $this.passSeries = [passS];
+          $this.nopassSeries = [100 - passS];
+        }
+        else {
+          $this.passSeries = [0];
+          $this.nopassSeries = [0];
+        }
       }, 1000);
-    
+
     }).catch(function (error) {
       utils.error(error, { layer: true });
     }).then(function () {
@@ -422,7 +441,6 @@ var methods = {
       $this.scoreTotal = res.total;
 
     }).catch(function (error) {
-      utils.loading($this, false);
       utils.error(error, { layer: true });
     }).then(function () {
       utils.loading($this, false);
@@ -450,6 +468,39 @@ var methods = {
     this.formScore.pageIndex = val;
     this.apiGetScore();
   },
+  btnPaperSocreView: function (id) {
+    var $this = this;
+    top.utils.openLayer({
+      title: false,
+      closebtn: 0,
+      url: utils.getCommonUrl('examPaperUserLayerView', { id: id }),
+      width: "99%",
+      height: "99%"
+    });
+  },
+
+  apiGetMark: function () {
+    var $this = this;
+    utils.loading(this, true);
+    $api.get($urlMark, { params: $this.formMark }).then(function (response) {
+      var res = response.data;
+      $this.markList = res.list;
+      $this.markTotal = res.total;
+
+    }).catch(function (error) {
+      utils.error(error, { layer: true });
+    }).then(function () {
+      utils.loading($this, false);
+    });
+  },
+  btnMarkSearchClick: function () {
+    this.formMark.pageIndex = 1;
+    this.apiGetMark();
+  },
+  markHandleCurrentChange: function (val) {
+    this.formMark.pageIndex = val;
+    this.apiGetMark();
+  },
 };
 Vue.component("apexchart", {
   extends: VueApexCharts
@@ -459,9 +510,10 @@ var $vue = new Vue({
   data: data,
   methods: methods,
   created: function () {
-    this.id = this.form.id = this.formScore.id = utils.getQueryInt("id");
+    this.id = this.form.id = this.formScore.id = this.formMark.id = utils.getQueryInt("id");
     this.apiGet();
     this.apiGetUser();
     this.apiGetScore();
+    this.apiGetMark();
   }
 });

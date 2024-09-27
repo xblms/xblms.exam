@@ -29,6 +29,8 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         private const string RouteScore = Route + "/score";
         private const string RouteScoreExport = RouteScore + "/export";
 
+        private const string RouteMark = Route + "/mark";
+
 
         private readonly IAuthManager _authManager;
         private readonly IPathManager _pathManager;

@@ -114,6 +114,15 @@ var utils = {
     }
     return 0.00
   },
+  formatFloat: function (count, total) {
+    if (count > 0 && total > 0) {
+      if (count >= total) {
+        return 100;
+      }
+      return (Math.round(count / total));
+    }
+    return 0.00
+  },
   toCamelCase: function (s) {
     if (!s || s[0] !== s[0].toUpperCase()) {
       return s;

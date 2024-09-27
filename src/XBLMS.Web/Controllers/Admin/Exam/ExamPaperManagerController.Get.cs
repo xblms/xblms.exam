@@ -14,7 +14,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             var minScore = await _examPaperStartRepository.GetMinScoreAsync(request.Id);
 
             var sumScore = await _examPaperStartRepository.SumScoreAsync(request.Id);
-            var sumScoreDistinct = await _examPaperStartRepository.SumScoreDistinctAsync(request.Id);
+            //var sumScoreDistinct = await _examPaperStartRepository.SumScoreDistinctAsync(request.Id);
 
             var scoreCount = await _examPaperStartRepository.CountAsync(request.Id);
             var scoreCountDistinct = await _examPaperStartRepository.CountDistinctAsync(request.Id);

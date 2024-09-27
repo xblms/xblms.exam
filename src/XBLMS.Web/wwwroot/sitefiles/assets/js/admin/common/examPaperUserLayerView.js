@@ -1,4 +1,4 @@
-var $url = "/exam/examPaperView";
+var $url = "/common/examPaperUserLayerView";
 var $urlItem = $url+ "/item";
 
 var data = utils.init({
@@ -16,7 +16,7 @@ var methods = {
   apiGet: function () {
     var $this = this;
 
-    utils.loading(this, true, "正在加载试卷...");
+    utils.loading(this, true, "正在加载答卷...");
 
     $api.get($url, { params: { id: $this.id } }).then(function (response) {
       var res = response.data;
