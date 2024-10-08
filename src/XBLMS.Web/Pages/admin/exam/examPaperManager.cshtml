@@ -407,6 +407,7 @@
                                         </el-button>
                                         <el-dropdown-menu slot="dropdown">
                                             <el-dropdown-item icon="el-icon-view" v-on:click.native="btnPaperSocreView(scope.row.id)">查看答卷</el-dropdown-item>
+                                            <el-dropdown-item icon="el-icon-view" v-on:click.native="btnMarkView(scope.row.id)" v-if="scope.row.markTeacherId>0">查看阅卷</el-dropdown-item>
                                         </el-dropdown-menu>
                                     </el-dropdown>
                                 </template>

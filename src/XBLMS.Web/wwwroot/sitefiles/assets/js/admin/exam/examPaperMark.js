@@ -47,6 +47,16 @@ var methods = {
     this.form.pageIndex = val;
     this.apiGet();
   },
+  btnMarkView: function (id) {
+    var $this = this;
+    top.utils.openLayer({
+      title: false,
+      closebtn: 0,
+      url: utils.getCommonUrl('examPaperUserMarkLayerView', { id: id }),
+      width: "99%",
+      height: "99%"
+    });
+  },
 };
 var $vue = new Vue({
   el: '#main',

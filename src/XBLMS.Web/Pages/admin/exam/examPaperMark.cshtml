@@ -55,7 +55,8 @@
                 </el-table-column>
                 <el-table-column width="120" align="right">
                     <template slot-scope="scope">
-                        <el-button size="mini" icon="el-icon-edit" type="primary" plain v-on:click="btnPaperMarkView(scope.row.id)">开始阅卷</el-button>
+                        <el-button size="mini" icon="el-icon-view" type="primary" plain v-on:click="btnMarkView(scope.row.id)" v-if="scope.row.isMark">查看阅卷</el-button>
+                        <el-button size="mini" icon="el-icon-edit" type="primary" plain v-on:click="btnPaperMarkView(scope.row.id)" v-else>开始阅卷</el-button>
                     </template>
                 </el-table-column>
                 @await Html.PartialAsync("_PartialTableEmpty")
