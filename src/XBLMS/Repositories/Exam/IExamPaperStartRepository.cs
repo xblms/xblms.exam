@@ -22,6 +22,8 @@ namespace XBLMS.Repositories
         Task<List<ExamPaperStart>> GetListAsync(int paperId, int userId);
         Task<(int total, List<ExamPaperStart> list)> GetListAsync(int userId, string dateFrom, string dateTo, string keyWords, int pageIndex, int pageSize);
         Task<(int total, List<ExamPaperStart> list)> GetListByAdminAsync(int paperId, string dateFrom, string dateTo, string keyWords, int pageIndex, int pageSize, bool isMark = true);
+        Task<(int total, List<ExamPaperStart> list)> GetListByMarkerAsync(int markerId, string keyWords, int pageIndex, int pageSize);
+
         Task<List<int>> GetPaperIdsAsync(int userId);
         Task<decimal> GetMaxScoreAsync(int userId, int paperId);
         Task UpdateLockedAsync(int paperId, bool locked);
@@ -35,5 +37,6 @@ namespace XBLMS.Repositories
         Task<decimal> SumScoreDistinctAsync(int paperId);
         Task<int> CountByPassAsync(int paperId, int passScore);
         Task<int> CountByPassDistinctAsync(int paperId, int passScore);
+        Task<int> CountByMarkAsync(int paperId);
     }
 }

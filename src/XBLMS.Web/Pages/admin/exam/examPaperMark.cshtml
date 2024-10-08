@@ -1,0 +1,77 @@
+﻿@page
+@{ Layout = "_Layout"; }
+<template>
+    <el-card>
+        <div>
+            <el-form :inline="true" :size="euiSize">
+                <el-form-item label="试卷">
+                    <el-input v-model="form.keywords" placeholder="关键字" prefix-icon="el-icon-search" clearable></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button :size="euiSize" icon="el-icon-search" type="primary" v-on:click="btnMarkSearchClick">查 询</el-button>
+                </el-form-item>
+            </el-form>
+        </div>
+        <div>
+            <el-table ref="markTable" :data="list" :size="euiSize"
+                      style="width: 100%" :height="$(window).height()-153">
+                <el-table-column type="index" label="#" width="60">
+                </el-table-column>
+                <el-table-column label="试卷">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.title }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="考生" width="85">
+                    <template slot-scope="scope">
+                        <span>******</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="开考时间" prop="beginDateTime" width="140">
+                </el-table-column>
+                <el-table-column label="交卷时间" prop="endDateTime" width="140">
+                </el-table-column>
+                <el-table-column prop="useTime" label="用时" width="100">
+                </el-table-column>
+                <el-table-column label="阅卷分" width="85">
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.isMark">{{ scope.row.subjectiveScore}}</span>
+                        <span v-else>/</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="阅卷时间" width="140">
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.isMark">{{ scope.row.markDateTime}}</span>
+                        <span v-else>/</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="状态" width="85">
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.isMark"><el-tag size="mini" type="success" effect="dark">已 阅</el-tag></span>
+                        <span v-else>
+                            <el-tag size="mini" type="danger" effect="dark">未 阅</el-tag>
+                        </span>
+                    </template>
+                </el-table-column>
+                <el-table-column width="120" align="right">
+                    <template slot-scope="scope">
+                        <el-button size="mini" icon="el-icon-edit" type="primary" plain v-on:click="btnPaperMarkView(scope.row.id)">开始阅卷</el-button>
+                    </template>
+                </el-table-column>
+                @await Html.PartialAsync("_PartialTableEmpty")
+            </el-table>
+
+            <div style="text-align: center; margin-top: 10px;">
+                <el-pagination v-on:current-change="markHandleCurrentChange" background
+                               :current-page="form.pageIndex"
+                               :page-size="form.pageSize"
+                               layout="total, prev, pager, next"
+                               :total="total">
+                </el-pagination>
+            </div>
+        </div>
+    </el-card>
+</template>
+@section Scripts{
+    <script src="/sitefiles/assets/js/admin/exam/examPaperMark.js" type="text/javascript"></script>
+}

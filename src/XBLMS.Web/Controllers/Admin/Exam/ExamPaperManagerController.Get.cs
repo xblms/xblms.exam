@@ -1,4 +1,6 @@
+using DocumentFormat.OpenXml.Office2010.ExcelAc;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using XBLMS.Dto;
 
@@ -25,6 +27,21 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             var passTotal = await _examPaperStartRepository.CountByPassAsync(request.Id, paper.PassScore);
             var passTotalDistinct = await _examPaperStartRepository.CountByPassDistinctAsync(request.Id, paper.PassScore);
 
+            var markers = new List<GetSelectMarkInfo>();
+            var adminList = await _administratorRepository.GetListAsync();
+            if (adminList != null && adminList.Count > 0)
+            {
+                foreach (var admin in adminList)
+                {
+                    markers.Add(new GetSelectMarkInfo
+                    {
+                        Id = admin.Id,
+                        DisplayName = admin.DisplayName,
+                        UserName = admin.UserName
+                    });
+                }
+            }
+
             return new GetResult
             {
                 Title = paper.Title,
@@ -38,6 +55,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 TotalUserScore = sumScore,
                 TotalExamTimes = scoreCount,
                 TotalExamTimesDistinct = scoreCountDistinct,
+                MarkerList = markers,
             };
         }
     }

@@ -20,6 +20,7 @@ namespace XBLMS.Repositories
         Task UnLockAsync(IList<string> userNames);
         Task<int> GetCountAsync(int companyId, int departmentId, int dutyId);
         Task<int> GetCountAsync(List<int> companyIds, List<int> departmentIds, List<int> dutyIds);
+        Task<List<Administrator>> GetListAsync();
         Task<int> GetCountAsync(List<int> companyIds,List<int> departmentIds, List<int> dutyIds, string role, int lastActivityDate, string keyword);
 
         Task<List<Administrator>> GetAdministratorsAsync(List<int> companyIds, List<int> departmentIds, List<int> dutyIds, string role, string order,

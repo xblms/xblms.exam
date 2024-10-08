@@ -11,6 +11,7 @@ var $urlScore = $url + '/score';
 var $urlScoreExport = $urlScore + '/export';
 
 var $urlMark = $url + '/mark';
+var $urlMarkSelectMarker = $url + '/marker';
 
 var data = utils.init({
   id: 0,
@@ -107,7 +108,7 @@ var data = utils.init({
     stroke: {
       lineCap: 'round'
     },
-    labels: ['及格'],
+    labels: ['及格率'],
   },
   nopassSeries: [0],
   nopassChartOptions: {
@@ -198,6 +199,13 @@ var data = utils.init({
   },
   markList: null,
   markTotal: 0,
+  markerList: null,
+  markSelection: [],
+  markerForm: {
+    id: null,
+    ids:null
+  },
+  markerSelectDialogVisible:false
 });
 
 var methods = {
@@ -217,6 +225,7 @@ var methods = {
       $this.totalUserScore = res.totalUserScore;
       $this.totalExamTimes = res.totalExamTimes;
       $this.totalExamTimesDistinct = res.totalExamTimesDistinct;
+      $this.markerList = res.markerList;
 
       setTimeout(function () {
         if ($this.totalExamTimes > 0) {
@@ -416,6 +425,9 @@ var methods = {
   btnViewClick: function (id) {
     utils.openUserView(id);
   },
+  btnAdminViewClick: function (id) {
+    utils.openAdminView(id);
+  },
   btnUserExportClick: function () {
     var $this = this;
 
@@ -493,9 +505,72 @@ var methods = {
       utils.loading($this, false);
     });
   },
+  markHandleSelectionChange(val) {
+    this.markSelection = val;
+  },
+  btnMarkerArrange: function () {
+
+    this.markerForm.id = null;
+    this.markerForm.ids = null;
+
+    if (this.markSelection && this.markSelection.length > 0) {
+      this.markerSelectDialogVisible = true;
+    }
+    else {
+      utils.error("请选择答卷", { layer: true });
+    }
+  },
+  btnMarkerArrangeSubmit: function () {
+
+    var startIds = [];
+    this.markSelection.forEach(u => {
+      startIds.push(u.id);
+    });
+    this.markerForm.ids = startIds;
+
+    var $this = this;
+    this.$refs.markerForm.validate(function (valid) {
+      if (valid) {
+
+        $this.apiSelectMarker();
+      }
+    });
+  },
+  apiSelectMarker: function () {
+    var $this = this;
+    utils.loading(this, true);
+    $api.post($urlMarkSelectMarker, $this.markerForm).then(function (response) {
+      var res = response.data;
+      if (res.value) {
+        utils.success("安排成功", { layer: true });
+        $this.markSelection = null;
+        $this.markerSelectDialogVisible = false;
+        $this.apiGetMark();
+      }
+
+    }).catch(function (error) {
+      utils.error(error, { layer: true });
+    }).then(function () {
+      utils.loading($this, false);
+    });
+  },
   btnMarkSearchClick: function () {
     this.formMark.pageIndex = 1;
     this.apiGetMark();
+  },
+  btnPaperMarkView: function (id) {
+    var $this = this;
+    top.utils.openLayer({
+      title: false,
+      closebtn: 0,
+      url: utils.getCommonUrl('examPaperUserMark', { id: id }),
+      width: "99%",
+      height: "99%",
+      end: function () {
+        $this.btnMarkSearchClick();
+        $this.btnScoreSearchClick();
+      }
+    });
   },
   markHandleCurrentChange: function (val) {
     this.formMark.pageIndex = val;

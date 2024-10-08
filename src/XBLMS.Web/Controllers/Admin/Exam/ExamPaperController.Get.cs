@@ -23,7 +23,14 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 }
             }
             var (total, list) = await _examPaperRepository.GetListAsync(treeIds,request.Keyword, request.PageIndex, request.PageSize);
- 
+            if (total > 0)
+            {
+                foreach (var item in list)
+                {
+                    var markCount = await _examPaperStartRepository.CountByMarkAsync(item.Id);
+                    item.Set("MarkCount", markCount);
+                }
+            }
             return new GetResult
             {
                 Total = total,

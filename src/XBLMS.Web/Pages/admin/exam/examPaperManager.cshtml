@@ -202,7 +202,7 @@
                     </div>
                     <div>
                         <el-table ref="userTable" :data="userList" :size="euiSize" v-on:selection-change="userHandleSelectionChange"
-                                  style="width: 100%" :height="$(window).height()-260">
+                                  style="width: 100%" :height="$(window).height()-255">
                             <el-table-column type="selection"
                                              width="55">
                             </el-table-column>
@@ -285,12 +285,16 @@
                             </el-form-item>
                             <el-form-item>
                                 <el-button :size="euiSize" icon="el-icon-search" type="primary" v-on:click="btnMarkSearchClick">查 询</el-button>
+                                <el-button :size="euiSize" plain type="primary" v-on:click="btnMarkerArrange">安排阅卷老师</el-button>
                             </el-form-item>
                         </el-form>
                     </div>
                     <div>
-                        <el-table ref="markTable" :data="markList" :size="euiSize"
-                                  style="width: 100%" :height="$(window).height()-260">
+                        <el-table ref="markTable" :data="markList" :size="euiSize" v-on:selection-change="markHandleSelectionChange"
+                                  style="width: 100%" :height="$(window).height()-255">
+                            <el-table-column type="selection"
+                                             width="55">
+                            </el-table-column>
                             <el-table-column type="index" label="#" width="60">
                             </el-table-column>
                             <el-table-column label="账号">
@@ -308,6 +312,12 @@
                             </el-table-column>
                             <el-table-column prop="user.useTime" label="用时" width="100">
                             </el-table-column>
+                            <el-table-column label="阅卷人">
+                                <template slot-scope="scope">
+                                    <el-link :underline="false" type="primary" v-on:click="btnAdminViewClick(scope.row.markTeacherId)" v-if="scope.row.markTeacherId>0">{{scope.row.marker}}</el-link>
+                                    <span v-else>/</span>
+                                </template>
+                            </el-table-column>
                             <el-table-column width="100">
                                 <template slot-scope="scope">
                                     <el-dropdown :show-timeout="0" placement="left">
@@ -315,7 +325,7 @@
                                             操作
                                         </el-button>
                                         <el-dropdown-menu slot="dropdown">
-                                            <el-dropdown-item icon="el-icon-edit" v-on:click.native="btnPaperSocreView(scope.row.id)">阅 卷</el-dropdown-item>
+                                            <el-dropdown-item icon="el-icon-edit" v-on:click.native="btnPaperMarkView(scope.row.id)">阅 卷</el-dropdown-item>
                                         </el-dropdown-menu>
                                     </el-dropdown>
                                 </template>
@@ -324,7 +334,7 @@
                         </el-table>
 
                         <div style="text-align: center; margin-top: 10px;">
-                            <el-pagination v-on:current-change="scoreHandleCurrentChange" background
+                            <el-pagination v-on:current-change="markHandleCurrentChange" background
                                            :current-page="formMark.pageIndex"
                                            :page-size="formMark.pageSize"
                                            layout="total, prev, pager, next"
@@ -334,7 +344,7 @@
                     </div>
                 </el-card>
             </el-tab-pane>
-            <el-tab-pane label="考试成绩">
+            <el-tab-pane label="成绩单">
                 <el-card class="box-card">
                     <div>
                         <el-form :inline="true" :size="euiSize">
@@ -365,7 +375,7 @@
                     </div>
                     <div>
                         <el-table ref="scoreTable" :data="scoreList" :size="euiSize"
-                                  style="width: 100%" :height="$(window).height()-260">
+                                  style="width: 100%" :height="$(window).height()-255">
                             <el-table-column type="index" label="#" width="60">
                             </el-table-column>
                             <el-table-column label="账号">
@@ -382,8 +392,6 @@
                             <el-table-column label="交卷时间" prop="endDateTime" width="140">
                             </el-table-column>
                             <el-table-column prop="user.useTime" label="用时" width="100">
-                            </el-table-column>
-                            <el-table-column prop="user.maxScore" label="最高分" width="100">
                             </el-table-column>
                             <el-table-column prop="subjectiveScore" label="主观题成绩" width="100">
                             </el-table-column>
@@ -441,6 +449,27 @@
         <div slot="footer" class="dialog-footer">
             <el-button v-on:click="userUpdateDateTimeDialogVisible = false">取 消</el-button>
             <el-button type="primary" v-on:click="btnUserUpdateDatetimeSubmit">确 定</el-button>
+        </div>
+    </el-dialog>
+</template>
+<template>
+    <el-dialog title="安排阅卷人" :visible.sync="markerSelectDialogVisible">
+        <el-form ref="markerForm" :model="markerForm" :inline="true">
+            <el-form-item label="阅卷老师" prop="id" :rules="{ required: true, message: '请选择考阅卷老师' }">
+                <el-select v-model="markerForm.id" placeholder="请选择" clearable filterable>
+                    <el-option v-for="item in markerList"
+                               :key="item.id"
+                               :label="item.displayName"
+                               :value="item.id">
+                        <span style="float: left">{{ item.displayName }}</span>
+                        <span style="float: right; color: #8492a6; font-size: 13px">{{ item.userName }}</span>
+                    </el-option>
+                </el-select>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button v-on:click="markerSelectDialogVisible = false">取 消</el-button>
+            <el-button type="primary" v-on:click="btnMarkerArrangeSubmit">确 定</el-button>
         </div>
     </el-dialog>
 </template>

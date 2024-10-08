@@ -21,9 +21,6 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
                     user.Set("UseTime", DateUtils.SecondToHms(item.ExamTimeSeconds));
 
-                    var maxScore = await _examPaperStartRepository.GetMaxScoreAsync(user.Id, item.ExamPaperId);
-                    user.Set("MaxScore", maxScore);
-
                     item.Set("User", user);
                 }
             }
@@ -56,7 +53,6 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 "开考时间",
                 "交卷时间",
                 "用时",
-                "历史最高分",
                 "客观题成绩",
                 "主观题成绩",
                 "成绩",
@@ -70,7 +66,6 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 foreach (var item in list)
                 {
                     var user = await _organManager.GetUser(item.UserId);
-                    var maxScore = await _examPaperStartRepository.GetMaxScoreAsync(user.Id, item.ExamPaperId);
 
                     rows.Add(new List<string>
                     {
@@ -81,7 +76,6 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                         $"{item.BeginDateTime.Value}",
                         $"{item.EndDateTime.Value}",
                         DateUtils.SecondToHms(item.ExamTimeSeconds),
-                        (maxScore).ToString(),
                         $"{item.ObjectiveScore}",
                         $"{item.SubjectiveScore}",
                         $"{item.Score}"

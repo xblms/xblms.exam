@@ -14,7 +14,7 @@ namespace XBLMS.Repositories
         Task ClearByPaperAsync(int paperId);
         Task ClearByPaperAndUserAsync(int paperId, int userId);
         Task DeleteAsync(int id);
-        Task<ExamPaperAnswer> GetAsync(int tmId);
+        Task<ExamPaperAnswer> GetAsync(int id);
         Task<ExamPaperAnswer> GetAsync(int tmId, int startId, int paperId);
         Task<decimal> ScoreSumAsync(int startId);
         Task<decimal> ObjectiveScoreSumAsync(int startId);

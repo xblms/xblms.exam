@@ -1,14 +1,14 @@
 var $url = "/common/examPaperUserMark";
-var $urlItem = $url+ "/item";
+var $urlSve = $url + "/save";
+var $urlSubmit = $url + "/submit";
 
 var data = utils.init({
   id: utils.getQueryInt('id'),
   list: null,
   paper: null,
-  tm: null,
-  watermark:null,
+  watermark: null,
   answerTotal: 0,
-  tmAnswerStatus:false,
+  tmAnswerStatus: false,
   tmList: [],
 });
 
@@ -35,8 +35,6 @@ var methods = {
           }
 
         });
-
-        $this.btnGetTm($this.tmList[0].id);
       }
 
     }).catch(function (error) {
@@ -46,26 +44,100 @@ var methods = {
     });
   },
   btnGetTm(id) {
-    this.tm = null;
+    this.$refs['answerScrollbar'].wrap.scrollTop = 0;
+    var eid = '#tm_' + id;
+    var scrollTop = ($(eid).offset().top) - 128;
+    this.$refs['answerScrollbar'].wrap.scrollTop = scrollTop;
+  },
+  markChange: function () {
+    var totalSScore = 0;
+    this.tmList.forEach(tm => {
+      totalSScore += tm.answerInfo.score;
+    });
+    this.paper.userSScore = totalSScore;
+  },
+  btnSaveClick: function () {
+    var answerList = [];
+    this.tmList.forEach(tm => {
+      var answer = tm.answerInfo;
+      answer.markState = tm.markState;
+      answerList.push(answer);
+    });
+
+    var markForm = {
+      startId: this.id,
+      list: answerList
+    };
+
+
     var $this = this;
-    $this.$nextTick(() => {
-      var getCurTm = $this.tmList.find(item => item.id === id);
-      $this.tm = getCurTm;
-    })
+
+    utils.loading(this, true, '正在保存阅卷...');
+    $api.post($urlSve, markForm).then(function (response) {
+      var res = response.data;
+      if (res.value) {
+        utils.success("保存成功", { layer: true })
+      }
+    }).catch(function (error) {
+      utils.error(error, { layer: true });
+    }).then(function () {
+      utils.loading($this, false);
+    });
   },
-  getTmAnswerStatus: function (id) {
-    var getCurTm = this.tmList.find(item => item.id === id);
-    return getCurTm.isRight;
+  btnSubmitClick: function () {
+    var $this = this;
+
+    var isAllMark = 0;
+
+    this.tmList.forEach(tm => {
+      if (!tm.markState) {
+        isAllMark++;
+      }
+    });
+
+    var msg = '确定提交阅卷吗？';
+    if (isAllMark > 0) {
+      msg = '还剩' + isAllMark + '道题没有判分，' + msg;
+    }
+
+    if (isAllMark) { 
+      top.utils.alertWarning({
+        title: '正在提交阅卷',
+        text: msg,
+        callback: function () {
+          $this.apiSubmitMark();
+        }
+      });
+    }
   },
-  btnDownClick: function () {
-    var curIndex = this.tm.tmIndex;
-    let downTm = this.tmList.find(item => item.tmIndex === (curIndex + 1))
-    this.btnGetTm(downTm.id);
-  },
-  btnUpClick: function () {
-    var curIndex = this.tm.tmIndex;
-    let upTm = this.tmList.find(item => item.tmIndex === (curIndex - 1))
-    this.btnGetTm(upTm.id);
+  apiSubmitMark: function () {
+    var $this = this;
+
+    var answerList = [];
+    this.tmList.forEach(tm => {
+      var answer = tm.answerInfo;
+      answer.markState = tm.markState;
+      answerList.push(answer);
+    });
+
+    var markForm = {
+      startId: this.id,
+      list: answerList
+    };
+
+
+    utils.loading(this, true, '正在提交阅卷...');
+    $api.post($urlSubmit, markForm).then(function (response) {
+      var res = response.data;
+      if (res.value) {
+        utils.success("提交成功", { layer: true });
+        utils.closeLayerSelf();
+      }
+    }).catch(function (error) {
+      utils.error(error, { layer: true });
+    }).then(function () {
+      utils.loading($this, false);
+    });
   }
 };
 

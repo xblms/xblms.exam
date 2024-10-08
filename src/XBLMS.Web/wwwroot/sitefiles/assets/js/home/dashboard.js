@@ -4,7 +4,7 @@ var $practiceUrl = "/exam/examPractice/submit";
 
 var data = utils.init({
   user: null,
-  passSeries: [75],
+  passSeries: [0],
   passChartOptions: {
     chart: {
       type: 'radialBar',
@@ -97,11 +97,11 @@ var methods = {
   apiGet: function () {
     var $this = this;
 
+
     utils.loading(this, true);
     $api.get($url).then(function (response) {
       var res = response.data;
 
-      $this.passSeries = [res.allPercent];
       $this.user = res.user;
 
       $this.examTotal = res.examTotal;
@@ -123,6 +123,14 @@ var methods = {
 
       $this.examPaper = res.examPaper;
       $this.examMoni = res.examMoni;
+
+      setTimeout(function () {
+        $this.passSeries = [100];
+      }, 1000);
+
+      setTimeout(function () {
+        $this.passSeries = [res.allPercent];
+      },2000);
 
     }).catch(function (error) {
       utils.error(error);

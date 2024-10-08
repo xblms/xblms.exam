@@ -16,6 +16,9 @@ namespace XBLMS.Web.Controllers.Admin.Common
     {
         private const string Route = "common/examPaperUserMark";
 
+        private const string RouteSave = Route + "/save";
+        private const string RouteSubmit = Route + "/submit";
+
         private readonly IConfigRepository _configRepository;
         private readonly IAuthManager _authManager;
         private readonly ICreateManager _createManager;
@@ -28,6 +31,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
         private readonly IExamPaperStartRepository _examPaperStartRepository;
         private readonly IExamManager _examManager;
         private readonly IUserRepository _userRepository;
+        private readonly IExamTxRepository _examTxRepository;
 
         public ExamPaperUserMarkController(IConfigRepository configRepository,
             ICreateManager createManager,
@@ -40,7 +44,8 @@ namespace XBLMS.Web.Controllers.Admin.Common
             IExamManager examManager,
             IExamPaperAnswerRepository examPaperAnswerRepository,
             IExamPaperStartRepository examPaperStartRepository,
-            IUserRepository userRepository)
+            IUserRepository userRepository,
+            IExamTxRepository examTxRepository)
         {
             _configRepository = configRepository;
             _authManager = authManager;
@@ -54,12 +59,19 @@ namespace XBLMS.Web.Controllers.Admin.Common
             _examPaperAnswerRepository = examPaperAnswerRepository;
             _examPaperStartRepository = examPaperStartRepository;
             _userRepository = userRepository;
+            _examTxRepository = examTxRepository;
         }
         public class GetResult
         {
             public string Watermark { get; set; }
             public ExamPaper Item { get; set; }
             public List<ExamPaperRandomConfig> TxList { get; set; }
+        }
+
+        public class GetMarkRequest
+        {
+            public int StartId { get; set; }
+            public List<ExamPaperAnswer> List { get; set; }
         }
     }
 }

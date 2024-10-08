@@ -29,6 +29,8 @@ namespace XBLMS.Models
         [DataColumn]
         public bool IsMark { get; set; }
         [DataColumn]
+        public DateTime? MarkDateTime { get; set; }
+        [DataColumn]
         public decimal Score { get; set; }
         [DataColumn]
         public decimal SubjectiveScore { get; set; }

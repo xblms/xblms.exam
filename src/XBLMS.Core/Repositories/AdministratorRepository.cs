@@ -212,7 +212,29 @@ namespace XBLMS.Core.Repositories
 
             return await _repository.CountAsync(query);
         }
+        public async Task<List<Administrator>> GetListAsync()
+        {
+            var query = Q.NewQuery();
 
+            query.WhereNullOrFalse(nameof(Administrator.Locked));
+            query.OrderByDesc(nameof(Administrator.Id));
+
+            var dbs = await _repository.GetAllAsync(query);
+            var list = new List<Administrator>();
+
+            if (dbs != null)
+            {
+                foreach (var admin in dbs)
+                {
+                    if (admin != null)
+                    {
+                        list.Add(admin);
+                    }
+                }
+            }
+
+            return list;
+        }
         public async Task<List<Administrator>> GetAdministratorsAsync(List<int> companyIds, List<int> departmentIds, List<int> dutyIds, string role, string order, int lastActivityDate, string keyword, int offset, int limit)
         {
             var query = Q.NewQuery();

@@ -20,8 +20,18 @@
         ]
       },
       {
-        "id": "exam",
+        "id": "exampapermark",
         "order": 3,
+        "text": "阅卷",
+        "link": "/admin/exam/examPaperMark/",
+        "iconClass": "el-icon-finished",
+        "Permissions": [ "Select" ],
+        "children": [
+        ]
+      },
+      {
+        "id": "exam",
+        "order": 4,
         "text": "考试管理",
         "link": "",
         "iconClass": "el-icon-document-checked",
@@ -71,7 +81,7 @@
       },
       {
         "id": "questionnaire",
-        "order": 4,
+        "order": 5,
         "text": "发布问卷",
         "link": "/admin/exam/examQuestionnaire",
         "iconClass": "el-icon-document-checked",
@@ -80,7 +90,7 @@
       },
       {
         "id": "account",
-        "order": 5,
+        "order": 6,
         "text": "企业管理",
         "link": "",
         "iconClass": "el-icon-s-custom",
@@ -140,7 +150,7 @@
       },
       {
         "id": "system",
-        "order": 6,
+        "order": 7,
         "text": "系统管理",
         "link": "",
         "iconClass": "el-icon-s-tools",
@@ -279,7 +289,7 @@
       },
       {
         "id": "logs",
-        "order": 7,
+        "order": 8,
         "text": "日志管理",
         "link": "",
         "iconClass": "el-icon-warning",
@@ -329,7 +339,7 @@
       },
       {
         "id": "analysis",
-        "order": 8,
+        "order": 9,
         "text": "统计图表",
         "link": "",
         "iconClass": "el-icon-s-operation",

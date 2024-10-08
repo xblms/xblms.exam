@@ -30,6 +30,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         private const string RouteScoreExport = RouteScore + "/export";
 
         private const string RouteMark = Route + "/mark";
+        private const string RouteMarkSetMarker = Route + "/marker";
 
 
         private readonly IAuthManager _authManager;
@@ -40,11 +41,13 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         private readonly IExamPaperUserRepository _examPaperUserRepository;
         private readonly IExamPaperStartRepository _examPaperStartRepository;
         private readonly IExamPaperAnswerRepository _examPaperAnswerRepository;
+        private readonly IAdministratorRepository _administratorRepository;
 
         public ExamPaperManagerController(IAuthManager authManager,
             IPathManager pathManager,
             IOrganManager organManager,
             IUserRepository userRepository,
+            IAdministratorRepository administratorRepository,
             IExamPaperUserRepository examPaperUserRepository,
             IExamPaperAnswerRepository examPaperAnswerRepository,
             IExamPaperStartRepository examPaperStartRepository,
@@ -54,11 +57,20 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             _pathManager = pathManager;
             _organManager = organManager;
             _userRepository = userRepository;
+            _administratorRepository = administratorRepository;
             _examPaperUserRepository = examPaperUserRepository;
             _examPaperAnswerRepository = examPaperAnswerRepository;
             _examPaperStartRepository = examPaperStartRepository;
             _examPaperRepository = examPaperRepository;
         }
+
+        public class GetSelectMarkInfo
+        {
+            public int Id { get; set; }
+            public string DisplayName {  get; set; }
+            public string UserName { get; set; }
+        }
+
         public class GetResult
         {
             public string Title { get; set; }
@@ -72,6 +84,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             public decimal MaxScore { get; set; }
             public decimal MinScore { get; set; }
             public decimal TotalUserScore { get; set; }
+            public List<GetSelectMarkInfo> MarkerList { get; set; }
         }
         public class GetUserRequest
         {
@@ -84,6 +97,11 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         {
             public int Total { get; set; }
             public List<ExamPaperUser> List { get; set; }
+        }
+        public class GetSetMarkerRequest
+        {
+            public int Id { get; set; }
+            public List<int> Ids { get; set; }
         }
 
         public class GetSocreRequest

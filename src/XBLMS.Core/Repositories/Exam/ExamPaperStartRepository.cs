@@ -157,6 +157,27 @@ namespace XBLMS.Core.Repositories
             var list = await _repository.GetAllAsync(query.ForPage(pageIndex, pageSize));
             return (total, list);
         }
+        public async Task<(int total, List<ExamPaperStart> list)> GetListByMarkerAsync(int markerId, string keyWords, int pageIndex, int pageSize)
+        {
+            var query = Q.
+                WhereTrue(nameof(ExamPaperStart.IsSubmit)).
+                WhereNullOrFalse(nameof(ExamPaperStart.Locked)).
+                Where(nameof(ExamPaperStart.MarkTeacherId), markerId);
+
+
+            if (!string.IsNullOrEmpty(keyWords))
+            {
+             
+                var like = $"%{keyWords}%";
+                query.WhereLike(nameof(ExamPaperStart.KeyWords), like);
+            }
+
+            var total = await _repository.CountAsync(query);
+
+            query.OrderByDesc(nameof(ExamPaperStart.Id));
+            var list = await _repository.GetAllAsync(query.ForPage(pageIndex, pageSize));
+            return (total, list);
+        }
         public async Task<List<int>> GetPaperIdsAsync(int userId)
         {
             return await _repository.GetAllAsync<int>(Q.
@@ -281,6 +302,13 @@ namespace XBLMS.Core.Repositories
                 WhereTrue(nameof(ExamPaperStart.IsSubmit)).
                 Where(nameof(ExamPaperStart.ExamPaperId), paperId).
                 GroupBy(nameof(ExamPaperStart.UserId)));
+        }
+        public async Task<int> CountByMarkAsync(int paperId)
+        {
+            return await _repository.CountAsync(Q.
+                WhereNullOrFalse(nameof(ExamPaperStart.IsMark)).
+                WhereTrue(nameof(ExamPaperStart.IsSubmit)).
+                Where(nameof(ExamPaperStart.ExamPaperId), paperId));
         }
     }
 }

@@ -194,7 +194,7 @@ namespace XBLMS.Core.Services
 
             if (paperView)
             {
-                tm.Set("IsRight", StringUtils.Equals(tm.Answer, answer.Answer));
+                tm.Set("IsRight", StringUtils.Equals(tm.Answer, answer.Answer) || answer.Score > 0);
                 if (!paper.SecrecyPaperAnswer)
                 {
                     tm.Answer = "";
@@ -218,7 +218,7 @@ namespace XBLMS.Core.Services
             {
                 optionsRandom.Add(new KeyValuePair<string, string>(abcList[i], options[i]));
             }
-  
+
             tm.Set("OptionsRandom", optionsRandom);
 
             var answerStatus = true;
@@ -230,7 +230,7 @@ namespace XBLMS.Core.Services
 
             tm.Set("AnswerInfo", answer);
             tm.Set("AnswerStatus", answerStatus);
-            tm.Set("IsRight", StringUtils.Equals(tm.Answer, answer.Answer));
+            tm.Set("IsRight", StringUtils.Equals(tm.Answer, answer.Answer) || answer.Score > 0);
 
         }
         public async Task GetTmInfoByPaperMark(ExamPaperRandomTm tm, ExamPaper paper, int startId)
@@ -244,18 +244,22 @@ namespace XBLMS.Core.Services
             {
                 optionsRandom.Add(new KeyValuePair<string, string>(abcList[i], options[i]));
             }
-      
+
             tm.Set("OptionsRandom", optionsRandom);
 
             var answer = await _examPaperAnswerRepository.GetAsync(tm.Id, startId, paper.Id);
-    
 
-            var markState = TranslateUtils.ToBool(answer.Get("MarkState").ToString());
-    
+            var answerStatue = answer.Get("MarkState");
+
+            var markState = false;
+            if (answerStatue != null)
+            {
+                markState = TranslateUtils.ToBool(answer.Get("MarkState").ToString());
+            }
 
             tm.Set("AnswerInfo", answer);
             tm.Set("MarkState", markState);
-            tm.Set("IsRight", StringUtils.Equals(tm.Answer, answer.Answer));
+            tm.Set("IsRight", StringUtils.Equals(tm.Answer, answer.Answer) || answer.Score > 0);
 
         }
 

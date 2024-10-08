@@ -40,37 +40,44 @@ namespace XBLMS.Web.Controllers.Admin.Common
             var paperTmTotal = 0;
 
             var tmIndex = 1;
+            var txList=new List<ExamPaperRandomConfig>();
             foreach (var config in configs)
             {
-                var tms = await _examPaperRandomTmRepository.GetListAsync(randomId, config.TxId);
-                if (tms != null && tms.Count > 0)
+                var tx = await _examTxRepository.GetAsync(config.TxId);
+                if(tx!=null && tx.ExamTxBase==ExamTxBase.Tiankongti || tx.ExamTxBase == ExamTxBase.Jiandati)
                 {
-                    paperTmTotal += tms.Count;
-
-                    foreach (var item in tms)
+                    var tms = await _examPaperRandomTmRepository.GetListAsync(randomId, config.TxId);
+                    if (tms != null && tms.Count > 0)
                     {
-                        await _examManager.GetTmInfoByPaperMark(item, paper, startId);
-                        item.Set("TmIndex", tmIndex);
-                        tmIndex++;
+                        paperTmTotal += tms.Count;
+
+                        foreach (var item in tms)
+                        {
+                            await _examManager.GetTmInfoByPaperMark(item, paper, startId);
+                            item.Set("TmIndex", tmIndex);
+                            tmIndex++;
+                        }
+                        config.Set("TmList", tms);
                     }
-                    config.Set("TmList", tms);
+                    txList.Add(config);
                 }
             }
 
             paper.Set("TmTotal", paperTmTotal);
             paper.Set("StartId", startId);
 
-            paper.Set("UserDisplayName", user.DisplayName);
-            paper.Set("UserAvatar", user.AvatarUrl);
+            paper.Set("UserDisplayName", "***");
+            paper.Set("UserAvatar", null);
 
             paper.Set("UseTime", DateUtils.SecondToHms(start.ExamTimeSeconds));
-            paper.Set("UserOScore", start.ObjectiveScore);
+
+            paper.Set("UserSScore", start.SubjectiveScore);
 
             return new GetResult
             {
-                Watermark = $"{admin.DisplayName}-{admin.UserName}-{paper.Title}-{user.DisplayName}-{user.UserName}-{DateTime.Now.ToString()}",
+                Watermark = $"{admin.DisplayName}-{admin.UserName}-{paper.Title}-{DateTime.Now.ToString()}",
                 Item = paper,
-                TxList = configs
+                TxList = txList
             };
         }
     }

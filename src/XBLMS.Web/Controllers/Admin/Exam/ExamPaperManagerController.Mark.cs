@@ -22,12 +22,39 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                     user.Set("UseTime", DateUtils.SecondToHms(item.ExamTimeSeconds));
 
                     item.Set("User", user);
+
+                    if (item.MarkTeacherId > 0)
+                    {
+                        var marker = await _administratorRepository.GetByUserIdAsync(item.MarkTeacherId);
+                        item.Set("Marker", marker.DisplayName);
+                    }
+
                 }
             }
             return new GetScoreResult
             {
                 Total = total,
                 List = list
+            };
+        }
+
+
+
+        [HttpPost, Route(RouteMarkSetMarker)]
+        public async Task<ActionResult<BoolResult>> SetMarker([FromBody] GetSetMarkerRequest request)
+        {
+            if (request.Ids != null && request.Ids.Count > 0 && request.Id > 0)
+            {
+                foreach (var id in request.Ids)
+                {
+                    var start = await _examPaperStartRepository.GetAsync(id);
+                    start.MarkTeacherId = request.Id;
+                    await _examPaperStartRepository.UpdateAsync(start);
+                }
+            }
+            return new BoolResult
+            {
+                Value = true
             };
         }
     }
