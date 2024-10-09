@@ -60,7 +60,6 @@
 npm install
 npm run build-win-x64
 dotnet build ./build-win-x64/build.sln -c Release
-dotnet publish ./build-win-x64/src/XBLMS.Cli/XBLMS.Cli.csproj -r win-x64 -c Release -o ./publish/xblms-win-x64
 dotnet publish ./build-win-x64/src/XBLMS.Web/XBLMS.Web.csproj -r win-x64 -c Release -o ./publish/xblms-win-x64
 ```
 
@@ -72,7 +71,6 @@ dotnet publish ./build-win-x64/src/XBLMS.Web/XBLMS.Web.csproj -r win-x64 -c Rele
 npm install
 npm run build-win-x32
 dotnet build ./build-win-x32/build.sln -c Release
-dotnet publish ./build-win-x32/src/XBLMS.Cli/XBLMS.Cli.csproj -r win-x32 -c Release -o ./publish/xblms-win-x32
 dotnet publish ./build-win-x32/src/XBLMS.Web/XBLMS.Web.csproj -r win-x32 -c Release -o ./publish/xblms-win-x32
 ```
 
@@ -84,7 +82,6 @@ dotnet publish ./build-win-x32/src/XBLMS.Web/XBLMS.Web.csproj -r win-x32 -c Rele
 npm install
 npm run build-linux-x64
 dotnet build ./build-linux-x64/build.sln -c Release
-dotnet publish ./build-linux-x64/src/XBLMS.Cli/XBLMS.Cli.csproj -r linux-x64 -c Release -o ./publish/xblms-linux-x64
 dotnet publish ./build-linux-x64/src/XBLMS.Web/XBLMS.Web.csproj -r linux-x64 -c Release -o ./publish/xblms-linux-x64
 ```
 
@@ -96,7 +93,6 @@ dotnet publish ./build-linux-x64/src/XBLMS.Web/XBLMS.Web.csproj -r linux-x64 -c 
 npm install
 npm run build-linux-arm64
 dotnet build ./build-linux-arm64/build.sln -c Release
-dotnet publish ./build-linux-arm64/src/XBLMS.Cli/XBLMS.Cli.csproj -r linux-arm64 -c Release -o ./publish/xblms-linux-arm64
 dotnet publish ./build-linux-arm64/src/XBLMS.Web/XBLMS.Web.csproj -r linux-arm64 -c Release -o ./publish/xblms-linux-arm64
 ```
 
