@@ -15,7 +15,13 @@
     </el-form>
     <el-table ref="paperTable" :data="paperList" :size="euiSize"
               style="width: 100%" :height="$(window).height()-160">
-        <el-table-column type="index" label="#" width="60">
+        <el-table-column label="#"
+                         type="index"
+                         width="60"
+                         align="center">
+            <template scope="scope">
+                <span>{{(formInline.pageIndex - 1) * formInline.pageSize + scope.$index + 1}}</span>
+            </template>
         </el-table-column>
         <el-table-column prop="title" label="问卷名称" show-overflow-tooltip>
         </el-table-column>

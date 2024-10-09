@@ -2,6 +2,8 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using XBLMS.Enums;
+using XBLMS.Utils;
 namespace XBLMS.Web.Controllers.Admin.Exam
 {
     public partial class ExamPaperController
@@ -9,6 +11,10 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         [HttpGet, Route(Route)]
         public async Task<ActionResult<GetResult>> GetManage([FromQuery] GetRequest request)
         {
+            if (!await _authManager.HasPermissionsAsync())
+            {
+                return this.NoAuth();
+            }
 
             var treeIds = new List<int>();
             if (request.TreeId > 0)

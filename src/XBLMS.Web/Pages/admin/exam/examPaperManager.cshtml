@@ -295,7 +295,13 @@
                             <el-table-column type="selection"
                                              width="55">
                             </el-table-column>
-                            <el-table-column type="index" label="#" width="60">
+                            <el-table-column label="#"
+                                             type="index"
+                                             width="60"
+                                             align="center">
+                                <template scope="scope">
+                                    <span>{{(formMark.pageIndex - 1) * formMark.pageSize + scope.$index + 1}}</span>
+                                </template>
                             </el-table-column>
                             <el-table-column label="账号">
                                 <template slot-scope="scope">
@@ -376,7 +382,13 @@
                     <div>
                         <el-table ref="scoreTable" :data="scoreList" :size="euiSize"
                                   style="width: 100%" :height="$(window).height()-255">
-                            <el-table-column type="index" label="#" width="60">
+                            <el-table-column label="#"
+                                             type="index"
+                                             width="60"
+                                             align="center">
+                                <template scope="scope">
+                                    <span>{{(formScore.pageIndex - 1) * formScore.pageSize + scope.$index + 1}}</span>
+                                </template>
                             </el-table-column>
                             <el-table-column label="账号">
                                 <template slot-scope="scope">

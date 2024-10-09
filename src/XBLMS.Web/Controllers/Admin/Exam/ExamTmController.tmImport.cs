@@ -20,6 +20,11 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         [HttpGet, Route(RouteImportGetCache)]
         public async Task<ActionResult<CacheResultImportTm>> GetImportCache()
         {
+            if (!await _authManager.HasPermissionsAsync(MenuPermissionType.Import))
+            {
+                return this.NoAuth();
+            }
+
             var admin = await _authManager.GetAdminAsync();
 
 

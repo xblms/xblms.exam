@@ -12,11 +12,6 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
         [HttpGet, Route(Route)]
         public async Task<ActionResult<GetResult>> Get([FromQuery] GetRequest request)
         {
-            if (!await _authManager.HasPermissionsAsync(MenuPermissionType.Update))
-            {
-                return this.NoAuth();
-            }
-
             var userName = request.UserName;
             var adminName = _authManager.AdminName;
 

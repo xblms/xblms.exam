@@ -5,6 +5,7 @@ using XBLMS.Utils;
 using XBLMS.Core.Utils;
 using XBLMS.Dto;
 using Microsoft.AspNetCore.Identity.Data;
+using XBLMS.Enums;
 
 namespace XBLMS.Web.Controllers.Admin.Exam
 {
@@ -13,6 +14,11 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         [HttpPost, Route(RouteUpdate)]
         public async Task<ActionResult<BoolResult>> Submit([FromBody] ItemRequest<ExamTx> request)
         {
+            if (!await _authManager.HasPermissionsAsync(MenuPermissionType.Update))
+            {
+                return this.NoAuth();
+            }
+
             var tx = request.Item;
             var txInfo = await _examTxRepository.GetAsync(tx.Id);
 

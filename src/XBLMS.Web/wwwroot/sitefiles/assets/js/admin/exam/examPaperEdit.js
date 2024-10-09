@@ -199,7 +199,7 @@ var methods = {
       }
 
     }).catch(function (error) {
-      utils.error(error, { layer: true });
+      utils.error(error);
     }).then(function () {
       utils.loading($this, false);
       utils.closeLayerSelf();

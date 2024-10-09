@@ -609,7 +609,6 @@ var utils = {
 
       if (!ignoreAuth && error.response && (error.response.status === 401 || error.response.status === 403)) {
         var location = _.trimEnd(window.location.href, '/');
-        console.log(location);
         if (_.endsWith(location, '/admin') || _.endsWith(location, '/home') || _.endsWith(location, '/app')) {
           top.location.href = utils.getRootUrl('login');
        

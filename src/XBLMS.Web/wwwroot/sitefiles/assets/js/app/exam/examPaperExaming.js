@@ -15,7 +15,8 @@ var data = utils.init({
   tmAnswerStatus:false,
   tmList: [],
   surplusSecond: 0,
-  curTimingSecond:1
+  curTimingSecond: 1,
+  datikaDialogVisible:false
 });
 
 var methods = {
@@ -85,42 +86,37 @@ var methods = {
     var getCurTm = this.tmList.find(item => item.id === id);
     return getCurTm.answerStatus;
   },
-  answerChange: function () {
+  answerChange: function (tm) {
 
-    let setTm = this.tm;
+    tm.answerStatus = false;
 
-    this.tmList = this.tmList.filter(f => f.id !== setTm.id);
-    setTm.answerStatus = false;
-
-    if (setTm.baseTx === "Duoxuanti") {
-      setTm.answerInfo.answer = setTm.answerInfo.optionsValues.join('');
+    if (tm.baseTx === "Duoxuanti") {
+      tm.answerInfo.answer = tm.answerInfo.optionsValues.join('');
     }
     var completionStatus = true;
-    if (setTm.baseTx === "Tiankongti") {
-      for (var i = 0; i < setTm.answerInfo.optionsValues.length; i++) {
-        if (setTm.answerInfo.optionsValues[i] === '' || setTm.answerInfo.optionsValues[i] === null) {
+    if (tm.baseTx === "Tiankongti") {
+      for (var i = 0; i < tm.answerInfo.optionsValues.length; i++) {
+        if (tm.answerInfo.optionsValues[i] === '' || tm.answerInfo.optionsValues[i] === null) {
           completionStatus = false;
         }
       }
-      setTm.answerInfo.answer = setTm.answerInfo.optionsValues.join(',');
+      tm.answerInfo.answer = tm.answerInfo.optionsValues.join(',');
     }
 
-    if (setTm.answerInfo.answer !== '' && setTm.answerInfo.answer.length > 0) {
+    if (tm.answerInfo.answer !== '' && tm.answerInfo.answer.length > 0) {
       if (completionStatus) {
-        setTm.answerStatus = true;
+        tm.answerStatus = true;
       }
       else {
-        setTm.answerStatus = false;
+        tm.answerStatus = false;
       }
     }
-
-    this.tmList.push(setTm);
 
 
     var answerTotals = this.tmList.filter(f => f.answerStatus);
     this.answerTotal = answerTotals.length;
 
-    this.apiSubmitAnswer(setTm.answerInfo);
+    this.apiSubmitAnswer(tm.answerInfo);
   },
   btnDownClick: function () {
     var curIndex = this.tm.tmIndex;
@@ -131,6 +127,13 @@ var methods = {
     var curIndex = this.tm.tmIndex;
     let upTm = this.tmList.find(item => item.tmIndex === (curIndex - 1))
     this.btnGetTm(upTm.id);
+  },
+  btnGoTm: function (id) {
+    var tmel = document.getElementById("tmid_" + id);
+    if (tmel) {
+      tmel.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+    this.datikaDialogVisible = false;
   },
   apiSubmitAnswer: function (setTm) {
     $api.post($urlSubmitAnswer, { answer: setTm }).then(function (response) { });

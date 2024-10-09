@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using XBLMS.Dto;
+using XBLMS.Enums;
+using XBLMS.Utils;
 namespace XBLMS.Web.Controllers.Admin.Exam
 {
     public partial class ExamQuestionnaireController
@@ -9,6 +11,10 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         [HttpPost, Route(RouteDelete)]
         public async Task<ActionResult<BoolResult>> Delete([FromBody] IdRequest request)
         {
+            if (!await _authManager.HasPermissionsAsync(MenuPermissionType.Delete))
+            {
+                return this.NoAuth();
+            }
 
             var paper = await _examQuestionnaireRepository.GetAsync(request.Id);
             if (paper != null)

@@ -10,7 +10,8 @@ var data = utils.init({
   },
   list: [],
   total: 0,
-  loadMoreLoading: false
+  loadMoreLoading: false,
+  appMenuActive: "exam"
 });
 
 var methods = {
@@ -71,14 +72,27 @@ var methods = {
       title: false,
       closebtn: 0,
       url: utils.getExamUrl('examPaperInfo', { id: id }),
-      width: "78%",
-      height: "98%",
+      width: "100%",
+      height: "100%",
       end: function () {
-        top.$vue.apiGetTask();
         $this.apiGetItem(id);
       }
     });
   },
+  btnAppMenuClick: function (common) {
+    if (common === 'index') {
+      location.href = utils.getIndexUrl();
+    }
+    if (common === 'exam') {
+      location.href = utils.getExamUrl("examPaper");
+    }
+    if (common === 'wenjuan') {
+      location.href = utils.getExamUrl("examQuestionnaire");
+    }
+    if (common === 'mine') {
+      location.href = utils.getIndexUrl();
+    }
+  }
 };
 
 var $vue = new Vue({
@@ -86,6 +100,7 @@ var $vue = new Vue({
   data: data,
   methods: methods,
   created: function () {
+    document.title = "考试中心";
     this.apiGet();
   },
 });

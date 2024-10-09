@@ -9,7 +9,8 @@ var data = utils.init({
   },
   list: [],
   total: 0,
-  loadMoreLoading: false
+  loadMoreLoading: false,
+  appMenuActive: "wenjuan"
 });
 
 var methods = {
@@ -100,6 +101,20 @@ var methods = {
       });
     }
   },
+  btnAppMenuClick: function (common) {
+    if (common === 'index') {
+      location.href = utils.getIndexUrl();
+    }
+    if (common === 'exam') {
+      location.href = utils.getExamUrl("examPaper");
+    }
+    if (common === 'wenjuan') {
+      location.href = utils.getExamUrl("examQuestionnaire");
+    }
+    if (common === 'mine') {
+      location.href = utils.getIndexUrl();
+    }
+  }
 };
 
 var $vue = new Vue({

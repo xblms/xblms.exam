@@ -17,7 +17,7 @@ var data = utils.init({
   tm: null,
   tmIndex: 0,
   watermark: null,
-  answerResult:null
+  answerResult: null
 });
 
 var methods = {

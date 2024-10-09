@@ -118,7 +118,7 @@ var methods = {
   },
 
   redirectIndex: function () {
-    location.href = "/home/app/"
+    location.href = utils.getIndexUrl();
   },
 
   btnTypeClick: function() {

@@ -89,7 +89,9 @@ var data = utils.init({
   practiceWrongPercent: 0,
 
   examPaper: null,
-  examMoni: null
+  examMoni: null,
+
+  appMenuActive:"index"
 
 });
 
@@ -130,7 +132,7 @@ var methods = {
 
       setTimeout(function () {
         $this.passSeries = [res.allPercent];
-      },2000);
+      }, 2000);
 
     }).catch(function (error) {
       utils.error(error);
@@ -210,13 +212,27 @@ var methods = {
       title: false,
       closebtn: 0,
       url: utils.getExamUrl('examPaperInfo', { id: id }),
-      width: "78%",
-      height: "98%",
+      width: "100%",
+      height: "100%",
       end: function () {
         $this.apiGet();
       }
     });
   },
+  btnAppMenuClick: function (common) {
+    if (common === 'index') {
+      location.href = utils.getIndexUrl();
+    }
+    if (common === 'exam') {
+      location.href = utils.getExamUrl("examPaper");
+    }
+    if (common === 'wenjuan') {
+      location.href = utils.getExamUrl("examQuestionnaire");
+    }
+    if (common === 'mine') {
+      location.href = utils.getIndexUrl();
+    }
+  }
 };
 Vue.component("apexchart", {
   extends: VueApexCharts
@@ -226,6 +242,7 @@ var $vue = new Vue({
   data: data,
   methods: methods,
   created: function () {
+    document.title = "首页";
     this.apiGet();
   },
 });

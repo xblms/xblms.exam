@@ -12,6 +12,11 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         [HttpPost, Route(RouteDelete)]
         public async Task<ActionResult<BoolResult>> Delete([FromBody] IdRequest request)
         {
+            if (!await _authManager.HasPermissionsAsync(MenuPermissionType.Delete))
+            {
+                return this.NoAuth();
+            }
+
             var group = await _examTmGroupRepository.GetAsync(request.Id);
 
             await _examTmGroupRepository.DeleteAsync(group.Id);

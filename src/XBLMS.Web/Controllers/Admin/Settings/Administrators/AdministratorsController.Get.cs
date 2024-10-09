@@ -77,6 +77,10 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
         [HttpGet, Route(RouteOtherData)]
         public async Task<ActionResult<GetResult>> GetOtherData([FromQuery] GetRequest request)
         {
+            if (!await _authManager.HasPermissionsAsync())
+            {
+                return this.NoAuth();
+            }
             var adminId = _authManager.AdminId;
 
             var roles = _authManager.AuthorityTypes();

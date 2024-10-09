@@ -22,6 +22,11 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         [HttpPost, Route(RouteLock)]
         public async Task<ActionResult<BoolResult>> Lock([FromBody] IdRequest request)
         {
+            if (!await _authManager.HasPermissionsAsync(MenuPermissionType.Update))
+            {
+                return this.NoAuth();
+            }
+
             var paper = await _examQuestionnaireRepository.GetAsync(request.Id);
             if (paper == null) return NotFound();
             paper.Locked = true;

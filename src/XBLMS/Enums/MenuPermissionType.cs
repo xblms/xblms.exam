@@ -11,6 +11,7 @@ namespace XBLMS.Enums
         [DataEnum(DisplayName = "添加", Value = "Add")] Add,
         [DataEnum(DisplayName = "修改", Value = "Update")] Update,
         [DataEnum(DisplayName = "删除", Value = "Delete")] Delete,
+        [DataEnum(DisplayName = "管理", Value = "Manage")] Manage,
 
         [DataEnum(DisplayName = "导出", Value = "Export")] Export,
         [DataEnum(DisplayName = "导入", Value = "Import")] Import,

@@ -15,7 +15,13 @@
         <div>
             <el-table ref="markTable" :data="list" :size="euiSize"
                       style="width: 100%" :height="$(window).height()-153">
-                <el-table-column type="index" label="#" width="60">
+                <el-table-column label="#"
+                                 type="index"
+                                 width="60"
+                                 align="center">
+                    <template scope="scope">
+                        <span>{{(formInline.pageIndex - 1) * formInline.pageSize + scope.$index + 1}}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column label="试卷">
                     <template slot-scope="scope">

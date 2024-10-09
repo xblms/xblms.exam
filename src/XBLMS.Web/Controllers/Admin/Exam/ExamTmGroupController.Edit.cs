@@ -17,6 +17,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         [HttpGet, Route(RouteEditGet)]
         public async Task<ActionResult<GetEditResult>> GetEdit([FromQuery] IdRequest request)
         {
+          
 
             var group = new ExamTmGroup();
             var selectOrganIds = new List<string>();
@@ -51,6 +52,21 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         [HttpPost, Route(RouteEditPost)]
         public async Task<ActionResult<BoolResult>> PostEdit([FromBody] GetEditRequest request)
         {
+
+            if (request.Group.Id > 0)
+            {
+                if (!await _authManager.HasPermissionsAsync(MenuPermissionType.Update))
+                {
+                    return this.NoAuth();
+                }
+            }
+            else
+            {
+                if (!await _authManager.HasPermissionsAsync(MenuPermissionType.Add))
+                {
+                    return this.NoAuth();
+                }
+            }
 
             var admin = await _authManager.GetAdminAsync();
 

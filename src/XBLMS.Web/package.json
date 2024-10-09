@@ -16,6 +16,7 @@
         "text": "发布考试",
         "link": "/admin/exam/examPaper/",
         "iconClass": "el-icon-platform-eleme",
+        "Permissions": [ "Select", "Add", "Update", "Delete", "Manage" ],
         "children": [
         ]
       },
@@ -53,7 +54,7 @@
             "text": "题目管理",
             "link": "/admin/exam/examTm/",
             "iconClass": "el-icon-s-custom",
-            "Permissions": [ "Select", "Add", "Update", "Delete" ],
+            "Permissions": [ "Select", "Add", "Update", "Delete","Export","Import" ],
             "children": [
             ]
           },
@@ -85,6 +86,7 @@
         "text": "发布问卷",
         "link": "/admin/exam/examQuestionnaire",
         "iconClass": "el-icon-document-checked",
+        "Permissions": [ "Select", "Add", "Update", "Delete" ],
         "children": [
         ]
       },

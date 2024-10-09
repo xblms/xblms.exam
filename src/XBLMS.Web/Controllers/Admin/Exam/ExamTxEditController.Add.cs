@@ -4,6 +4,7 @@ using XBLMS.Dto;
 using XBLMS.Core.Utils;
 using XBLMS.Utils;
 using XBLMS.Models;
+using XBLMS.Enums;
 
 namespace XBLMS.Web.Controllers.Admin.Exam
 {
@@ -12,6 +13,11 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         [HttpPost, Route(RouteAdd)]
         public async Task<ActionResult<BoolResult>> Add([FromBody] ItemRequest<ExamTx> request)
         {
+            if (!await _authManager.HasPermissionsAsync(MenuPermissionType.Add))
+            {
+                return this.NoAuth();
+            }
+
             var admin = await _authManager.GetAdminAsync();
             var tx = request.Item;
             if (await _examTxRepository.IsExistsAsync(tx.Name))

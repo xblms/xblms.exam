@@ -56,6 +56,11 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         [HttpPost, Route(RouteDelete)]
         public async Task<ActionResult<BoolResult>> Delete([FromBody] IdRequest request)
         {
+            if (!await _authManager.HasPermissionsAsync(MenuPermissionType.Delete))
+            {
+                return this.NoAuth();
+            }
+
             var tm = await _examTmRepository.GetAsync(request.Id);
             if (tm == null) return this.NotFound();
             await _examTmRepository.DeleteAsync(request.Id);
@@ -69,6 +74,10 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         [HttpPost, Route(RouteDeleteSearch)]
         public async Task<ActionResult<BoolResult>> DeleteSearch([FromBody] GetDeletesRequest request)
         {
+            if (!await _authManager.HasPermissionsAsync(MenuPermissionType.Delete))
+            {
+                return this.NoAuth();
+            }
 
             foreach (var id in request.Ids)
             {

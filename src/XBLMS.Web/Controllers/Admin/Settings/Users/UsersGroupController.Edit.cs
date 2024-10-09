@@ -57,14 +57,14 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
         {
             if (request.Group.Id > 0)
             {
-                if (!await _authManager.HasPermissionsAsync(MenuPermissionType.Add))
+                if (!await _authManager.HasPermissionsAsync(MenuPermissionType.Update))
                 {
                     return this.NoAuth();
                 }
             }
             else
             {
-                if (!await _authManager.HasPermissionsAsync(MenuPermissionType.Update))
+                if (!await _authManager.HasPermissionsAsync(MenuPermissionType.Add))
                 {
                     return this.NoAuth();
                 }

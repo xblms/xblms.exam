@@ -19,6 +19,11 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         [HttpGet, Route(RouteExportExcel)]
         public async Task<ActionResult<StringResult>> Export([FromQuery] GetSearchRequest request)
         {
+            if (!await _authManager.HasPermissionsAsync(MenuPermissionType.Export))
+            {
+                return this.NoAuth();
+            }
+
             var treeIds = new List<int>();
             if (request.TreeId > 0)
             {

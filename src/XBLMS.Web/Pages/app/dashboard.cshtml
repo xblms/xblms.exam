@@ -10,19 +10,14 @@
     </div>
     <div class="card-body p-md-5">
         <div class="d-flex flex-column gap-2">
-            <!--img-->
-            <div>
-                <div>
-                    <div class="d-flex justify-content-between align-items-end">
-                        <div class="ms-2">
-                            <h1 class="text-warning">欢迎：{{ user.displayName }}</h1>
-                        </div>
-                        <img :src="user.avatarUrl || DEFAULT_AVATAR_URL" class="img-fluid rounded-pill smooth-shadow-lg mt-n8" style="width:128px;">
-                    </div>
-                    <div>
-                        <apexchart type="radialBar" :options="passChartOptions" :series="passSeries" height="350"></apexchart>
-                    </div>
+            <div class="d-flex justify-content-between align-items-end">
+                <div class="ms-2 mb-3">
+                   <h1 class="text-warning mt-n8"><span class="text-dark fs-6">欢迎：</span>{{ user.displayName }}</h1>
                 </div>
+                <img :src="user.avatarUrl || DEFAULT_AVATAR_URL" class="img-fluid rounded-pill smooth-shadow-lg mt-n8" style="width:128px;">
+            </div>
+            <div>
+                <apexchart type="radialBar" :options="passChartOptions" :series="passSeries" height="350"></apexchart>
             </div>
             <div class="d-flex flex-column gap-5">
                 <div class="d-flex flex-column gap-3">
@@ -234,15 +229,9 @@
     <span class="fw-light mt-3">没有了</span>
 </div>
 
-<div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-3">
-    <el-button-group class="btn-group p-2 bg-gradient-mix-shade rounded-pill">
-        <el-button type="primary" icon="el-icon-s-home" class="rounded-start-pill">首 页</el-button>
-        <el-button type="primary" plain icon="el-icon-document-checked">考 试</el-button>
-        <el-button type="primary" plain icon="el-icon-document">刷 题</el-button>
-        <el-button type="primary" plain icon="el-icon-user" class="rounded-end-pill">我 的</el-button>
-    </el-button-group>
-</div>
+@await Html.PartialAsync("_PartialAppMenu")
+
 @section Scripts{
-<script src="/sitefiles/assets/lib/apexcharts/dist/apexcharts.js" type="text/javascript"></script>
-<script src="/sitefiles/assets/lib/apexcharts/dist/vue-apexcharts.js" type="text/javascript"></script>
-<script src="/sitefiles/assets/js/app/dashboard.js" type="text/javascript"></script> }
+    <script src="/sitefiles/assets/lib/apexcharts/dist/apexcharts.js" type="text/javascript"></script>
+    <script src="/sitefiles/assets/lib/apexcharts/dist/vue-apexcharts.js" type="text/javascript"></script>
+    <script src="/sitefiles/assets/js/app/dashboard.js" type="text/javascript"></script> }

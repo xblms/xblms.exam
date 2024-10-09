@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using XBLMS.Dto;
 using XBLMS.Enums;
+using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Admin.Exam
 {
@@ -11,6 +12,22 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         [HttpPost, Route(Route)]
         public async Task<ActionResult<BoolResult>> Submit([FromBody] GetSubmitRequest request)
         {
+            if (request.Item.Id > 0)
+            {
+                if (!await _authManager.HasPermissionsAsync(MenuPermissionType.Update))
+                {
+                    return this.NoAuth();
+                }
+            }
+            else
+            {
+                if (!await _authManager.HasPermissionsAsync(MenuPermissionType.Add))
+                {
+                    return this.NoAuth();
+                }
+            }
+
+
             var admin = await _authManager.GetAdminAsync();
             var paper = request.Item;
 

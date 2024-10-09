@@ -39,6 +39,22 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         [HttpPost, Route(RouteEditSubmit)]
         public async Task<ActionResult<BoolResult>> SubmitTm([FromBody] ItemRequest<ExamTm> request)
         {
+            if (request.Item.Id > 0)
+            {
+                if (!await _authManager.HasPermissionsAsync(MenuPermissionType.Update))
+                {
+                    return this.NoAuth();
+                }
+            }
+            else
+            {
+                if (!await _authManager.HasPermissionsAsync(MenuPermissionType.Add))
+                {
+                    return this.NoAuth();
+                }
+            }
+        
+
             var admin = await _authManager.GetAdminAsync();
             var info = request.Item;
             if (info.Id > 0)

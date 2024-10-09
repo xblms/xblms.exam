@@ -1,5 +1,5 @@
 @page
-@{ Layout = "_LayoutHome"; }
+@{ Layout = "_LayoutApp"; }
 @section Styles{
     <style>
         .el-form-item {
@@ -8,14 +8,9 @@
     </style>
 }
 <el-card class="mb-3">
-    <el-form :inline="true" :model="form" class="d-flex justify-content-between align-items-center">
-        <el-form-item label="">
-            <el-input prefix-icon="el-icon-search" v-model="form.keyWords" placeholder="关键字" class="w-100"></el-input>
-        </el-form-item>
-        <el-form-item>
-            <el-button type="primary" plain icon="el-icon-search" v-on:click="btnSearchClick">查询</el-button>
-        </el-form-item>
-    </el-form>
+    <el-input placeholder="关键字查询" v-model="form.keyWords" siza="small">
+        <el-button slot="append" icon="el-icon-search" v-on:click="btnSearchClick" size="small"></el-button>
+    </el-input>
 </el-card>
 <div class="pe-3" v-if="total>0">
     <div class="ms-5 position-relative card-hover-with-icon" v-for="(paper,index) in list" v-on:click="btnViewClick(paper.id)">
@@ -26,14 +21,16 @@
             </div>
         </div>
         <el-card shadow="hover" class="mb-2">
-            <div class="row align-items-center g-3 ms-6">
-                <div class="col">
-                    <div class="mb-2">
+            <div class="ms-5">
+                <div class="mb-3">
+                    <div>
                         <el-link :underline="false" v-on:click.stop="btnViewClick(paper.id)">
-                            <span class="fw-bold card-icon bg-white px-3 py-1 rounded-pill">{{ paper.title }}</span>
+                            <span class="fw-bold card-icon bg-white py-1 rounded-pill">{{ paper.title }}</span>
                         </el-link>
                     </div>
-                    <ul class="list-inline fw-light ms-3">
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <ul class="list-inline fw-light">
                         <li class="list-inline-item fs-5">
                             总分：{{paper.totalScore}}
                         </li>
@@ -54,10 +51,10 @@
                             /{{paper.userExamTimes}}
                         </li>
                     </ul>
-                </div>
-                <div class="col-auto">
-                    <div class="bg-light p-2 rounded-pill">
-                        <el-button type="primary" plain icon="el-icon-s-order" class="rounded-pill" v-on:click.stop="btnViewClick(paper.id)">详 细</el-button>
+                    <div>
+                        <div class="bg-light p-2 rounded-pill">
+                            <el-button type="primary" plain icon="el-icon-s-order" class="rounded-pill" v-on:click.stop="btnViewClick(paper.id)">详 细</el-button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -71,14 +68,9 @@
 <div class="pt-10" v-else>
     <el-empty></el-empty>
 </div>
-<div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center">
-    <el-button-group class="btn-group p-2 bg-gradient-mix-shade rounded-pill">
-        <el-button type="primary" plain icon="el-icon-s-home" class="rounded-start-pill" v-on:click="location.href=utils.getIndexUrl()">首 页</el-button>
-        <el-button type="primary" icon="el-icon-document-checked">考 试</el-button>
-        <el-button type="primary" plain icon="el-icon-document">刷 题</el-button>
-        <el-button type="primary" plain icon="el-icon-user" class="rounded-end-pill">我 的</el-button>
-    </el-button-group>
-</div>
+<div class="py-8"></div>
+@await Html.PartialAsync("_PartialAppMenu")
+
 @section Scripts{
     <script src="/sitefiles/assets/js/app/exam/examPaper.js" type="text/javascript"></script>
 }
