@@ -1,5 +1,5 @@
 @page
-@{ Layout = "_LayoutHome"; }
+@{ Layout = "_LayoutApp"; }
 @section Styles{
     <style>
         .el-form-item {
@@ -34,7 +34,7 @@
                                 </div>
                                 <div class="col-auto">
                                     <div class="bg-light p-2 rounded-pill">
-                                        <el-button type="primary" plain icon="el-icon-s-order" class="rounded-pill" v-on:click=btnCreateClick('Group',item.id,item.tmTotal)>开始练习</el-button>
+                                        <el-button type="primary" plain icon="el-icon-s-order" class="rounded-pill" v-on:click="btnCreateClick('Group',item.id,item.tmTotal)">开始练习</el-button>
                                     </div>
                                 </div>
                             </div>
@@ -45,7 +45,7 @@
                     </div>
                 </div>
                 <div class="pt-10" v-else>
-                    <el-empty description="未开启刷题功能，请询问管理员老师"></el-empty>
+                    <el-empty></el-empty>
                 </div>
             </el-scrollbar>
         </el-col>
@@ -56,7 +56,7 @@
                         <el-tooltip placement="left">
                             <div slot="content">共<span class="text-success fs-3 mx-2">{{ total }}</span>道题</div>
                             <div class="p-2 rounded-3 bg-light">
-                                <el-button type="primary" class="py-5 w-100 rounded-3" v-on:click=btnCreateClick('All')><i class="bi bi-fast-forward-circle-fill me-3"></i>快速开始</el-button>
+                                <el-button type="primary" class="py-5 w-100 rounded-3" v-on:click="btnCreateClick('All')"><i class="bi bi-fast-forward-circle-fill me-3"></i>快速开始</el-button>
                             </div>
                         </el-tooltip>
                     </div>
@@ -64,7 +64,7 @@
                         <el-tooltip placement="left">
                             <div slot="content">共<span class="text-success fs-3 mx-2">{{collectTotal}}</span>道题</div>
                             <div class="p-2 rounded-3 bg-light mt-3">
-                                <el-button type="primary" plain class="py-5 w-100 rounded-3" v-on:click=btnCreateClick('Collect')>
+                                <el-button type="primary" plain class="py-5 w-100 rounded-3" v-on:click="btnCreateClick('Collect')">
                                     <i class="bi bi-person-hearts me-3"></i>收藏练习
                                 </el-button>
                             </div>
@@ -74,7 +74,7 @@
                         <el-tooltip placement="left">
                             <div slot="content">共<span class="text-success fs-3 mx-2">{{ wrongTotal }}</span>道题</div>
                             <div class="p-2 rounded-3 bg-light mt-3">
-                                <el-button type="primary" plain class="py-5 w-100 rounded-3" v-on:click=btnCreateClick('Wrong')><i class="bi bi-backspace-reverse me-3"></i>错题练习</el-button>
+                                <el-button type="primary" plain class="py-5 w-100 rounded-3" v-on:click="btnCreateClick('Wrong')"><i class="bi bi-backspace-reverse me-3"></i>错题练习</el-button>
                             </div>
                         </el-tooltip>
                     </div>

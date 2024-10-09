@@ -214,19 +214,6 @@ gulp.task("copy-files", async function () {
   fs.removeSync(publishDir + '/appsettings.Development.json');
 });
 
-gulp.task("copy-xblms-linux", async function () {
-  fs.copySync(publishDir + '/XBLMS.Cli', publishDir + '/xblms');
-  fs.removeSync(publishDir + '/XBLMS.Cli.pdb');
-  fs.removeSync(publishDir + '/XBLMS.Cli');
-  fs.removeSync(publishDir + '/web.config');
-});
-
-gulp.task("copy-xblms-win", async function () {
-  fs.copySync(publishDir + '/XBLMS.Cli.exe', publishDir + '/xblms.exe');
-  fs.removeSync(publishDir + '/XBLMS.Cli.pdb');
-  fs.removeSync(publishDir + '/XBLMS.Cli.exe');
-});
-
 gulp.task("copy-css", function () {
   return gulp
     .src(["./src/XBLMS.Web/wwwroot/sitefiles/**/*.css"])
@@ -262,7 +249,6 @@ gulp.task("copy-linux-x64", async function (callback) {
 
   return runSequence(
     "copy-files",
-    "copy-xblms-linux",
     "copy-css",
     "copy-js"
   );
@@ -274,7 +260,6 @@ gulp.task("copy-linux-arm64", async function (callback) {
 
   return runSequence(
     "copy-files",
-    "copy-xblms-linux",
     "copy-css",
     "copy-js"
   );
@@ -286,7 +271,6 @@ gulp.task("copy-win-x64", async function (callback) {
 
   return runSequence(
     "copy-files",
-    "copy-xblms-win",
     "copy-css",
     "copy-js"
   );
@@ -298,7 +282,6 @@ gulp.task("copy-win-x86", async function (callback) {
 
   return runSequence(
     "copy-files",
-    "copy-xblms-win",
     "copy-css",
     "copy-js"
   );
