@@ -1,5 +1,5 @@
 @page
-@{ Layout = "_LayoutHome"; }
+@{ Layout = "_LayoutApp"; }
 @section Styles{
     <style>
         .el-radio {
@@ -11,10 +11,6 @@
             word-wrap: break-word;
             line-height: 20px;
             white-space: pre-line;
-        }
-
-        html {
-            background-color: #f1f1f1;
         }
     </style>
     <link href="/sitefiles/assets/css/watermark.css" rel="stylesheet" type="text/css" />
@@ -71,11 +67,11 @@
     </el-card>
     <div class="d-flex justify-content-between align-items-center pt-3">
         <div class="w-50">
-            <el-progress status="success" :stroke-width="18" :percentage="utils.formatPercentFloat(answerTotal,tmTotal)"></el-progress>
+            <el-progress status="success" :percentage="utils.formatPercentFloat(answerTotal,tmTotal)"></el-progress>
         </div>
         <div>
-            <el-button v-on:click="utils.closeLayerSelf" v-if="!paper.published"><i class="el-icon-close me-2"></i>退 出</el-button>
-            <el-button type="primary" class="bg-light-gradient-top" v-on:click="btnPaperSubmit">
+            <el-button size="small" v-on:click="utils.closeLayerSelf" v-if="!paper.published"><i class="el-icon-close me-2"></i>退 出</el-button>
+            <el-button size="small" type="primary" v-on:click="btnPaperSubmit">
                 <i class="el-icon-upload me-2"></i>提 交
             </el-button>
         </div>

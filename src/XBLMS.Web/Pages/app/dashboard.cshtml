@@ -1,10 +1,6 @@
 @page
 @{ Layout = "_LayoutApp"; }
 
-@section Styles {
-    <link href="/sitefiles/assets/lib/animate/animate.min.css" rel="stylesheet" type="text/css" />
-}
-
 <div class="card shadow-lg mb-3">
     <div class="rounded-top-3 bg-gradient-mix-shade" style="height: 158px">
     </div>
@@ -14,10 +10,15 @@
                 <div class="ms-2 mb-3">
                    <h1 class="text-warning mt-n8"><span class="text-dark fs-6">欢迎：</span>{{ user.displayName }}</h1>
                 </div>
-                <img :src="user.avatarUrl || DEFAULT_AVATAR_URL" class="img-fluid rounded-pill smooth-shadow-lg mt-n8" style="width:128px;">
+                <img :src="user.avatarUrl || DEFAULT_AVATAR_URL" class="img-fluid rounded-pill smooth-shadow-lg mt-n8" style="width:118px;">
             </div>
-            <div>
-                <apexchart type="radialBar" :options="passChartOptions" :series="passSeries" height="350"></apexchart>
+            <div class="d-flex justify-content-start align-items-center">
+                <apexchart type="radialBar" :options="passChartOptions" :series="passSeries" height="300"></apexchart>
+                <div class="ms-2 text-center">
+                    <div>累计</div>
+                    <div class="my-2"><span class="text-gray-800 fw-bold fs-2">{{ examTotal }}</span></div>
+                    <div>场</div>
+                </div>
             </div>
             <div class="d-flex flex-column gap-5">
                 <div class="d-flex flex-column gap-3">
@@ -27,18 +28,7 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-star-fill text-warning align-baseline" viewBox="0 0 16 16">
                                     <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"></path>
                                 </svg>
-                                <span>累计考试<span class="text-gray-800 fw-bold mx-2">{{ examTotal }}</span>场</span>
-                            </span>
-                            <span>
-                                <span>及格率<span class="text-gray-800 fw-bold mx-2">{{ examPercent }}</span>%</span>
-                            </span>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-star-fill text-warning align-baseline" viewBox="0 0 16 16">
-                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"></path>
-                                </svg>
-                                累计模拟<span class="text-gray-800 fw-bold mx-2">{{ examMoniTotal }}</span>场
+                                模拟<span class="text-gray-800 fw-bold mx-2">{{ examMoniTotal }}</span>场
                             </span>
                             <span>
                                 及格率<span class="text-gray-800 fw-bold mx-2">{{ examMoniPercent }}</span>%
@@ -49,7 +39,7 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-star-fill text-warning align-baseline" viewBox="0 0 16 16">
                                     <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"></path>
                                 </svg>
-                                累计刷题<span class="text-gray-800 fw-bold mx-2">{{ practiceAnswerTmTotal }}</span>场
+                                刷题<span class="text-gray-800 fw-bold mx-2">{{ practiceAnswerTmTotal }}</span>道
                             </span>
                             <span>
                                 正确率<span class="text-gray-800 fw-bold mx-2">{{ practiceAnswerPercent }}</span>%
@@ -101,8 +91,8 @@
                 </ul>
             </div>
             <div class="col-auto">
-                <div class="bg-light p-2 rounded-pill">
-                    <el-button type="primary" plain icon="el-icon-s-order" class="rounded-pill" v-on:click="btnViewPaperClick(examPaper.id)">详 细</el-button>
+                <div class="bg-light p-2 rounded-circle">
+                    <el-button type="primary" circle icon="el-icon-s-order" class="fs-3 p-3" v-on:click="btnViewPaperClick(examPaper.id)"></el-button>
                 </div>
             </div>
         </div>
@@ -111,7 +101,7 @@
         </div>
     </el-card>
 </div>
-<div class="card shadow-lg border-top border-5 border-warning p-0 mb-3 bg-light" style="cursor:default;">
+<div class="card shadow-lg border-top border-5 border-light p-0 mb-3 bg-light" style="cursor:default;">
     <el-card>
         <div slot="header" class="d-flex justify-content-between align-items-center">
             <span class="fw-bold">
@@ -155,7 +145,7 @@
         </div>
     </el-card>
 </div>
-<div class="card card-hover-with-icon border-top border-5 border-primary p-0 mb-3" style="cursor:default;">
+<div class="card card-hover-with-icon border-top border-5 border-light p-0 mb-3" style="cursor:default;">
     <el-card shadow="hover">
         <div slot="header" class="d-flex justify-content-between align-items-center">
             <span class="fw-bold"><i class="el-icon-eleme me-2 text-warning bg-light p-2 card-icon rounded-circle"></i>最新一场模拟自测</span>
@@ -193,8 +183,8 @@
                 </ul>
             </div>
             <div class="col-auto">
-                <div class="bg-light p-2 rounded-pill">
-                    <el-button type="primary" plain icon="el-icon-s-order" class="rounded-pill" v-on:click="btnViewPaperClick(examMoni.id)">详 细</el-button>
+                <div class="bg-light p-2 rounded-circle">
+                    <el-button type="primary" icon="el-icon-s-order" class="fs-3 p-3" circle v-on:click="btnViewPaperClick(examMoni.id)"></el-button>
                 </div>
             </div>
         </div>
@@ -203,7 +193,7 @@
         </div>
     </el-card>
 </div>
-<div class="card card-hover-with-icon border-top border-5 border-success p-0" style="cursor:default;">
+<div class="card card-hover-with-icon border-top border-5 border-light p-0" style="cursor:default;">
     <el-card shadow="hover">
         <div class="mb-2 d-flex justify-content-start align-items-center">
             <el-avatar icon="el-icon-user-solid" :src="user.avatarUrl || DEFAULT_AVATAR_URL"></el-avatar>
@@ -228,7 +218,7 @@
 <div class="my-5 text-center fs-5">
     <span class="fw-light mt-3">没有了</span>
 </div>
-
+<div class="py-8"></div>
 @await Html.PartialAsync("_PartialAppMenu")
 
 @section Scripts{

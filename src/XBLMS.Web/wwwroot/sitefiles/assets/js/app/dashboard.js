@@ -70,7 +70,7 @@ var data = utils.init({
     stroke: {
       lineCap: 'round'
     },
-    labels: ['考试及格率'],
+    labels: ['及格率'],
   },
 
   allPercent: 0,

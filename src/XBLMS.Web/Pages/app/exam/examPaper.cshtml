@@ -52,15 +52,15 @@
                         </li>
                     </ul>
                     <div>
-                        <div class="bg-light p-2 rounded-pill">
-                            <el-button type="primary" plain icon="el-icon-s-order" class="rounded-pill" v-on:click.stop="btnViewClick(paper.id)">详 细</el-button>
+                        <div class="bg-light p-2 rounded-circle">
+                            <el-button type="primary" circle icon="el-icon-s-order" class="p-3 fs-3" v-on:click.stop="btnViewClick(paper.id)"></el-button>
                         </div>
                     </div>
                 </div>
             </div>
         </el-card>
     </div>
-    <div class="my-5 text-center me-5">
+    <div class="my-5 text-center">
         <el-button icon="el-icon-refresh-right" v-if="list.length>0 && list.length<total" v-on:click="btnLoadMoreClick" :loading="loadMoreLoading">加载更多</el-button>
         <span v-else class="fw-light">没有更多了</span>
     </div>

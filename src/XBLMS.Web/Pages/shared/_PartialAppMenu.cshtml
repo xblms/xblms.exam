@@ -1,6 +1,6 @@
 <template>
-    <div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 opacity-75">
-        <el-button-group class="btn-group p-2 bg-gradient-mix-shade rounded-pill">
+    <div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 opacity-75 animate__animated animate__fadeInUp">
+        <el-button-group class="btn-group p-1 bg-gradient-mix-shade rounded-pill">
             <el-button size="small" type="primary" :plain="appMenuActive!=='index'" icon="el-icon-s-home" class="rounded-start-pill" v-on:click="btnAppMenuClick('index')">首 页</el-button>
             <el-button size="small" type="primary" :plain="appMenuActive!=='exam'" icon="el-icon-document-checked" v-on:click="btnAppMenuClick('exam')">考 试</el-button>
             <el-button size="small" type="primary" :plain="appMenuActive!=='wenjuan'" icon="el-icon-document" v-on:click="btnAppMenuClick('wenjuan')">问 卷</el-button>

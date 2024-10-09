@@ -96,7 +96,6 @@ var methods = {
         height: "100%",
         end: function () {
           $this.apiGetItem(paper.id);
-          top.$vue.apiGetTask();
         }
       });
     }
@@ -122,6 +121,7 @@ var $vue = new Vue({
   data: data,
   methods: methods,
   created: function () {
+    document.title = "问卷调查";
     this.apiGet();
   },
 });

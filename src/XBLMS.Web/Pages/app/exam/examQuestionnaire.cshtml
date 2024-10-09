@@ -7,15 +7,10 @@
         }
     </style>
 }
-<el-card>
-    <el-form :inline="true" :model="form">
-        <el-form-item label="">
-            <el-input prefix-icon="el-icon-search" v-model="form.keyWords" placeholder="关键字"></el-input>
-        </el-form-item>
-        <el-form-item>
-            <el-button type="primary" plain icon="el-icon-search" v-on:click="btnSearchClick">查询</el-button>
-        </el-form-item>
-    </el-form>
+<el-card class="mb-3">
+    <el-input placeholder="关键字查询" v-model="form.keyWords" siza="small">
+        <el-button slot="append" icon="el-icon-search" v-on:click="btnSearchClick" size="small"></el-button>
+    </el-input>
 </el-card>
 <div class="pe-3" v-if="total>0">
     <div class="ms-5 position-relative card-hover-with-icon" v-for="(paper,index) in list" v-on:click="btnViewClick(paper)">
@@ -26,16 +21,26 @@
             </div>
         </div>
         <el-card shadow="hover" class="mb-2">
+            <div class="ms-7 mb-3">
+                <el-link :underline="false" v-on:click.stop="btnViewClick(paper)">
+                    <span :class="paper.submitType==='Submit'?'text-success':''">{{ paper.title }}</span>
+                </el-link>
+            </div>
             <div class="row align-items-center g-3 ms-6">
                 <div class="col">
-                    <div class="mb-2">
-                        <el-link :underline="false" v-on:click.stop="btnViewClick(paper)">
-                            <span :class="paper.submitType==='Submit'?'text-success':''">{{ paper.title }}</span>
-                        </el-link>
-                    </div>
                     <ul class="list-inline fw-light">
                         <li class="list-inline-item fs-5">
-                            <i class="el-icon-date me-2"></i>有效期：{{ paper.examStartDateTimeStr }}-{{ paper.examEndDateTimeStr }}
+                            <i class="el-icon-date me-2"></i>有效期
+                        </li>
+                    </ul>
+                    <ul class="list-inline fw-light">
+                        <li class="list-inline-item fs-5">
+                            {{ paper.examStartDateTimeStr }}
+                        </li>
+                    </ul>
+                    <ul class="list-inline fw-light">
+                        <li class="list-inline-item fs-5">
+                            {{ paper.examEndDateTimeStr }}
                         </li>
                     </ul>
                 </div>
@@ -56,6 +61,7 @@
 <div class="pt-10" v-else>
     <el-empty></el-empty>
 </div>
+<div class="py-8"></div>
 @await Html.PartialAsync("_PartialAppMenu")
 
 @section Scripts{
