@@ -1,0 +1,91 @@
+@page
+@{ Layout = "_LayoutHome"; }
+@section Styles{
+    <style>
+        .el-form-item {
+            margin-bottom: 0px;
+        }
+    </style>
+}
+<el-card>
+    <el-row :gutter="8">
+        <el-col :span="18">
+            <el-scrollbar class="scrollbar" :style="{ height: ($(window).height()-63) + 'px' }">
+                <div class="pe-3" v-if="total>0">
+                    <div class="ms-5 position-relative card-hover-with-icon" v-for="(item,index) in list" style="cursor:default;">
+                        <div class="position-absolute top-50 start-0 translate-middle">
+                            <div class="position-relative">
+                                <i class="bi bi-pencil-square fs-2"></i>
+                                <span class="position-absolute top-100 start-100 translate-middle fs-6">{{ index+1 }}</span>
+                            </div>
+                        </div>
+                        <el-card shadow="hover" class="mb-2">
+                            <div class="row align-items-center g-3 ms-6">
+                                <div class="col">
+                                    <div class="fs-6 text-gray-400">
+                                        <span>包含知识点</span>
+                                    </div>
+                                    <div class="mt-1">
+                                        <el-tag type="success" size="mini" class="mt-1 me-1" v-for="zsd in item.zsds">{{ zsd }}</el-tag>
+                                    </div>
+                                    <div class="mt-3 fs-6">
+                                        <span class="px-3 py-1 pt-2 rounded-3 bg-light card-icon">共：<span class="fs-3 text-success me-2">{{ item.tmTotal }}</span>道题</span>
+                                    </div>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="bg-light p-2 rounded-pill">
+                                        <el-button type="primary" plain icon="el-icon-s-order" class="rounded-pill" v-on:click=btnCreateClick('Group',item.id,item.tmTotal)>开始练习</el-button>
+                                    </div>
+                                </div>
+                            </div>
+                        </el-card>
+                    </div>
+                    <div class="my-5 text-center me-5">
+                        <span class="fw-light">没有更多了</span>
+                    </div>
+                </div>
+                <div class="pt-10" v-else>
+                    <el-empty description="未开启刷题功能，请询问管理员老师"></el-empty>
+                </div>
+            </el-scrollbar>
+        </el-col>
+        <el-col :span="6">
+            <el-card>
+                <div class="d-flex flex-column" :style="{ height: ($(window).height()-100) + 'px' }">
+                    <div>
+                        <el-tooltip placement="left">
+                            <div slot="content">共<span class="text-success fs-3 mx-2">{{ total }}</span>道题</div>
+                            <div class="p-2 rounded-3 bg-light">
+                                <el-button type="primary" class="py-5 w-100 rounded-3" v-on:click=btnCreateClick('All')><i class="bi bi-fast-forward-circle-fill me-3"></i>快速开始</el-button>
+                            </div>
+                        </el-tooltip>
+                    </div>
+                    <div>
+                        <el-tooltip placement="left">
+                            <div slot="content">共<span class="text-success fs-3 mx-2">{{collectTotal}}</span>道题</div>
+                            <div class="p-2 rounded-3 bg-light mt-3">
+                                <el-button type="primary" plain class="py-5 w-100 rounded-3" v-on:click=btnCreateClick('Collect')>
+                                    <i class="bi bi-person-hearts me-3"></i>收藏练习
+                                </el-button>
+                            </div>
+                        </el-tooltip>
+                    </div>
+                    <div>
+                        <el-tooltip placement="left">
+                            <div slot="content">共<span class="text-success fs-3 mx-2">{{ wrongTotal }}</span>道题</div>
+                            <div class="p-2 rounded-3 bg-light mt-3">
+                                <el-button type="primary" plain class="py-5 w-100 rounded-3" v-on:click=btnCreateClick('Wrong')><i class="bi bi-backspace-reverse me-3"></i>错题练习</el-button>
+                            </div>
+                        </el-tooltip>
+                    </div>
+                    <div class="p-2 rounded-pill bg-light mt-auto">
+                        <el-button type="primary" plain class="py-3 w-100 rounded-pill" v-on:click="btnLogClick"><i class="bi bi-person-lines-fill me-3"></i>练习记录</el-button>
+                    </div>
+                </div>
+            </el-card>
+        </el-col>
+    </el-row>
+</el-card>
+@section Scripts{
+    <script src="/sitefiles/assets/js/home/exam/examPractice.js" type="text/javascript"></script>
+}

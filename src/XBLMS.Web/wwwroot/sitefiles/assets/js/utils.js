@@ -609,10 +609,13 @@ var utils = {
 
       if (!ignoreAuth && error.response && (error.response.status === 401 || error.response.status === 403)) {
         var location = _.trimEnd(window.location.href, '/');
-        if (_.endsWith(location, '/admin') || _.endsWith(location, '/home')) {
+        console.log(location);
+        if (_.endsWith(location, '/admin') || _.endsWith(location, '/home') || _.endsWith(location, '/app')) {
           top.location.href = utils.getRootUrl('login');
+       
         } else {
           top.location.href = utils.getRootUrl('login', { status: 401 });
+         
         }
       } else if (error.response && error.response.status === 500 || options && options.redirect) {
         var uuid = utils.uuid();
@@ -1078,6 +1081,7 @@ var DOCUMENTTITLE_DATABASEUPDATE = DOCUMENTTITLE + '-数据库升级';
 var DOCUMENTTITLE_INSTALL = DOCUMENTTITLE + '-系统安装';
 var DOCUMENTTITLE_ERROR = DOCUMENTTITLE + '-系统错误';
 var DOCUMENTTITLE_BLOCK = DOCUMENTTITLE + '-访问受限';
+
 
 var sessionId = utils.getQueryString('sessionId');
 var accessToken = utils.getQueryString('accessToken');

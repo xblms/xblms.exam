@@ -1,0 +1,26 @@
+@page
+@{ Layout = "_LayoutHome"; }
+
+<el-card>
+    <div slot="header" class="clearfix text-center">
+        本次练习情况
+    </div>
+    <div class="position-relative">
+        <div class="position-absolute top-0 start-0 text-gray-500">
+            <div>题目数量：{{total}}</div>
+            <div>本次答题：{{ answerTotal }}</div>
+            <div>答对：{{ rightTotal }}</div>
+            <div>答错：{{ wrongTotal }}</div>
+        </div>
+        <div class="text-center p-3">
+            <apexchart type="radialBar" :options="chartOptions" :series="series" :height="$(window).innerHeight()-200"></apexchart>
+        </div>
+    </div>
+</el-card>
+<div class="text-center mt-3">
+    <el-button type="primary" plain v-on:click="utils.closeLayerSelf" icon="el-icon-close">关 闭</el-button>
+</div>
+@section Scripts{
+<script src="/sitefiles/assets/lib/apexcharts/dist/apexcharts.js" type="text/javascript"></script>
+<script src="/sitefiles/assets/lib/apexcharts/dist/vue-apexcharts.js" type="text/javascript"></script>
+<script src="/sitefiles/assets/js/home/exam/examPracticeResult.js" type="text/javascript"></script> }

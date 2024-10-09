@@ -57,6 +57,7 @@ function transform(file, html) {
   result = result.replace('@page', '');
   result = result.replace('@{ Layout = "_Layout"; }', '');
   result = result.replace('@{ Layout = "_LayoutHome"; }', '');
+  result = result.replace('@{ Layout = "_LayoutApp"; }', '');
   result = result.replace(/\.css"/g, ".css?v=" + timestamp + '"');
   result = result.replace(/\.js"/g, ".js?v=" + timestamp + '"');
 
@@ -100,6 +101,31 @@ gulp.task("build-admin", function () {
     .pipe(gulp.dest(`./build-${os}/src/XBLMS.Web/wwwroot/admin`));
 });
 
+gulp.task("build-app", function () {
+  return gulp
+    .src("./src/XBLMS.Web/Pages/app/**/*.cshtml")
+    .pipe(through2.obj((file, enc, cb) => {
+      cb(null, transform(file, htmlDict['_LayoutApp']))
+    }))
+    .pipe(rename(function (path) {
+      if (path.basename != 'index') {
+        path.dirname += "/" + path.basename;
+        path.basename = "index";
+      }
+      path.extname = ".html";
+    }))
+    .pipe(
+      minifier({
+        minify: true,
+        minifyHTML: {
+          collapseWhitespace: true,
+          conservativeCollapse: true,
+        },
+      })
+    )
+    .pipe(gulp.dest(`./build-${os}/src/XBLMS.Web/wwwroot/app`));
+});
+
 gulp.task("build-home", function () {
   return gulp
     .src("./src/XBLMS.Web/Pages/home/**/*.cshtml")
@@ -126,7 +152,7 @@ gulp.task("build-home", function () {
 });
 
 gulp.task('build-clean', function(){
-  return del([`./build-${os}/src/XBLMS.Web/Pages/admin/**`, `./build-${os}/src/XBLMS.Web/Pages/home/**`], {force:true});
+  return del([`./build-${os}/src/XBLMS.Web/Pages/admin/**`, `./build-${os}/src/XBLMS.Web/Pages/home/**`, `./build-${os}/src/XBLMS.Web/Pages/app/**`], {force:true});
 });
 
 gulp.task("build-linux-x64", async function () {
@@ -136,6 +162,7 @@ gulp.task("build-linux-x64", async function () {
       "build-sln",
       "build-admin",
       "build-home",
+      "build-app",
       "build-clean"
   );
 });
@@ -147,6 +174,7 @@ gulp.task("build-linux-arm64", async function () {
       "build-sln",
       "build-admin",
       "build-home",
+      "build-app",
       "build-clean"
   );
 });
@@ -158,6 +186,7 @@ gulp.task("build-win-x64", async function () {
       "build-sln",
       "build-admin",
       "build-home",
+      "build-app",
       "build-clean"
   );
 });
@@ -169,6 +198,7 @@ gulp.task("build-win-x86", async function () {
       "build-sln",
       "build-admin",
       "build-home",
+      "build-app",
       "build-clean"
   );
 });

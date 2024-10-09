@@ -1,0 +1,80 @@
+@page
+@{ Layout = "_LayoutHome"; }
+@section Styles{
+    <style>
+        .el-form-item {
+            margin-bottom: 0px;
+        }
+        .el-card__body, .el-main{
+            padding:15px;
+        }
+    </style>
+}
+<el-card>
+    <div slot="header">
+        <el-form :inline="true" :model="form">
+            <el-form-item label="获证日期：从">
+                <el-date-picker v-model="form.dateFrom"
+                                type="date"
+                                value-format="yyyy-MM-ddTHH:mm:ss.000Z"
+                                placeholder="选择开始日期">
+                </el-date-picker>
+            </el-form-item>
+            <el-form-item label="到">
+                <el-date-picker v-model="form.dateTo"
+                                type="date"
+                                value-format="yyyy-MM-ddTHH:mm:ss.000Z"
+                                placeholder="选择结束日期">
+                </el-date-picker>
+            </el-form-item>
+            <el-form-item label="模糊查询">
+                <el-input prefix-icon="el-icon-search" v-model="form.keyWords" placeholder="关键字"></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" plain icon="el-icon-search" v-on:click="btnSearchClick">查询</el-button>
+            </el-form-item>
+        </el-form>
+    </div>
+    <el-scrollbar class="scrollbar" :style="{ height: ($(window).height()-136) + 'px' }">
+        <div class="pe-3" v-if="list && list.length>0">
+            <div class="ms-5 position-relative card-hover-with-icon mb-13 mt-10" v-for="(cer,index) in list" v-on:click="btnViewCer(cer)">
+                <div class="position-absolute top-50 start-0 translate-middle">
+                    <div class="position-relative">
+                        <i class="bi bi-award fs-1 text-warning"></i>
+                        <span class="position-absolute top-100 start-100 translate-middle mt-1 fs-6">{{ index+1 }}</span>
+                    </div>
+                </div>
+                <el-card shadow="hover">
+                    <div class="row align-items-center ms-6 py-2">
+                        <div class="col">
+                            <div class="mb-3">
+                                <span class="card-icon py-1 px-2">{{ cer.cerName }}【{{ cer.cerNumber }}】</span>
+                            </div>
+                             <ul class="list-inline fw-light ms-2 mb-0">
+                                 <li class="list-inline-item fs-5 mb-0">
+                                    获证日期：{{ cer.awartDate }}
+                                 </li>
+                                <li class="list-inline-item fs-5 mb-0">
+                                    试卷：{{ cer.paperName }}
+                                </li>
+                                <li class="list-inline-item fs-5 mb-0">
+                                    成绩：{{ cer.paperScore }}
+                                </li>
+                             </ul>
+                        </div>
+                    </div>
+                </el-card>
+                <div  class="position-absolute top-50 translate-middle p-2 card-icon card rounded-0" style="left: 88%;">
+                    <img :src="cer.cerImg" style="width:200px;height:150px;" />
+                </div>
+            </div>
+        </div>
+        <div class="pt-10" v-else>
+            <el-empty></el-empty>
+        </div>
+    </el-scrollbar>
+</el-card>
+
+@section Scripts{
+    <script src="/sitefiles/assets/js/home/exam/examPaperCer.js" type="text/javascript"></script>
+}
