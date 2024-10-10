@@ -93,6 +93,7 @@ var $vue = new Vue({
   data: data,
   methods: methods,
   created: function () {
+    document.title = "刷题记录";
     this.apiGet();
   },
 });

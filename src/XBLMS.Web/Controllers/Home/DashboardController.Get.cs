@@ -47,6 +47,50 @@ namespace XBLMS.Web.Controllers.Home
                 resultMoni = null;
             }
 
+
+
+            var taskPaperTotal = 0;
+
+            var taskPaperIds = await _examPaperUserRepository.GetPaperIdsByUser(user.Id);
+            if (taskPaperIds != null && taskPaperIds.Count > 0)
+            {
+                foreach (var paperId in taskPaperIds)
+                {
+                    var paper = await _examPaperRepository.GetAsync(paperId);
+                    var myExamTimes = await _examPaperStartRepository.CountAsync(paperId, user.Id);
+                    if (myExamTimes <= 0 && (paper.ExamBeginDateTime.Value < DateTime.Now && paper.ExamEndDateTime.Value > DateTime.Now))
+                    {
+                        if (paper.Moni)
+                        {
+                           
+                        }
+                        else
+                        {
+                            taskPaperTotal++;
+                        }
+                    }
+                }
+
+            }
+
+            var qPaperTotal = 0;
+            var qPaperIds = await _examQuestionnaireUserRepository.GetPaperIdsAsync(user.Id);
+            if (qPaperIds != null && qPaperIds.Count > 0)
+            {
+                foreach (var qPaperId in qPaperIds)
+                {
+                    var paper = await _examQuestionnaireRepository.GetAsync(qPaperId);
+                    if (paper != null)
+                    {
+                        if ((paper.ExamBeginDateTime.Value < DateTime.Now && paper.ExamEndDateTime.Value > DateTime.Now))
+                        {
+                            qPaperTotal++;
+                        }
+                    }
+
+                }
+            }
+
             return new GetResult
             {
                 User = user,
@@ -66,7 +110,10 @@ namespace XBLMS.Web.Controllers.Home
                 PracticeCollectTmTotal = collectTmTotal,
                 PracticeCollectPercent = collectPercent,
                 PracticeWrongTmTotal = wrongTmTotal,
-                PracticeWrongPercent = wrongPercent
+                PracticeWrongPercent = wrongPercent,
+
+                TaskPaperTotal = taskPaperTotal,
+                TaskQTotal = qPaperTotal
             };
         }
     }

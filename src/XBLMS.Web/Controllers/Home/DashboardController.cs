@@ -22,13 +22,19 @@ namespace XBLMS.Web.Controllers.Home
         private readonly IExamManager _examManager;
         private readonly IExamPaperUserRepository _examPaperUserRepository;
         private readonly IExamPaperRepository _examPaperRepository;
+        private readonly IExamPaperStartRepository _examPaperStartRepository;
+        private readonly IExamQuestionnaireRepository _examQuestionnaireRepository;
+        private readonly IExamQuestionnaireUserRepository _examQuestionnaireUserRepository;
 
         public DashboardController(IConfigRepository configRepository,
             IOrganManager organManager,
             IAuthManager authManager,
             IExamManager examManager,
             IExamPaperUserRepository examPaperUserRepository,
-            IExamPaperRepository examPaperRepository)
+            IExamPaperRepository examPaperRepository,
+            IExamPaperStartRepository examPaperStartRepository,
+            IExamQuestionnaireRepository examQuestionnaireRepository,
+            IExamQuestionnaireUserRepository examQuestionnaireUserRepository)
         {
             _configRepository = configRepository;
             _authManager = authManager;
@@ -36,6 +42,9 @@ namespace XBLMS.Web.Controllers.Home
             _examManager = examManager;
             _examPaperUserRepository = examPaperUserRepository;
             _examPaperRepository = examPaperRepository;
+            _examPaperStartRepository = examPaperStartRepository;
+            _examQuestionnaireRepository = examQuestionnaireRepository;
+            _examQuestionnaireUserRepository = examQuestionnaireUserRepository;
         }
 
         public class GetResult
@@ -58,6 +67,9 @@ namespace XBLMS.Web.Controllers.Home
             public double PracticeCollectPercent { get; set; }
             public int PracticeWrongTmTotal { get; set; }
             public double PracticeWrongPercent { get; set; }
+
+            public int TaskPaperTotal { get; set; }
+            public int TaskQTotal { get; set; }
 
         }
 

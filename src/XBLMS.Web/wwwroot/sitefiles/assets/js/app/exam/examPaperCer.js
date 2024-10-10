@@ -46,6 +46,7 @@ var $vue = new Vue({
   data: data,
   methods: methods,
   created: function () {
+    document.title = "我的证书";
     this.apiGet();
   },
 });

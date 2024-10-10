@@ -32,6 +32,7 @@ var $vue = new Vue({
   data: data,
   methods: methods,
   created: function () {
+    document.title = "退出登录";
     utils.loading(this, false);
   }
 });

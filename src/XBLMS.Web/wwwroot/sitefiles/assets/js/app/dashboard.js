@@ -1,5 +1,4 @@
 var $url = "/dashboard";
-
 var $practiceUrl = "/exam/examPractice/submit";
 
 var data = utils.init({
@@ -91,6 +90,11 @@ var data = utils.init({
   examPaper: null,
   examMoni: null,
 
+  taskTotal: 0,
+  taskPaperTotal: 0,
+  taskQTotal: 0,
+  taskDialogVisible:false,
+
   appMenuActive:"index"
 
 });
@@ -125,6 +129,10 @@ var methods = {
 
       $this.examPaper = res.examPaper;
       $this.examMoni = res.examMoni;
+
+      $this.taskPaperTotal = res.taskPaperTotal;
+      $this.taskQTotal = res.taskQTotal;
+      $this.taskTotal = $this.taskPaperTotal + $this.taskQTotal;
 
       setTimeout(function () {
         $this.passSeries = [100];

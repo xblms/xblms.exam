@@ -16,8 +16,20 @@
     <div class="ms-5 position-relative card-hover-with-icon" v-for="(paper,index) in list" v-on:click="btnViewClick(paper.id)">
         <div class="position-absolute top-50 start-0 translate-middle">
             <div class="position-relative">
-                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="13" y="10" width="28" height="34" fill="none" stroke="#333" stroke-width="1" stroke-linejoin="miter" /><path d="M35 10V4H8C7.44772 4 7 4.44772 7 5V38H13" stroke="#333" stroke-width="1" stroke-linecap="round" stroke-linejoin="miter" /><path d="M21 22H33" stroke="#333" stroke-width="1" stroke-linecap="round" stroke-linejoin="miter" /><path d="M21 30H33" stroke="#333" stroke-width="1" stroke-linecap="round" stroke-linejoin="miter" /></svg>
-                <span class="position-absolute top-100 start-100 translate-middle mt-1 fs-6">{{ index+1 }}</span>
+                <div v-if="paper.myExamTimes>0">
+                    <div>
+                        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="13" y="10" width="28" height="34" fill="none" stroke="#333" stroke-width="1" stroke-linejoin="miter" /><path d="M35 10V4H8C7.44772 4 7 4.44772 7 5V38H13" stroke="#333" stroke-width="1" stroke-linecap="round" stroke-linejoin="miter" /><path d="M21 22H33" stroke="#333" stroke-width="1" stroke-linecap="round" stroke-linejoin="miter" /><path d="M21 30H33" stroke="#333" stroke-width="1" stroke-linecap="round" stroke-linejoin="miter" /></svg>
+                        <span class="position-absolute top-100 start-100 translate-middle mt-1 fs-6">{{ index+1 }}</span>
+                    </div>
+                </div>
+                <div v-else>
+                    <el-badge is-dot class="item">
+                        <div>
+                            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="13" y="10" width="28" height="34" fill="none" stroke="#333" stroke-width="1" stroke-linejoin="miter" /><path d="M35 10V4H8C7.44772 4 7 4.44772 7 5V38H13" stroke="#333" stroke-width="1" stroke-linecap="round" stroke-linejoin="miter" /><path d="M21 22H33" stroke="#333" stroke-width="1" stroke-linecap="round" stroke-linejoin="miter" /><path d="M21 30H33" stroke="#333" stroke-width="1" stroke-linecap="round" stroke-linejoin="miter" /></svg>
+                            <span class="position-absolute top-100 start-100 translate-middle mt-1 fs-6">{{ index+1 }}</span>
+                        </div>
+                    </el-badge>
+                </div>
             </div>
         </div>
         <el-card shadow="hover" class="mb-2">
