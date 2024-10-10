@@ -12,7 +12,7 @@
         <el-button slot="append" icon="el-icon-search" v-on:click="btnSearchClick" size="small"></el-button>
     </el-input>
 </el-card>
-<div class="pe-3" v-if="total>0">
+<div v-if="total>0">
     <div class="ms-5 position-relative card-hover-with-icon" v-for="(paper,index) in list" v-on:click="btnViewClick(paper.id)">
         <div class="position-absolute top-50 start-0 translate-middle">
             <div class="position-relative">
@@ -42,7 +42,7 @@
                         </li>
                         <li class="list-inline-item fs-5">
                             剩余考试次数：
-                            <span class="fs-3 text-success fw-bold" v-if="(paper.userExamTimes-paper.myExamTimes)>0">
+                            <span class="text-success fw-bold" v-if="(paper.userExamTimes-paper.myExamTimes)>0">
                                 {{paper.userExamTimes-paper.myExamTimes}}
                             </span>
                             <span class="fs-3 text-danger fw-bold" v-else>

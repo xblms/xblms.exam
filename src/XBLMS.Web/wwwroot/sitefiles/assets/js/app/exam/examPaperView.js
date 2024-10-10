@@ -10,6 +10,7 @@ var data = utils.init({
   answerTotal: 0,
   tmAnswerStatus:false,
   tmList: [],
+  datikaDialogVisible: false
 });
 
 var methods = {
@@ -51,6 +52,7 @@ var methods = {
     $this.$nextTick(() => {
       var getCurTm = $this.tmList.find(item => item.id === id);
       $this.tm = getCurTm;
+      $this.datikaDialogVisible = false;
     })
   },
   getTmAnswerStatus: function (id) {

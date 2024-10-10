@@ -21,7 +21,7 @@ var methods = {
       });
 
     }).catch(function (error) {
-      utils.error(error);
+      utils.error(error, { layer: true });
     }).then(function () {
       utils.loading($this, false);
     });
@@ -33,9 +33,9 @@ var methods = {
 
     utils.loading(this, true);
     $api.post($url, this.form).then(function (response) {
-      utils.success('修改成功！');
+      utils.success('修改成功！', { layer: true });
     }).catch(function (error) {
-      utils.error(error);
+      utils.error(error, { layer: true });
     }).then(function () {
       utils.loading($this, false);
     });
@@ -56,13 +56,13 @@ var methods = {
     var re = /(\.jpg|\.jpeg|\.bmp|\.gif|\.png|\.webp)$/i;
     if(!re.exec(file.name))
     {
-      utils.error('头像只能是图片格式，请选择有效的文件上传!');
+      utils.error('头像只能是图片格式，请选择有效的文件上传!', { layer: true });
       return false;
     }
 
     var isLt10M = file.size / 1024 / 1024 < 10;
     if (!isLt10M) {
-      utils.error('头像图片大小不能超过 10MB!');
+      utils.error('头像图片大小不能超过 10MB!', { layer: true });
       return false;
     }
     return true;

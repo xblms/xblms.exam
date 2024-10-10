@@ -71,8 +71,8 @@ var methods = {
       title: false,
       closebtn: 0,
       url: utils.getExamUrl('examPaperInfo', { id: id }),
-      width: "78%",
-      height: "98%",
+      width: "100%",
+      height: "100%",
       end: function () {
         $this.apiGetItem(id);
       }
@@ -85,6 +85,7 @@ var $vue = new Vue({
   data: data,
   methods: methods,
   created: function () {
+    document.title = "模拟测试";
     this.apiGet();
   },
 });

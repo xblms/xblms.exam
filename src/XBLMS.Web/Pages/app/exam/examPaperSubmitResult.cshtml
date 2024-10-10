@@ -2,10 +2,12 @@
 @{ Layout = "_LayoutApp"; }
 
 <el-card>
-    <div slot="header" class="clearfix text-center">
-        <span class="fw-bold"><i class="el-icon-s-order me-2"></i><span v-if="item.success">{{ item.title }}：</span>考试正常结束</span>
+    <div slot="header" class="text-center">
+        <div>
+            {{ item.title }}
+        </div>
     </div>
-    <div v-if="item.success">
+    <div v-if="item.success" class="bg-light p-3 rounded-lg">
         <div v-if="!item.isMark">
             <el-result>
                 <template slot="title">
@@ -16,9 +18,6 @@
                 </template>
                 <template slot="subTitle">
                     请等待阅卷
-                </template>
-                <template slot="extra">
-                    <el-button icon="el-icon-switch-button" type="primary" plain v-on:click="utils.closeLayerSelf">安全退出</el-button>
                 </template>
             </el-result>
         </div>
@@ -37,9 +36,6 @@
                             {{ item.score }}
                         </div>
                     </template>
-                    <template slot="extra">
-                        <el-button icon="el-icon-switch-button" type="primary" plain v-on:click="utils.closeLayerSelf">安全退出</el-button>
-                    </template>
                 </el-result>
                 <el-result v-else>
                     <template slot="title">
@@ -54,9 +50,6 @@
                             {{ item.score }}
                         </div>
                     </template>
-                    <template slot="extra">
-                        <el-button icon="el-icon-switch-button" type="primary" plain v-on:click="utils.closeLayerSelf">安全退出</el-button>
-                    </template>
                 </el-result>
             </div>
             <div v-else>
@@ -70,13 +63,9 @@
                     <template slot="subTitle">
                         成绩未公布
                     </template>
-                    <template slot="extra">
-                        <el-button icon="el-icon-switch-button" type="primary" plain v-on:click="utils.closeLayerSelf">安全退出</el-button>
-                    </template>
                 </el-result>
             </div>
         </div>
-
     </div>
     <div v-else>
         <el-result>
@@ -86,12 +75,14 @@
             <template slot="icon">
                 <i class="el-icon-loading display-1 text-success"></i>
             </template>
-            <template slot="extra">
-                <el-button icon="el-icon-switch-button" type="primary" plain v-on:click="utils.closeLayerSelf">安全退出</el-button>
-            </template>
         </el-result>
     </div>
 </el-card>
+<div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 opacity-75 animate__animated animate__fadeInUp">
+    <el-button-group class="btn-group p-1 bg-gray-300 rounded-pill">
+        <el-button v-on:click="utils.closeLayerSelf" icon="el-icon-back" class="rounded-pill" size="small">返 回</el-button>
+    </el-button-group>
+</div>
 @section Scripts{
     <script src="/sitefiles/assets/js/app/exam/examPaperSubmitResult.js" type="text/javascript"></script>
 }

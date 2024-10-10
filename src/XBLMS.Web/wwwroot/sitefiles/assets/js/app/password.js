@@ -17,7 +17,7 @@ var methods = {
 
       $this.user = res.user;
     }).catch(function (error) {
-      utils.error(error);
+      utils.error(error, { layer: true });
     }).then(function () {
       utils.loading($this, false);
     });
@@ -32,9 +32,11 @@ var methods = {
     }).then(function (response) {
       var res = response.data;
 
-      utils.success('密码更改成功！');
+      $this.form.password = null;
+      $this.form.confirmPassword = null;
+      utils.success('密码更改成功！', { layer: true });
     }).catch(function (error) {
-      utils.error(error);
+      utils.error(error, { layer: true });
     }).then(function () {
       utils.loading($this, false);
     });

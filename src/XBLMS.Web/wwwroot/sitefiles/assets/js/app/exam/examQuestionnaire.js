@@ -111,7 +111,7 @@ var methods = {
       location.href = utils.getExamUrl("examQuestionnaire");
     }
     if (common === 'mine') {
-      location.href = utils.getIndexUrl();
+      location.href = utils.getRootUrl('mine');
     }
   }
 };

@@ -27,8 +27,9 @@
             background-color:#000000;
             padding:8px !important;
             border-radius:15px;
-            color: #ffffff;
+            color: #e6a23c;
             opacity:0.5;
+            font-size:12px;
         }
     </style>
     <link href="/sitefiles/assets/css/watermark.css" rel="stylesheet" type="text/css" />
@@ -115,7 +116,7 @@
                   time-indices v-on:finish="timingFinish">
     </el-statistic>
 </div>
-<div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 opacity-75">
+<div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 opacity-75 animate__animated animate__fadeInUp">
     <el-button-group class="btn-group p-1 bg-gray-300 rounded-3" size="small">
         <el-button size="small" type="primary" v-on:click="btnPaperSubmit">
             <i class="el-icon-upload me-2"></i>立即交卷
@@ -126,7 +127,7 @@
 <div style="position:fixed;right:10%;top:80%;" class="text-center">
     <el-button type="primary" icon="el-icon-s-grid" circle v-on:click="datikaDialogVisible=true"></el-button>
 </div>
-<div style="position:fixed;left:10%;top:80%;" class="text-center">
+<div style="position:fixed;left:10%;top:80%;" class="text-center" v-if="paper && paper.tmTotal>0">
     <el-progress type="circle" :percentage="utils.formatPercentFloat(answerTotal,paper.tmTotal)" status="success" width="50"></el-progress>
 </div>
 <template>

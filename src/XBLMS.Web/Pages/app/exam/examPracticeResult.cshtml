@@ -2,8 +2,8 @@
 @{ Layout = "_LayoutApp"; }
 
 <el-card>
-    <div slot="header" class="clearfix text-center">
-        本次练习情况
+    <div slot="header" class="text-center">
+        练习情况
     </div>
     <div class="position-relative">
         <div class="position-absolute top-0 start-0 text-gray-500">
@@ -13,14 +13,17 @@
             <div>答错：{{ wrongTotal }}</div>
         </div>
         <div class="text-center p-3">
-            <apexchart type="radialBar" :options="chartOptions" :series="series" :height="$(window).innerHeight()-200"></apexchart>
+            <apexchart type="radialBar" :options="chartOptions" :series="series" height="300"></apexchart>
         </div>
     </div>
 </el-card>
-<div class="text-center mt-3">
-    <el-button type="primary" plain v-on:click="utils.closeLayerSelf" icon="el-icon-close">关 闭</el-button>
+<div class="py-8"></div>
+<div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 opacity-75 animate__animated animate__fadeInUp">
+    <el-button-group class="btn-group p-1 bg-gray-300 rounded-pill">
+        <el-button v-on:click="utils.closeLayerSelf" icon="el-icon-back" class="rounded-pill" size="small">返 回</el-button>
+    </el-button-group>
 </div>
 @section Scripts{
 <script src="/sitefiles/assets/lib/apexcharts/dist/apexcharts.js" type="text/javascript"></script>
 <script src="/sitefiles/assets/lib/apexcharts/dist/vue-apexcharts.js" type="text/javascript"></script>
-<script src="/sitefiles/assets/js/home/exam/examPracticeResult.js" type="text/javascript"></script> }
+<script src="/sitefiles/assets/js/app/exam/examPracticeResult.js" type="text/javascript"></script> }

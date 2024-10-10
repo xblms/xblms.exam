@@ -143,6 +143,12 @@ var methods = {
   btnExamMoreMenuClick: function () {
     location.href = utils.getExamUrl("examPaper");
   },
+  btnExamMoniMoreMenuClick: function () {
+    location.href = utils.getExamUrl("examPaperMoni");
+  },
+  btnShuatiMoreMenuClick: function () {
+    location.href = utils.getExamUrl("examPractice");
+  },
   btnMoreMenuClick: function (command) {
     top.$vue.btnTopMenuClick(command);
   },
@@ -199,8 +205,8 @@ var methods = {
       title: false,
       closebtn: 0,
       url: utils.getExamUrl('examPracticing', { id: id }),
-      width: "68%",
-      height: "88%",
+      width: "100%",
+      height: "100%",
       end: function () {
         $this.apiGet();
       }
@@ -230,7 +236,7 @@ var methods = {
       location.href = utils.getExamUrl("examQuestionnaire");
     }
     if (common === 'mine') {
-      location.href = utils.getIndexUrl();
+      location.href = utils.getRootUrl('mine');
     }
   }
 };

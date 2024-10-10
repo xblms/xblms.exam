@@ -56,8 +56,8 @@ var methods = {
       title: false,
       closebtn: 0,
       url: utils.getExamUrl('examPracticeResult', { id: id }),
-      width: "68%",
-      height: "88%",
+      width: "100%",
+      height: "100%",
     });
   },
   btnClearClick: function () {
@@ -77,7 +77,7 @@ var methods = {
     $api.post($urlDelete).then(function (response) {
       var res = response.data;
       if (res.value) {
-        utils.success("操作成功");
+        utils.success("已清空");
       }
     }).catch(function (error) {
       utils.error(error);

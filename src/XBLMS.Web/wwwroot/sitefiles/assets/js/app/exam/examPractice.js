@@ -89,11 +89,8 @@ var methods = {
       title: false,
       closebtn: 0,
       url: utils.getExamUrl('examPracticing', { id: id }),
-      width: "68%",
-      height: "88%",
-      end: function () {
-        $this.apiGet();
-      }
+      width: "100%",
+      height: "100%",
     });
   },
   btnLogClick: function () {
@@ -106,6 +103,7 @@ var $vue = new Vue({
   data: data,
   methods: methods,
   created: function () {
+    document.title = "练习中心";
     this.apiGet();
   },
 });

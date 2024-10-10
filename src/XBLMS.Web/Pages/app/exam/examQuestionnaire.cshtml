@@ -12,8 +12,8 @@
         <el-button slot="append" icon="el-icon-search" v-on:click="btnSearchClick" size="small"></el-button>
     </el-input>
 </el-card>
-<div class="pe-3" v-if="total>0">
-    <div class="ms-5 position-relative card-hover-with-icon" v-for="(paper,index) in list" v-on:click="btnViewClick(paper)">
+<div v-if="total>0">
+    <div class="ms-3 position-relative card-hover-with-icon" v-for="(paper,index) in list" v-on:click="btnViewClick(paper)">
         <div class="position-absolute top-50 start-0 translate-middle">
             <div class="position-relative">
                 <i class="bi bi-person-check fs-1 rounded-3 px-1 card-icon" :class="paper.submitType==='Submit'?'text-success':'text-warning'"></i>
@@ -21,12 +21,12 @@
             </div>
         </div>
         <el-card shadow="hover" class="mb-2">
-            <div class="ms-7 mb-3">
+            <div class="mb-3">
                 <el-link :underline="false" v-on:click.stop="btnViewClick(paper)">
                     <span :class="paper.submitType==='Submit'?'text-success':''">{{ paper.title }}</span>
                 </el-link>
             </div>
-            <div class="row align-items-center g-3 ms-6">
+            <div class="row align-items-center g-3 ms-3">
                 <div class="col">
                     <ul class="list-inline fw-light">
                         <li class="list-inline-item fs-5">

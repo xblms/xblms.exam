@@ -143,27 +143,11 @@
                                         <span class="fs-4"><i class="bi bi-clock-history me-2"></i>考试记录（{{ item.cjList.length }}）</span>
                                     </template>
                                     <div>
-                                        <div class="ms-5 position-relative card-hover-with-icon" v-for="(paper,index) in item.cjList">
-                                            <div class="position-absolute top-50 start-0 translate-middle">
-                                                <div class="position-relative">
-                                                    <i class="el-icon-notebook-2 fs-1"></i>
-                                                    <span class="position-absolute top-100 start-100 translate-middle mt-1 fs-6">{{ index+1 }}</span>
-                                                </div>
-                                            </div>
+                                        <div v-for="(paper,index) in item.cjList">
                                             <el-card shadow="hover" class="mb-2">
-                                                <div class="row align-items-center g-3 ms-6">
-                                                    <div class="col">
-                                                        <ul class="list-inline fw-light">
-                                                            <li class="list-inline-item fs-5">
-                                                                考试时间：{{ paper.beginDateTime }}-{{ paper.endDateTime }}
-                                                            </li>
-                                                        </ul>
-                                                        <ul class="list-inline fw-light" v-if="item.isTiming">
-                                                            <li class="list-inline-item fs-5">
-                                                                用时：{{ paper.useTime }}
-                                                            </li>
-                                                        </ul>
-                                                    </div>
+                                                <div class="mb-2">考试时间：{{ paper.beginDateTime }}-{{ paper.endDateTime }}</div>
+                                                <div class="mb-2" v-if="item.isTiming">用时：{{ paper.useTime }}</div>
+                                                <div class="row align-items-center g-3">
                                                     <div class="col-auto px-5">
                                                         <span v-if="item.secrecyScore">
                                                             <span class="card-icon bg-white px-3 py-1 rounded-pill fs-3">{{ paper.score }}</span>
@@ -199,7 +183,7 @@
     </div>
 </el-card>
 <div class="py-8"></div>
-<div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 opacity-75">
+<div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 opacity-75 animate__animated animate__fadeInUp">
     <el-button-group class="btn-group p-1 bg-gray-300 rounded-pill">
         <template v-if="item.examSubmiting">
             <el-button size="small" icon="el-icon-s-promotion" type="warning" plain :loading="item.examSubmiting" class="rounded-start-pill">正在交卷...</el-button>

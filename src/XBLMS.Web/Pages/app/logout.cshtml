@@ -1,17 +1,20 @@
 @page
 @{ Layout = "_LayoutApp"; }
-
+<div style="position:fixed;left:0;top:0;width:100%;" class="text-center py-3 bg-white z-1">
+    退出登录
+</div>
+<div class="pb-8"></div>
 <el-card>
-    <el-scrollbar class="scrollbar" :style="{ height: ($(window).height()-63) + 'px' }">
-        <div class="text-center px-21 py-8">
-            <el-card>
-                <el-button type="warning" plain :size="euiSize" v-on:click="logout" class="py-18 w-100">
-                    <div><i class="el-icon-switch-button display-1"></i></div>
-                    <div class="mt-5 fs-3">退出系统</div>
-                </el-button>
-            </el-card>
-        </div>
-    </el-scrollbar>
+    <el-button type="warning" plain v-on:click="logout" class="py-8 w-100">
+        <div><i class="el-icon-switch-button display-1"></i></div>
+        <div class="mt-5 fs-3">退出登录</div>
+    </el-button>
 </el-card>
+<div class="py-8"></div>
+<div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 opacity-75 animate__animated animate__fadeInUp">
+    <el-button-group class="btn-group p-1 bg-gray-300 rounded-pill">
+        <el-button v-on:click="location.href=utils.getRootUrl('mine')" icon="el-icon-back" class="rounded-pill" size="small">返 回</el-button>
+    </el-button-group>
+</div>
 @section Scripts{
-<script src="/sitefiles/assets/js/home/logout.js" type="text/javascript"></script> }
+<script src="/sitefiles/assets/js/app/logout.js" type="text/javascript"></script> }
