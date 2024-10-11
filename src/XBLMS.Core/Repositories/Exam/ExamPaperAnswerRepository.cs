@@ -72,19 +72,44 @@ namespace XBLMS.Core.Repositories
 
         public async Task<decimal> ScoreSumAsync(int startId)
         {
-            return await _repository.SumAsync(nameof(ExamPaperAnswer.Score), Q.Where(nameof(ExamPaperAnswer.ExamStartId), startId));
+            var scoreList = await _repository.GetAllAsync<decimal>(Q.
+                Select(nameof(ExamPaperAnswer.Score)).
+                Where(nameof(ExamPaperAnswer.ExamStartId), startId));
+
+            if(scoreList!=null && scoreList.Count > 0)
+            {
+                return scoreList.Sum();
+            }
+
+            return 0;
         }
         public async Task<decimal> ObjectiveScoreSumAsync(int startId)
         {
-            return await _repository.SumAsync(nameof(ExamPaperAnswer.Score), Q.
-                    Where(nameof(ExamPaperAnswer.ExamTmType), ExamTmType.Objective.GetValue()).
-                    Where(nameof(ExamPaperAnswer.ExamStartId), startId));
+            var scoreList = await _repository.GetAllAsync<decimal>(Q.
+              Select(nameof(ExamPaperAnswer.Score)).
+              Where(nameof(ExamPaperAnswer.ExamTmType), ExamTmType.Objective.GetValue()).
+              Where(nameof(ExamPaperAnswer.ExamStartId), startId));
+
+            if (scoreList != null && scoreList.Count > 0)
+            {
+                return scoreList.Sum();
+            }
+
+            return 0;
         }
         public async Task<decimal> SubjectiveScoreSumAsync(int startId)
         {
-            return await _repository.SumAsync(nameof(ExamPaperAnswer.Score), Q.
-                Where(nameof(ExamPaperAnswer.ExamTmType), ExamTmType.Subjective.GetValue()).
-                Where(nameof(ExamPaperAnswer.ExamStartId), startId));
+            var scoreList = await _repository.GetAllAsync<decimal>(Q.
+             Select(nameof(ExamPaperAnswer.Score)).
+             Where(nameof(ExamPaperAnswer.ExamTmType), ExamTmType.Subjective.GetValue()).
+             Where(nameof(ExamPaperAnswer.ExamStartId), startId));
+
+            if (scoreList != null && scoreList.Count > 0)
+            {
+                return scoreList.Sum();
+            }
+
+            return 0;
         }
     }
 }
