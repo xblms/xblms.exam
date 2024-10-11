@@ -195,12 +195,12 @@ namespace XBLMS.Web
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ISettingsManager settingsManager, IErrorLogRepository errorLogRepository)
         {
+          
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            //app.UseMiddleware<StaticUrlReplaceExtensions>();
 
             app.UseExceptionHandler(a => a.Run(async context =>
             {
@@ -260,6 +260,9 @@ namespace XBLMS.Web
                 }
 
             });
+
+            //app.UseReplaceContentMiddleware();
+
             app.UseStaticFiles();
 
             var supportedCultures = new[]
@@ -276,6 +279,8 @@ namespace XBLMS.Web
                 // UI strings that we have localized.
                 SupportedUICultures = supportedCultures
             });
+
+          
 
             app.UseRouting();
 
@@ -301,6 +306,8 @@ namespace XBLMS.Web
                     settings.DocumentPath = "/swagger/v1/swagger.json";
                 });
             }
+
+    
         }
     }
 }

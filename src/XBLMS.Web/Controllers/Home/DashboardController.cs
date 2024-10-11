@@ -3,12 +3,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using XBLMS.Configuration;
+using XBLMS.Core.Extensions;
 using XBLMS.Models;
 using XBLMS.Repositories;
 using XBLMS.Services;
 
 namespace XBLMS.Web.Controllers.Home
 {
+    [ServiceFilter(typeof(TextReplaceFilter))]
     [OpenApiIgnore]
     [Authorize(Roles = Types.Roles.User)]
     [Route(Constants.ApiHomePrefix)]
