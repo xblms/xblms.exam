@@ -43,8 +43,8 @@
         </el-card>
     </div>
     <div class="my-5 text-center">
-        <el-button icon="el-icon-refresh-right" v-if="list.length>0 && list.length<total" v-on:click="btnLoadMoreClick" :loading="loadMoreLoading">加载更多</el-button>
-        <span v-else class="fw-light">没有更多了</span>
+        <el-button size="small" icon="el-icon-refresh-right" v-if="list.length>0 && list.length<total" v-on:click="btnLoadMoreClick" :loading="loadMoreLoading">加载更多</el-button>
+        <span v-else class="fw-light fs-6">没有更多了</span>
     </div>
 </div>
 <div class="pt-10" v-else>

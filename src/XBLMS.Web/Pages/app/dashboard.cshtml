@@ -199,7 +199,7 @@
             </div>
         </div>
         <div>
-            <el-descriptions title="" border column="1">
+            <el-descriptions title="" border column="2" direction="vertical">
                 <el-descriptions-item label="账 号">{{ user.userName }}</el-descriptions-item>
                 <el-descriptions-item label="姓 名">{{ user.displayName }}</el-descriptions-item>
                 <el-descriptions-item label="组 织">{{ user.organNames }}</el-descriptions-item>
@@ -211,7 +211,7 @@
     </el-card>
 </div>
 <div class="my-5 text-center">
-    <span class="fw-light mt-3">没有了</span>
+    <span class="fw-light mt-3 fs-6">没有更多了</span>
 </div>
 <div class="py-8"></div>
 @await Html.PartialAsync("_PartialAppMenu")
