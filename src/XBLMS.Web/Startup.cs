@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -257,6 +258,7 @@ namespace XBLMS.Web
                     context.Request.Path = "/404.html";
                     await next();
                 }
+
             });
             app.UseStaticFiles();
 
