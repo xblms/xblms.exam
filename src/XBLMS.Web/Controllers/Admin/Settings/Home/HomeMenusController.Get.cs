@@ -16,7 +16,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Home
                 return this.NoAuth();
             }
             var menus = await _userMenuRepository.GetUserMenusAsync();
-            if(menus==null || menus.Count == 0)
+            if (menus == null || menus.Count == 0)
             {
                 await _userMenuRepository.ResetAsync();
             }

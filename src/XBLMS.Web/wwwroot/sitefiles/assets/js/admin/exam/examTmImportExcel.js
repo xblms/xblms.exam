@@ -40,6 +40,7 @@ var methods = {
         $this.importTmCache.tmTotal = $this.importTmCache.tmCurrent = $this.importTmCache.tmTotal;
       }
     }).catch(function (error) {
+      $this.importTmCache.tmTotal = $this.importTmCache.tmCurrent = $this.importTmCache.tmTotal;
     }).then(function () {
     });
   },
@@ -52,6 +53,9 @@ var methods = {
     this.uploadExcelTmImportResult.errorMessageList = res.errorMessageList;
     this.uploadExcelTmimportMessageShow = true;
     this.$refs.importTmUpload.clearFiles();
+
+    this.importTmCache.tmTotal = this.importTmCache.tmCurrent = this.importTmCache.tmTotal;
+
     utils.success("导入完成，请查看导入结果", { layer:true });
   },
 

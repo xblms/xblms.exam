@@ -43,9 +43,9 @@
                         <el-col :span="3" style="text-align:right;">{{ importTmCache.tmCurrent }} / {{ importTmCache.tmTotal }}</el-col>
                     </el-row>
                 </div>
-                <div v-if="importTmCache.errors.length>0" style="color:red;">
+                <div v-if="uploadExcelTmImportResult.errorMessageList.length>0" style="color:red;">
                     <div style="overflow-x:hidden;overflow-y:auto;" :style="{ height: ($(window).innerHeight()-380) + 'px' }">
-                        <div v-for="error in importTmCache.errors">{{ error }}</div>
+                        <div v-for="error in uploadExcelTmImportResult.errorMessageList">{{ error }}</div>
                     </div>
                 </div>
             </el-card>

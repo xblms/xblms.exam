@@ -100,7 +100,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             public int Success { set; get; }
             public int Failure { set; get; }
             public string ErrorMessage { set; get; }
-            public List<ImportMessage> ErrorMessageList { get; set; }
+            public List<string> ErrorMessageList { get; set; }
         }
 
         public class ImportMessage
@@ -122,7 +122,6 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             public bool IsOver { get; set; } = false;
             public int TmTotal { get; set; } = 0;
             public int TmCurrent { get; set; } = 0;
-            public List<string> Errors { get; set; }
         }
     }
 }

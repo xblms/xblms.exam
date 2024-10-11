@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using XBLMS.Configuration;
 using XBLMS.Core.Utils;
-using XBLMS.Core.Utils.Office;
-using XBLMS.Dto;
 using XBLMS.Enums;
 using XBLMS.Models;
 using XBLMS.Utils;
@@ -20,13 +16,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         [HttpGet, Route(RouteImportGetCache)]
         public async Task<ActionResult<CacheResultImportTm>> GetImportCache()
         {
-            if (!await _authManager.HasPermissionsAsync(MenuPermissionType.Import))
-            {
-                return this.NoAuth();
-            }
-
             var admin = await _authManager.GetAdminAsync();
-
 
             //进度缓存
             var cacheKey = CacheUtils.GetEntityKey("tmImport", admin.Id);
@@ -54,7 +44,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             var admin = await _authManager.GetAdminAsync();
 
             var cacheKey = CacheUtils.GetEntityKey("tmImport", admin.Id);
-            var cacheInfo = new CacheResultImportTm() { IsError = false, IsOver = false, Errors = new List<string>() };
+            var cacheInfo = new CacheResultImportTm() { IsError = false, IsOver = false };
             _cacheManager.AddOrUpdateAbsolute(cacheKey, cacheInfo, 1);
 
             var companyId = admin.CompanyId;
@@ -76,7 +66,6 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
                 cacheInfo.IsOver = true;
                 cacheInfo.IsError = true;
-                cacheInfo.Errors.Add(error);
                 _cacheManager.AddOrUpdateAbsolute(cacheKey, cacheInfo, 1);
 
                 return this.Error(error);
@@ -89,7 +78,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             var errorMessage = string.Empty;
             var success = 0;
             var failure = 0;
-            var errorMessageList = new List<ImportMessage> { };
+            var errorMessageList = new List<string> { };
             var sheet = ExcelUtils.Read(filePath);
 
 
@@ -123,6 +112,12 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                         var score = row[3].ToString().Trim();
                         decimal scoreDouble = 0;
 
+                        try
+                        {
+                            scoreDouble = Convert.ToDecimal(score);
+                        }
+                        catch { }
+
                         var jiexi = row[4].ToString().Trim();
                         var title = row[5].ToString().Trim();
                         var answer = row[6].ToString().Trim().ToUpper();
@@ -139,7 +134,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                             if (txInfo == null)
                             {
                                 cacheInfo.TmCurrent++;
-                                cacheInfo.Errors.Add($"【行{rowIndexName}:无效的题型】");
+                                errorMessageList.Add($"【行{rowIndexName}:无效的题型】");
                                 _cacheManager.AddOrUpdateAbsolute(cacheKey, cacheInfo, 1);
 
                                 failure++;
@@ -161,7 +156,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                                 if (options.Count < answer.Length)
                                 {
                                     cacheInfo.TmCurrent++;
-                                    cacheInfo.Errors.Add($"【行{rowIndexName}:候选项和答案不匹配】");
+                                    errorMessageList.Add($"【行{rowIndexName}:候选项和答案不匹配】");
 
                                     _cacheManager.AddOrUpdateAbsolute(cacheKey, cacheInfo, 1);
                                     failure++;
@@ -173,7 +168,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                                 if (!StringUtils.Contains(title, "___"))
                                 {
                                     cacheInfo.TmCurrent++;
-                                    cacheInfo.Errors.Add($"【行{rowIndexName}:填空题未包含___】"); 
+                                    errorMessageList.Add($"【行{rowIndexName}:填空题未包含___】"); 
 
                                     _cacheManager.AddOrUpdateAbsolute(cacheKey, cacheInfo, 1);
 
@@ -202,19 +197,30 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                                 if (options.Count > 0)
                                 {
                                     var answers = new List<string>();
+
+                                    var optionError = false;
+
                                     for (int optinindex = 0; optinindex < options.Count; optinindex++)
                                     {
                                         answers.Add(StringUtils.GetABC()[optinindex]);
                                         if (string.IsNullOrWhiteSpace(options[optinindex]))
                                         {
-                                            cacheInfo.TmCurrent++;
-                                            cacheInfo.Errors.Add($"【行{rowIndexName}:候选项内容不完整】");
-
-                                            _cacheManager.AddOrUpdateAbsolute(cacheKey, cacheInfo, 1);
-                                            failure++;
-                                            continue;
+                                            optionError = true;
+                                            break;
+                                         
                                         }
                                     }
+
+                                    if (optionError)
+                                    {
+                                        cacheInfo.TmCurrent++;
+                                        errorMessageList.Add($"【行{rowIndexName}:候选项内容不完整】");
+
+                                        _cacheManager.AddOrUpdateAbsolute(cacheKey, cacheInfo, 1);
+                                        failure++;
+                                        continue;
+                                    }
+
                                     for (int answerIndex = 0; answerIndex < answers.Count; answerIndex++)
                                     {
                                         if (!answer.Contains(answers[answerIndex]))
@@ -229,10 +235,11 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                                 if (await _examTmRepository.ExistsAsync(examInfo.Title, examInfo.TxId))
                                 {
                                     cacheInfo.TmCurrent++;
-                                    cacheInfo.Errors.Add($"【行{rowIndexName}:题库中已经存在相同题型的题目，请勿重复导入】");
+                                    errorMessageList.Add($"【行{rowIndexName}:题库中已经存在相同题型的题目，请勿重复导入】");
 
                                     _cacheManager.AddOrUpdateAbsolute(cacheKey, cacheInfo, 1);
                                     failure++;
+                                    continue;
                                 }
                                 else
                                 {
@@ -249,10 +256,11 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                                     else
                                     {
                                         cacheInfo.TmCurrent++;
-                                        cacheInfo.Errors.Add($"【行{rowIndexName}:题目导入失败】");
+                                        errorMessageList.Add($"【行{rowIndexName}:题目导入失败】");
 
                                         _cacheManager.AddOrUpdateAbsolute(cacheKey, cacheInfo, 1);
                                         failure++;
+                                        continue;
                                     }
                                 }
 
@@ -261,20 +269,21 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                             {
                                 failure++;
                                 cacheInfo.TmCurrent++;
-                                cacheInfo.Errors.Add($"【行{rowIndexName}:{ex.Message}】");
+                                errorMessageList.Add($"【行{rowIndexName}:{ex.Message}】");
 
                                 _cacheManager.AddOrUpdateAbsolute(cacheKey, cacheInfo, 1);
+                                continue;
 
                             }
                         }
                         else
                         {
                             cacheInfo.TmCurrent++;
-                            cacheInfo.Errors.Add($"【行{rowIndexName}:必填项不能为空】");
+                            errorMessageList.Add($"【行{rowIndexName}:必填项不能为空】");
 
                             _cacheManager.AddOrUpdateAbsolute(cacheKey, cacheInfo, 1);
-
                             failure++;
+                            continue;
                         }
                     }
                 }
@@ -282,7 +291,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 {
                     cacheInfo.IsOver = true;
                     cacheInfo.IsError = true;
-                    cacheInfo.Errors.Add("模板中没有编辑题目，请重新编辑模板文件后导入");
+                    errorMessageList.Add("模板中没有编辑题目，请重新编辑模板文件后导入");
 
                     _cacheManager.AddOrUpdateAbsolute(cacheKey, cacheInfo, 1);
                 }
