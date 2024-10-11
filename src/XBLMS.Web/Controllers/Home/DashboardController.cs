@@ -10,7 +10,6 @@ using XBLMS.Services;
 
 namespace XBLMS.Web.Controllers.Home
 {
-    [ServiceFilter(typeof(TextReplaceFilter))]
     [OpenApiIgnore]
     [Authorize(Roles = Types.Roles.User)]
     [Route(Constants.ApiHomePrefix)]
