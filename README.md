@@ -64,11 +64,11 @@
 
 ## 源码结构
 ```
-├── src ( **源代码** )
-│   ├── Datory (**数据库基础类**)
-│   ├── XBLMS (**接口基础类**)
-│   ├── XBLMS.Core (**核心代码**)
-│   ├── XBLMS.Web (**UI**)
+├── src (源代码)
+│   ├── Datory (数据库基础类)
+│   ├── XBLMS (接口基础类)
+│   ├── XBLMS.Core (核心代码)
+│   ├── XBLMS.Web (UI)
 ├── appsettings.json(**配置文件**)
 ├── build.sln(**解决方案，用于发布**)
 ├── xblms.sln(**解决发难，用于开发**)
@@ -82,17 +82,7 @@
 │   ├── SiteFiles <em>(<strong>站群公用文件</strong>)</em>
 │   │   ├── Administrators <em>(<strong>管理员文件夹</strong>)</em>
 │   │   ├── Users <em>(<strong>用户文件夹</strong>)</em>
-│   │   ├── SiteTemplates <em>(<strong>站点模板</strong>)</em>
-│   │   ├── TemporaryFiles <em>(<strong>临时文件</strong>)</em>
-│   │   └── database.sqlite <em>(<strong>本地数据库，可选</strong>)</em>
-│   │ 
-│   ├── ** <em>(<strong>子站点文件夹</strong>)</em>
-│   └── index.html <em>(<strong>默认页</strong>)</em>
-│ 
-├── <code>appsettings.json</code> <em>(<strong>.NET Core APP 配置文件</strong>)</em>
-├── <code>sscms.exe</code> <em>(<strong>SSCMS 主程序</strong>)</em>
-├── <code>sscms.json</code> <em>(<strong>SSCMS 配置文件</strong>)</em>
-└── <code>web.config</code> <em>(<strong>非IIS部署可以删除</strong>)</em></p>
+
 ```
 
 ## 功能介绍
@@ -145,7 +135,7 @@ dotnet build ./build-win-x64/build.sln -c Release
 dotnet publish ./build-win-x64/src/XBLMS.Web/XBLMS.Web.csproj -r win-x64 -c Release -o ./publish/xblms-win-x64
 ```
 
-> Note: 进入文件夹 `./publish/xblms-win-x64` 获取部署文件
+> 进入文件夹 `./publish/xblms-win-x64` 获取部署文件
 
 ### Window(x32)：
 
@@ -156,7 +146,7 @@ dotnet build ./build-win-x32/build.sln -c Release
 dotnet publish ./build-win-x32/src/XBLMS.Web/XBLMS.Web.csproj -r win-x32 -c Release -o ./publish/xblms-win-x32
 ```
 
-> Note: 进入文件夹 `./publish/xblms-win-x32` 获取部署文件
+> 进入文件夹 `./publish/xblms-win-x32` 获取部署文件
 
 ### Linux(x64)：
 
@@ -167,7 +157,7 @@ dotnet build ./build-linux-x64/build.sln -c Release
 dotnet publish ./build-linux-x64/src/XBLMS.Web/XBLMS.Web.csproj -r linux-x64 -c Release -o ./publish/xblms-linux-x64
 ```
 
-> Note: 进入文件夹 `./publish/xblms-linux-x64` 获取部署文件
+> 进入文件夹 `./publish/xblms-linux-x64` 获取部署文件
 
 ### Linux(arm64)：
 
@@ -178,4 +168,4 @@ dotnet build ./build-linux-arm64/build.sln -c Release
 dotnet publish ./build-linux-arm64/src/XBLMS.Web/XBLMS.Web.csproj -r linux-arm64 -c Release -o ./publish/xblms-linux-arm64
 ```
 
-> Note: 进入文件夹 `./publish/xblms-linux-arm64` 获取部署文件
+> 进入文件夹 `./publish/xblms-linux-arm64` 获取部署文件
