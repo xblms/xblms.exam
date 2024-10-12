@@ -1,10 +1,10 @@
 <template>
     <div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 opacity-75 animate__animated animate__fadeInUp">
         <el-button-group class="btn-group p-1 bg-gradient-mix-shade">
-            <el-button type="primary" :plain="appMenuActive!=='index'" icon="el-icon-s-home"  v-on:click="btnAppMenuClick('index')">首页</el-button>
-            <el-button type="primary" :plain="appMenuActive!=='exam'" icon="el-icon-document-checked" v-on:click="btnAppMenuClick('exam')">考试</el-button>
-            <el-button type="primary" :plain="appMenuActive!=='wenjuan'" icon="el-icon-document" v-on:click="btnAppMenuClick('wenjuan')">问卷</el-button>
-            <el-button type="primary" :plain="appMenuActive!=='mine'" icon="el-icon-user" v-on:click="btnAppMenuClick('mine')">我的</el-button>
+            <el-button :class="appMenuActive==='index'?'fw-bold':''" type="primary" :plain="appMenuActive!=='index'" icon="el-icon-s-home" v-on:click="btnAppMenuClick('index')">首页</el-button>
+            <el-button :class="appMenuActive==='exam'?'fw-bold':''" type="primary" :plain="appMenuActive!=='exam'" icon="el-icon-document-checked" v-on:click="btnAppMenuClick('exam')">考试</el-button>
+            <el-button :class="appMenuActive==='wenjuan'?'fw-bold':''" type="primary" :plain="appMenuActive!=='wenjuan'" icon="el-icon-document" v-on:click="btnAppMenuClick('wenjuan')">问卷</el-button>
+            <el-button :class="appMenuActive==='mine'?'fw-bold':''" type="primary" :plain="appMenuActive!=='mine'" icon="el-icon-user" v-on:click="btnAppMenuClick('mine')">我的</el-button>
         </el-button-group>
     </div>
 </template>

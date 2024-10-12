@@ -184,18 +184,18 @@
     </div>
 </el-card>
 <div class="py-8"></div>
-<div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 opacity-75 animate__animated animate__fadeInUp">
+<div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 animate__animated animate__fadeInUp">
     <el-button-group class="btn-group p-1 bg-gray-300 rounded-pill">
         <template v-if="item.examSubmiting">
-            <el-button icon="el-icon-s-promotion" type="warning" plain :loading="item.examSubmiting" class="rounded-start-pill">正在交卷...</el-button>
+            <el-button icon="el-icon-s-promotion" type="warning" :loading="item.examSubmiting" class="rounded-start-pill">正在交卷...</el-button>
         </template>
         <template v-else>
-            <el-button icon="el-icon-s-promotion" type="warning" plain v-on:click="btnStartExamClick" v-if="item.startId>0 && isStart" class="rounded-start-pill">准备就绪，恢复考试</el-button>
-            <el-button icon="el-icon-s-promotion" type="success" plain v-on:click="btnStartExamClick" v-else-if="isStart" class="rounded-start-pill">准备就绪，开始考试</el-button>
+            <el-button icon="el-icon-s-promotion" type="warning" v-on:click="btnStartExamClick" v-if="item.startId>0 && isStart" class="rounded-start-pill">准备就绪，恢复考试</el-button>
+            <el-button icon="el-icon-s-promotion" type="success" v-on:click="btnStartExamClick" v-else-if="isStart" class="rounded-start-pill">准备就绪，开始考试</el-button>
         </template>
         <el-button v-on:click="utils.closeLayerSelf" icon="el-icon-back" class="rounded-end-pill" v-if="isStart">返 回</el-button>
         <el-button v-on:click="utils.closeLayerSelf" icon="el-icon-back" class="rounded-pill" v-else>返 回</el-button>
     </el-button-group>
 </div>
 @section Scripts{
-<script src="/sitefiles/assets/js/home/exam/examPaperInfo.js" type="text/javascript"></script> }
+<script src="/sitefiles/assets/js/app/exam/examPaperInfo.js" type="text/javascript"></script> }
