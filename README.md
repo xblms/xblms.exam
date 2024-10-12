@@ -13,15 +13,15 @@
 支持国产人大金仓、达梦、OceanBase数据库 及 MySql、SqlServer、PostgreSql、SQLite 等数据库
 
 ## 演示地址
-管理端：(http://8.131.91.222:5000/admin)
-账号：admin，密码：123123
+管理端：(http://8.131.91.222:5000/admin)账号：admin，密码：123123
 
-用户端：(http://8.131.91.222:5000/home)
-账号：test1，密码：123123
+用户端：(http://8.131.91.222:5000/home)账号：test1，密码：123123
 
-移动端：(http://8.131.91.222:5000/app)
-<img src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/二维码.png"/>
-账号：test1，密码：123123
+移动端：(http://8.131.91.222:5000/app)账号：test1，密码：123123
+
+<img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/二维码.png"/>
+
+
 
 ## 发布手册
 发布和部署手册：(https://gitee.com/xblms/xblms/tree/master/%E9%83%A8%E7%BD%B2%E6%89%8B%E5%86%8C)
