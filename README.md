@@ -19,8 +19,11 @@
 用户端：(http://8.131.91.222:5000/home)
 账号：test1，密码：123123
 
-移动端端：(http://8.131.91.222:5000/app)
+移动端：(http://8.131.91.222:5000/app)
 账号：test1，密码：123123
+
+## 发布手册
+发布和部署手册：(https://gitee.com/xblms/xblms/tree/master/%E9%83%A8%E7%BD%B2%E6%89%8B%E5%86%8C)
 
 ## 支持环境
 ### 支持的操作系统
@@ -58,6 +61,27 @@
 |[人大金仓](https://www.kingbase.com.cn/)|9.0+|
 |[达梦](https://www.dameng.com/)|8.0+|
 |[OceanBase](https://www.oceanbase.com/)|4.3+|
+
+## 源码结构
+<code>
+├── log <em>(<strong>运行日志目录</strong>)</em>
+├── assets <em>(<strong>后台资源文件目录</strong>)</em>
+├── wwwroot <em>(<strong>网站对外访问目录</strong>)</em>
+│   ├── SiteFiles <em>(<strong>站群公用文件</strong>)</em>
+│   │   ├── Administrators <em>(<strong>管理员文件夹</strong>)</em>
+│   │   ├── Users <em>(<strong>用户文件夹</strong>)</em>
+│   │   ├── SiteTemplates <em>(<strong>站点模板</strong>)</em>
+│   │   ├── TemporaryFiles <em>(<strong>临时文件</strong>)</em>
+│   │   └── database.sqlite <em>(<strong>本地数据库，可选</strong>)</em>
+│   │ 
+│   ├── ** <em>(<strong>子站点文件夹</strong>)</em>
+│   └── index.html <em>(<strong>默认页</strong>)</em>
+│ 
+├── <code>appsettings.json</code> <em>(<strong>.NET Core APP 配置文件</strong>)</em>
+├── <code>sscms.exe</code> <em>(<strong>SSCMS 主程序</strong>)</em>
+├── <code>sscms.json</code> <em>(<strong>SSCMS 配置文件</strong>)</em>
+└── <code>web.config</code> <em>(<strong>非IIS部署可以删除</strong>)</em></p>
+</code>
 
 ## 功能介绍
 ### 管理端
