@@ -65,7 +65,6 @@
 
 ## 源码结构
 ```
-<div style="background-color:#000000;color:#ffffff;">
 ├── src (源代码)
 │   ├── Datory (数据库基础类)
 │   ├── XBLMS (接口基础类)
@@ -82,7 +81,6 @@
 ├── build.sln (解决方案，用于发布)
 ├── gulpfile.js (配置文件，用于发布)
 ├── xblms.sln (解决方案，用于开发)
-</div>
 ```
 
 ## 功能介绍
