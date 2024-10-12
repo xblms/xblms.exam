@@ -63,7 +63,7 @@
 |[OceanBase](https://www.oceanbase.com/)|4.3+|
 
 ## 源码结构
-<code>
+```
 ├── log <em>(<strong>运行日志目录</strong>)</em>
 ├── assets <em>(<strong>后台资源文件目录</strong>)</em>
 ├── wwwroot <em>(<strong>网站对外访问目录</strong>)</em>
@@ -81,7 +81,7 @@
 ├── <code>sscms.exe</code> <em>(<strong>SSCMS 主程序</strong>)</em>
 ├── <code>sscms.json</code> <em>(<strong>SSCMS 配置文件</strong>)</em>
 └── <code>web.config</code> <em>(<strong>非IIS部署可以删除</strong>)</em></p>
-</code>
+```
 
 ## 功能介绍
 ### 管理端
