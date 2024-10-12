@@ -8,7 +8,7 @@
 
 基于 .NET Core 8
 
-支持跨平台部署
+支持跨平台、国产化部署
 
 支持国产人大金仓、达梦、OceanBase数据库 及 MySql、SqlServer、PostgreSql、SQLite 等数据库
 
@@ -49,7 +49,7 @@
 |[达梦](https://www.dameng.com/)|8.0+|
 |[OceanBase](https://www.oceanbase.com/)|4.3+|
 
-
+## 功能介绍
 ### 管理端
 
 |  模块   | 介绍  |
