@@ -64,6 +64,18 @@
 
 ## 源码结构
 ```
+├── src (**源代码**)
+│   ├── Datory (**数据库基础类**)
+│   ├── XBLMS (**接口基础类**)
+│   ├── XBLMS.Core (**核心代码**)
+│   ├── XBLMS.Web (**UI**)
+├── appsettings.json(**配置文件**)
+├── build.sln(**解决方案，用于发布**)
+├── xblms.sln(**解决发难，用于开发**)
+├── gulpfile.js(**发布配置文件**)
+```
+
+```
 ├── log <em>(<strong>运行日志目录</strong>)</em>
 ├── assets <em>(<strong>后台资源文件目录</strong>)</em>
 ├── wwwroot <em>(<strong>网站对外访问目录</strong>)</em>
