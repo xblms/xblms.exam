@@ -159,7 +159,7 @@
                                            active-text="启用模拟自测">
                                 </el-switch>
                             </el-form-item>
-                            <el-form-item label="题型范围" prop="txIds" v-if="form.tmRandomType!=='RandomNone'">
+                            <el-form-item label="题型" prop="txIds" v-if="form.tmRandomType!=='RandomNone'">
                                 <el-select ref="selectTx" v-model="form.txIds" filterable multiple placeholder="全部题型" style="width:100%">
                                     <el-option v-for="tx in txList"
                                                :key="tx.id"
@@ -168,8 +168,8 @@
                                     </el-option>
                                 </el-select>
                             </el-form-item>
-                            <el-form-item label="题目范围" prop="tmGroupIds">
-                                <el-select ref="selectTmGroup" v-model="form.tmGroupIds" filterable multiple placeholder="全部题目" style="width:100%">
+                            <el-form-item label="题目组" prop="tmGroupIds">
+                                <el-select ref="selectTmGroup" v-model="form.tmGroupIds" filterable multiple placeholder="全部题目组" style="width:100%">
                                     <el-option v-for="tmGroup in tmGroupList"
                                                :key="tmGroup.id"
                                                :label="tmGroup.groupName"

@@ -21,38 +21,64 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
             var tmIds = new List<int>();
             var tmGroupIds = request.TmGroupIds;
+
+            var hasAllTmGroup = false;
+
             if (tmGroupIds != null && tmGroupIds.Count > 0)
             {
                 foreach (var tmGroupId in tmGroupIds)
                 {
                     var tmGroup = await _examTmGroupRepository.GetAsync(tmGroupId);
-                    if (tmGroup != null)
+                    if (tmGroup.GroupType == TmGroupType.All)
                     {
-                        if (tmGroup.GroupType == TmGroupType.Fixed && tmGroup.TmIds != null && tmGroup.TmIds.Count > 0)
+                        hasAllTmGroup = true;
+                    }
+                }
+
+                if (!hasAllTmGroup)
+                {
+                    foreach (var tmGroupId in tmGroupIds)
+                    {
+                        var tmGroup = await _examTmGroupRepository.GetAsync(tmGroupId);
+                        if (tmGroup != null)
                         {
-                            tmIds.AddRange(tmGroup.TmIds);
-                        }
-                        if (tmGroup.GroupType == TmGroupType.Range)
-                        {
-                            var tmIdsByGroup = await _examTmRepository.GetIdsAsync(tmGroup.TreeIds, tmGroup.TxIds, tmGroup.Nandus, tmGroup.Zhishidians, tmGroup.DateFrom, tmGroup.DateTo);
-                            if (tmIdsByGroup != null && tmIdsByGroup.Count > 0)
+                            if (tmGroup.GroupType == TmGroupType.Fixed && tmGroup.TmIds != null && tmGroup.TmIds.Count > 0)
                             {
                                 tmIds.AddRange(tmGroup.TmIds);
+                            }
+                            if (tmGroup.GroupType == TmGroupType.Range)
+                            {
+                                var tmIdsByGroup = await _examTmRepository.GetIdsAsync(tmGroup.TreeIds, tmGroup.TxIds, tmGroup.Nandus, tmGroup.Zhishidians, tmGroup.DateFrom, tmGroup.DateTo);
+                                if (tmIdsByGroup != null && tmIdsByGroup.Count > 0)
+                                {
+                                    tmIds.AddRange(tmIdsByGroup);
+                                }
                             }
                         }
                     }
                 }
+
+               
 
             }
 
             var tmTotal = 0;
             foreach (var tx in txList)
             {
+             
+                if (hasAllTmGroup)
+                {
+                    tmIds = null;
+                }
+
                 var count1 = await _examTmRepository.GetCountAsync(tmIds, tx.Id, 1);
                 var count2 = await _examTmRepository.GetCountAsync(tmIds, tx.Id, 2);
                 var count3 = await _examTmRepository.GetCountAsync(tmIds, tx.Id, 3);
                 var count4 = await _examTmRepository.GetCountAsync(tmIds, tx.Id, 4);
                 var count5 = await _examTmRepository.GetCountAsync(tmIds, tx.Id, 5);
+
+
+
                 tmTotal += count1 + count2 + count3 + count4 + count5;
                 result.Add(new ExamPaperRandomConfig
                 {
@@ -60,11 +86,11 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                     TxName = tx.Name,
                     TxScore = tx.Score,
                     TxTaxis = tx.Taxis,
-                    Nandu1TmCount=0,
-                    Nandu2TmCount=0,
-                    Nandu3TmCount=0,
-                    Nandu4TmCount=0,
-                    Nandu5TmCount=0,
+                    Nandu1TmCount = 0,
+                    Nandu2TmCount = 0,
+                    Nandu3TmCount = 0,
+                    Nandu4TmCount = 0,
+                    Nandu5TmCount = 0,
                     Nandu1TmTotal = count1,
                     Nandu2TmTotal = count2,
                     Nandu3TmTotal = count3,
