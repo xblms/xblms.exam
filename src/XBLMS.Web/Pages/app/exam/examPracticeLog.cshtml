@@ -20,13 +20,13 @@
         <el-card shadow="hover" class="mb-2">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
+                    <div class="mb-2 fw-light fs-5">
+                        {{ utils.getFriendlyDateTime(practice.createdDate) }}
+                    </div>
                     <div class="mb-2">
-                        <span class="me-2">{{ practice.title }}</span><el-tag size="mini">{{ utils.getFriendlyDateTime(practice.createdDate) }}</el-tag>
+                        <span class="fw-bold">{{ practice.title }}</span>
                     </div>
                     <ul class="list-inline fw-light">
-                        <li class="list-inline-item fs-5">
-                            共：{{ practice.tmCount }}题
-                        </li>
                         <li class="list-inline-item fs-5">
                             答题：{{ practice.answerCount }}
                         </li>

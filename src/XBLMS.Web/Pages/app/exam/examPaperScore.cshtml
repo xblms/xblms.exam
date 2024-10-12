@@ -18,55 +18,42 @@
         </el-input>
     </el-card>
     <div v-if="total>0">
-        <div class="ms-5 position-relative card-hover-with-icon" v-for="(paper,index) in list" v-on:click="btnViewClick(paper)">
-            <div class="position-absolute top-50 start-0 translate-middle">
-                <div class="position-relative">
-                    <i class="el-icon-notebook-2 fs-1"></i>
-                    <span class="position-absolute top-100 start-100 translate-middle mt-1 fs-6">{{ index+1 }}</span>
+        <div v-for="(paper,index) in list">
+            <el-card shadow="hover" class="mb-3">
+                <div slot="header" class="clearfix">
+                    <div class="fw-bold">{{ paper.paper.title }}</div>
                 </div>
-            </div>
-            <el-card shadow="hover" class="mb-2">
-                <div class="row align-items-center">
-                    <div class="col">
-                        <div class="mb-2 fs-bold ms-4">
-                            <span>{{ paper.paper.title }}</span>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="position-relative">
+                            <i class="el-icon-notebook-2 fs-1"></i>
+                            <span class="position-absolute top-100 start-50 translate-middle mt-2 fs-6">{{ index+1 }}</span>
                         </div>
                     </div>
-                </div>
-                <div class="row align-items-center g-3 ms-4">
-                    <div class="col">
-                        <ul class="list-inline fw-light">
-                            <li class="list-inline-item fs-5">
-                                总分：{{paper.paper.totalScore}}
-                            </li>
-                            <li class="list-inline-item fs-5">
-                                及格分：{{paper.paper.passScore}}
-                            </li>
-                            <li class="list-inline-item fs-5">
-                                交卷时间：{{ paper.paper.examEndDateTimeStr }}
-                            </li>
-                            <li class="list-inline-item fs-5">
-                                用时：{{ paper.useTime }}
-                            </li>
-                            <li class="list-inline-item fs-5">
+                    <div>
+                        <div class="fs-5">
+                            <div class="mb-1">总分：{{paper.paper.totalScore}}，及格分：{{paper.paper.passScore}}</div>
+                            <div class="mb-1">交卷时间：{{ paper.paper.examEndDateTimeStr }}</div>
+                            <div class="mb-1">用时：{{ paper.useTime }}</div>
+                            <div>
                                 成绩：
                                 <span v-if="paper.paper.secrecyScore">
-                                    <span class="fs-3">{{ paper.score }}</span>
+                                    <span class="fw-bold">{{ paper.score }}</span>
                                 </span>
-                                <span v-else class="fw-light text-warning">成绩未公布</span>
-                            </li>
-                        </ul>
-                        <div class="mt-1 text-end">
-                            <div v-if="paper.paper.secrecyPaperContent">
-                                <el-button type="primary" plain icon="el-icon-view" class="rounded-pill" v-on:click.stop="btnViewClick(paper)">查看答卷</el-button>
+                                <span v-else class="fw-light text-danger">成绩未公布</span>
                             </div>
-                            <el-button v-else disabled class="rounded-pill text-warning"><i class="bi bi-eye-slash-fill"></i></el-button>
                         </div>
+                    </div>
+                    <div>
+                        <div v-if="paper.paper.secrecyPaperContent">
+                            <el-button type="primary" plain icon="el-icon-view" circle v-on:click.stop="btnViewClick(paper)"></el-button>
+                        </div>
+                        <el-button v-else disabled circle type="danger"><i class="bi bi-eye-slash-fill"></i></el-button>
                     </div>
                 </div>
             </el-card>
         </div>
-        <div class="my-5 text-center me-5">
+        <div class="my-5 text-center">
             <el-button size="small" icon="el-icon-refresh-right" v-if="list.length>0 && list.length<total" v-on:click="btnLoadMoreClick" :loading="loadMoreLoading">加载更多</el-button>
             <span v-else class="fw-light fs-6">没有更多了</span>
         </div>
@@ -78,7 +65,7 @@
 <div class="py-8"></div>
 <div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 animate__animated animate__fadeInUp">
     <el-button-group class="btn-group p-1 bg-gray-300 rounded-pill">
-        <el-button v-on:click="location.href=utils.getRootUrl('mine')" icon="el-icon-back" class="rounded-pill">返 回</el-button>
+        <el-button v-on:click="location.href=utils.getRootUrl('mine')" icon="el-icon-back" class="rounded-pill" type="primary">返 回</el-button>
     </el-button-group>
 </div>
 @section Scripts{

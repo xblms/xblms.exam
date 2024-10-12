@@ -20,7 +20,7 @@
     <div class="text-center py-2 pb-3">
         <div>{{ paper.title }}</div>
     </div>
-    <el-card v-for="(tm,tmIndex) in tmList" class="mb-3" :ref="'tm_'+tm.id" :id="'tm_'+tm.id">
+    <el-card v-for="(tm,tmIndex) in tmList" class="mb-3" :ref="'tmid_'+tm.id" :id="'tmid_'+tm.id">
         <div slot="header">
             <div class="d-flex justify-content-start align-items-start fw-bold">
                 <div>{{ tmIndex+1 }}、</div>
@@ -63,10 +63,10 @@
     </el-card>
 </template>
 <div class="py-8"></div>
+<div style="position:fixed;right:10%;top:80%;" class="text-center" v-if="paper && paper.tmTotal>0">
+    <el-progress type="circle" :percentage="utils.formatPercentFloat(answerTotal,tmTotal)" status="success" width="50"></el-progress>
+</div>
 <div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 animate__animated animate__fadeInUp">
-    <div class="w-100 mb-2">
-        <el-progress status="success" :percentage="utils.formatPercentFloat(answerTotal,tmTotal)"></el-progress>
-    </div>
     <el-button-group class="btn-group p-1 bg-gray-300 rounded-pill">
         <el-button type="primary" v-on:click="btnPaperSubmit"  class="rounded-start-pill">
             <i class="el-icon-upload me-2"></i>提 交

@@ -27,7 +27,7 @@
             <div class="row gy-3">
                 <div class="col-xl-6 col-lg-6 col-md-6 col-6">
                     <div class="card rounded-0 bg-white border-top border-muted border-5 card-hover-with-icon">
-                        <div class="card-body py-1">
+                        <div class="card-body pt-3 pb-0">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div>
                                     <div class="mb-2 fw-bold">
@@ -45,7 +45,7 @@
                 </div>
                 <div class="col-xl-6 col-lg-6 col-md-6 col-6">
                     <div class="card rounded-0 bg-white border-top border-muted border-5 card-hover-with-icon">
-                        <div class="card-body py-1">
+                        <div class="card-body pt-3 pb-0">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div>
                                     <div class="mb-2 fw-bold">
@@ -63,7 +63,7 @@
                 </div>
                 <div class="col-xl-12 col-lg-12 col-md-12 col-12">
                     <div class="card rounded-0 bg-white border-top border-muted border-5 card-hover-with-icon">
-                        <div class="card-body py-1">
+                        <div class="card-body pt-3 pb-0">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div v-if="item.cerId>0">
                                     <div class="mb-2 fw-bold"><span>{{item.cerName}}</span></div>
@@ -82,7 +82,7 @@
                 </div>
                 <div class="col-xl-6 col-lg-6 col-md-6 col-6">
                     <div class="card rounded-0 bg-white border-top border-muted border-5 card-hover-with-icon">
-                        <div class="card-body py-1">
+                        <div class="card-body pt-3 pb-0">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div>
                                     <div class="mb-2 fw-bold" v-if="item.isTiming"><span>{{item.timingMinute}}</span>分钟</div>
@@ -98,7 +98,7 @@
                 </div>
                 <div class="col-xl-6 col-lg-6 col-md-6 col-6">
                     <div class="card rounded-0 bg-white border-top border-muted border-5 card-hover-with-icon">
-                        <div class="card-body py-1">
+                        <div class="card-body pt-3 pb-0">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div>
                                     <div class="mb-2">
@@ -121,7 +121,7 @@
                 </div>
                 <div class="col-xl-12 col-lg-12 col-md-12 col-12">
                     <div class="card rounded-0 bg-white border-top border-muted border-5 card-hover-with-icon">
-                        <div class="card-body py-1">
+                        <div class="card-body pt-3 pb-0">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div>
                                     <div class="mb-2 fw-bold">{{ item.examStartDateTimeStr }} - {{ item.examEndDateTimeStr }}</div>
@@ -136,7 +136,7 @@
                 </div>
                 <div class="col-xl-12 col-lg-12 col-md-12 col-12" v-if="(item.cjList && item.cjList.length>0) || (item.subject && item.subject.length>0)">
                     <div class="card rounded-0 bg-white border-top border-muted border-5 card-hover-with-icon">
-                        <div class="card-body py-1">
+                        <div class="card-body pt-3 pb-0">
                             <el-collapse accordion>
                                 <el-collapse-item v-if="item.cjList && item.cjList.length>0">
                                     <template slot="title">
@@ -154,12 +154,12 @@
                                                             <span v-if="item.secrecyScore">
                                                                 <span>{{ paper.score }}</span>
                                                             </span>
-                                                            <span v-else><i class="bi bi-eye-slash-fill me-2"></i>未公开</span>
+                                                            <span class="text-danger" v-else><i class="bi bi-eye-slash-fill me-2"></i>未公开</span>
                                                         </div>
                                                     </div>
                                                     <div>
                                                         <el-button type="primary" circle plain icon="el-icon-view" v-on:click.stop="btnViewClick(paper.id)" v-if="item.secrecyPaperContent"></el-button>
-                                                        <el-button type="warning" circle v-else disabled><i class="bi bi-eye-slash-fill"></i></el-button>
+                                                        <el-button type="danger" circle v-else disabled><i class="bi bi-eye-slash-fill"></i></el-button>
                                                     </div>
                                                 </div>
                                             </el-card>
@@ -194,7 +194,7 @@
             <el-button icon="el-icon-s-promotion" type="success" v-on:click="btnStartExamClick" v-else-if="isStart" class="rounded-start-pill">准备就绪，开始考试</el-button>
         </template>
         <el-button v-on:click="utils.closeLayerSelf" icon="el-icon-back" class="rounded-end-pill" v-if="isStart">返 回</el-button>
-        <el-button v-on:click="utils.closeLayerSelf" icon="el-icon-back" class="rounded-pill" v-else>返 回</el-button>
+        <el-button v-on:click="utils.closeLayerSelf" icon="el-icon-back" class="rounded-pill" v-else type="primary">返 回</el-button>
     </el-button-group>
 </div>
 @section Scripts{

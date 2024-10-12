@@ -13,47 +13,36 @@
     </el-input>
 </el-card>
 <div v-if="total>0">
-    <div class="ms-5 position-relative card-hover-with-icon" v-for="(paper,index) in list" v-on:click="btnViewClick(paper.id)">
-        <div class="position-absolute top-50 start-0 translate-middle">
-            <div class="position-relative">
-                <div v-if="paper.myExamTimes>0">
-                    <div>
-                        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="13" y="10" width="28" height="34" fill="none" stroke="#333" stroke-width="1" stroke-linejoin="miter" /><path d="M35 10V4H8C7.44772 4 7 4.44772 7 5V38H13" stroke="#333" stroke-width="1" stroke-linecap="round" stroke-linejoin="miter" /><path d="M21 22H33" stroke="#333" stroke-width="1" stroke-linecap="round" stroke-linejoin="miter" /><path d="M21 30H33" stroke="#333" stroke-width="1" stroke-linecap="round" stroke-linejoin="miter" /></svg>
-                        <span class="position-absolute top-100 start-100 translate-middle mt-1 fs-6">{{ index+1 }}</span>
-                    </div>
-                </div>
-                <div v-else>
-                    <el-badge is-dot class="item">
-                        <div>
-                            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="13" y="10" width="28" height="34" fill="none" stroke="#333" stroke-width="1" stroke-linejoin="miter" /><path d="M35 10V4H8C7.44772 4 7 4.44772 7 5V38H13" stroke="#333" stroke-width="1" stroke-linecap="round" stroke-linejoin="miter" /><path d="M21 22H33" stroke="#333" stroke-width="1" stroke-linecap="round" stroke-linejoin="miter" /><path d="M21 30H33" stroke="#333" stroke-width="1" stroke-linecap="round" stroke-linejoin="miter" /></svg>
-                            <span class="position-absolute top-100 start-100 translate-middle mt-1 fs-6">{{ index+1 }}</span>
-                        </div>
-                    </el-badge>
-                </div>
+    <div v-for="(paper,index) in list" v-on:click="btnViewClick(paper.id)">
+        <el-card shadow="hover" class="mb-3">
+            <div slot="header">
+                <div class="fw-bold">{{ paper.title }}</div>
             </div>
-        </div>
-        <el-card shadow="hover" class="mb-2">
-            <div class="ms-5">
-                <div class="mb-3">
-                    <div>
-                        <el-link :underline="false" v-on:click.stop="btnViewClick(paper.id)">
-                            <span class="fw-bold card-icon bg-white py-1 rounded-pill">{{ paper.title }}</span>
-                        </el-link>
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="position-relative">
+                        <div v-if="paper.myExamTimes>0">
+                            <div>
+                                <i class="el-icon-document-copy fs-1 rounded-3 px-1 card-icon"></i>
+                                <span class="position-absolute top-100 start-50 translate-middle mt-2 fs-6">{{ index+1 }}</span>
+                            </div>
+                        </div>
+                        <div v-else>
+                            <el-badge is-dot class="item">
+                                <div>
+                                    <i class="el-icon-document-copy fs-1 rounded-3 px-1 card-icon"></i>
+                                    <span class="position-absolute top-100 start-50 translate-middle mt-2 fs-6">{{ index+1 }}</span>
+                                </div>
+                            </el-badge>
+                        </div>
                     </div>
                 </div>
-                <div class="d-flex justify-content-between align-items-center">
-                    <ul class="list-inline fw-light">
-                        <li class="list-inline-item fs-5">
-                            总分：{{paper.totalScore}}
-                        </li>
-                        <li class="list-inline-item fs-5">
-                            及格分：{{paper.passScore}}
-                        </li>
-                        <li class="list-inline-item fs-5">
-                            开考时间：{{ paper.examStartDateTimeStr }}
-                        </li>
-                        <li class="list-inline-item fs-5">
-                            剩余考试次数：
+                <div>
+                    <div class="fs-5">
+                        <div class="mb-1">总分：{{paper.totalScore}}</div>
+                        <div class="mb-1">及格分：{{paper.passScore}}</div>
+                        <div class="mb-1">
+                            考试次数：
                             <span class="text-success fw-bold" v-if="(paper.userExamTimes-paper.myExamTimes)>0">
                                 {{paper.userExamTimes-paper.myExamTimes}}
                             </span>
@@ -61,12 +50,12 @@
                                 0
                             </span>
                             /{{paper.userExamTimes}}
-                        </li>
-                    </ul>
-                    <div>
-                        <div class="bg-light p-2 rounded-circle">
-                            <el-button type="primary" circle icon="el-icon-s-order" class="p-3 fs-3" v-on:click.stop="btnViewClick(paper.id)"></el-button>
                         </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="bg-light p-2 rounded-circle">
+                        <el-button type="primary" circle icon="el-icon-s-order" class="p-3 fs-3" v-on:click.stop="btnViewClick(paper.id)"></el-button>
                     </div>
                 </div>
             </div>

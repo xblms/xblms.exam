@@ -13,33 +13,25 @@
     </el-input>
 </el-card>
 <div v-if="total>0">
-    <div class="ms-3 position-relative card-hover-with-icon" v-for="(paper,index) in list" v-on:click="btnViewClick(paper)">
-        <div class="position-absolute top-50 start-0 translate-middle">
-            <div class="position-relative">
-                <i class="bi bi-person-check fs-1 rounded-3 px-1 card-icon" :class="paper.submitType==='Submit'?'text-success':'text-warning'"></i>
-                <span class="position-absolute top-100 start-100 translate-middle mt-1 fs-6">{{ index+1 }}</span>
+    <div v-for="(paper,index) in list">
+        <el-card shadow="hover" class="mb-3">
+            <div slot="header" class="clearfix">
+                <div class="fw-bold">{{ paper.title }}</div>
             </div>
-        </div>
-        <el-card shadow="hover" class="mb-2">
-            <div class="mb-3 ms-3">
-                <el-link :underline="false" v-on:click.stop="btnViewClick(paper)">
-                    <span :class="paper.submitType==='Submit'?'text-success':''">{{ paper.title }}</span>
-                </el-link>
-            </div>
-            <div class="row align-items-center g-3 ms-3">
-                <div class="col">
-                    <ul class="list-inline fw-light">
-                        <li class="list-inline-item fs-5">
-                            <i class="el-icon-date me-2"></i>有效期至
-                        </li>
-                    </ul>
-                    <ul class="list-inline fw-light">
-                        <li class="list-inline-item fs-5">
-                            {{ paper.examEndDateTimeStr }}
-                        </li>
-                    </ul>
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="position-relative mb-2">
+                        <i class="bi bi-person-check fs-1 rounded-3 px-1 card-icon" :class="paper.submitType==='Submit'?'text-success':'text-warning'"></i>
+                        <span class="position-absolute top-100 start-50 translate-middle mt-2 fs-6">{{ index+1 }}</span>
+                    </div>
                 </div>
-                <div class="col-auto">
+                <div>
+                    <div class="fs-5">
+                        <div class="mb-1"><i class="el-icon-date me-2"></i>有效期至</div>
+                        <div>{{ paper.examEndDateTimeStr }}</div>
+                    </div>
+                </div>
+                <div>
                     <div class="bg-light p-2 rounded-pill">
                         <el-button type="success" plain icon="el-icon-s-order" class="rounded-pill" disabled v-if="paper.submitType==='Submit'">已提交</el-button>
                         <el-button type="warning" plain icon="el-icon-s-order" class="rounded-pill" v-on:click.stop="btnViewClick(paper)" v-else>去填写</el-button>
@@ -48,7 +40,7 @@
             </div>
         </el-card>
     </div>
-    <div class="my-5 text-center me-5">
+    <div class="my-5 text-center">
         <el-button size="small" icon="el-icon-refresh-right" v-if="list.length>0 && list.length<total" v-on:click="btnLoadMoreClick" :loading="loadMoreLoading">加载更多</el-button>
         <span v-else class="fw-light fs-6">没有更多了</span>
     </div>

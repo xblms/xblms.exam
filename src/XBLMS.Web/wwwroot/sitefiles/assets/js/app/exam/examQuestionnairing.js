@@ -96,10 +96,10 @@ var methods = {
     });
   },
   tmDidScroll: function (id) {
-    this.$refs['answerScrollbar'].wrap.scrollTop = 0;
-    var eid = '#tm_' + id;
-    var scrollTop = ($(eid).offset().top) - 128;
-    this.$refs['answerScrollbar'].wrap.scrollTop = scrollTop;
+    var tmel = document.getElementById("tmid_" + id);
+    if (tmel) {
+      tmel.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
   },
   checkAnswer: function () {
     for (let i = 0; i < this.tmList.length; i++) {
