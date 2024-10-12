@@ -61,7 +61,7 @@ namespace XBLMS.Models
         [DataColumn]
         public bool Moni { get; set; } = false;
         [DataColumn]
-        public int RandomCount { get; set; } = 10;
+        public int RandomCount { get; set; } = 1;
         /// <summary>
         /// 快速随机还是精准随机
         /// </summary>

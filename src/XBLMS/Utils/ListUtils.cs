@@ -102,6 +102,19 @@ namespace XBLMS.Utils
             }
             return newList;
         }
+        public static List<T> GetRandomList<T>(List<T> list,int max)
+        {
+            var random = new Random();
+            var newList = new List<T>();
+            foreach (var item in list)
+            {
+                if (newList.Count < max)
+                {
+                    newList.Insert(random.Next(newList.Count + 1), item);
+                }
+            }
+            return newList;
+        }
         public static List<string> GetStringList(IEnumerable<string> collection)
         {
             return Utilities.GetStringList(collection);
