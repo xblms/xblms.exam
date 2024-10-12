@@ -27,7 +27,7 @@
             <div class="row gy-3">
                 <div class="col-xl-6 col-lg-6 col-md-6 col-6">
                     <div class="card rounded-0 bg-white border-top border-muted border-5 card-hover-with-icon">
-                        <div class="card-body">
+                        <div class="card-body py-1">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div>
                                     <div class="mb-2 fw-bold">
@@ -45,7 +45,7 @@
                 </div>
                 <div class="col-xl-6 col-lg-6 col-md-6 col-6">
                     <div class="card rounded-0 bg-white border-top border-muted border-5 card-hover-with-icon">
-                        <div class="card-body">
+                        <div class="card-body py-1">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div>
                                     <div class="mb-2 fw-bold">
@@ -63,7 +63,7 @@
                 </div>
                 <div class="col-xl-12 col-lg-12 col-md-12 col-12">
                     <div class="card rounded-0 bg-white border-top border-muted border-5 card-hover-with-icon">
-                        <div class="card-body">
+                        <div class="card-body py-1">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div v-if="item.cerId>0">
                                     <div class="mb-2 fw-bold"><span>{{item.cerName}}</span></div>
@@ -82,7 +82,7 @@
                 </div>
                 <div class="col-xl-6 col-lg-6 col-md-6 col-6">
                     <div class="card rounded-0 bg-white border-top border-muted border-5 card-hover-with-icon">
-                        <div class="card-body">
+                        <div class="card-body py-1">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div>
                                     <div class="mb-2 fw-bold" v-if="item.isTiming"><span>{{item.timingMinute}}</span>分钟</div>
@@ -98,7 +98,7 @@
                 </div>
                 <div class="col-xl-6 col-lg-6 col-md-6 col-6">
                     <div class="card rounded-0 bg-white border-top border-muted border-5 card-hover-with-icon">
-                        <div class="card-body">
+                        <div class="card-body py-1">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div>
                                     <div class="mb-2">
@@ -121,7 +121,7 @@
                 </div>
                 <div class="col-xl-12 col-lg-12 col-md-12 col-12">
                     <div class="card rounded-0 bg-white border-top border-muted border-5 card-hover-with-icon">
-                        <div class="card-body">
+                        <div class="card-body py-1">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div>
                                     <div class="mb-2 fw-bold">{{ item.examStartDateTimeStr }} - {{ item.examEndDateTimeStr }}</div>
@@ -136,7 +136,7 @@
                 </div>
                 <div class="col-xl-12 col-lg-12 col-md-12 col-12" v-if="(item.cjList && item.cjList.length>0) || (item.subject && item.subject.length>0)">
                     <div class="card rounded-0 bg-white border-top border-muted border-5 card-hover-with-icon">
-                        <div class="card-body">
+                        <div class="card-body py-1">
                             <el-collapse accordion>
                                 <el-collapse-item v-if="item.cjList && item.cjList.length>0">
                                     <template slot="title">
