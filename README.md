@@ -69,20 +69,15 @@
 │   ├── XBLMS (接口基础类)
 │   ├── XBLMS.Core (核心代码)
 │   ├── XBLMS.Web (UI)
-├── appsettings.json(**配置文件**)
-├── build.sln(**解决方案，用于发布**)
-├── xblms.sln(**解决发难，用于开发**)
-├── gulpfile.js(**发布配置文件**)
-```
-
-```
-├── log <em>(<strong>运行日志目录</strong>)</em>
-├── assets <em>(<strong>后台资源文件目录</strong>)</em>
-├── wwwroot <em>(<strong>网站对外访问目录</strong>)</em>
-│   ├── SiteFiles <em>(<strong>站群公用文件</strong>)</em>
-│   │   ├── Administrators <em>(<strong>管理员文件夹</strong>)</em>
-│   │   ├── Users <em>(<strong>用户文件夹</strong>)</em>
-
+│   │   ├── 123123
+│   │   ├── 123123
+│   │   ├── 123123
+│   │   ├── 123123
+│   │   ├── 123123
+├── appsettings.json(配置文件)
+├── build.sln(解决方案，用于发布)
+├── gulpfile.js(配置文件，用于发布)
+├── xblms.sln(解决方案，用于开发)
 ```
 
 ## 功能介绍
