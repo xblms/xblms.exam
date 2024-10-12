@@ -69,15 +69,17 @@
 │   ├── XBLMS (接口基础类)
 │   ├── XBLMS.Core (核心代码)
 │   ├── XBLMS.Web (UI)
-│   │   ├── 123123
-│   │   ├── 123123
-│   │   ├── 123123
-│   │   ├── 123123
-│   │   ├── 123123
-├── appsettings.json(配置文件)
-├── build.sln(解决方案，用于发布)
-├── gulpfile.js(配置文件，用于发布)
-├── xblms.sln(解决方案，用于开发)
+│   │   ├── wwwroot (对外访问目录)
+│   │   ├── Controllers (WebApi)
+│   │   ├── log (运行日志)
+│   │   ├── Pages (页面)
+│   │   ├── appsettings.json (配置文件)
+│   │   ├── web.config (配置文件，非IIS部署可以删除)
+│   │   ├── xblms.json (配置文件)
+├── appsettings.json (配置文件)
+├── build.sln (解决方案，用于发布)
+├── gulpfile.js (配置文件，用于发布)
+├── xblms.sln (解决方案，用于开发)
 ```
 
 ## 功能介绍
