@@ -180,6 +180,11 @@
     </tr>
 </table>
 
+## 编译
+
+项目编译需要使用 Visual Studio 2022，你可以从这里下载 [Visual Studio Community 2022](https://www.visualstudio.com/downloads/)
+
+
 ## 发布跨平台版本
 
 ### Window(x64)：
