@@ -66,7 +66,7 @@
                         <span>{{(formInline.pageIndex - 1) * formInline.pageSize + scope.$index + 1}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column label="试卷名称" show-overflow-toolti>
+                <el-table-column label="试卷名称" show-overflow-tooltip prop="title">
                     <template slot-scope="scope">
                         <span v-if="scope.row.moni"><el-tag type="warning" size="mini">模拟</el-tag>{{ scope.row.title }}</span>
                         <span v-else>{{ scope.row.title }}</span>
