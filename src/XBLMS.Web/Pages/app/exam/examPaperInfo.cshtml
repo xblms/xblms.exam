@@ -27,10 +27,10 @@
             <div class="row gy-3">
                 <div class="col-xl-6 col-lg-6 col-md-6 col-6">
                     <div class="card rounded-0 bg-white border-top border-muted border-5 card-hover-with-icon">
-                        <div class="card-body p-3">
+                        <div class="card-body">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div>
-                                    <div class="mb-3 fw-bold">
+                                    <div class="mb-2 fw-bold">
                                         <span>{{ item.totalScore }}</span>
                                         分
                                     </div>
@@ -45,10 +45,10 @@
                 </div>
                 <div class="col-xl-6 col-lg-6 col-md-6 col-6">
                     <div class="card rounded-0 bg-white border-top border-muted border-5 card-hover-with-icon">
-                        <div class="card-body p-3">
+                        <div class="card-body">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div>
-                                    <div class="mb-3 fw-bold">
+                                    <div class="mb-2 fw-bold">
                                         <span>{{ item.passScore }}</span>
                                         分
                                     </div>
@@ -63,14 +63,14 @@
                 </div>
                 <div class="col-xl-12 col-lg-12 col-md-12 col-12">
                     <div class="card rounded-0 bg-white border-top border-muted border-5 card-hover-with-icon">
-                        <div class="card-body p-3">
+                        <div class="card-body">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div v-if="item.cerId>0">
-                                    <div class="mb-3 fw-bold"><span>{{item.cerName}}</span></div>
+                                    <div class="mb-2 fw-bold"><span>{{item.cerName}}</span></div>
                                     <p class="text-muted fs-6">考试通过可获得证书</p>
                                 </div>
                                 <div v-else>
-                                    <div class="mb-3"><span>无证书</span></div>
+                                    <div class="mb-2"><span>无证书</span></div>
                                     <p class="text-muted fs-6">考试通过可获得证书</p>
                                 </div>
                                 <div class="icon-shape icon-sm rounded-circle text-muted card-icon">
@@ -82,11 +82,11 @@
                 </div>
                 <div class="col-xl-6 col-lg-6 col-md-6 col-6">
                     <div class="card rounded-0 bg-white border-top border-muted border-5 card-hover-with-icon">
-                        <div class="card-body p-3">
+                        <div class="card-body">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div>
-                                    <div class="mb-3 fw-bold" v-if="item.isTiming"><span>{{item.timingMinute}}</span>分钟</div>
-                                    <div class="mb-3 fw-bold" v-else>不限时</div>
+                                    <div class="mb-2 fw-bold" v-if="item.isTiming"><span>{{item.timingMinute}}</span>分钟</div>
+                                    <div class="mb-2 fw-bold" v-else>不限时</div>
                                     <p class="text-muted fs-6">考试限时</p>
                                 </div>
                                 <div class="icon-shape icon-sm rounded-circle text-muted card-icon">
@@ -98,14 +98,14 @@
                 </div>
                 <div class="col-xl-6 col-lg-6 col-md-6 col-6">
                     <div class="card rounded-0 bg-white border-top border-muted border-5 card-hover-with-icon">
-                        <div class="card-body p-3">
+                        <div class="card-body">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div>
-                                    <div class="mb-3">
+                                    <div class="mb-2">
                                         <span class="text-success fw-bold" v-if="(item.userExamTimes-item.myExamTimes)>0">
                                             {{item.userExamTimes-item.myExamTimes}}
                                         </span>
-                                        <span class="mb-3 text-danger fw-bold" v-else>
+                                        <span class="mb-2 text-danger fw-bold" v-else>
                                             0
                                         </span>
                                         /{{item.userExamTimes}}
@@ -121,10 +121,10 @@
                 </div>
                 <div class="col-xl-12 col-lg-12 col-md-12 col-12">
                     <div class="card rounded-0 bg-white border-top border-muted border-5 card-hover-with-icon">
-                        <div class="card-body p-3">
+                        <div class="card-body">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div>
-                                    <div class="mb-3 fw-bold">{{ item.examStartDateTimeStr }} - {{ item.examEndDateTimeStr }}</div>
+                                    <div class="mb-2 fw-bold">{{ item.examStartDateTimeStr }} - {{ item.examEndDateTimeStr }}</div>
                                     <p class="text-muted fs-6">考试时间</p>
                                 </div>
                                 <div class="icon-shape icon-sm rounded-circle text-muted card-icon">
@@ -136,7 +136,7 @@
                 </div>
                 <div class="col-xl-12 col-lg-12 col-md-12 col-12" v-if="(item.cjList && item.cjList.length>0) || (item.subject && item.subject.length>0)">
                     <div class="card rounded-0 bg-white border-top border-muted border-5 card-hover-with-icon">
-                        <div class="card-body p-3">
+                        <div class="card-body">
                             <el-collapse accordion>
                                 <el-collapse-item v-if="item.cjList && item.cjList.length>0">
                                     <template slot="title">
@@ -145,21 +145,19 @@
                                     <div>
                                         <div v-for="(paper,index) in item.cjList">
                                             <el-card shadow="hover" class="mb-2">
-                                                <div class="mb-2">考试时间：{{ paper.beginDateTime }}-{{ paper.endDateTime }}</div>
+                                                <div class="mb-2">交卷时间：{{ paper.endDateTime }}</div>
                                                 <div class="mb-2" v-if="item.isTiming">用时：{{ paper.useTime }}</div>
-                                                <div class="row align-items-center g-3">
-                                                    <div class="col-auto px-5">
-                                                        <span v-if="item.secrecyScore">
-                                                            <span class="card-icon bg-white px-3 py-1 rounded-pill fs-3">{{ paper.score }}</span>
-                                                        </span>
-                                                        <span v-else class="fw-light text-warning"><i class="bi bi-eye-slash-fill"></i></span>
+                                                <div class="mb-2">成绩：
+                                                    <span v-if="item.secrecyScore">
+                                                        <span>{{ paper.score }}</span>
+                                                    </span>
+                                                    <span v-else><i class="bi bi-eye-slash-fill me-2"></i>未公开</span>
+                                                </div>
+                                                <div class="text-end">
+                                                    <div class="bg-light p-2 rounded-pill" v-if="item.secrecyPaperContent">
+                                                        <el-button type="primary" plain icon="el-icon-view" class="rounded-pill" v-on:click.stop="btnViewClick(paper.id)">查看答卷</el-button>
                                                     </div>
-                                                    <div class="col-auto">
-                                                        <div class="bg-light p-2 rounded-pill" v-if="item.secrecyPaperContent">
-                                                            <el-button type="primary" plain icon="el-icon-view" class="rounded-pill" v-on:click.stop="btnViewClick(paper.id)">查看答卷</el-button>
-                                                        </div>
-                                                        <el-button v-else disabled class="rounded-pill text-warning"><i class="bi bi-eye-slash-fill"></i></el-button>
-                                                    </div>
+                                                    <el-button v-else disabled class="rounded-pill text-warning"><i class="bi bi-eye-slash-fill"></i></el-button>
                                                 </div>
                                             </el-card>
                                         </div>

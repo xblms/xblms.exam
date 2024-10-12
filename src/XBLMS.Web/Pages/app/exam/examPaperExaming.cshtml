@@ -25,11 +25,11 @@
 
         .number {
             background-color:#000000;
-            padding:8px !important;
+            padding:8px 10px !important;
             border-radius:15px;
-            color: #e6a23c;
+            color: red;
             opacity:0.5;
-            font-size:12px;
+            font-size:10px;
         }
     </style>
     <link href="/sitefiles/assets/css/watermark.css" rel="stylesheet" type="text/css" />
@@ -37,9 +37,9 @@
 @await Html.PartialAsync("_PartialWatermark")
 <template v-if="paper">
     <div class="d-flex justify-content-between align-items-center px-2 py-3">
-        <div class="fs-5 text-start">
+        <div class="text-start">
             <div class="mb-2">{{ paper.title }}</div>
-            <div class="fs-6">共：{{ paper.tmTotal }}题，总分：{{ paper.totalScore }}分，及格分：{{ paper.passScore }}分</div>
+            <div class="fs-5">共：{{ paper.tmTotal }}题，总分：{{ paper.totalScore }}分，及格分：{{ paper.passScore }}分</div>
         </div>
         <div class="text-end">
             <div><el-avatar size="small" :src="paper.userAvatar || DEFAULT_AVATAR_URL"></el-avatar></div>
@@ -111,7 +111,7 @@
     </div>
     <div class="py-8"></div>
 </template>
-<div style="position:fixed;left:0;top:0;width:100%;" class="text-center py-2" v-if="paper && paper.isTiming">
+<div style="position:fixed;left:0;top:0;width:100%;" class="text-center p-2" v-if="paper && paper.isTiming">
     <el-statistic :value="surplusSecond"
                   time-indices v-on:finish="timingFinish">
     </el-statistic>

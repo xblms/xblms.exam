@@ -47,15 +47,15 @@
         </div>
     </div>
 </div>
-<div class="card card-hover-with-icon border-top border-5 border-warning p-0 mb-3">
+<div class="card card-hover-with-icon border-top border-5 border-primary p-0 mb-3">
     <el-card shadow="hover">
         <div slot="header" class="d-flex justify-content-between align-items-center">
-            <span class=""><i class="el-icon-platform-eleme me-2 text-warning bg-light p-2 card-icon rounded-circle"></i>最近一场考试安排</span>
+            <span class=""><i class="el-icon-platform-eleme me-2 bg-light p-2 card-icon rounded-circle"></i>最近一场考试安排</span>
             <el-link :underline="false" v-on:click="btnExamMoreMenuClick">更多<i class="el-icon-more ms-2"></i></el-link>
         </div>
         <div class="row align-items-center g-3" v-if="examPaper">
             <div class="col">
-                <div class="mb-2">
+                <div class="mb-3">
                     <el-link :underline="false" v-on:click="btnViewPaperClick(examPaper.id)">
                         <span class="fw-bold fs-4">{{ examPaper.title }}</span>
                     </el-link>
@@ -67,8 +67,6 @@
                     <li class="list-inline-item fs-5">
                         及格分：{{ examPaper.passScore }}
                     </li>
-                </ul>
-                <ul class="list-inline fw-light">
                     <li class="list-inline-item fs-5">
                         剩余考试次数：
                         <span class="text-success fw-bold" v-if="(examPaper.userExamTimes-examPaper.myExamTimes)>0">
@@ -79,8 +77,6 @@
                         </span>
                         /{{ examPaper.userExamTimes }}
                     </li>
-                </ul>
-                <ul class="list-inline fw-light">
                     <li class="list-inline-item fs-5">
                         <i class="el-icon-date me-2"></i>开考时间：{{ examPaper.examStartDateTimeStr }}
                     </li>
@@ -97,11 +93,11 @@
         </div>
     </el-card>
 </div>
-<div class="card shadow-lg border-top border-5 border-light p-0 mb-3 bg-light" style="cursor:default;">
+<div class="card shadow-lg border-top border-5 border-light p-0 mb-3 bg-primary" style="cursor:default;">
     <el-card>
         <div slot="header" class="d-flex justify-content-between align-items-center">
             <span>
-                <i class="el-icon-s-order me-2 text-warning bg-light p-2 card-icon rounded-circle"></i>刷题练习
+                <i class="el-icon-s-order me-2 bg-light p-2 card-icon rounded-circle"></i>刷题练习
             </span>
             <el-link :underline="false" v-on:click="btnShuatiMoreMenuClick">更多<i class="el-icon-more ms-2"></i></el-link>
         </div>
@@ -140,15 +136,15 @@
         </div>
     </el-card>
 </div>
-<div class="card card-hover-with-icon border-top border-5 border-light p-0 mb-3" style="cursor:default;">
+<div class="card card-hover-with-icon border-top border-5 border-primary p-0 mb-3" style="cursor:default;">
     <el-card shadow="hover">
         <div slot="header" class="d-flex justify-content-between align-items-center">
-            <span><i class="el-icon-eleme me-2 text-warning bg-light p-2 card-icon rounded-circle"></i>最新一场模拟自测</span>
+            <span><i class="el-icon-eleme me-2 bg-light p-2 card-icon rounded-circle"></i>最新一场模拟自测</span>
             <el-link :underline="false" v-on:click="btnExamMoniMoreMenuClick">更多<i class="el-icon-more ms-2"></i></el-link>
         </div>
         <div class="row align-items-center g-3" v-if="examMoni">
             <div class="col">
-                <div class="mb-2">
+                <div class="mb-3">
                     <el-link :underline="false" v-on:click="btnViewPaperClick(examMoni.id)">
                         <span class="fw-bold">{{ examMoni.title }}</span>
                     </el-link>
@@ -160,8 +156,6 @@
                     <li class="list-inline-item">
                         及格分：{{ examMoni.passScore }}
                     </li>
-                </ul>
-                <ul class="list-inline fw-light fs-5">
                     <li class="list-inline-item">
                         剩余考试次数：
                         <span class="text-success fw-bold" v-if="(examMoni.userExamTimes-examMoni.myExamTimes)>0">
@@ -172,8 +166,6 @@
                         </span>
                         /{{ examMoni.userExamTimes }}
                     </li>
-                </ul>
-                <ul class="list-inline fw-light">
                     <li class="list-inline-item fs-5">
                         <i class="el-icon-date me-2"></i>开考时间：{{ examMoni.examStartDateTimeStr }}
                     </li>
@@ -190,7 +182,7 @@
         </div>
     </el-card>
 </div>
-<div class="card card-hover-with-icon border-top border-5 border-light p-0" style="cursor:default;">
+<div class="card card-hover-with-icon border-top border-5 border-primary p-0" style="cursor:default;">
     <el-card shadow="hover">
         <div class="mb-2 d-flex justify-content-start align-items-center">
             <el-avatar icon="el-icon-user-solid" :src="user.avatarUrl || DEFAULT_AVATAR_URL"></el-avatar>

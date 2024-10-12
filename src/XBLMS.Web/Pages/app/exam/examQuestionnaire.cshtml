@@ -21,7 +21,7 @@
             </div>
         </div>
         <el-card shadow="hover" class="mb-2">
-            <div class="mb-3">
+            <div class="mb-3 ms-3">
                 <el-link :underline="false" v-on:click.stop="btnViewClick(paper)">
                     <span :class="paper.submitType==='Submit'?'text-success':''">{{ paper.title }}</span>
                 </el-link>
@@ -30,12 +30,7 @@
                 <div class="col">
                     <ul class="list-inline fw-light">
                         <li class="list-inline-item fs-5">
-                            <i class="el-icon-date me-2"></i>有效期
-                        </li>
-                    </ul>
-                    <ul class="list-inline fw-light">
-                        <li class="list-inline-item fs-5">
-                            {{ paper.examStartDateTimeStr }}
+                            <i class="el-icon-date me-2"></i>有效期至
                         </li>
                     </ul>
                     <ul class="list-inline fw-light">

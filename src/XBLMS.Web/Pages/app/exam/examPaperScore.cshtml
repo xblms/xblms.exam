@@ -28,12 +28,12 @@
             <el-card shadow="hover" class="mb-2">
                 <div class="row align-items-center">
                     <div class="col">
-                        <div class="mb-2">
+                        <div class="mb-2 fs-bold ms-4">
                             <span>{{ paper.paper.title }}</span>
                         </div>
                     </div>
                 </div>
-                <div class="row align-items-center g-3 ms-6">
+                <div class="row align-items-center g-3 ms-4">
                     <div class="col">
                         <ul class="list-inline fw-light">
                             <li class="list-inline-item fs-5">
@@ -60,7 +60,7 @@
                             <div v-if="paper.paper.secrecyPaperContent">
                                 <el-button type="primary" plain icon="el-icon-view" class="rounded-pill" v-on:click.stop="btnViewClick(paper)">查看答卷</el-button>
                             </div>
-                            <el-button icon="el-icon-view" v-else disabled class="rounded-pill text-warning">不允许查看答卷</el-button>
+                            <el-button v-else disabled class="rounded-pill text-warning"><i class="bi bi-eye-slash-fill"></i></el-button>
                         </div>
                     </div>
                 </div>
