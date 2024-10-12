@@ -20,6 +20,7 @@
 账号：test1，密码：123123
 
 移动端：(http://8.131.91.222:5000/app)
+<img src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/二维码.png"/>
 账号：test1，密码：123123
 
 ## 发布手册
