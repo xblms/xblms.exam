@@ -14,7 +14,10 @@ namespace XBLMS.Web.Controllers.Home
         {
             var user = await _authManager.GetUserAsync();
 
-            if (user == null) return this.Error(Constants.ErrorNotFound);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
 
             user = await _organManager.GetUser(user.Id);
 
