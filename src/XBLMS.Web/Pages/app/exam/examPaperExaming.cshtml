@@ -117,11 +117,11 @@
     </el-statistic>
 </div>
 <div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 opacity-75 animate__animated animate__fadeInUp">
-    <el-button-group class="btn-group p-1 bg-gray-300 rounded-3" size="small">
-        <el-button size="small" type="primary" v-on:click="btnPaperSubmit">
+    <el-button-group class="btn-group p-1 bg-gray-300 rounded-3">
+        <el-button type="primary" v-on:click="btnPaperSubmit">
             <i class="el-icon-upload me-2"></i>立即交卷
         </el-button>
-        <el-button size="small" v-if="paper && paper.openExist" v-on:click="utils.closeLayerSelf" icon="el-icon-back">退 出</el-button>
+        <el-button v-if="paper && paper.openExist" v-on:click="utils.closeLayerSelf" icon="el-icon-back">退 出</el-button>
     </el-button-group>
 </div>
 <div style="position:fixed;right:10%;top:80%;" class="text-center">
@@ -161,7 +161,7 @@
             </div>
         </el-card>
         <div slot="footer" class="dialog-footer">
-            <el-button v-on:click="datikaDialogVisible = false" size="small">关 闭</el-button>
+            <el-button v-on:click="datikaDialogVisible = false">关 闭</el-button>
         </div>
     </el-dialog>
 </template>

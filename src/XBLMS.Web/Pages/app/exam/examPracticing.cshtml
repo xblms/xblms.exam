@@ -109,28 +109,24 @@
                                 <i class="bi bi-emoji-sunglasses text-success me-3"></i>恭喜你，答对了。
                             </div>
                             <div v-else>
-                                <el-tooltip placement="top">
-                                    <div slot="content">
-                                        <el-card>
-                                            <div>正确答案：<span class="text-success">{{ answerResult.answer }}</span></div>
-                                            <div class="mt-2">
-                                                题目解析：<span v-html="answerResult.jiexi"></span>
-                                            </div>
-                                        </el-card>
+                                <el-card>
+                                    <div>正确答案：<span class="text-success">{{ answerResult.answer }}</span></div>
+                                    <div class="mt-2">
+                                        题目解析：<span v-html="answerResult.jiexi"></span>
                                     </div>
-                                    <div class="fs-3 text-danger">
-                                        <i class="bi bi-emoji-frown me-3"></i>很遗憾，答错了<i class="el-icon-info ms-1"></i>。
-                                    </div>
-                                </el-tooltip>
+                                </el-card>
+                                <div class="fs-3 text-danger">
+                                    <i class="bi bi-emoji-frown me-3"></i>很遗憾，答错了。
+                                </div>
                             </div>
                         </div>
                         <div class="mt-2">
-                            <el-button v-on:click="btnDownClick" type="primary" plain size="small"><i class="bi bi-chevron-right me-2"></i>下一题</el-button>
+                            <el-button v-on:click="btnDownClick" type="primary" plain class="el-icon-right">继续</el-button>
                         </div>
                     </div>
                 </div>
-                <div v-else>
-                    <el-button v-on:click="btnSubmitAnswerClick" type="primary" size="small"><i class="bi bi-save me-2"></i>提交答案</el-button>
+                <div v-else class="w-100">
+                    <el-button v-on:click="btnSubmitAnswerClick" type="primary" class="w-100"><i class="bi bi-save me-2"></i>提交答案</el-button>
                 </div>
             </div>
             <div class="text-end mt-3">
@@ -161,8 +157,8 @@
 <div class="py-8"></div>
 <div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 opacity-75 animate__animated animate__fadeInUp">
     <el-button-group class="btn-group p-1 bg-gray-300 rounded-pill">
-        <el-button type="warning" size="small" v-on:click="btnResultClick" class="rounded-start-pill">结束本次练习</el-button>
-        <el-button v-on:click="utils.closeLayerSelf" icon="el-icon-back" class="rounded-end-pill" size="small">返 回</el-button>
+        <el-button type="warning" v-on:click="btnResultClick" class="rounded-start-pill">结束本次练习</el-button>
+        <el-button v-on:click="utils.closeLayerSelf" icon="el-icon-back" class="rounded-end-pill">返 回</el-button>
     </el-button-group>
 </div>
 @section Scripts{

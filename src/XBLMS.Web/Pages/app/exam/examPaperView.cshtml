@@ -169,7 +169,7 @@
             </div>
         </el-card>
         <div slot="footer" class="dialog-footer">
-            <el-button v-on:click="datikaDialogVisible = false" size="small">关 闭</el-button>
+            <el-button v-on:click="datikaDialogVisible = false">关 闭</el-button>
         </div>
     </el-dialog>
 </template>
@@ -177,7 +177,7 @@
 <div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 opacity-75 animate__animated animate__fadeInUp">
     <el-button-group class="btn-group p-1 bg-gray-300 rounded-pill">
         <el-button type="primary" icon="el-icon-s-grid" v-on:click="datikaDialogVisible=true" class="rounded-start-pill">答题卡</el-button>
-        <el-button v-on:click="utils.closeLayerSelf" icon="el-icon-back" class="rounded-end-pill" size="small">返 回</el-button>
+        <el-button v-on:click="utils.closeLayerSelf" icon="el-icon-back" class="rounded-end-pill">返 回</el-button>
     </el-button-group>
 </div>
 @section Scripts{
