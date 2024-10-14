@@ -209,7 +209,7 @@
 <div class="py-8"></div>
 @await Html.PartialAsync("_PartialAppMenu")
 <div style="position:fixed;right:5%;top:50%;" class="text-center" v-if="taskTotal>0">
-    <button type="button" class="btn btn-warning rounded-3 fs-6 py-3 px-2" v-on:click="taskDialogVisible=true">
+    <button type="button" class="btn btn-dark rounded-0 fs-6 py-3 px-2" v-on:click="taskDialogVisible=true">
         <div class="text-danger fw-bold">{{ taskTotal }}</div>
         <div>个</div>
         <div>待</div>

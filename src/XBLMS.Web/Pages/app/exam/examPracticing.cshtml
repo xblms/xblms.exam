@@ -70,7 +70,7 @@
                                         {{optionsABC[optionIndex]}}.
                                     </div>
                                     <div>
-                                        <el-radio :label="option.key" v-model="tm.answer" v-on:change="answerChange">
+                                        <el-radio :label="option.key" v-model="tm.answer" v-on:change="answerChange" size="medium">
                                             <span v-html="option.value"></span>
                                         </el-radio>
                                     </div>
@@ -84,7 +84,7 @@
                                         {{optionsABC[optionIndex]}}.
                                     </div>
                                     <div>
-                                        <el-checkbox :true-label="option.key" false-label="" v-model="tm.optionsValues[optionsABC.indexOf(option.key)]" v-on:change="answerChange">
+                                        <el-checkbox size="medium" :true-label="option.key" false-label="" v-model="tm.optionsValues[optionsABC.indexOf(option.key)]" v-on:change="answerChange">
                                             <span v-html="option.value"></span>
                                         </el-checkbox>
                                     </div>

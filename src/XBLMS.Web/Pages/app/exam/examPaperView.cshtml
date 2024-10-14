@@ -49,7 +49,8 @@
             </div>
         </div>
         <div>
-            <span class="fs-3 px-1 bg-white rounded-3">{{ paper.userScore }}</span>
+            <span class="fs-2 text-success" v-if="paper.userScore>=paper.passScore">{{ paper.userScore }}</span>
+            <span class="fs-2 text-danger" v-else>{{ paper.userScore }}</span>
         </div>
     </div>
     <div>
@@ -82,7 +83,7 @@
                                         {{optionsABC[optionIndex]}}.
                                     </div>
                                     <div>
-                                        <el-radio disabled :label="option.key" v-model="tm.answerInfo.answer">
+                                        <el-radio disabled :label="option.key" v-model="tm.answerInfo.answer" size="medium">
                                             <span v-html="option.value"></span>
                                         </el-radio>
                                     </div>
@@ -96,7 +97,7 @@
                                         {{optionsABC[optionIndex]}}.
                                     </div>
                                     <div>
-                                        <el-checkbox disabled :true-label="option.key" false-label="" v-model="tm.answerInfo.optionsValues[optionsABC.indexOf(option.key)]">
+                                        <el-checkbox disabled :true-label="option.key" size="medium" false-label="" v-model="tm.answerInfo.optionsValues[optionsABC.indexOf(option.key)]">
                                             <span v-html="option.value"></span>
                                         </el-checkbox>
                                     </div>

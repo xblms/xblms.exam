@@ -36,7 +36,7 @@
                     <div v-if="tm.tx==='Danxuanti'">
                         <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.optionsRandom">
                             <div>
-                                <el-radio :label="option.key" v-model="tm.answer" v-on:change="answerChange(tm)">
+                                <el-radio :label="option.key" v-model="tm.answer" v-on:change="answerChange(tm)" size="medium">
                                     <span v-html="option.value"></span>
                                 </el-radio>
                             </div>
@@ -46,7 +46,7 @@
                         <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.optionsRandom">
                             <div>
                                 <div>
-                                    <el-checkbox :true-label="option.key" false-label="" v-model="tm.optionsValues[optionsABC.indexOf(option.key)]" v-on:change="answerChange(tm)">
+                                    <el-checkbox size="medium" :true-label="option.key" false-label="" v-model="tm.optionsValues[optionsABC.indexOf(option.key)]" v-on:change="answerChange(tm)">
                                         <span v-html="option.value"></span>
                                     </el-checkbox>
                                 </div>
