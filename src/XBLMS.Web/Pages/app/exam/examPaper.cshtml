@@ -7,11 +7,11 @@
         }
     </style>
 }
-<el-card class="mb-3">
-    <el-input placeholder="关键字查询" v-model="form.keyWords" siza="small">
-        <el-button slot="append" icon="el-icon-search" v-on:click="btnSearchClick" size="small"></el-button>
+<div class="mb-3">
+    <el-input prefix-icon="el-icon-search" clearable placeholder="关键字查询" v-model="form.keyWords">
+        <el-button slot="append" icon="el-icon-search" v-on:click="btnSearchClick">查 询</el-button>
     </el-input>
-</el-card>
+</div>
 <div v-if="total>0">
     <div v-for="(paper,index) in list" v-on:click="btnViewClick(paper.id)">
         <el-card shadow="hover" class="mb-3">
