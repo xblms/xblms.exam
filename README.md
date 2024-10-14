@@ -27,7 +27,7 @@
 
 <table>
     <tr>
-        <td><im width="100" src="https://gitee.com/xblms/xblmes/blob/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/%E9%A6%96%E9%A1%B5.jpg"/></td>
+        <td><im width="100" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/%E9%A6%96%E9%A1%B5.jpg"/></td>
         <td></td>
     </tr>
 </table>
