@@ -25,7 +25,7 @@
 
 * 移动端
 
-<img width="180" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/%E9%A6%96%E9%A1%B5.jpg"/>
+<img width="180" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/首页.jpg"/>
 <img width="180"  src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/考试中心.jpg"/>
 <img width="180"  src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/考试详细.jpg"/>
 <img width="180"  src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/考试中.jpg"/>
@@ -38,22 +38,6 @@
 <img width="180"  src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/练习结果.jpg"/>
 <img width="180"  src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/刷题记录.jpg"/>
 <img width="180"  src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/我的.jpg"/>
-
-* 管理端
-<table>
-    <tr>
-        <td></td>
-        <td></td>
-    </tr>
-</table>
-
-* 用户端
-<table>
-    <tr>
-        <td></td>
-        <td></td>
-    </tr>
-</table>
 
 
 
