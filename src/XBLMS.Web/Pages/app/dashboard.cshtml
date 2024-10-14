@@ -60,27 +60,23 @@
                         <span class="fw-bold fs-4">{{ examPaper.title }}</span>
                     </el-link>
                 </div>
-                <ul class="list-inline fw-light">
-                    <li class="list-inline-item fs-5">
-                        总分：{{ examPaper.totalScore }}
-                    </li>
-                    <li class="list-inline-item fs-5">
-                        及格分：{{ examPaper.passScore }}
-                    </li>
-                    <li class="list-inline-item fs-5">
-                        剩余考试次数：
-                        <span class="text-success fw-bold" v-if="(examPaper.userExamTimes-examPaper.myExamTimes)>0">
-                            {{ examPaper.userExamTimes-examPaper.myExamTimes }}
-                        </span>
-                        <span class="fs-5 text-danger fw-bold" v-else>
-                            0
-                        </span>
-                        /{{ examPaper.userExamTimes }}
-                    </li>
-                    <li class="list-inline-item fs-5">
-                        <i class="el-icon-date me-2"></i>开考时间：{{ examPaper.examStartDateTimeStr }}
-                    </li>
-                </ul>
+                <div>
+                    <div class="fs-5">
+                        <div class="mb-1">总分：{{examPaper.totalScore}}</div>
+                        <div class="mb-1">及格分：{{examPaper.passScore}}</div>
+                        <div class="mb-1">
+                            考试次数：
+                            <span class="text-success fw-bold" v-if="(examPaper.userExamTimes-examPaper.myExamTimes)>0">
+                                {{examPaper.userExamTimes-examPaper.myExamTimes}}
+                            </span>
+                            <span class="fs-3 text-danger fw-bold" v-else>
+                                0
+                            </span>
+                            /{{examPaper.userExamTimes}}
+                        </div>
+                        <div><i class="el-icon-date me-2"></i>开考时间：{{ examPaper.examStartDateTimeStr }}</div>
+                    </div>
+                </div>
             </div>
             <div class="col-auto">
                 <div class="bg-light p-2 rounded-circle">
@@ -150,27 +146,23 @@
                         <span class="fw-bold">{{ examMoni.title }}</span>
                     </el-link>
                 </div>
-                <ul class="list-inline fw-light fs-5">
-                    <li class="list-inline-item">
-                        总分：{{ examMoni.totalScore }}
-                    </li>
-                    <li class="list-inline-item">
-                        及格分：{{ examMoni.passScore }}
-                    </li>
-                    <li class="list-inline-item">
-                        剩余考试次数：
-                        <span class="text-success fw-bold" v-if="(examMoni.userExamTimes-examMoni.myExamTimes)>0">
-                            {{ examMoni.userExamTimes-examMoni.myExamTimes }}
-                        </span>
-                        <span class="text-danger fw-bold" v-else>
-                            0
-                        </span>
-                        /{{ examMoni.userExamTimes }}
-                    </li>
-                    <li class="list-inline-item fs-5">
-                        <i class="el-icon-date me-2"></i>开考时间：{{ examMoni.examStartDateTimeStr }}
-                    </li>
-                </ul>
+                <div>
+                    <div class="fs-5">
+                        <div class="mb-1">总分：{{examMoni.totalScore}}</div>
+                        <div class="mb-1">及格分：{{examMoni.passScore}}</div>
+                        <div class="mb-1">
+                            考试次数：
+                            <span class="text-success fw-bold" v-if="(examMoni.userExamTimes-examMoni.myExamTimes)>0">
+                                {{examMoni.userExamTimes-examMoni.myExamTimes}}
+                            </span>
+                            <span class="fs-3 text-danger fw-bold" v-else>
+                                0
+                            </span>
+                            /{{examMoni.userExamTimes}}
+                        </div>
+                        <div><i class="el-icon-date me-2"></i>开考时间：{{ examMoni.examStartDateTimeStr }}</div>
+                    </div>
+                </div>
             </div>
             <div class="col-auto">
                 <div class="bg-light p-2 rounded-circle">
@@ -208,7 +200,7 @@
 </div>
 <div class="py-8"></div>
 @await Html.PartialAsync("_PartialAppMenu")
-<div style="position:fixed;right:5%;top:50%;" class="text-center" v-if="taskTotal>0">
+<div style="position:fixed;right:5%;top:60%;" class="text-center" v-if="taskTotal>0">
     <button type="button" class="btn btn-dark rounded-2 fs-6 py-3 px-2" v-on:click="taskDialogVisible=true">
         <div class="text-warning fw-bold">{{ taskTotal }}</div>
         <div>个</div>
