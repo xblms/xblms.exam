@@ -216,11 +216,11 @@ var utils = {
     } else {
       url += name + "/";
     }
-    if (this.contains(url, 'admin/login') || this.contains(url, 'home/login')) {
+    if (this.contains(url, 'admin/login') || this.contains(url, 'home/login') || this.contains(url, 'app/login')) {
       url += "?par=" + this.uuid();
     }
     else {
-      url += "?menuId=" + utils.getQueryString("menuId");
+      url += "?par=" + this.uuid() + "&menuId=" + utils.getQueryString("menuId");
     }
 
     if (query) {
@@ -578,7 +578,7 @@ var utils = {
       showClose: true,
     });
   },
-  
+
   error: function (error, options) {
     if (!error) return;
     var vue = (options && options.layer) ? utils.getTabVue() : utils.getRootVue();
@@ -611,10 +611,10 @@ var utils = {
         var location = _.trimEnd(window.location.href, '/');
         if (_.endsWith(location, '/admin') || _.endsWith(location, '/home') || _.endsWith(location, '/app')) {
           top.location.href = utils.getRootUrl('login');
-       
+
         } else {
           top.location.href = utils.getRootUrl('login', { status: 401 });
-         
+
         }
       } else if (error.response && error.response.status === 500 || options && options.redirect) {
         var uuid = utils.uuid();
