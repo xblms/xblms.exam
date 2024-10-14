@@ -40,102 +40,106 @@
     </div>
 </div>
 <div>
-    <el-card v-if="tm" class="fs-4">
-        <div slot="header" class="d-flex justify-content-between align-items-center">
-            <div>第<span class="px-1">{{ tmIndex+1 }}</span>题（{{ tm.txName }}）</div>
-            <div><span>{{ tm.zhishidian }}</span></div>
-        </div>
-        <div>
+    <div v-if="tm && tm.id>0">
+        <el-card v-if="tm" class="fs-4">
+            <div slot="header" class="d-flex justify-content-between align-items-center">
+                <div>第<span class="px-1">{{ tmIndex+1 }}</span>题（{{ tm.txName }}）</div>
+                <div><span>{{ tm.zhishidian }}</span></div>
+            </div>
             <div>
-                <div class="mb-3 fw-bold">
-                    <span v-if="tm.baseTx==='Tiankongti'">
-                        <span v-if="tm.titleList && tm.titleList.length>0">
-                            <span v-for="tmContent in tm.titleList">
-                                <span v-if="utils.contains(tmContent.value,'___')">
-                                    <el-input v-model.trim="tm.optionsValues[tmContent.key]" v-on:change="answerChange" style="width:130px;"></el-input>
+                <div>
+                    <div class="mb-3 fw-bold">
+                        <span v-if="tm.baseTx==='Tiankongti'">
+                            <span v-if="tm.titleList && tm.titleList.length>0">
+                                <span v-for="tmContent in tm.titleList">
+                                    <span v-if="utils.contains(tmContent.value,'___')">
+                                        <el-input v-model.trim="tm.optionsValues[tmContent.key]" v-on:change="answerChange" style="width:130px;"></el-input>
+                                    </span>
+                                    <span v-else v-html="tmContent.value"></span>
                                 </span>
-                                <span v-else v-html="tmContent.value"></span>
                             </span>
+                            <span v-else v-html="tm.titleHtml"></span>
                         </span>
                         <span v-else v-html="tm.titleHtml"></span>
-                    </span>
-                    <span v-else v-html="tm.titleHtml"></span>
-                </div>
-                <div class="list-group" v-if="tm.baseTx!=='Tiankongti'">
-                    <div v-if="tm.baseTx==='Danxuanti' || tm.baseTx==='Panduanti'">
-                        <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.optionsRandom">
-                            <div class="d-flex justify-content-start align-items-start">
-                                <div class="me-1 position-relative">
-                                    {{optionsABC[optionIndex]}}.
-                                </div>
-                                <div>
-                                    <el-radio :label="option.key" v-model="tm.answer" v-on:change="answerChange">
-                                        <span v-html="option.value"></span>
-                                    </el-radio>
+                    </div>
+                    <div class="list-group" v-if="tm.baseTx!=='Tiankongti'">
+                        <div v-if="tm.baseTx==='Danxuanti' || tm.baseTx==='Panduanti'">
+                            <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.optionsRandom">
+                                <div class="d-flex justify-content-start align-items-start">
+                                    <div class="me-1 position-relative">
+                                        {{optionsABC[optionIndex]}}.
+                                    </div>
+                                    <div>
+                                        <el-radio :label="option.key" v-model="tm.answer" v-on:change="answerChange">
+                                            <span v-html="option.value"></span>
+                                        </el-radio>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div v-else-if="tm.baseTx==='Duoxuanti'">
-                        <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.optionsRandom">
-                            <div class="d-flex justify-content-start align-items-start">
-                                <div class="me-1 position-relative">
-                                    {{optionsABC[optionIndex]}}.
-                                </div>
-                                <div>
-                                    <el-checkbox :true-label="option.key" false-label="" v-model="tm.optionsValues[optionsABC.indexOf(option.key)]" v-on:change="answerChange">
-                                        <span v-html="option.value"></span>
-                                    </el-checkbox>
+                        <div v-else-if="tm.baseTx==='Duoxuanti'">
+                            <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.optionsRandom">
+                                <div class="d-flex justify-content-start align-items-start">
+                                    <div class="me-1 position-relative">
+                                        {{optionsABC[optionIndex]}}.
+                                    </div>
+                                    <div>
+                                        <el-checkbox :true-label="option.key" false-label="" v-model="tm.optionsValues[optionsABC.indexOf(option.key)]" v-on:change="answerChange">
+                                            <span v-html="option.value"></span>
+                                        </el-checkbox>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div v-else-if="tm.baseTx==='Jiandati'">
-                        <el-input :key="tm.id" type="textarea" resize="none" v-model.trim="tm.answer" :autosize="{ minRows: 3}" maxlength="333" style="width:100%;"
-                                  show-word-limit v-on:change="answerChange"></el-input>
-                    </div>
-                    <div v-else>
-                        未知题型
+                        <div v-else-if="tm.baseTx==='Jiandati'">
+                            <el-input :key="tm.id" type="textarea" resize="none" v-model.trim="tm.answer" :autosize="{ minRows: 3}" maxlength="333" style="width:100%;"
+                                      show-word-limit v-on:change="answerChange"></el-input>
+                        </div>
+                        <div v-else>
+                            未知题型
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="pt-3 text-center">
             <div>
-                <div v-if="answerResult">
-                    <div class=" text-center">
-                        <div>
-                            <div v-if="answerResult.isRight" class="fs-3">
-                                <i class="bi bi-emoji-sunglasses text-success me-3"></i>恭喜你，答对了。
+                <div class="text-end mt-3">
+                    <el-button size="mini" v-on:click="btnCollectionRemoveClick" type="danger" plain v-if="tm.isCollection"><i class="bi bi-heartbreak-fill me-2"></i>取消收藏</el-button>
+                    <el-button size="mini" v-on:click="btnCollectionClick" type="success" plain v-else><i class="bi bi-suit-heart-fill me-2"></i>收藏</el-button>
+                    <el-button size="mini" v-on:click="btnWrongRemoveClick" type="danger" plain v-if="tm.isWrong"><i class="bi bi-sign-turn-slight-left me-2"></i>移出错题库</el-button>
+                </div>
+            </div>
+        </el-card>
+        <el-card class="mt-2">
+            <div v-if="answerResult">
+                <div class=" text-center">
+                    <div>
+                        <el-card>
+                            <div v-if="answerResult.isRight">
+                                <div>
+                                    <i class="bi bi-emoji-sunglasses text-success me-3"></i>恭喜你，答对了。
+                                </div>
+                                <div>正确答案：<span class="text-success">{{ answerResult.answer }}</span></div>
+                                <div class="mt-2">
+                                    题目解析：<span v-html="answerResult.jiexi"></span>
+                                </div>
                             </div>
                             <div v-else>
-                                <el-card>
-                                    <div>正确答案：<span class="text-success">{{ answerResult.answer }}</span></div>
-                                    <div class="mt-2">
-                                        题目解析：<span v-html="answerResult.jiexi"></span>
-                                    </div>
-                                </el-card>
-                                <div class="fs-3 text-danger">
+                                <div class="text-danger">
                                     <i class="bi bi-emoji-frown me-3"></i>很遗憾，答错了。
                                 </div>
                             </div>
-                        </div>
-                        <div class="mt-2">
-                            <el-button v-on:click="btnDownClick" type="primary" plain class="el-icon-right">继续</el-button>
-                        </div>
+                        </el-card>
+                    </div>
+                    <div class="mt-2">
+                        <el-button type="primary" v-on:click="btnDownClick" class="rounded-pill">继续<i class="el-icon-right ms-2"></i></el-button>
                     </div>
                 </div>
-                <div v-else class="w-100">
-                    <el-button v-on:click="btnSubmitAnswerClick" type="primary" class="w-100"><i class="bi bi-save me-2"></i>提交答案</el-button>
-                </div>
             </div>
-            <div class="text-end mt-3">
-                <el-button size="mini" v-on:click="btnCollectionRemoveClick" type="danger" plain v-if="tm.isCollection"><i class="bi bi-heartbreak-fill me-2"></i>取消收藏</el-button>
-                <el-button size="mini" v-on:click="btnCollectionClick" type="success" plain v-else><i class="bi bi-suit-heart-fill me-2"></i>收藏</el-button>
-                <el-button size="mini" v-on:click="btnWrongRemoveClick" type="danger" plain v-if="tm.isWrong"><i class="bi bi-sign-turn-slight-left me-2"></i>移出错题库</el-button>
+            <div v-else class="text-center">
+                <el-button v-on:click="btnSubmitAnswerClick" type="primary" class="rounded-pill">提交答案</el-button>
             </div>
-        </div>
-    </el-card>
+        </el-card>
+    </div>
     <el-card v-else>
         <div :style="{ height: ($(window).innerHeight()-245) + 'px' }">
             <el-skeleton :rows="6" animated>
@@ -149,10 +153,8 @@
         </div>
     </el-card>
 </div>
-<div class="d-flex justify-content-between align-items-center pt-2">
-    <div class="w-100">
-        <el-progress :text-inside="true" :stroke-width="20" :percentage="utils.formatPercentFloat(answerTotal,total)" status="success"></el-progress>
-    </div>
+<div style="position:fixed;right:10%;top:50%;" class="text-center">
+    <el-progress type="circle" :percentage="utils.formatPercentFloat(answerTotal,total)" status="success" width="50"></el-progress>
 </div>
 <div class="py-8"></div>
 <div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 animate__animated animate__fadeInUp">

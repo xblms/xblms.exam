@@ -40,7 +40,7 @@ var methods = {
       $this.paperTree = res.paperTree;
       $this.cerList = res.cerList;
 
-      $this.tmGroupList = $this.tmFixedGroupList;
+      $this.tmGroupList = $this.tmAllGroupList;
 
 
       $this.form = _.assign({}, res.item);
@@ -101,12 +101,6 @@ var methods = {
       this.apiGetConfig();
     }
   },
-  changeGetConfig: function () {
-    if (this.form.tmRandomType !== 'RandomNone') {
-      this.apiGetConfig();
-    }
-
-  },
 
   tmRandomTypeChange: function (value) {
     this.tmRandomTypeChange = null;
@@ -118,6 +112,7 @@ var methods = {
     }
     else {
       this.tmGroupList = this.tmAllGroupList;
+      this.btnGetConfigClick();
     }
   },
   btnOpenEditClick: function (ref, ptype) {

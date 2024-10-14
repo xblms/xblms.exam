@@ -160,7 +160,7 @@
                                 </el-switch>
                             </el-form-item>
                             <el-form-item label="题型" prop="txIds" v-if="form.tmRandomType!=='RandomNone'">
-                                <el-select ref="selectTx" v-model="form.txIds" filterable multiple placeholder="全部题型" style="width:100%">
+                                <el-select ref="selectTx" v-model="form.txIds" filterable multiple placeholder="全部题型" style="width:100%" v-on:change="btnGetConfigClick">
                                     <el-option v-for="tx in txList"
                                                :key="tx.id"
                                                :label="tx.name"
@@ -169,7 +169,7 @@
                                 </el-select>
                             </el-form-item>
                             <el-form-item label="题目组" prop="tmGroupIds">
-                                <el-select ref="selectTmGroup" v-model="form.tmGroupIds" filterable multiple placeholder="全部题目组" style="width:100%">
+                                <el-select ref="selectTmGroup" v-model="form.tmGroupIds" filterable multiple placeholder="全部题目组" style="width:100%" v-on:change="btnGetConfigClick">
                                     <el-option v-for="tmGroup in tmGroupList"
                                                :key="tmGroup.id"
                                                :label="tmGroup.groupName"
@@ -179,7 +179,7 @@
                                 <div class="tips">从题目组包含的题目范围内抽题，多个题目组是并集关系。默认从全部题库抽题</div>
                             </el-form-item>
                             <template v-if="form.tmRandomType!=='RandomNone'">
-                                <el-form-item label="">
+                                <el-form-item label="" v-if="1===2">
                                     <el-button :size="euiSize" icon="el-icon-refresh-right" plain type="success" v-on:click="btnGetConfigClick">加载题目配置数据</el-button>
                                 </el-form-item>
                                     <el-form-item label="题目配置">
