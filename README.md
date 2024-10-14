@@ -19,6 +19,8 @@
 
 移动端：(http://8.131.91.222:5000/app)账号：test1，密码：123123
 
+* 同一个账号不能同时登录，如果突然离线，有可能是其他用户登录后强制下线了
+
 <img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/二维码.png"/>
 
 ## 系统展示
