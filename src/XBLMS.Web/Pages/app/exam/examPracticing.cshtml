@@ -118,14 +118,16 @@
                                 <div>
                                     <i class="bi bi-emoji-sunglasses text-success me-3"></i>恭喜你，答对了。
                                 </div>
-                                <div>正确答案：<span class="text-success">{{ answerResult.answer }}</span></div>
-                                <div class="mt-2">
-                                    题目解析：<span v-html="answerResult.jiexi"></span>
-                                </div>
                             </div>
                             <div v-else>
                                 <div class="text-danger">
                                     <i class="bi bi-emoji-frown me-3"></i>很遗憾，答错了。
+                                </div>
+                                <div class="mg-2">
+                                    <div>正确答案：<span class="text-success">{{ answerResult.answer }}</span></div>
+                                    <div class="mt-2">
+                                        题目解析：<span v-html="answerResult.jiexi"></span>
+                                    </div>
                                 </div>
                             </div>
                         </el-card>
@@ -153,7 +155,7 @@
         </div>
     </el-card>
 </div>
-<div style="position:fixed;right:10%;top:50%;" class="text-center">
+<div style="position:fixed;right:5%;top:5%;" class="text-center">
     <el-progress type="circle" :percentage="utils.formatPercentFloat(answerTotal,total)" status="success" width="50"></el-progress>
 </div>
 <div class="py-8"></div>

@@ -71,7 +71,7 @@ namespace XBLMS.Core.Services
                     }
                 }
             }
-         
+
             await _databaseManager.ExamPaperAnswerRepository.UpdateAsync(examPaperAnswer);
         }
         public async Task ExecuteSubmitPaperAsync(int startId)
@@ -82,14 +82,14 @@ namespace XBLMS.Core.Services
 
             bool hasZhuguanti = false;
             var txList = await _databaseManager.ExamTxRepository.GetListAsync();
-            if(txList!=null && txList.Count > 0)
+            if (txList != null && txList.Count > 0 && paper.TxIds != null && paper.TxIds.Count > 0)
             {
                 txList = txList.Where(tx => paper.TxIds.Contains(tx.Id)).ToList();
-                if (txList!=null && txList.Count > 0)
+                if (txList != null && txList.Count > 0)
                 {
                     foreach (var item in txList)
                     {
-                        if(item.ExamTxBase==ExamTxBase.Tiankongti || item.ExamTxBase == ExamTxBase.Jiandati)
+                        if (item.ExamTxBase == ExamTxBase.Tiankongti || item.ExamTxBase == ExamTxBase.Jiandati)
                         {
                             hasZhuguanti = true;
                             break;
@@ -121,7 +121,7 @@ namespace XBLMS.Core.Services
             var subjectiveScore = await _databaseManager.ExamPaperAnswerRepository.SubjectiveScoreSumAsync(startId);
 
             start.ObjectiveScore = objectiveSocre;
-        
+
             if (start.IsMark)
             {
                 start.SubjectiveScore = subjectiveScore;
@@ -132,10 +132,10 @@ namespace XBLMS.Core.Services
                 start.SubjectiveScore = 0;
                 start.Score = objectiveSocre;
             }
-        
+
             await _databaseManager.ExamPaperStartRepository.UpdateAsync(start);
 
-            if(start.IsMark && start.IsSubmit && start.Score >= paper.PassScore)
+            if (start.IsMark && start.IsSubmit && start.Score >= paper.PassScore && paper.CerId > 0)
             {
                 await AwardCer(paper, startId, start.UserId);
             }

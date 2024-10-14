@@ -70,7 +70,7 @@ namespace XBLMS.Core.Repositories
         {
             var query = Q
                 .Where(nameof(ExamCerUser.UserId), userId)
-                .OrderBy(nameof(ExamCerUser.Id));
+                .OrderByDesc(nameof(ExamCerUser.Id));
             var total = await _repository.CountAsync(query);
             var list = await _repository.GetAllAsync(query.ForPage(pageIndex, pageSize));
             return (total, list);
