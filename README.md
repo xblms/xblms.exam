@@ -21,6 +21,40 @@
 
 <img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/二维码.png"/>
 
+## 系统展示
+
+* 移动端
+<im src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/首页.jpg"/>
+<im src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/考试中心.jpg"/>
+<im src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/考试详细.jpg"/>
+<im src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/考试中.jpg"/>
+<im src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/交卷结果.jpg"/>
+<im src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/考试成绩.jpg"/>
+<im src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/查看答卷.jpg"/>
+<im src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/问卷调查.jpg"/>
+<im src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/刷题练习.jpg"/>
+<im src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/刷题练习中.jpg"/>
+<im src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/练习结果.jpg"/>
+<im src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/刷题记录.jpg"/>
+<im src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/我的.jpg"/>
+
+* 管理端
+<table>
+    <tr>
+        <td></td>
+        <td></td>
+    </tr>
+</table>
+
+* 用户端
+<table>
+    <tr>
+        <td></td>
+        <td></td>
+    </tr>
+</table>
+
+
 
 
 ## 发布手册
@@ -154,31 +188,7 @@
 | 统计图表  | 用户登录统计、访问拦截统计 等  |  
 
 
-### 系统展示
 
-* 管理端
-<table>
-    <tr>
-        <td></td>
-        <td></td>
-    </tr>
-</table>
-
-* 用户端
-<table>
-    <tr>
-        <td></td>
-        <td></td>
-    </tr>
-</table>
-
-* 移动端
-<table>
-    <tr>
-        <td></td>
-        <td></td>
-    </tr>
-</table>
 
 ## 编译
 
