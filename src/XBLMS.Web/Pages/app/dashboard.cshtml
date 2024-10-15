@@ -62,8 +62,7 @@
                 </div>
                 <div>
                     <div class="fs-5">
-                        <div class="mb-1">总分：{{examPaper.totalScore}}</div>
-                        <div class="mb-1">及格分：{{examPaper.passScore}}</div>
+                        <div class="mb-1">总分：{{examPaper.totalScore}}<span class="me-1"></span>及格分：{{examPaper.passScore}}</div>
                         <div class="mb-1">
                             考试次数：
                             <span class="text-success fw-bold" v-if="(examPaper.userExamTimes-examPaper.myExamTimes)>0">
@@ -148,8 +147,7 @@
                 </div>
                 <div>
                     <div class="fs-5">
-                        <div class="mb-1">总分：{{examMoni.totalScore}}</div>
-                        <div class="mb-1">及格分：{{examMoni.passScore}}</div>
+                        <div class="mb-1">总分：{{examMoni.totalScore}}<span class="me-1"></span>及格分：{{examMoni.passScore}}</div>
                         <div class="mb-1">
                             考试次数：
                             <span class="text-success fw-bold" v-if="(examMoni.userExamTimes-examMoni.myExamTimes)>0">
