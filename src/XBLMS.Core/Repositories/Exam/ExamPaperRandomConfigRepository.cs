@@ -28,7 +28,8 @@ namespace XBLMS.Core.Repositories
         public async Task<List<ExamPaperRandomConfig>> GetListAsync(int examPaperId)
         {
             var infoList = await _repository.GetAllAsync(
-                Q.Where(nameof(ExamPaperRandomConfig.ExamPaperId), examPaperId).OrderBy(nameof(ExamPaperRandomConfig.Id)));
+                Q.Where(nameof(ExamPaperRandomConfig.ExamPaperId), examPaperId).
+                OrderBy(nameof(ExamPaperRandomConfig.TxTaxis)));
             return infoList;
         }
         public async Task<int> InsertAsync(ExamPaperRandomConfig item)
