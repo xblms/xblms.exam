@@ -23,6 +23,7 @@ namespace XBLMS.Core.Services
                     CompanyId = 1,
                     Auth = AuthorityType.Admin,
                     UserName = userName,
+                    DisplayName = "超级管理员",
                     Email = email,
                     Mobile = mobile
                 };
