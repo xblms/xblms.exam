@@ -16,19 +16,17 @@ namespace XBLMS.Core.Repositories
 
         public async Task<List<ExamTmGroup>> GetListAsync()
         {
-            var list = await _repository.GetAllAsync(Q
-                .OrderByDesc(nameof(ExamTmGroup.Id))
-            );
-            if(list!=null && list.Count > 0)
+            var query = Q.OrderByDesc(nameof(ExamTmGroup.Id));
+
+            var list = await _repository.GetAllAsync(query);
+            if (list != null && list.Count > 0)
             {
                 return list;
             }
             else
             {
                 await ResetAsync();
-                list = await _repository.GetAllAsync(Q
-                .OrderByDesc(nameof(ExamTmGroup.Id))
-            );
+                list = await _repository.GetAllAsync(query);
             }
             return list;
         }
