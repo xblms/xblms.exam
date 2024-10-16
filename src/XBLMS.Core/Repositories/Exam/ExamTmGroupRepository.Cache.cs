@@ -10,8 +10,7 @@ namespace XBLMS.Core.Repositories
     {
         public async Task<ExamTmGroup> GetAsync(int id)
         {
-            var list = await GetListAsync();
-            return list.FirstOrDefault(group => group.Id == id);
+            return await _repository.GetAsync(id);
         }
 
         public async Task<List<ExamTmGroup>> GetListAsync()
