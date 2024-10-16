@@ -17,12 +17,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
             var resultGroups = new List<ExamTmGroup>();
             var allGroups = await _examTmGroupRepository.GetListAsync();
-            //if (allGroups == null || allGroups.Count == 0)
-            //{
-            //    await _examTmGroupRepository.ResetAsync();
-            //    allGroups = await _examTmGroupRepository.GetListAsync();
-            //}
-
+ 
             foreach (var group in allGroups)
             {
                 var creator = await _administratorRepository.GetByUserIdAsync(group.CreatorId);

@@ -31,12 +31,12 @@ namespace XBLMS.Core.Repositories
 
         public async Task<int> InsertAsync(ExamTmGroup group)
         {
-            return await _repository.InsertAsync(group, Q.CachingRemove(CacheKey));
+            return await _repository.InsertAsync(group);
         }
 
         public async Task UpdateAsync(ExamTmGroup group)
         {
-            await _repository.UpdateAsync(group, Q.CachingRemove(CacheKey));
+            await _repository.UpdateAsync(group);
         }
 
         public async Task ClearCache()
@@ -46,7 +46,7 @@ namespace XBLMS.Core.Repositories
 
         public async Task DeleteAsync(int groupId)
         {
-            await _repository.DeleteAsync(groupId, Q.CachingRemove(CacheKey));
+            await _repository.DeleteAsync(groupId);
         }
 
         public async Task ResetAsync()
@@ -54,8 +54,10 @@ namespace XBLMS.Core.Repositories
             await _repository.InsertAsync(new ExamTmGroup
             {
                 GroupName = "全部题目",
-                GroupType = TmGroupType.All
-            }, Q.CachingRemove(CacheKey));
+                GroupType = TmGroupType.All,
+                CompanyId = 1,
+                CreatorId = 1
+            });
         }
     }
 }

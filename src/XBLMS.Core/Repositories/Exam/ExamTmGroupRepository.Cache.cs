@@ -16,21 +16,25 @@ namespace XBLMS.Core.Repositories
 
         public async Task<List<ExamTmGroup>> GetListAsync()
         {
-            var list = (await _repository.GetAllAsync(Q
+            var list = await _repository.GetAllAsync(Q
                 .OrderByDesc(nameof(ExamTmGroup.Id))
-                .CachingGet(CacheKey)
-            )).ToList();
-
+            );
+            if(list!=null && list.Count > 0)
+            {
+                return list;
+            }
+            else
+            {
+                await ResetAsync();
+                list = await _repository.GetAllAsync(Q
+                .OrderByDesc(nameof(ExamTmGroup.Id))
+            );
+            }
             return list;
         }
         public async Task<List<ExamTmGroup>> GetListWithoutLockedAsync()
         {
-            var list = (await _repository.GetAllAsync(Q
-                .WhereNullOrFalse(nameof(ExamTmGroup.Locked))
-                .OrderByDesc(nameof(ExamTmGroup.Id))
-                .CachingGet(CacheKey)
-            )).ToList();
-
+            var list = await GetListAsync();
             return list.Where(g => g.Locked == false).ToList();
         }
     }
