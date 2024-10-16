@@ -102,7 +102,7 @@ namespace XBLMS.Core.Services
                     var count = 0;
                     if (isTotal)
                     {
-                        var treeIds = await _examTmTreeRepository.GetIdsAsync(item.Id);
+                        var treeIds = await _examPaperTreeRepository.GetIdsAsync(item.Id);
                         
                         total = await _examPaperRepository.GetCountAsync(treeIds);
                         count = await _examPaperRepository.GetCountAsync(new List<int>() { item.Id });
@@ -137,7 +137,7 @@ namespace XBLMS.Core.Services
                     var count = 0;
                     if (isTotal)
                     {
-                        var treeIds = await _examTmTreeRepository.GetIdsAsync(item.Id);
+                        var treeIds = await _examPaperTreeRepository.GetIdsAsync(item.Id);
                         total = await _examPaperRepository.GetCountAsync(treeIds);
                         count = await _examPaperRepository.GetCountAsync(new List<int>() { item.Id });
                     }
