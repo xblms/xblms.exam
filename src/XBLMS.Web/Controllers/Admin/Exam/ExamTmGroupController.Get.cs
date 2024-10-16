@@ -49,7 +49,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 var keyWord = request.Search;
                 if (!string.IsNullOrEmpty(keyWord))
                 {
-                    if (StringUtils.Contains(group.GroupName, keyWord) || StringUtils.Contains(group.Description, keyWord))
+                    if (StringUtils.Contains(group.GroupName, keyWord) || (StringUtils.Contains(group.Description, keyWord)))
                     {
                         resultGroups.Add(group);
                     }

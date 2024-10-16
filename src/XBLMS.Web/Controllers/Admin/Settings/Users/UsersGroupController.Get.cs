@@ -22,7 +22,8 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
             var resultGroups = new List<UserGroup>();
             var allGroups = await _userGroupRepository.GetListAsync();
 
-            if (allGroups == null || allGroups.Count == 0) {
+            if (allGroups == null || allGroups.Count == 0)
+            {
                 await _userGroupRepository.ResetAsync();
                 allGroups = await _userGroupRepository.GetListAsync();
             }
@@ -51,7 +52,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
 
                 if (!string.IsNullOrEmpty(request.Search))
                 {
-                    if (group.GroupName.Contains(request.Search) || group.Description.Contains(request.Search))
+                    if (group.GroupName.Contains(request.Search) || StringUtils.Contains(group.Description, request.Search))
                     {
                         resultGroups.Add(group);
                     }
