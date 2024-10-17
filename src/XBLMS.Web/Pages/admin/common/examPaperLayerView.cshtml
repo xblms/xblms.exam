@@ -128,8 +128,8 @@
                         <ul class="list-group mb-1" v-for="(tx,txIndex) in list">
                             <li class="list-group-item border-0 p-1 fw-light">{{tx.txName}}</li>
                             <li class="list-group-item border-0 p-1">
-                                <span v-for="(tab,index) in tx.tmList" v-on:click="tmDidScroll(tab.id)">
-                                    <el-tag :key="tab.id" size="small" type="info" effect="plain" class="m-2">
+                                <span v-for="(tab,index) in tx.tmList" v-on:click="tmDidScroll(tab.id)" style="margin-right:3px; margin-bottom:3px;cursor:pointer;">
+                                    <el-tag :key="tab.id" size="mini" type="info" effect="plain">
                                         {{ tab.tmIndex }}
                                     </el-tag>
                                 </span>
