@@ -20,6 +20,7 @@ namespace XBLMS.Repositories
         Task<bool> ExistsAsync(int paperId, int userId);
         Task<List<int>> GetPaperIdsAsync(int userId);
         Task<(int total, List<ExamQuestionnaireUser> list)> GetListAsync(int userId, string keyWords, int pageIndex, int pageSize);
+        Task<(int total, List<ExamQuestionnaireUser> list)> GetListAsync(int paperId,string isSubmit, string keyWords, int pageIndex, int pageSize);
         Task UpdateLockedAsync(int paperId, bool locked);
         Task UpdateKeyWordsAsync(int paperId, string keyWords);
         Task UpdateKeyWordsAdminAsync(int id, string keyWords);

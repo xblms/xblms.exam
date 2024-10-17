@@ -79,6 +79,36 @@ namespace XBLMS.Core.Repositories
             return (total, list);
         }
 
+        public async Task<(int total, List<ExamQuestionnaireUser> list)> GetListAsync(int paperId, string isSubmit, string keyWords, int pageIndex, int pageSize)
+        {
+            var query = Q.
+                WhereNullOrFalse(nameof(ExamQuestionnaireUser.Locked)).
+                Where(nameof(ExamQuestionnaireUser.ExamPaperId), paperId);
+
+            if (!string.IsNullOrEmpty(isSubmit))
+            {
+                if (isSubmit == "1")
+                {
+                    query.Where(nameof(ExamQuestionnaireUser.SubmitType), SubmitType.Submit.GetValue());
+                }
+                if (isSubmit == "0")
+                {
+                    query.WhereNot(nameof(ExamQuestionnaireUser.SubmitType), SubmitType.Submit.GetValue());
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(keyWords))
+            {
+                keyWords = $"%{keyWords}%";
+                query.WhereLike(nameof(ExamQuestionnaireUser.KeyWordsAdmin), keyWords);
+            }
+            query.OrderByDesc(nameof(ExamQuestionnaireUser.Id));
+
+            var total = await _repository.CountAsync(query);
+            var list = await _repository.GetAllAsync(query.ForPage(pageIndex, pageSize));
+            return (total, list);
+        }
+
         public async Task<ExamQuestionnaireUser> GetAsync(int paperId, int userId)
         {
             return await _repository.GetAsync(Q.

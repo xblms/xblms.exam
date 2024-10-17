@@ -143,6 +143,16 @@ var methods = {
     });
 
   },
+  btnViewUserClick: function (row) {
+    var $this = this;
+    top.utils.openLayer({
+      title: row.title + '-用户列表',
+      url: utils.getExamUrl('examQuestionnaireUsers', { id: row.id }),
+      width: "88%",
+      height: "98%"
+    });
+
+  },
   btnEditClick: function (id) {
 
     var $this = this;

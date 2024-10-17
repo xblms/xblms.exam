@@ -54,6 +54,7 @@
                         <el-dropdown-item icon="el-icon-delete" style="color:red;" v-on:click.native="btnDeleteClick(scope.row.id)">删除</el-dropdown-item>
                         <el-dropdown-item icon="el-icon-picture-outline" v-on:click.native="btnQrcodeClick(scope.row.id)" v-if="scope.row.published">二维码</el-dropdown-item>
                         <el-dropdown-item icon="el-icon-view" v-on:click.native="btnViewClick(scope.row)">预览统计</el-dropdown-item>
+                        <el-dropdown-item icon="el-icon-view" v-on:click.native="btnViewUserClick(scope.row)" v-if="!scope.row.published">用户列表</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
             </template>
