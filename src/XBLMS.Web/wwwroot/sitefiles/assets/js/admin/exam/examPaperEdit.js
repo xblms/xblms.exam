@@ -142,21 +142,28 @@ var methods = {
   btnSubmitClick: function () {
     this.submitSubmitType = 'Submit';
     this.submitSubmitIsClear = false;
-    var $this = this;
-    this.$refs.form.validate(function (valid) {
-      if (valid) {
-        var valido = $this.submitValid();
-        if (!valido) return;
 
-        if ($this.id > 0 && $this.form.submitType === 'Submit') {
-          $this.submitDialogVisible = true;
-          $this.submitSubmitIsClear = true;
+    if (form.userGroupIds && form.userGroupIds.length > 0) {
+      var $this = this;
+      this.$refs.form.validate(function (valid) {
+        if (valid) {
+          var valido = $this.submitValid();
+          if (!valido) return;
+
+          if ($this.id > 0 && $this.form.submitType === 'Submit') {
+            $this.submitDialogVisible = true;
+            $this.submitSubmitIsClear = true;
+          }
+          else {
+            $this.apiSubmit();
+          }
         }
-        else {
-          $this.apiSubmit();
-        }
-      }
-    });
+      });
+    }
+    else {
+      utils.error('请选择至少一个用户组', { layer: true });
+    }
+ 
   },
   btnSubmit: function () {
     this.submitSubmitIsClear = false;
