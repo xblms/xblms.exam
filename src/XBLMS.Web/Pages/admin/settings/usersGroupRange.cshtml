@@ -102,9 +102,6 @@
                         <el-button :size="euiSize" plain type="primary" icon="el-icon-plus" v-on:click="btnRangeClick('select')">
                             安 排
                         </el-button>
-                        <el-button :size="euiSize" plain type="primary" icon="el-icon-plus" v-on:click="btnRangeClick('all')">
-                            全部安排
-                        </el-button>
                     </template>
                     <template v-else>
                         <el-button :size="euiSize" plain type="warning" icon="el-icon-minus" v-on:click="btnRangeClick('select')">
@@ -114,10 +111,6 @@
                             全部移出
                         </el-button>
                     </template>
-                    <!--
-                    <el-button :size="euiSize" plain type="primary" icon="el-icon-download" v-on:click="btnExportClick">
-                        导 出
-                    </el-button>-->
                 </el-form-item>
             </el-form>
 

@@ -116,7 +116,7 @@ var methods = {
       }
     }
     else {
-      utils.error("没有可以操作的数据", { layer:true });
+      utils.error("请选择用户", { layer:true });
     }
   },
   apiRange: function () {
