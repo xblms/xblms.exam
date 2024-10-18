@@ -26,6 +26,7 @@ namespace XBLMS.Web.Controllers.Home
             if (userMenus == null || userMenus.Count == 0)
             {
                 await _userMenuRepository.ResetAsync();
+                userMenus = await _userMenuRepository.GetUserMenusAsync();
             }
 
             var menus = new List<Menu>();
