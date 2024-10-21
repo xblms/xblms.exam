@@ -47,12 +47,7 @@ var methods = {
   },
 
   btnSubmitClick: function () {
-    if (this.permissionInfo.checkedRoles && this.permissionInfo.checkedRoles.length > 0) {
-      this.apiSet();
-    }
-    else {
-      utils.error("请选择需要配置的角色");
-    }
+    this.apiSet();
   },
   filterMethod(query, item) {
     return item.label.indexOf(query) > -1;

@@ -64,7 +64,8 @@ var methods = {
         location.href = res.redirectUrl;
       }
     }).catch(function (error) {
-      utils.error(error, { redirect: true });
+      utils.loading($this, false);
+      utils.error(error);
     });
   },
     redirectPassword: function(userName) {

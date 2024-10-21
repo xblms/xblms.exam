@@ -72,6 +72,7 @@ namespace XBLMS.Web.Controllers.Admin
             }
 
             var allMenus = await _authManager.GetMenus();
+            if (allMenus == null || allMenus.Count == 0) { return this.Error($"无权限访问，请与管理员联系开通访问权限"); }
 
             var config = await _configRepository.GetAsync();
 
