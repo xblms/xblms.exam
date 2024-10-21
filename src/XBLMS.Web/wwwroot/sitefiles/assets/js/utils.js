@@ -620,7 +620,6 @@ var utils = {
         var uuid = utils.uuid();
 
         sessionStorage.setItem(uuid, message);
-        // }
 
         if (options && options.redirect) {
           top.location.href = utils.getRootUrl("error", { uuid: uuid })
