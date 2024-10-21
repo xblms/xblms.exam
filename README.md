@@ -14,22 +14,23 @@
 
 ## 演示地址
 
-* [集团版本源码地址](https://gitee.com/xblms/xblmes-gc) ，主要区别在于按公司和部门进行权限划分，各自管理和组织考试。
+* 集团版本源码地址[点击前往集团版源码](https://gitee.com/xblms/xblmes-gc) ，主要区别在于按公司和部门进行权限划分，各自管理和组织考试。
 
-[管理端](http://8.131.91.222:5000/admin)：
+管理端[点击前往管理端演示](http://8.131.91.222:5000/admin)：
 
 * 账号：admin，密码：123123
 
-[用户端](http://8.131.91.222:5000/home)：
+用户端[点击前往用户端演示](http://8.131.91.222:5000/home)：
 
 * 账号：test1，密码：123123
 
-[移动端](http://8.131.91.222:5000/app)：
+移动端[点击前往移动端演示](http://8.131.91.222:5000/app)：
 
 * 账号：test1，密码：123123
 
 * 同一个账号不能同时登录，如果突然离线，有可能是其他用户登录后强制下线了
 
+* 扫码前往移动端演示
 <img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/二维码.png"/>
 
 ## 系统展示
