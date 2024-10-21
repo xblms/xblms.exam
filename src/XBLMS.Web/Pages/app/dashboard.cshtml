@@ -200,7 +200,7 @@
 @await Html.PartialAsync("_PartialAppMenu")
 <div style="position:fixed;right:5%;top:60%;" class="text-center opacity-75" v-if="taskTotal>0">
     <button type="button" class="btn btn-dark rounded py-3 px-2" v-on:click="taskDialogVisible=true">
-        <div style="color: white;text-shadow: 0px 0px 10px #427ed1, 0px 0px 10px #427ed1;">{{ taskTotal }}</div>
+        <div style="color: white;text-shadow: 0px 0px 10px #427ed1, 0px 0px 10px #427ed1;" class="fw-bold">{{ taskTotal }}</div>
         <div class="fw-light fs-6 text-warning">个</div>
         <div class="fw-light fs-6 text-warning">待</div>
         <div class="fw-light fs-6 text-warning">办</div>
