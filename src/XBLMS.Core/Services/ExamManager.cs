@@ -340,6 +340,31 @@ namespace XBLMS.Core.Services
                 paper.Set("CjList", cjlist);
             }
         }
+        public async Task GetPaperInfo(ExamPaper paper, User user, ExamPaperStart start)
+        {
+            var myExamTimes = await _examPaperStartRepository.CountAsync(paper.Id, user.Id);
+            var startId = await _examPaperStartRepository.GetNoSubmitIdAsync(paper.Id, user.Id);
+            var cerName = "";
+            if (paper.CerId > 0)
+            {
+                var cer = await _examCerRepository.GetAsync(paper.CerId);
+                if (cer != null)
+                {
+                    cerName = cer.Name;
+                }
+            }
+
+            var examUser = await _examPaperUserRepository.GetAsync(paper.Id, user.Id);
+
+
+            paper.Set("StartId", startId);
+            paper.Set("CerName", cerName);
+            paper.Set("ExamStartDateTimeStr", DateUtils.Format(start.BeginDateTime, DateUtils.FormatStringDateTimeCN));
+            paper.Set("ExamEndDateTimeStr", DateUtils.Format(start.EndDateTime, DateUtils.FormatStringDateTimeCN));
+
+            paper.Set("MyExamTimes", myExamTimes > examUser.ExamTimes ? examUser.ExamTimes : myExamTimes);
+            paper.Set("UserExamTimes", examUser.ExamTimes);
+        }
         public async Task GetQuestionnaireInfo(ExamQuestionnaire paper, User user)
         {
             var paperUser = await _examQuestionnaireUserRepository.GetAsync(paper.Id, user.Id);

@@ -20,7 +20,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
                 foreach (var item in list)
                 {
                     var paper = await _examPaperRepository.GetAsync(item.ExamPaperId);
-                    await _examManager.GetPaperInfo(paper, user);
+                    await _examManager.GetPaperInfo(paper, user, item);
                     item.Set("Paper", paper);
 
                     if (!paper.SecrecyScore)
