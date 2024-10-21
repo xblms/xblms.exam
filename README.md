@@ -31,6 +31,7 @@
 * 同一个账号不能同时登录，如果突然离线，有可能是其他用户登录后强制下线了
 
 * 扫码前往移动端演示
+
 <img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/二维码.png"/>
 
 ## 系统展示
