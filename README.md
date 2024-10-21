@@ -13,6 +13,9 @@
 支持国产人大金仓、达梦、OceanBase数据库 及 MySql、SqlServer、PostgreSql、SQLite 等数据库
 
 ## 演示地址
+
+* 集团版本源码地址(https://gitee.com/xblms/xblmes-gc)，主要区别在于按公司和部门进行权限划分，各自管理和组织考试。
+
 管理端：(http://8.131.91.222:5000/admin)
 
 * 账号：admin，密码：123123
