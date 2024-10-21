@@ -143,7 +143,7 @@ var methods = {
     this.submitSubmitType = 'Submit';
     this.submitSubmitIsClear = false;
 
-    if (form.userGroupIds && form.userGroupIds.length > 0) {
+    if (this.form.userGroupIds && this.form.userGroupIds.length > 0) {
       var $this = this;
       this.$refs.form.validate(function (valid) {
         if (valid) {
