@@ -61,10 +61,10 @@
                     </el-link>
                 </div>
                 <div>
-                    <div class="fs-5">
-                        <div class="mb-1">总分：{{examPaper.totalScore}}<span class="me-1"></span>及格分：{{examPaper.passScore}}</div>
+                    <div class="fs-5 fw-light">
+                        <div class="mb-1"><i class="bi bi-dot me-2"></i>总分：{{examPaper.totalScore}}<span class="me-1"></span>及格分：{{examPaper.passScore}}</div>
                         <div class="mb-1">
-                            考试次数：
+                            <i class="bi bi-dot me-2"></i>考试次数：
                             <span class="text-success fw-bold" v-if="(examPaper.userExamTimes-examPaper.myExamTimes)>0">
                                 {{examPaper.userExamTimes-examPaper.myExamTimes}}
                             </span>
@@ -73,7 +73,7 @@
                             </span>
                             /{{examPaper.userExamTimes}}
                         </div>
-                        <div><i class="el-icon-date me-2"></i>开考时间：{{ examPaper.examStartDateTimeStr }}</div>
+                        <div><i class="bi bi-dot me-2"></i>开考时间：{{ examPaper.examStartDateTimeStr }}</div>
                     </div>
                 </div>
             </div>
@@ -142,14 +142,14 @@
             <div class="col">
                 <div class="mb-3">
                     <el-link :underline="false" v-on:click="btnViewPaperClick(examMoni.id)">
-                        <span class="fw-bold">{{ examMoni.title }}</span>
+                        <span class="fw-bold fs-4">{{ examMoni.title }}</span>
                     </el-link>
                 </div>
                 <div>
                     <div class="fs-5">
-                        <div class="mb-1">总分：{{examMoni.totalScore}}<span class="me-1"></span>及格分：{{examMoni.passScore}}</div>
+                        <div class="mb-1"><i class="bi bi-dot me-2"></i>总分：{{examMoni.totalScore}}<span class="me-1"></span>及格分：{{examMoni.passScore}}</div>
                         <div class="mb-1">
-                            考试次数：
+                            <i class="bi bi-dot me-2"></i>考试次数：
                             <span class="text-success fw-bold" v-if="(examMoni.userExamTimes-examMoni.myExamTimes)>0">
                                 {{examMoni.userExamTimes-examMoni.myExamTimes}}
                             </span>
@@ -158,7 +158,7 @@
                             </span>
                             /{{examMoni.userExamTimes}}
                         </div>
-                        <div><i class="el-icon-date me-2"></i>开考时间：{{ examMoni.examStartDateTimeStr }}</div>
+                        <div><i class="bi bi-dot me-2"></i>开考时间：{{ examMoni.examStartDateTimeStr }}</div>
                     </div>
                 </div>
             </div>
@@ -199,7 +199,7 @@
 <div class="py-8"></div>
 @await Html.PartialAsync("_PartialAppMenu")
 <div style="position:fixed;right:5%;top:60%;" class="text-center opacity-75" v-if="taskTotal>0">
-    <button type="button" class="btn btn-dark rounded py-3 px-2" v-on:click="taskDialogVisible=true">
+    <button type="button" class="btn btn-dark rounded py-3 px-2 text-center" v-on:click="taskDialogVisible=true">
         <div style="color: white;text-shadow: 0px 0px 10px #427ed1, 0px 0px 10px #427ed1;" class="fw-bold">{{ taskTotal }}</div>
         <div class="fw-light fs-6 text-warning">个</div>
         <div class="fw-light fs-6 text-warning">待</div>
@@ -208,34 +208,24 @@
 </div>
 <template>
     <el-drawer title="待办"
-               size="40%"
+               size="50%"
                :visible.sync="taskDialogVisible"
                direction="btt">
-        <div class="text-center">
-            <div>
-                <div v-if="taskPaperTotal>0" class="mb-3">
-                    <el-link :underline="true" v-on:click="btnExamMoreMenuClick" type="info">
-                        <span>
-                            <span>
-                                剩余<span class="text-danger mx-2">{{ taskPaperTotal }}</span>份试卷未参考
-                            </span>
-                            <span>
-                                <i class="el-icon-arrow-right"></i>
-                            </span>
-                        </span>
-                    </el-link>
-                </div>
-                <div v-if="taskQTotal>0" class="">
-                    <el-link :underline="true" v-on:click="btnAppMenuClick('wenjuan')" type="info">
-                        <span>
-                            <span>
-                                剩余<span class="text-danger mx-2">{{ taskQTotal }}</span>份问卷未填写
-                            </span>
-                            <span>
-                                <i class="el-icon-arrow-right"></i>
-                            </span>
-                        </span>
-                    </el-link>
+        <div class="text-center p-2">
+            <div class="card">
+                <div class="card-body">
+                    <div class="mb-5" v-if="taskPaperTotal>0">
+                        <div class="d-flex justify-content-between align-items-center" v-on:click="btnExamMoreMenuClick">
+                            <span><i class="bi bi-star-half me-2 text-warning"></i>剩余<span class="text-danger mx-2">{{ taskPaperTotal }}</span>份试卷未参考</span>
+                            <span><i class="el-icon-arrow-right"></i></span>
+                        </div>
+                    </div>
+                    <div v-if="taskQTotal>0">
+                        <div class="d-flex justify-content-between align-items-center" v-on:click="btnAppMenuClick('wenjuan')">
+                            <span><i class="bi bi-star-half me-2 text-warning"></i>剩余<span class="text-danger mx-2">{{ taskQTotal }}</span>份问卷未填写</span>
+                            <span><i class="el-icon-arrow-right"></i></span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
