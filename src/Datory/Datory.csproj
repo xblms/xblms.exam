@@ -4,14 +4,17 @@
     <LangVersion>latest</LangVersion>
     <PackageId>Datory</PackageId>
     <Version>8.0</Version>
-    <Authors>XBL</Authors>
-    <Company>XBLMS</Company>
-    <PackageIcon>logo.png</PackageIcon>
+    <Authors>xblms</Authors>
+    <Company>xblms</Company>
+	<Description></Description>
+	<PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
+	<RepositoryUrl>https://gitee.com/xblms/xblmes/</RepositoryUrl>
+    <PackageIcon>logo.ico</PackageIcon>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="logo.png" Pack="true" Visible="false" PackagePath="" />
+    <None Include="logo.ico" Pack="true" Visible="false" PackagePath="" />
   </ItemGroup>
 
   <ItemGroup>
