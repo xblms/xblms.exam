@@ -6,7 +6,7 @@
 
 ## 介绍
 
-基于 .NET Core 8
+基于 .NET Core 8 [快速开发框架](https://gitee.com/xblms/xblms)
 
 支持跨平台、国产化部署
 
