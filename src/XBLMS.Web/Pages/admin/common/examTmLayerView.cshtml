@@ -20,9 +20,9 @@
                 <span class="mb-3 d-flex justify-content-start">
                     <span><span class="pe-1">{{ tm.txName }}</span>({{tm.score}}分)</span>
                 </span>
-                <span class="d-flex justify-content-start mb-3">
-                    <span class="fw-bold" v-html="tm.titleHtml"></span>
-                </span>
+                <div class="d-flex justify-content-start mb-3">
+                    <div v-html="tm.titleHtml"></div>
+                </div>
                 <div class="list-group" v-if="tm.baseTx!=='Tiankongti' && tm.baseTx!=='Jiandati'">
                     <div v-if="tm.baseTx==='Danxuanti' || tm.baseTx==='Panduanti'">
                         <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.options">

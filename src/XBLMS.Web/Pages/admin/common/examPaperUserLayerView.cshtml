@@ -53,7 +53,7 @@
                         <div class="pe-3">
                             <div>
                                 <div class="mb-3 fw-bold">
-                                    <span v-if="tm.baseTx==='Tiankongti'">
+                                    <div v-if="tm.baseTx==='Tiankongti'">
                                         <span v-if="tm.titleList && tm.titleList.length>0">
                                             <span v-for="tmContent in tm.titleList">
                                                 <span v-if="utils.contains(tmContent.value,'___')">
@@ -62,9 +62,9 @@
                                                 <span v-else v-html="tmContent.value"></span>
                                             </span>
                                         </span>
-                                        <span v-else v-html="tm.titleHtml"></span>
-                                    </span>
-                                    <span v-else v-html="tm.titleHtml"></span>
+                                        <div v-else v-html="tm.titleHtml"></div>
+                                    </div>
+                                    <div v-else v-html="tm.titleHtml"></div>
                                 </div>
                                 <div class="list-group" v-if="tm.baseTx!=='Tiankongti'">
                                     <div v-if="tm.baseTx==='Danxuanti' || tm.baseTx==='Panduanti'">

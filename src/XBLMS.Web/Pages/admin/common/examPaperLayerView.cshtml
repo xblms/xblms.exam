@@ -38,9 +38,9 @@
                                 <div class="mb-3" v-for="(tm,tmIndex) in tx.tmList">
                                     <el-card>
                                         <div :id="'tm_'+tm.id">
-                                            <span class="mb-3 d-flex justify-content-start  align-items-start">
-                                                <span>{{ tm.tmIndex }}、</span>
-                                                <span v-if="tm.baseTx==='Tiankongti'">
+                                            <div class="mb-3 d-flex justify-content-start  align-items-start">
+                                                <div>{{ tm.tmIndex }}、</div>
+                                                <div v-if="tm.baseTx==='Tiankongti'">
                                                     <span v-if="tm.titleList && tm.titleList.length>0">
                                                         <span v-for="tmContent in tm.titleList">
                                                             <span v-if="utils.contains(tmContent.value,'___')">
@@ -49,11 +49,11 @@
                                                             <span v-else v-html="tmContent.value"></span>
                                                         </span>
                                                     </span>
-                                                    <span v-else v-html="tm.title"></span>
-                                                </span>
-                                                <span v-else v-html="tm.title"></span>
+                                                    <div v-else v-html="tm.titleHtml"></div>
+                                                </div>
+                                                <div v-else v-html="tm.title"></div>
                                                 <span class="ms-auto badge text-dark px-0">({{tm.score}}分)</span>
-                                            </span>
+                                            </div>
                                             <div class="list-group" v-if="tm.baseTx!=='Tiankongti' && tm.baseTx!=='Jiandati'">
                                                 <div v-if="tm.baseTx==='Danxuanti' || tm.baseTx==='Panduanti'">
                                                     <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.options">
