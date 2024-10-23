@@ -112,9 +112,10 @@ namespace XBLMS.Core.Services
         {
             tm.Set("Options", tm.Get("options"));
             tm.Set("OptionsValues", tm.Get("optionsValues"));
+          
+            tm.Set("TitleHtml", tm.Title);
             tm.Title = StringUtils.StripTags(tm.Title);
 
-            tm.Set("TitleHtml", tm.Title);
             tm.Set("NanduStar", $"{tm.Nandu}<i class='el-icon-star-on' style='color:#FF9900;margin-left:3px;font-size:14px;'></i>");
 
             var tx = await _examTxRepository.GetAsync(tm.TxId);
