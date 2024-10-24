@@ -142,7 +142,7 @@ namespace XBLMS.Core.Services
                             var tmIdsByGroup = await _examTmRepository.GetIdsAsync(tmGroup.TreeIds, tmGroup.TxIds, tmGroup.Nandus, tmGroup.Zhishidians, tmGroup.DateFrom, tmGroup.DateTo);
                             if (tmIdsByGroup != null && tmIdsByGroup.Count > 0)
                             {
-                                tmIds.AddRange(tmGroup.TmIds);
+                                tmIds.AddRange(tmIdsByGroup);
                             }
                         }
                     }
