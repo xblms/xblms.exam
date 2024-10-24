@@ -209,6 +209,15 @@ var methods = {
     this.apiGet();
     this.apiGetSelect();
   },
+  btnTmView: function (id) {
+    top.utils.openLayer({
+      title: false,
+      closebtn: 0,
+      url: utils.getCommonUrl('examTmLayerView', { id: id }),
+      width: "58%",
+      height: "88%"
+    });
+  },
 
 
   //tree
