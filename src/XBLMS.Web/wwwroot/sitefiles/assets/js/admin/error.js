@@ -36,6 +36,7 @@ var $vue = new Vue({
   data: data,
   methods: methods,
   created: function () {
+    top.$vue.apiGet();
     document.title = DOCUMENTTITLE_ERROR;
     if (this.logId > 0) {
       this.apiGet();
