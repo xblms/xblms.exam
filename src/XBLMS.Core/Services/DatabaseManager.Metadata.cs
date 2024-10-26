@@ -72,6 +72,31 @@ namespace XBLMS.Core.Services
 
             await UpdateConfigVersionAsync();
         }
+        public async Task ClearDatabaseAsync()
+        {
+            var repositories = GetAllRepositories();
+
+            foreach (var repository in repositories)
+            {
+                if (repository.TableName == ConfigRepository.TableName) continue;
+
+                if (repository.TableName == AdministratorRepository.TableName)
+                {
+                    await AdministratorRepository.ClearAsync();
+                    continue;
+                }
+                if (repository.TableName == OrganCompanyRepository.TableName)
+                {
+                    await OrganCompanyRepository.ClearAsync();
+                    continue;
+                }
+
+                await repository.Database.DropTableAsync(repository.TableName);
+            }
+
+            await SyncDatabaseAsync();
+
+        }
 
         private async Task UpdateConfigVersionAsync()
         {

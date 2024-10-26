@@ -659,5 +659,9 @@ namespace XBLMS.Core.Repositories
 
             return admin;
         }
+        public async Task ClearAsync()
+        {
+            await _repository.DeleteAsync(Q.WhereNot(nameof(OrganCompany.Id), 1));
+        }
     }
 }

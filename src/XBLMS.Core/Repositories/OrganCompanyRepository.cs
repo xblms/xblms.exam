@@ -42,5 +42,9 @@ namespace XBLMS.Core.Repositories
         {
             return await _repository.DeleteAsync(id, Q.CachingRemove(_cacheKey));
         }
+        public async Task ClearAsync()
+        {
+            await _repository.DeleteAsync(Q.WhereNot(nameof(OrganCompany.Id), 1).CachingRemove(_cacheKey));
+        }
     }
 }

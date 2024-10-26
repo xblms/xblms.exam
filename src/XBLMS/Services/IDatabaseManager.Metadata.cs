@@ -8,6 +8,6 @@ namespace XBLMS.Services
             string mobile);
 
         Task SyncDatabaseAsync();
-
+        Task ClearDatabaseAsync();
     }
 }

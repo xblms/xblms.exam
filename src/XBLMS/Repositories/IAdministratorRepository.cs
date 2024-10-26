@@ -48,5 +48,6 @@ namespace XBLMS.Repositories
         Task<(bool Success, string ErrorMessage)> ValidateLockAsync(Administrator administrator);
 
         Task<Administrator> DeleteAsync(int id);
+        Task ClearAsync();
     }
 }

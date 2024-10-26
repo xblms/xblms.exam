@@ -12,5 +12,6 @@ namespace XBLMS.Repositories
         Task<bool> UpdateAsync(OrganCompany company);
 
         Task<bool> DeleteAsync(int id);
+        Task ClearAsync();
     }
 }
