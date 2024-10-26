@@ -27,9 +27,10 @@ var methods = {
     }).then(function (response) {
       top.location.href = utils.getIndexUrl();
     }).catch(function (error) {
-      utils.loading(this, false);
+      utils.loading($this, false);
       $this.securityKey = null;
       utils.error(error);
+      $this.apiGet();
     });
   },
 
