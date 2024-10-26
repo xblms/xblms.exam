@@ -2,7 +2,7 @@ var $url = 'exam/examCer';
 
 var data = utils.init({
   list: [],
-  form: { title:'' },
+  form: { title: '' },
 
 });
 
@@ -11,10 +11,10 @@ var methods = {
     var $this = this;
 
     utils.loading(this, true);
-    $api.get($url, { params:this.form }).then(function (response) {
+    $api.get($url, { params: this.form }).then(function (response) {
       var res = response.data;
       $this.list = res.items;
- 
+
     }).catch(function (error) {
       utils.error(error);
     }).then(function () {
@@ -25,7 +25,7 @@ var methods = {
     var $this = this;
 
     utils.loading(this, true);
-    $api.post($url+'/del', { id: id }).then(function (response) {
+    $api.post($url + '/del', { id: id }).then(function (response) {
       var res = response.data;
       if (res.value) {
         utils.success("删除成功");
@@ -45,7 +45,7 @@ var methods = {
     top.utils.openLayer({
       title: false,
       closebtn: 0,
-      url: utils.getExamUrl('examCerEdit', {id:cer.id}),
+      url: utils.getExamUrl('examCerEdit', { id: cer.id }),
       width: "98%",
       height: "98%",
       end: function () {
@@ -123,6 +123,18 @@ var methods = {
     this.inputVisible = true;
     this.$nextTick(_ => {
       this.$refs.saveTagInput.$refs.input.focus();
+    });
+  },
+  btnCountClick: function (row) {
+    var $this = this;
+    top.utils.openLayer({
+      title: row.name + '-获证人员列表',
+      url: utils.getExamUrl('examCerUsers', { id: row.id }),
+      width: "88%",
+      height: "98%",
+      end: function () {
+        $this.apiGet();
+      }
     });
   }
 };

@@ -87,5 +87,37 @@ namespace XBLMS.Core.Repositories
         {
             return await _repository.UpdateAsync(Q.Set(nameof(ExamCerUser.CerImg), img).Where(nameof(ExamCerUser.Id), id));
         }
+
+        public async Task<int> GetCountAsync(int cerId)
+        {
+
+            var query = Q.Where(nameof(ExamCerUser.CerId), cerId);
+            var total = await _repository.CountAsync(query);
+            return total;
+        }
+
+        public async Task<(int total, List<ExamCerUser> list)> GetListAsync(int cerId, string keyWords, string beginDate, string endDate, int pageIndex, int pageSize)
+        {
+            var query = Q.Where(nameof(ExamCerUser.CerId), cerId);
+
+            if (!string.IsNullOrEmpty(keyWords))
+            {
+                keyWords = $"%{keyWords}%";
+                query.WhereLike(nameof(ExamCerUser.KeyWordsAdmin), keyWords);
+            }
+            if (!string.IsNullOrEmpty(beginDate))
+            {
+                query.Where(nameof(ExamCerUser.CreatedDate), ">=", DateUtils.ToString(beginDate));
+            }
+            if (!string.IsNullOrEmpty(endDate))
+            {
+                query.Where(nameof(ExamCerUser.CreatedDate), "<=", DateUtils.ToString(endDate));
+            }
+            query.OrderByDesc(nameof(ExamCerUser.Id));
+
+            var total = await _repository.CountAsync(query);
+            var list = await _repository.GetAllAsync(query.ForPage(pageIndex, pageSize));
+            return (total, list);
+        }
     }
 }

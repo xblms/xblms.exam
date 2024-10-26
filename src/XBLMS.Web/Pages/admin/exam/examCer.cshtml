@@ -32,7 +32,12 @@
         </el-table-column>
         <el-table-column label="证书编码" prop="prefix" sortable></el-table-column>
         <el-table-column label="颁发单位" prop="organName" sortable></el-table-column>
-        <el-table-column label="获证人数" prop="organName" width="150" sortable></el-table-column>
+        <el-table-column label="获证人数" prop="userCount" width="100" sortable>
+            <template slot-scope="scope">
+                <el-link type="primary" v-on:click.native="btnCountClick(scope.row)" v-if="scope.row.userCount>0">{{ scope.row.userCount }}</el-link>
+                <span v-else>0</span>
+            </template>
+        </el-table-column>
         <el-table-column label="创建时间" prop="createdDate" width="150" sortable></el-table-column>
         <el-table-column width="100" align="right">
             <template slot-scope="scope">
