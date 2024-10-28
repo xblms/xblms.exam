@@ -40,11 +40,11 @@ namespace XBLMS.Web.Controllers.Admin.Common
             var paperTmTotal = 0;
 
             var tmIndex = 1;
-            var txList=new List<ExamPaperRandomConfig>();
+            var txList = new List<ExamPaperRandomConfig>();
             foreach (var config in configs)
             {
                 var tx = await _examTxRepository.GetAsync(config.TxId);
-                if(tx!=null && tx.ExamTxBase==ExamTxBase.Tiankongti || tx.ExamTxBase == ExamTxBase.Jiandati)
+                if (tx != null && (tx.ExamTxBase == ExamTxBase.Tiankongti || tx.ExamTxBase == ExamTxBase.Jiandati))
                 {
                     var tms = await _examPaperRandomTmRepository.GetListAsync(randomId, config.TxId);
                     if (tms != null && tms.Count > 0)
