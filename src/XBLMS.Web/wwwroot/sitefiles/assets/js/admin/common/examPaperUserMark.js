@@ -100,15 +100,13 @@ var methods = {
       msg = '还剩' + isAllMark + '道题没有判分，' + msg;
     }
 
-    if (isAllMark) { 
-      top.utils.alertWarning({
-        title: '正在提交阅卷',
-        text: msg,
-        callback: function () {
-          $this.apiSubmitMark();
-        }
-      });
-    }
+    top.utils.alertWarning({
+      title: '正在提交阅卷',
+      text: msg,
+      callback: function () {
+        $this.apiSubmitMark();
+      }
+    });
   },
   apiSubmitMark: function () {
     var $this = this;
