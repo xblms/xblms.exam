@@ -30,6 +30,8 @@
 
 * 同一个账号不能同时登录，如果突然离线，有可能是其他用户登录后强制下线了
 
+* 防止被踢的好办法：自己在后台创建管理员账号或者用户账号即可，演示环境数据不要怕被搞乱了，可以随便搞，实在看不下去的时候我会清理的
+
 * 扫码前往移动端演示
 
 * <img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/二维码.png"/>
