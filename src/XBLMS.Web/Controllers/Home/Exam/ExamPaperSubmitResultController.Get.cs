@@ -11,6 +11,9 @@ namespace XBLMS.Web.Controllers.Home.Exam
         [HttpGet, Route(Route)]
         public async Task<ActionResult<GetResult>> Get([FromQuery] IdRequest request)
         {
+            var user = await _authManager.GetUserAsync();
+            if (user == null) return Unauthorized();
+
             var start = await _examPaperStartRepository.GetAsync(request.Id);
             if (start.IsSubmit)
             {

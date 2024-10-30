@@ -14,10 +14,12 @@ namespace XBLMS.Web.Controllers.Home
         [HttpGet, Route(Route)]
         public async Task<ActionResult<GetResult>> Get()
         {
+            var user = await _authManager.GetUserAsync();
+            if (user == null) return Unauthorized();
+
             var config = await _configRepository.GetAsync();
             if (config.IsHomeClosed) return this.Error("对不起，用户中心已被禁用！");
 
-            var user = await _authManager.GetUserAsync();
             var entity = new Entity();
 
 

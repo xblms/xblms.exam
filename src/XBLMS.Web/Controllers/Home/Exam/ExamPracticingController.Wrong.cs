@@ -16,6 +16,8 @@ namespace XBLMS.Web.Controllers.Home.Exam
         public async Task<ActionResult<BoolResult>> ErrorRemove([FromBody] IdRequest request)
         {
             var user = await _authManager.GetUserAsync();
+            if (user == null) return Unauthorized();
+
             var wrong = await _examPracticeWrongRepository.GetAsync(user.Id);
             if (wrong != null) {
                 wrong.TmIds.Remove(request.Id);

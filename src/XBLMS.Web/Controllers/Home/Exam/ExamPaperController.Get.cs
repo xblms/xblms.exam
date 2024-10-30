@@ -15,6 +15,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
         public async Task<ActionResult<GetResult>> Get([FromQuery] GetRequest request)
         {
             var user = await _authManager.GetUserAsync();
+            if (user == null) return Unauthorized();
 
             var (total, list) = await _examPaperUserRepository.GetListAsync(user.Id,false, request.Date, request.KeyWords, request.PageIndex, request.PageSize);
             var resultList = new List<ExamPaper>();

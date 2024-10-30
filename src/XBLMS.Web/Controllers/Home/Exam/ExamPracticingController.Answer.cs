@@ -12,6 +12,8 @@ namespace XBLMS.Web.Controllers.Home.Exam
         public async Task<ActionResult<GetSubmitAnswerResult>> Answer([FromBody] GetSubmitAnswerRequest request)
         {
             var user = await _authManager.GetUserAsync();
+            if (user == null) return Unauthorized();
+
             var tm = await _examTmRepository.GetAsync(request.Id);
 
             var result = new GetSubmitAnswerResult

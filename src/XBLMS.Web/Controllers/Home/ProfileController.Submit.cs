@@ -11,9 +11,11 @@ namespace XBLMS.Web.Controllers.Home
         [HttpPost, Route(Route)]
         public async Task<ActionResult<BoolResult>> Submit([FromBody] User request)
         {
-            if (request.Id != _authManager.UserId) return Unauthorized();
-
             var user = await _authManager.GetUserAsync();
+            if (user == null) return Unauthorized();
+
+            if (request.Id != user.Id) return Unauthorized();
+
             if (!PageUtils.IsProtocolUrl(request.AvatarUrl))
             {
                 user.AvatarUrl = request.AvatarUrl;

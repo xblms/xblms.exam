@@ -11,8 +11,10 @@ namespace XBLMS.Web.Controllers.Home.Exam
         [HttpGet, Route(RouteCheck)]
         public async Task<ActionResult<GetCheckResult>> Check([FromQuery] IdRequest request)
         {
-            var userId = _authManager.UserId;
-            var (success, msg) = await _examManager.CheckExam(request.Id, userId);
+            var user = await _authManager.GetUserAsync();
+            if (user == null) return Unauthorized();
+
+            var (success, msg) = await _examManager.CheckExam(request.Id, user.Id);
             return new GetCheckResult
             {
                 Success = success,

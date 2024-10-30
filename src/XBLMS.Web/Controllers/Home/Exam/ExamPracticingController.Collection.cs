@@ -16,6 +16,8 @@ namespace XBLMS.Web.Controllers.Home.Exam
         public async Task<ActionResult<BoolResult>> SetCollection([FromBody] IdRequest request)
         {
             var user = await _authManager.GetUserAsync();
+            if (user == null) return Unauthorized();
+
             var collection = await _examPracticeCollectRepository.GetAsync(user.Id);
             if (collection == null) {
                 await _examPracticeCollectRepository.InsertAsync(new ExamPracticeCollect
@@ -38,6 +40,8 @@ namespace XBLMS.Web.Controllers.Home.Exam
         public async Task<ActionResult<BoolResult>> RemoveCollection([FromBody] IdRequest request)
         {
             var user = await _authManager.GetUserAsync();
+            if (user == null) return Unauthorized();
+
             var collection = await _examPracticeCollectRepository.GetAsync(user.Id);
             collection.TmIds.Remove(request.Id);
             await _examPracticeCollectRepository.UpdateAsync(collection);

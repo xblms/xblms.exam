@@ -12,6 +12,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
         public async Task<ActionResult<BoolResult>> Delete()
         {
             var user = await _authManager.GetUserAsync();
+            if (user == null) return Unauthorized();
 
             await _examPracticeRepository.DeleteAsync(user.Id);
 

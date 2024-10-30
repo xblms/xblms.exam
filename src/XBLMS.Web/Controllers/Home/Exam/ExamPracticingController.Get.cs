@@ -18,6 +18,8 @@ namespace XBLMS.Web.Controllers.Home.Exam
         public async Task<ActionResult<GetResult>> Get([FromQuery] IdRequest request)
         {
             var user = await _authManager.GetUserAsync();
+            if (user == null) return Unauthorized();
+
             var item = await _examPracticeRepository.GetAsync(request.Id);
             if (item != null)
             {
@@ -37,7 +39,8 @@ namespace XBLMS.Web.Controllers.Home.Exam
         [HttpGet, Route(RouteTm)]
         public async Task<ActionResult<ItemResult<ExamTm>>> GetTm([FromQuery] IdRequest request)
         {
-            var user=await _authManager.GetUserAsync();
+            var user = await _authManager.GetUserAsync();
+            if (user == null) return Unauthorized();
 
             var tm = await _examTmRepository.GetAsync(request.Id);
             if (tm != null)

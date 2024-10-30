@@ -14,6 +14,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
         public async Task<ActionResult<GetSubmitResult>> Submit([FromBody] GetSubmitRequest request)
         {
             var user = await _authManager.GetUserAsync();
+            if (user == null) return Unauthorized();
 
             var tmIds = new List<int>();
             var zsds = new List<string>();

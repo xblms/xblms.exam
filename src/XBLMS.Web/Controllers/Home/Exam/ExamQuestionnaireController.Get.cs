@@ -12,6 +12,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
         public async Task<ActionResult<GetResult>> Get([FromQuery] GetRequest request)
         {
             var user = await _authManager.GetUserAsync();
+            if (user == null) return Unauthorized();
 
             var resultList = new List<ExamQuestionnaire>();
             var (total, list) = await _examQuestionnaireUserRepository.GetListAsync(user.Id, request.KeyWords, request.PageIndex, request.PageSize);
@@ -35,6 +36,8 @@ namespace XBLMS.Web.Controllers.Home.Exam
         public async Task<ActionResult<ItemResult<ExamQuestionnaire>>> GetItem([FromQuery] IdRequest request)
         {
             var user = await _authManager.GetUserAsync();
+            if (user == null) return Unauthorized();
+
             var paper = await _examQuestionnaireRepository.GetAsync(request.Id);
             await _examManager.GetQuestionnaireInfo(paper, user);
             return new ItemResult<ExamQuestionnaire>

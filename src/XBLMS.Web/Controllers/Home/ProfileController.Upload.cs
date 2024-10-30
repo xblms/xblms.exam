@@ -15,6 +15,9 @@ namespace XBLMS.Web.Controllers.Home
         [HttpPost, Route(RouteUpload)]
         public async Task<ActionResult<StringResult>> Upload([FromForm] IFormFile file)
         {
+            var user = await _authManager.GetUserAsync();
+            if (user == null) return Unauthorized();
+
             var (success, msg, url) = await _uploadManager.UploadAvatar(file, UploadManageType.UserAvatar, _authManager.UserName);
             if (success)
             {

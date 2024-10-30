@@ -12,6 +12,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
         public async Task<ActionResult<GetResult>> Get([FromQuery] GetRequest request)
         {
             var user = await _authManager.GetUserAsync();
+            if (user == null) return Unauthorized();
 
             var tmGroups = await _examTmGroupRepository.GetListWithoutLockedAsync();
             var resultList = new List<GetResultItem>();

@@ -13,11 +13,7 @@ namespace XBLMS.Web.Controllers.Home
         public async Task<ActionResult<GetResult>> Get()
         {
             var user = await _authManager.GetUserAsync();
-
-            if (user == null)
-            {
-                return Unauthorized();
-            }
+            if (user == null) return Unauthorized();
 
             user = await _organManager.GetUser(user.Id);
 
