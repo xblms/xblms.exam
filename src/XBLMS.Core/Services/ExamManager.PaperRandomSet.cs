@@ -292,7 +292,7 @@ namespace XBLMS.Core.Services
                 }
 
                 paper.TmCount = tmCount;
-                paper.TotalScore = TranslateUtils.ToInt(tmTotalScore.ToString());
+                paper.TotalScore = (int)Math.Ceiling(tmTotalScore);
 
                 if (paper.TmRandomType == ExamPaperTmRandomType.RandomExaming)
                 {
