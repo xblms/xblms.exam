@@ -91,17 +91,18 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
                 paper = await _examPaperRepository.GetAsync(paperId);
                 await SetRandomConfigs(request.ConfigList, paper);
-                await _examPaperRepository.UpdateAsync(paper);
-
+           
 
                 if (request.SubmitType == SubmitType.Submit)
                 {
                     await _examManager.PaperRandomSet(paper);
                     await _examManager.Arrange(paper);
+                    await _examPaperRepository.UpdateAsync(paper);
                     await _authManager.AddAdminLogAsync("发布试卷", $"{paper.Title}");
                 }
                 else
                 {
+                    await _examPaperRepository.UpdateAsync(paper);
                     await _authManager.AddAdminLogAsync("保存试卷", $"{paper.Title}");
                 }
             }
