@@ -395,22 +395,85 @@ namespace XBLMS.Core.Repositories
 
 
         }
-
-        public async Task<List<ExamTm>> GetListByRandomAsync(List<int> tmIds, bool hasTmGroup, int txId, int nandu1Count = 0, int nandu2Count = 0, int nandu3Count = 0, int nandu4Count = 0, int nandu5Count = 0)
+        public async Task<List<int>> Group_RangeIdsAsync(ExamTmGroup group)
         {
-            var query = Q.WhereNullOrFalse(nameof(ExamTm.Locked));
-            if (tmIds != null && tmIds.Count > 0)
+            var query = Q.Select(nameof(ExamTm.Id)).WhereNullOrFalse(nameof(ExamTm.Locked));
+
+            if (group != null)
             {
-                tmIds = ListUtils.GetRandomList(tmIds, 2000);
-                query.WhereIn(nameof(ExamTm.Id), tmIds);
+                if (group.GroupType == TmGroupType.Range)
+                {
+                    var isRange = false;
+                    if (group.DateFrom.HasValue)
+                    {
+                        isRange = true;
+                        query.Where(nameof(ExamTm.CreatedDate), ">=", DateUtils.ToString(group.DateFrom));
+                    }
+                    if (group.DateTo.HasValue)
+                    {
+                        isRange = true;
+                        query.Where(nameof(ExamTm.CreatedDate), "<=", DateUtils.ToString(group.DateTo));
+                    }
+                    if (group.TreeIds != null && group.TreeIds.Count > 0)
+                    {
+                        isRange = true;
+                        query.WhereIn(nameof(ExamTm.TreeId), group.TreeIds);
+                    }
+                    if (group.TxIds != null && group.TxIds.Count > 0)
+                    {
+                        isRange = true;
+                        query.WhereIn(nameof(ExamTm.TxId), group.TxIds);
+                    }
+                    if (group.Nandus != null && group.Nandus.Count > 0)
+                    {
+                        isRange = true;
+                        query.WhereIn(nameof(ExamTm.Nandu), group.Nandus);
+                    }
+                    if (group.Zhishidians != null && group.Zhishidians.Count > 0)
+                    {
+                        isRange = true;
+                        query.Where(q =>
+                        {
+                            foreach (var zhishidian in group.Zhishidians)
+                            {
+                                var like = $"%{zhishidian}%";
+                                q.OrWhereLike(nameof(ExamTm.Zhishidian), like);
+                            }
+                            return q;
+                        });
+                    }
+                    if (isRange)
+                    {
+                        return await _repository.GetAllAsync<int>(query);
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
             }
-            else
+
+            return null;
+        }
+        public async Task<List<ExamTm>> GetListByRandomAsync(bool allTm, bool hasGroup, List<int> tmIds, int txId, int nandu1Count = 0, int nandu2Count = 0, int nandu3Count = 0, int nandu4Count = 0, int nandu5Count = 0)
+        {
+            var query = Q.
+                   WhereNullOrFalse(nameof(ExamTm.Locked)).
+                   Where(nameof(ExamTm.TxId), txId);
+
+            if (!allTm && hasGroup)
             {
-                if (hasTmGroup)
+                if (tmIds == null || tmIds.Count == 0)
                 {
                     return null;
                 }
+                else
+                {
+                    query.WhereIn(nameof(ExamTm.Id), tmIds);
+                }
             }
+
+
             if (txId > 0)
             {
                 query.Where(nameof(ExamTm.TxId), txId);

@@ -97,14 +97,13 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 {
                     await _examManager.PaperRandomSet(paper);
                     await _examManager.Arrange(paper);
-                    await _examPaperRepository.UpdateAsync(paper);
                     await _authManager.AddAdminLogAsync("发布试卷", $"{paper.Title}");
                 }
                 else
                 {
-                    await _examPaperRepository.UpdateAsync(paper);
                     await _authManager.AddAdminLogAsync("保存试卷", $"{paper.Title}");
                 }
+                await _examPaperRepository.UpdateAsync(paper);
             }
 
             return new BoolResult

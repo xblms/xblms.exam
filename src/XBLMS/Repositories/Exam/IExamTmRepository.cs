@@ -31,10 +31,10 @@ namespace XBLMS.Repositories
         Task<int> GetCountByWithoutStopAndInIdsAsync(List<int> ids);
         Task<int> GetCountAsync(List<int> treeIds,List<int> txIds,List<int> nandus,List<string> zhishidianKeywords,DateTime? dateFrom,DateTime? dateTo);
         Task<List<int>> GetIdsAsync(List<int> treeIds, List<int> txIds, List<int> nandus, List<string> zhishidianKeywords, DateTime? dateFrom, DateTime? dateTo);
-
+        Task<List<int>> Group_RangeIdsAsync(ExamTmGroup group);
         Task<List<int>> GetIdsWithOutLockedAsync();
 
         Task<int> GetCountAsync(List<int> tmIds, int txId,int nandu);
-        Task<List<ExamTm>> GetListByRandomAsync(List<int> tmIds, bool hasTmGroup, int txId, int nandu1Count = 0, int nandu2Count = 0, int nandu3Count = 0, int nandu4Count = 0, int nandu5Count = 0);
+        Task<List<ExamTm>> GetListByRandomAsync(bool allTm, bool hasGroup, List<int> tmIds, int txId, int nandu1Count = 0, int nandu2Count = 0, int nandu3Count = 0, int nandu4Count = 0, int nandu5Count = 0);
     }
 }

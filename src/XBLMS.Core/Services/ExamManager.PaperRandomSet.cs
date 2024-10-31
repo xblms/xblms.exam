@@ -88,7 +88,7 @@ namespace XBLMS.Core.Services
                             var tmTotal = 0;
                             decimal scoreTotal = 0;
                             var tmIds = new List<int>();
-                            if(tmList!=null && tmList.Count > 0)
+                            if (tmList != null && tmList.Count > 0)
                             {
                                 tmTotal = tmList.Count;
                                 scoreTotal = tmList.Sum(tm => tm.Score);
@@ -125,6 +125,7 @@ namespace XBLMS.Core.Services
             var tmIds = new List<int>();
             var tmGroupIds = paper.TmGroupIds;
             var hasTmGroup = false;
+            var allTm = false;
             if (tmGroupIds != null && tmGroupIds.Count > 0)
             {
                 hasTmGroup = true;
@@ -139,11 +140,15 @@ namespace XBLMS.Core.Services
                         }
                         if (tmGroup.GroupType == TmGroupType.Range)
                         {
-                            var tmIdsByGroup = await _examTmRepository.GetIdsAsync(tmGroup.TreeIds, tmGroup.TxIds, tmGroup.Nandus, tmGroup.Zhishidians, tmGroup.DateFrom, tmGroup.DateTo);
+                            var tmIdsByGroup = await _examTmRepository.Group_RangeIdsAsync(tmGroup);
                             if (tmIdsByGroup != null && tmIdsByGroup.Count > 0)
                             {
                                 tmIds.AddRange(tmIdsByGroup);
                             }
+                        }
+                        if (tmGroup.GroupType == TmGroupType.All)
+                        {
+                            allTm = true;
                         }
                     }
                 }
@@ -165,27 +170,27 @@ namespace XBLMS.Core.Services
                         var tms = new List<ExamTm>();
                         foreach (var config in configList)
                         {
-                            var tmList = await _examTmRepository.GetListByRandomAsync(tmIds, hasTmGroup, config.TxId, config.Nandu1TmCount, 0, 0, 0, 0);
+                            var tmList = await _examTmRepository.GetListByRandomAsync(allTm, hasTmGroup, tmIds, config.TxId, config.Nandu1TmCount, 0, 0, 0, 0);
                             if (tmList != null && tmList.Count > 0)
                             {
                                 tms.AddRange(tmList);
                             }
-                            tmList = await _examTmRepository.GetListByRandomAsync(tmIds, hasTmGroup, config.TxId, 0, config.Nandu2TmCount, 0, 0, 0);
+                            tmList = await _examTmRepository.GetListByRandomAsync(allTm, hasTmGroup, tmIds, config.TxId, 0, config.Nandu2TmCount, 0, 0, 0);
                             if (tmList != null && tmList.Count > 0)
                             {
                                 tms.AddRange(tmList);
                             }
-                            tmList = await _examTmRepository.GetListByRandomAsync(tmIds, hasTmGroup, config.TxId, 0, 0, config.Nandu3TmCount, 0, 0);
+                            tmList = await _examTmRepository.GetListByRandomAsync(allTm, hasTmGroup, tmIds, config.TxId, 0, 0, config.Nandu3TmCount, 0, 0);
                             if (tmList != null && tmList.Count > 0)
                             {
                                 tms.AddRange(tmList);
                             }
-                            tmList = await _examTmRepository.GetListByRandomAsync(tmIds, hasTmGroup, config.TxId, 0, 0, 0, config.Nandu4TmCount, 0);
+                            tmList = await _examTmRepository.GetListByRandomAsync(allTm, hasTmGroup, tmIds, config.TxId, 0, 0, 0, config.Nandu4TmCount, 0);
                             if (tmList != null && tmList.Count > 0)
                             {
                                 tms.AddRange(tmList);
                             }
-                            tmList = await _examTmRepository.GetListByRandomAsync(tmIds, hasTmGroup, config.TxId, 0, 0, 0, 0, config.Nandu5TmCount);
+                            tmList = await _examTmRepository.GetListByRandomAsync(allTm, hasTmGroup, tmIds, config.TxId, 0, 0, 0, 0, config.Nandu5TmCount);
                             if (tmList != null && tmList.Count > 0)
                             {
                                 tms.AddRange(tmList);
@@ -293,33 +298,6 @@ namespace XBLMS.Core.Services
 
                 paper.TmCount = tmCount;
                 paper.TotalScore = (int)Math.Ceiling(tmTotalScore);
-
-                if (paper.TmRandomType == ExamPaperTmRandomType.RandomExaming)
-                {
-                    var configs = await _examPaperRandomConfigRepository.GetListAsync(paper.Id);
-                    if (configs != null && configs.Count > 0)
-                    {
-                        foreach (var config in configs)
-                        {
-                            var txtmList = await _examPaperRandomTmRepository.GetListAsync(randomId, config.TxId);
-                            var tmTotal = 0;
-                            decimal scoreTotal = 0;
-                            var tmIds = new List<int>();
-                            if (txtmList != null && txtmList.Count > 0)
-                            {
-                                tmTotal = txtmList.Count;
-                                scoreTotal = txtmList.Sum(tm => tm.Score);
-                                tmIds = txtmList.Select(tm => tm.Id).ToList();
-                            }
-
-                            config.ScoreTotal = scoreTotal;
-                            config.TmTotal = tmTotal;
-                            config.TmIds = tmIds;
-                            await _examPaperRandomConfigRepository.UpdateAsync(config);
-                        }
-                    }
-                }
-
             }
         }
     }
