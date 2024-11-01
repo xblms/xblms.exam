@@ -22,43 +22,32 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             var tmIds = new List<int>();
             var tmGroupIds = request.TmGroupIds;
 
-            var hasAllTmGroup = false;
-
+            var allTm = false;
             if (tmGroupIds != null && tmGroupIds.Count > 0)
             {
                 foreach (var tmGroupId in tmGroupIds)
                 {
                     var tmGroup = await _examTmGroupRepository.GetAsync(tmGroupId);
-                    if (tmGroup.GroupType == TmGroupType.All)
+                    if (tmGroup != null)
                     {
-                        hasAllTmGroup = true;
-                    }
-                }
-
-                if (!hasAllTmGroup)
-                {
-                    foreach (var tmGroupId in tmGroupIds)
-                    {
-                        var tmGroup = await _examTmGroupRepository.GetAsync(tmGroupId);
-                        if (tmGroup != null)
+                        if (tmGroup.GroupType == TmGroupType.Fixed && tmGroup.TmIds != null && tmGroup.TmIds.Count > 0)
                         {
-                            if (tmGroup.GroupType == TmGroupType.Fixed && tmGroup.TmIds != null && tmGroup.TmIds.Count > 0)
+                            tmIds.AddRange(tmGroup.TmIds);
+                        }
+                        if (tmGroup.GroupType == TmGroupType.Range)
+                        {
+                            var tmIdsByGroup = await _examTmRepository.Group_RangeIdsAsync(tmGroup);
+                            if (tmIdsByGroup != null && tmIdsByGroup.Count > 0)
                             {
-                                tmIds.AddRange(tmGroup.TmIds);
+                                tmIds.AddRange(tmIdsByGroup);
                             }
-                            if (tmGroup.GroupType == TmGroupType.Range)
-                            {
-                                var tmIdsByGroup = await _examTmRepository.GetIdsAsync(tmGroup.TreeIds, tmGroup.TxIds, tmGroup.Nandus, tmGroup.Zhishidians, tmGroup.DateFrom, tmGroup.DateTo);
-                                if (tmIdsByGroup != null && tmIdsByGroup.Count > 0)
-                                {
-                                    tmIds.AddRange(tmIdsByGroup);
-                                }
-                            }
+                        }
+                        if (tmGroup.GroupType == TmGroupType.All)
+                        {
+                            allTm = true;
                         }
                     }
                 }
-
-               
 
             }
 
@@ -66,7 +55,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             foreach (var tx in txList)
             {
              
-                if (hasAllTmGroup)
+                if (allTm)
                 {
                     tmIds = null;
                 }
