@@ -208,6 +208,10 @@ var methods = {
     });
   },
   submitValid: function () {
+    if (this.form.examBeginDateTime >= this.form.examEndDateTime) {
+      utils.error('请选择有效的考试时间', { layer: true });
+      return false;
+    }
     if (this.form.tmRandomType === 'RandomNone') {
       if (this.form.tmGroupIds === null || this.form.tmGroupIds.length === 0) {
         utils.error('请选择至少一个题目组', { layer: true });
