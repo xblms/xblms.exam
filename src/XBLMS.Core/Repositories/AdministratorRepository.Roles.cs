@@ -1,10 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Datory;
-using XBLMS.Configuration;
-using XBLMS.Core.Utils;
-using XBLMS.Utils;
 
 namespace XBLMS.Core.Repositories
 {
