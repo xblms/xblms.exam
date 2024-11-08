@@ -120,7 +120,7 @@ var methods = {
     top.utils.openLayer({
       title: false,
       closebtn: 0,
-      url: utils.getCommonUrl('editorTmOpenLayer', { pf: window.name, ptype: ptype, ref: ref }),
+      url: utils.getCommonUrl('editorOpenLayer', { pf: window.name, ptype: ptype, ref: ref }),
       width: "58%",
       height: "78%"
     });
