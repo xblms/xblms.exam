@@ -71,7 +71,7 @@
         <el-button type="primary" v-on:click="btnPaperSubmit"  class="rounded-start-pill">
             <i class="el-icon-upload me-2"></i>提 交
         </el-button>
-        <el-button v-on:click="location.href=utils.getRootUrl('mine')" icon="el-icon-back" class="rounded-end-pill">退 出</el-button>
+        <el-button v-on:click="utils.closeLayerSelf" icon="el-icon-back" class="rounded-end-pill">退 出</el-button>
     </el-button-group>
 </div>
 @section Scripts{
