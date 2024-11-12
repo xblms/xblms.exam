@@ -70,7 +70,7 @@ var methods = {
   },
   btnAsyncClick: function () {
     var $this = this;
-    utils.loading(this, true);
+    utils.loading(this, true, "正在备份，请稍等...");
     $api.get($url + '/excution').then(function (response) {
       var res = response.data;
       if (res.value) {
