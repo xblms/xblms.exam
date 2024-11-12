@@ -69,6 +69,12 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Database
 
         }
 
+        public class GetRecoverRequest
+        {
+            public string SecurityKey { get; set; }
+            public int Id { get; set; }
+        }
+
         private async Task<string> Backup()
         {
             var beginTime = DateTime.Now;

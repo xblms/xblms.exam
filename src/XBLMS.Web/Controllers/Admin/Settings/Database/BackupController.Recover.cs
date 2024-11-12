@@ -50,8 +50,13 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Database
         }
 
         [HttpPost, Route(RouteBackupRecover)]
-        public async Task<ActionResult<BoolResult>> Recover([FromBody] IdRequest request)
+        public async Task<ActionResult<BoolResult>> Recover([FromBody] GetRecoverRequest request)
         {
+            if (_settingsManager.SecurityKey != request.SecurityKey)
+            {
+                return this.Error("SecurityKey 输入错误！");
+            }
+
             if (!await _authManager.HasPermissionsAsync(MenuPermissionType.Add))
             {
                 return this.NoAuth();
