@@ -134,11 +134,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-12 col-lg-12 col-md-12 col-12" v-if="(item.cjList && item.cjList.length>0) || (item.subject && item.subject.length>0)">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-12" v-if="(item.cjList && item.cjList.length>0)">
                     <div class="card rounded-0 bg-white border-top border-muted border-5 card-hover-with-icon">
                         <div class="card-body pt-3 pb-0">
                             <el-collapse accordion>
-                                <el-collapse-item v-if="item.cjList && item.cjList.length>0">
+                                <el-collapse-item>
                                     <template slot="title">
                                         <span class="fs-4"><i class="bi bi-clock-history me-2"></i>考试记录（{{ item.cjList.length }}）</span>
                                     </template>
@@ -166,9 +166,17 @@
                                         </div>
                                     </div>
                                 </el-collapse-item>
-                                <el-collapse-item v-if="item.subject && item.subject.length>0">
+                            </el-collapse>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-12 col-lg-12 col-md-12 col-12" v-if="(item.subject && item.subject.length>0)">
+                    <div class="card rounded-0 bg-white border-top border-muted border-5 card-hover-with-icon">
+                        <div class="card-body pt-3 pb-0">
+                            <el-collapse accordion>
+                                <el-collapse-item>
                                     <template slot="title">
-                                        <span class="fw-bold"><i class="el-icon-info me-2"></i>考试须知</span>
+                                        <span class="fs-4"><i class="el-icon-info me-2"></i>考试须知</span>
                                     </template>
                                     <div>
                                         <p v-html="item.subject"></p>
@@ -177,7 +185,6 @@
                             </el-collapse>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
