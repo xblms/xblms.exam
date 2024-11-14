@@ -106,6 +106,7 @@ namespace XBLMS.Core.Services
                             });
                         }
                     }
+                    paper.TxIds = txIds;
                 }
 
                 #endregion
