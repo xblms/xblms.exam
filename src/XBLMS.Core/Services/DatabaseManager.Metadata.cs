@@ -168,9 +168,9 @@ namespace XBLMS.Core.Services
                 {
                     await _settingsManager.Database.CreateIndexAsync(tableName, $"IX_{tableName}_General", $"{nameof(ExamQuestionnaireUser.ExamPaperId)} DESC", $"{nameof(ExamQuestionnaireUser.UserId)} DESC");
                 }
-                else if (tableName == ExamQuestionnaireUserRepository.TableName)
+                else if (tableName == ExamQuestionnaireAnswerRepository.TableName)
                 {
-                    await _settingsManager.Database.CreateIndexAsync(tableName, $"IX_{tableName}_General", $"{nameof(ExamQuestionnaireUser.ExamPaperId)} DESC", $"{nameof(ExamQuestionnaireUser.UserId)} DESC");
+                    await _settingsManager.Database.CreateIndexAsync(tableName, $"IX_{tableName}_General", $"{nameof(ExamQuestionnaireAnswer.ExamPaperId)} DESC", $"{nameof(ExamQuestionnaireAnswer.UserId)} DESC", $"{nameof(ExamQuestionnaireAnswer.TmId)} DESC");
                 }
                 else if (tableName == OrganDepartmentRepository.TableName)
                 {
