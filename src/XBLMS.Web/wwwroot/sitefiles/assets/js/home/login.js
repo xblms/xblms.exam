@@ -44,7 +44,7 @@ var methods = {
         $this.apiCaptcha();
       }
     }).catch(function (error) {
-      utils.notifyError(error);
+      utils.error(error);
     }).then(function () {
       utils.loading($this, false);
     });
@@ -61,7 +61,7 @@ var methods = {
       $this.captchaUrl = $apiUrl + $urlCaptcha + '?token=' + $this.captchaToken;
       $this.btnTypeClick();
     }).catch(function (error) {
-      utils.notifyError(error);
+      utils.error(error);
     }).then(function () {
       utils.loading($this, false);
     });
@@ -81,7 +81,7 @@ var methods = {
       }).catch(function (error) {
         $this.apiCaptcha();
         utils.loading($this, false);
-        utils.notifyError(error);
+        utils.error(error);
       });
     }
   },
@@ -110,7 +110,7 @@ var methods = {
         $this.redirectIndex();
       }
     }).catch(function (error) {
-      utils.notifyError(error);
+      utils.error(error);
     }).then(function () {
       $this.apiCaptcha();
       utils.loading($this, false);
