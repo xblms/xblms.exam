@@ -12,6 +12,12 @@
 
 支持国产人大金仓、达梦、OceanBase数据库 及 MySql、SqlServer、PostgreSql、SQLite 等数据库
 
+### 系统升级
+
+* 访问/admin/syncDatabase 进行系统升级。发布最新的代码替换到原来的部署包即可，不要替换xblms.json和web.config文件。
+
+* 访问/admin/clearDatabase 进行系统数据清理，请谨慎使用，清理后仅保留一个管理员账号，其他数据库数据会全部删除。
+
 ## 演示地址
 
 * 集团版本源码地址 [点击前往集团版源码-在线培训系统](https://gitee.com/xblms/xblmls) ，主要区别在于按公司和部门进行权限划分，各自管理和组织考试。
