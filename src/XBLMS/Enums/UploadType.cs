@@ -24,5 +24,7 @@ namespace XBLMS.Enums
         AdminAvatar,
         [DataEnum(DisplayName = "UserAvatar")]
         UserAvatar,
+        [DataEnum(DisplayName = "UserAvatarCer")]
+        UserAvatarCer,
     }
 }

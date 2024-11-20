@@ -105,6 +105,24 @@ var utils = {
       zIndex: 2000,
     });
   },
+  formatFileSize: function (size) {
+    var kb = 1024;
+    var mb = kb * 1024;
+    var gb = mb * 1024;
+
+    if (size >= gb) {
+      return (size / mb).toFixed(2) + 'MB';
+    } else if (size >= mb) {
+      return (size / mb).toFixed(2) + 'MB';
+    } else if (size >= kb) {
+      return (size / kb).toFixed(2) + 'KB';
+    } else if (size > 0) {
+      return size + 'B';
+    }
+    else {
+      return '0B';
+    }
+  },
   formatPercentFloat: function (count, total) {
     if (count > 0 && total > 0) {
       if (count >= total) {

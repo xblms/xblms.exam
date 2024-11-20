@@ -68,7 +68,7 @@ namespace XBLMS.Core.Services
                         //1001 姓名 2暂无 3暂无 4证件照  5证书编号 6认证日期 7颁发单位 10试卷 11 成绩
                         if (position.Id == "1004")
                         {
-                            var avatar = user.AvatarUrl;
+                            var avatar = user.AvatarCerUrl;
                             if (string.IsNullOrWhiteSpace(avatar))
                             {
                                 avatar = _pathManager.DefaultAvatarUrl;

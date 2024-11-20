@@ -59,6 +59,16 @@ namespace XBLMS.Core.Services
                 await _pathManager.UploadAsync(file, filePath);
                 returnUrl = _pathManager.GetUserAvatarUploadUrl(userName, fileName);
             }
+            else if (uploadType == UploadManageType.UserAvatarCer)
+            {
+                var filePath = _pathManager.GetUserAvatarUploadPath(userName, fileName);
+                if (!FileUtils.IsImage(PathUtils.GetExtension(fileName)))
+                {
+                    return (false, Constants.ErrorImageExtensionAllowed, "");
+                }
+                await _pathManager.UploadAsync(file, filePath);
+                returnUrl = _pathManager.GetUserAvatarUploadUrl(userName, fileName);
+            }
 
 
             return (true, "", returnUrl);

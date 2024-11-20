@@ -101,12 +101,16 @@
                     <el-button :size="euiSize" plain type="primary" icon="el-icon-plus" v-on:click="btnAddClick">
                         新 增
                     </el-button>
-                    <el-button :size="euiSize" plain type="primary" icon="el-icon-upload" v-on:click="btnImportClick">
-                        导 入
-                    </el-button>
-                    <el-button :size="euiSize" plain type="primary" icon="el-icon-download" v-on:click="btnExportClick">
-                        导 出
-                    </el-button>
+                    <el-dropdown :show-timeout="0" placement="bottom" style="margin-left:10px;">
+                        <el-button :size="euiSize" v-on:click.stop="return false">
+                            更多操作<i class="el-icon-arrow-down el-icon--down"></i>
+                        </el-button>
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item icon="el-icon-upload" v-on:click.native="btnImportClick">excel导入</el-dropdown-item>
+                            <el-dropdown-item icon="el-icon-download" v-on:click.native="btnExportClick">excel导出</el-dropdown-item>
+                            <el-dropdown-item icon="el-icon-upload" v-on:click.native="btnAvatarCerUploadClick">上传证件照</el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>
                 </el-form-item>
             </el-form>
 
@@ -116,9 +120,19 @@
                     <template slot-scope="scope">
                         <el-link :underline="false" v-on:click="btnViewClick(scope.row)">
                             <el-badge v-if="scope.row.locked" style="margin-top: 10px;" value="锁定">
-                                <el-avatar :size="40" :src="scope.row.avatarUrl || utils.getAssetsUrl('images/default_avatar.png')"></el-avatar>
+                                <el-avatar :size="40" :src="scope.row.avatarUrl || DEFAULT_AVATAR_URL"></el-avatar>
                             </el-badge>
-                            <el-avatar v-else :size="40" :src="scope.row.avatarUrl || utils.getAssetsUrl('images/default_avatar.png')"></el-avatar>
+                            <el-avatar v-else :size="40" :src="scope.row.avatarUrl || DEFAULT_AVATAR_URL"></el-avatar>
+                        </el-link>
+                    </template>
+                </el-table-column>
+                <el-table-column label="证照" width="80">
+                    <template slot-scope="scope">
+                        <el-link :underline="false" v-on:click="btnViewClick(scope.row)">
+                            <el-badge v-if="scope.row.locked" style="margin-top: 10px;" value="锁定">
+                                <el-avatar :size="40" :src="scope.row.avatarCerUrl || DEFAULT_AVATAR_URL"></el-avatar>
+                            </el-badge>
+                            <el-avatar v-else :size="40" :src="scope.row.avatarCerUrl || DEFAULT_AVATAR_URL"></el-avatar>
                         </el-link>
                     </template>
                 </el-table-column>

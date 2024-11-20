@@ -32,6 +32,9 @@
                         <el-descriptions-item label="邮 箱">{{ user.email }}</el-descriptions-item>
                         <el-descriptions-item label="上次登录时间">{{ user.lastActivityDate }}</el-descriptions-item>
                         <el-descriptions-item label="登录次数">{{ user.countOfLogin }}</el-descriptions-item>
+                        <el-descriptions-item label="证件照">
+                            <el-avatar :size="200" shape="square" :src="user.avatarCerUrl || DEFAULT_AVATAR_URL"></el-avatar>
+                        </el-descriptions-item>
                     </el-descriptions>
                 </el-scrollbar>
             </el-col>

@@ -66,6 +66,18 @@ var methods = {
     utils.openUserView(user.id);
   },
 
+  btnAvatarCerUploadClick: function () {
+    var $this = this;
+    top.utils.openLayer({
+      title: false,
+      closebtn: 0,
+      url: utils.getSettingsUrl('usersCerAvatarUpload'),
+      width: "88%",
+      height: "88%",
+      end: function () { $this.apiGet() }
+    });
+  },
+
   btnAddClick: function () {
     var $this = this;
     top.utils.openLayer({
