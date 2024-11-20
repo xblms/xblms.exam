@@ -22,7 +22,7 @@ namespace XBLMS.Utils
             var request = new RestRequest
             {
                 Method = Method.Get,
-                Timeout = -1,
+                Timeout = System.Threading.Timeout.InfiniteTimeSpan,
             };
             request.AddHeader("Content-Type", "application/json");
             if (!string.IsNullOrEmpty(accessToken))
@@ -49,7 +49,7 @@ namespace XBLMS.Utils
             var request = new RestRequest
             {
                 Method = Method.Get,
-                Timeout = -1,
+                Timeout = System.Threading.Timeout.InfiniteTimeSpan,
             };
             request.AddHeader("Content-Type", "application/json");
 
@@ -72,7 +72,7 @@ namespace XBLMS.Utils
             var request = new RestRequest
             {
                 Method = Method.Post,
-                Timeout = -1,
+                Timeout = System.Threading.Timeout.InfiniteTimeSpan,
             };
             request.AddHeader("Content-Type", "application/json");
             request.AddBody(body, "application/json");
@@ -97,7 +97,7 @@ namespace XBLMS.Utils
             var request = new RestRequest
             {
                 Method = Method.Post,
-                Timeout = -1,
+                Timeout = System.Threading.Timeout.InfiniteTimeSpan,
             };
             request.AddHeader("Content-Type", "application/json");
             if (!string.IsNullOrEmpty(accessToken))
@@ -125,7 +125,7 @@ namespace XBLMS.Utils
             var request = new RestRequest
             {
                 Method = Method.Post,
-                Timeout = -1,
+                Timeout = System.Threading.Timeout.InfiniteTimeSpan,
             };
             request.AddHeader("Content-Type", "application/json");
             if (!string.IsNullOrEmpty(accessToken))
@@ -153,7 +153,7 @@ namespace XBLMS.Utils
             var request = new RestRequest
             {
                 Method = Method.Post,
-                Timeout = -1,
+                Timeout = System.Threading.Timeout.InfiniteTimeSpan,
             };
             request.AddHeader("Content-Type", "application/json");
             if (!string.IsNullOrEmpty(accessToken))
@@ -182,7 +182,7 @@ namespace XBLMS.Utils
             var request = new RestRequest
             {
                 Method = Method.Post,
-                Timeout = -1,
+                Timeout = System.Threading.Timeout.InfiniteTimeSpan,
             };
             request.AddHeader("Content-Type", "application/json");
             if (!string.IsNullOrEmpty(accessToken))
@@ -210,7 +210,7 @@ namespace XBLMS.Utils
             var request = new RestRequest
             {
                 Method = Method.Post,
-                Timeout = -1,
+                Timeout = System.Threading.Timeout.InfiniteTimeSpan,
             };
             //request.AddHeader("Content-Type", "application/json");
             if (!string.IsNullOrEmpty(accessToken))
@@ -241,7 +241,7 @@ namespace XBLMS.Utils
             var request = new RestRequest
             {
                 Method = Method.Post,
-                Timeout = -1,
+                Timeout = System.Threading.Timeout.InfiniteTimeSpan,
             };
             //request.AddHeader("Content-Type", "application/json");
             if (!string.IsNullOrEmpty(accessToken))
@@ -272,7 +272,7 @@ namespace XBLMS.Utils
             var request = new RestRequest
             {
                 Method = Method.Post,
-                Timeout = -1,
+                Timeout = System.Threading.Timeout.InfiniteTimeSpan,
             };
             //request.AddHeader("Content-Type", "application/json");
             if (!string.IsNullOrEmpty(accessToken))
@@ -321,7 +321,7 @@ namespace XBLMS.Utils
             var request = new RestRequest
             {
                 Method = Method.Get,
-                Timeout = -1,
+                Timeout = System.Threading.Timeout.InfiniteTimeSpan,
             };
 
             var response = await client.ExecuteAsync(request);
