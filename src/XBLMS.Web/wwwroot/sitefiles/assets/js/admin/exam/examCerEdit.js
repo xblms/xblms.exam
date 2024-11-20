@@ -227,6 +227,8 @@ var methods = {
     this.boxChange(value, 1005, "number", "证书编号", 30, 100, 10, 265);
     this.boxChange(value, 1006, "date", "认证日期", 30, 100, 10, 304);
     this.boxChange(value, 1007, "organName", "颁发单位", 30, 100, 10, 352);
+    this.boxChange(value, 1010, "examName", "试卷名称", 30, 100, 10, 400);
+    this.boxChange(value, 1011, "examScore", "考试成绩", 30, 100, 120, 400);
   },
   uploadBefore(file) {
     var re = /(\.jpg|\.jpeg|\.bmp|\.gif|\.png|\.webp)$/i;

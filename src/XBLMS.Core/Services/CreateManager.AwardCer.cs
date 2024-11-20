@@ -12,6 +12,7 @@ namespace XBLMS.Core.Services
     {
         public async Task AwardCer(ExamPaper paper, int startId, int userId)
         {
+            var examStar = await _databaseManager.ExamPaperStartRepository.GetAsync(startId);
             var user = await _databaseManager.UserRepository.GetByUserIdAsync(userId);
             if (user != null && paper != null)
             {
@@ -40,14 +41,14 @@ namespace XBLMS.Core.Services
                             if (cerId > 0)
                             {
                                 var cerUser = await _databaseManager.ExamCerUserRepository.GetAsync(cerId);
-                                await AwardCerImg(paper, cerInfo, cerUser, user);
+                                await AwardCerImg(paper, cerInfo, cerUser, user, examStar.Score);
                             }
                         }
                     }
                 }
             }
         }
-        private async Task AwardCerImg(ExamPaper paper, ExamCer cerInfo, ExamCerUser cerUser, User user)
+        private async Task AwardCerImg(ExamPaper paper, ExamCer cerInfo, ExamCerUser cerUser, User user, decimal score)
         {
             if (string.IsNullOrWhiteSpace(cerUser.CerImg))
             {
@@ -64,7 +65,7 @@ namespace XBLMS.Core.Services
 
                     foreach (var position in positionmodel)
                     {
-                        //1001 姓名 2暂无 3暂无 4证件照  5证书编号 6认证日期 7颁发单位
+                        //1001 姓名 2暂无 3暂无 4证件照  5证书编号 6认证日期 7颁发单位 10试卷 11 成绩
                         if (position.Id == "1004")
                         {
                             var avatar = user.AvatarUrl;
@@ -99,6 +100,14 @@ namespace XBLMS.Core.Services
                             if (position.Id == "1007")
                             {
                                 _pathManager.AddWaterMarkForCertificateReviewAsync(filePath, cerInfo.OrganName, fontSize, position.PageX, position.PageY);
+                            }
+                            if (position.Id == "1010")//试卷
+                            {
+                                _pathManager.AddWaterMarkForCertificateReviewAsync(filePath, paper.Title, fontSize, position.PageX, position.PageY);
+                            }
+                            if (position.Id == "1011")//成绩
+                            {
+                                _pathManager.AddWaterMarkForCertificateReviewAsync(filePath, score.ToString(), fontSize, position.PageX, position.PageY);
                             }
                         }
                     }
