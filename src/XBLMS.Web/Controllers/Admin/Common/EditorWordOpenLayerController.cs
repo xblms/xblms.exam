@@ -45,7 +45,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
                 return this.Error(Constants.ErrorUpload);
             }
 
-            var filePath = _pathManager.GetImportFilesPath(fileName);
+            var filePath = _pathManager.GetImportFilesPath(_pathManager.GetUploadFileName(file.FileName));
             await _pathManager.UploadAsync(file, filePath);
 
 
