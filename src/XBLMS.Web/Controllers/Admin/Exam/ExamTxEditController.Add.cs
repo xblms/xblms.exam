@@ -1,10 +1,9 @@
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 using XBLMS.Dto;
-using XBLMS.Core.Utils;
-using XBLMS.Utils;
-using XBLMS.Models;
 using XBLMS.Enums;
+using XBLMS.Models;
+using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Admin.Exam
 {
@@ -29,7 +28,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             tx.CreatorId = admin.Id;
 
             await _examTxRepository.InsertAsync(tx);
-            await _authManager.AddAdminLogAsync("添加题型", $"题型名称:{tx.Name}");
+            await _authManager.AddAdminLogAsync("添加题型", $"{tx.Name}");
             return new BoolResult
             {
                 Value = true

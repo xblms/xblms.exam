@@ -1,13 +1,12 @@
-using System;
+using Dapper;
+using Datory.Utils;
+using Kdbndp;
+using SqlKata.Compilers;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Dapper;
-using SqlKata.Compilers;
-using Datory.Utils;
-using Kdbndp;
 
 [assembly: InternalsVisibleTo("Datory.Tests")]
 

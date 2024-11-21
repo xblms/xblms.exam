@@ -1,8 +1,8 @@
-﻿using System;
+﻿using FluentScheduler;
+using System;
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
-using FluentScheduler;
 using XBLMS.Services;
 
 namespace XBLMS.Core.Services

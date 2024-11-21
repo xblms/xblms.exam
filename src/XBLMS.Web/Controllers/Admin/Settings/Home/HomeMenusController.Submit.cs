@@ -1,8 +1,7 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using XBLMS.Models;
-using XBLMS.Core.Utils;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 using XBLMS.Enums;
+using XBLMS.Models;
 using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Admin.Settings.Home
@@ -40,7 +39,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Home
                     Target = request.Target
                 });
 
-                await _authManager.AddAdminLogAsync("新增用户菜单", $"用户菜单:{request.Text}");
+                await _authManager.AddAdminLogAsync("新增用户菜单", $"{request.Text}");
             }
             else if (request.Id > 0)
             {
@@ -54,7 +53,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Home
                 userMenu.Target = request.Target;
                 await _userMenuRepository.UpdateAsync(userMenu);
 
-                await _authManager.AddAdminLogAsync("修改用户菜单", $"用户菜单:{request.Text}");
+                await _authManager.AddAdminLogAsync("修改用户菜单", $"{request.Text}");
             }
 
             return new UserMenusResult

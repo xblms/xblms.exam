@@ -1,10 +1,5 @@
-﻿using System.Threading.Tasks;
-using Datory;
-using Microsoft.AspNetCore.Mvc;
-using XBLMS.Configuration;
-using XBLMS.Core.Utils;
-using XBLMS.Enums;
-using XBLMS.Utils;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace XBLMS.Web.Controllers.Admin
 {

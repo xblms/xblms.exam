@@ -1,7 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
-using Datory.Utils;
+﻿using Datory.Utils;
 using StackExchange.Redis;
+using System;
+using System.Threading.Tasks;
 
 namespace Datory
 {

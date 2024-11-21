@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Datory;
+﻿using Datory;
 using Datory.Annotations;
 
 namespace XBLMS.Models

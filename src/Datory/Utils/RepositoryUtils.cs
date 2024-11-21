@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Datory.Caching;
+using SqlKata;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Datory.Caching;
-using SqlKata;
 
 [assembly: InternalsVisibleTo("Datory.Data.Tests")]
 

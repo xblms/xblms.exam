@@ -1,10 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using DocumentFormat.OpenXml.Bibliography;
-using DocumentFormat.OpenXml.Office2010.ExcelAc;
-using DocumentFormat.OpenXml.Wordprocessing;
-using Microsoft.AspNetCore.Mvc;
-using XBLMS.Core.Utils;
 using XBLMS.Dto;
 using XBLMS.Enums;
 using XBLMS.Models;
@@ -76,7 +72,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 var group = await _examTmGroupRepository.GetAsync(request.Group.Id);
 
                 await _examTmGroupRepository.UpdateAsync(request.Group);
-                await _authManager.AddAdminLogAsync("修改题目组", $"题目组名称：{group.GroupName}");
+                await _authManager.AddAdminLogAsync("修改题目组", $"{group.GroupName}");
             }
             else
             {
@@ -85,7 +81,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 request.Group.DepartmentId = admin.DepartmentId;
 
                 await _examTmGroupRepository.InsertAsync(request.Group);
-                await _authManager.AddAdminLogAsync("新增题目组", $"题目组名称：{request.Group.GroupName}");
+                await _authManager.AddAdminLogAsync("新增题目组", $"{request.Group.GroupName}");
             }
 
             return new BoolResult

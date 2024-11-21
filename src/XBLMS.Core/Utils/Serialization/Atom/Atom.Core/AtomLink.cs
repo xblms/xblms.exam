@@ -39,12 +39,12 @@ using XBLMS.Utils;
 
 namespace XBLMS.Core.Utils.Serialization.Atom.Atom.Core
 {
-	/// <summary>
-	/// The link of an Atom feed or an entry.
-	/// <seealso cref="AtomFeed"/>
-	/// <seealso cref="AtomEntry"/>
-	/// </summary>
-	[Serializable]
+    /// <summary>
+    /// The link of an Atom feed or an entry.
+    /// <seealso cref="AtomFeed"/>
+    /// <seealso cref="AtomEntry"/>
+    /// </summary>
+    [Serializable]
 	public class AtomLink : AtomElement
 	{
 		private Relationship _rel = DefaultValues.Rel;

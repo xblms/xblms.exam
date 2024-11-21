@@ -1,15 +1,9 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using XBLMS.Configuration;
-using XBLMS.Core.Utils;
 using XBLMS.Core.Utils.Office;
 using XBLMS.Dto;
 using XBLMS.Enums;
-using XBLMS.Models;
 using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Admin.Exam
@@ -47,6 +41,8 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             await excelObject.CreateExcelFileForTmAsync(list, filePath);
 
             var downloadUrl = _pathManager.GetRootUrlByPath(filePath);
+
+            await _authManager.AddAdminLogAsync("导出题目");
 
             return new StringResult
             {

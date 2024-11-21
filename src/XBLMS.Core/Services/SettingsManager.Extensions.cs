@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Extensions.Configuration;
 using XBLMS.Configuration;
 using XBLMS.Enums;
 using XBLMS.Utils;

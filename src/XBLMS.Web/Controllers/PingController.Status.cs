@@ -1,8 +1,7 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Net;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using NSwag.Annotations;
 
 namespace XBLMS.Web.Controllers
 {

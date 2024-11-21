@@ -1,15 +1,11 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using NSwag.Annotations;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Datory;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using NSwag.Annotations;
 using XBLMS.Configuration;
-using XBLMS.Enums;
-using XBLMS.Models;
-using XBLMS.Repositories;
 using XBLMS.Services;
 using XBLMS.Utils;
 

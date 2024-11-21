@@ -1,7 +1,6 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 using XBLMS.Dto;
-using XBLMS.Core.Utils;
 using XBLMS.Enums;
 using XBLMS.Utils;
 
@@ -20,7 +19,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
 
             await _userGroupRepository.DeleteAsync(group.Id);
 
-            await _authManager.AddAdminLogAsync("删除用户组", $"用户组名称:{group.GroupName}");
+            await _authManager.AddAdminLogAsync("删除用户组", $"{group.GroupName}");
 
             return new BoolResult
             {

@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using DocumentFormat.OpenXml.Bibliography;
-using DocumentFormat.OpenXml.Wordprocessing;
-using Microsoft.AspNetCore.Mvc;
-using XBLMS.Core.Utils;
 using XBLMS.Dto;
 using XBLMS.Enums;
 using XBLMS.Models;
@@ -111,7 +108,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
             {
                 var group = await _userGroupRepository.GetAsync(request.Group.Id);
                 await _userGroupRepository.UpdateAsync(request.Group);
-                await _authManager.AddAdminLogAsync("修改用户组", $"修改前:{group.GroupName},修改后:{request.Group.GroupName}");
+                await _authManager.AddAdminLogAsync("修改用户组", $"{group.GroupName}>{request.Group.GroupName}");
             }
             else
             {
@@ -120,7 +117,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
                 request.Group.DepartmentId = admin.DepartmentId;
 
                 await _userGroupRepository.InsertAsync(request.Group);
-                await _authManager.AddAdminLogAsync("新增用户组", $"用户组名称:{request.Group.GroupName}");
+                await _authManager.AddAdminLogAsync("新增用户组", $"{request.Group.GroupName}");
             }
 
             return new BoolResult

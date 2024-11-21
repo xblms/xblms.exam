@@ -1,11 +1,6 @@
-﻿using DocumentFormat.OpenXml.Packaging;
-using HtmlAgilityPack;
-using OpenXmlPowerTools;
-using System;
-using System.Drawing.Imaging;
+﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 using XBLMS.Core.Utils.Office.Word2Html;
 using XBLMS.Utils;
 

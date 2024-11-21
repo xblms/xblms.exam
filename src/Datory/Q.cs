@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Datory.Utils;
 using SqlKata;
-using Datory.Utils;
+using System;
+using System.Collections.Generic;
 
 namespace Datory
 {

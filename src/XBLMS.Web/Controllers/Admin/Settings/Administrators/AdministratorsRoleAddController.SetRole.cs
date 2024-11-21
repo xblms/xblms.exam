@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using XBLMS.Configuration;
-using XBLMS.Core.Utils;
 using XBLMS.Dto;
 using XBLMS.Enums;
 using XBLMS.Models;
@@ -50,7 +47,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
                 foreach (var adminId in request.AdminIds)
                 {
                     var setAdmin = await _administratorRepository.GetByUserIdAsync(adminId);
-                    await _authManager.AddAdminLogAsync("配置角色", $"为管理员:{setAdmin.DisplayName}分配角色:{ListUtils.ToString(roleNames)}");
+                    await _authManager.AddAdminLogAsync("配置角色", $"管理员:{setAdmin.DisplayName}>角色:{ListUtils.ToString(roleNames)}");
                 }
             }
             return new BoolResult

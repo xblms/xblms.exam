@@ -1,11 +1,10 @@
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using XBLMS.Dto;
-using XBLMS.Core.Utils;
-using XBLMS.Utils;
-using XBLMS.Models;
 using System.Collections;
+using System.Threading.Tasks;
+using XBLMS.Dto;
 using XBLMS.Enums;
+using XBLMS.Models;
+using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Admin.Exam
 {
@@ -54,7 +53,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                         CreatorId= admin.CreatorId
                     });
 
-                    await _authManager.AddAdminLogAsync("添加试卷分类", $"分类名称:{name}");
+                    await _authManager.AddAdminLogAsync("添加试卷分类", $"{name}");
 
 
                     insertedTreeIdHashtable[count + 1] = insertedTkId;

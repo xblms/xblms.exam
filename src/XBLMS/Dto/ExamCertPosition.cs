@@ -1,9 +1,4 @@
-﻿using Datory;
-using Datory.Annotations;
-using System.Collections.Generic;
-using XBLMS.Enums;
-
-namespace XBLMS.Dto
+﻿namespace XBLMS.Dto
 {
     public class ExamCertPosition
     {

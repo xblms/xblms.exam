@@ -1,11 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Datory;
+﻿using Datory;
 using Microsoft.AspNetCore.Mvc;
-using XBLMS.Core.Utils;
-using XBLMS.Dto;
-using XBLMS.Enums;
-using XBLMS.Utils;
+using System.Threading.Tasks;
 
 namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
 {

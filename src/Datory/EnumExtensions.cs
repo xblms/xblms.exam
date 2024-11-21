@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Datory.Annotations;
+using System;
 using System.Linq;
 using System.Reflection;
-using Datory.Annotations;
 
 namespace Datory
 {

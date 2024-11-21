@@ -1,13 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-using Dapper;
-using SqlKata.Compilers;
-using Dm;
 using Datory.DatabaseImpl;
+using SqlKata.Compilers;
 
 namespace Datory.Utils
 {

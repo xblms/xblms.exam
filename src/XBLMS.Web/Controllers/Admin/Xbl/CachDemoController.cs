@@ -1,16 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
+using System.Threading.Tasks;
 using XBLMS.Configuration;
-using XBLMS.Core.Repositories;
 using XBLMS.Dto;
-using XBLMS.Enums;
-using XBLMS.Models;
-using XBLMS.Repositories;
 using XBLMS.Services;
-using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
 {

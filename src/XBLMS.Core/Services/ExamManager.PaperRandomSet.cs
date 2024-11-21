@@ -1,22 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using Datory;
-using Datory.Annotations;
-using DocumentFormat.OpenXml.Drawing.Charts;
-using DocumentFormat.OpenXml.ExtendedProperties;
-using DocumentFormat.OpenXml.Office2010.ExcelAc;
-using Newtonsoft.Json.Converters;
-using NPOI.POIFS.Properties;
-using NPOI.SS.Formula.Functions;
-using XBLMS.Dto;
 using XBLMS.Enums;
 using XBLMS.Models;
-using XBLMS.Repositories;
-using XBLMS.Services;
-using XBLMS.Utils;
 
 namespace XBLMS.Core.Services
 {

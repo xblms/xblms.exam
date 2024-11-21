@@ -1,7 +1,6 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 using XBLMS.Dto;
-using XBLMS.Core.Utils;
 using XBLMS.Enums;
 using XBLMS.Utils;
 
@@ -19,7 +18,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Home
             await _userMenuRepository.DeleteAsync(request.Id);
 
             var menu = await _userMenuRepository.GetAsync(request.Id);
-            await _authManager.AddAdminLogAsync("删除用户菜单", $"用户菜单:{ menu.Text }");
+            await _authManager.AddAdminLogAsync("删除用户菜单", $"{ menu.Text }");
             return new UserMenusResult
             {
                 UserMenus = await _userMenuRepository.GetUserMenusAsync()

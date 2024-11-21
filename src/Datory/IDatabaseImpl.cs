@@ -1,7 +1,7 @@
+using SqlKata.Compilers;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Threading.Tasks;
-using SqlKata.Compilers;
 
 namespace Datory
 {

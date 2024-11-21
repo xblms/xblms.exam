@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using XBLMS.Configuration;
-using XBLMS.Core.Utils;
-using XBLMS.Dto;
-using XBLMS.Utils;
-
-namespace XBLMS.Web.Controllers.Home.Exam
+﻿namespace XBLMS.Web.Controllers.Home.Exam
 {
     public partial class ExamPracticingController
     {

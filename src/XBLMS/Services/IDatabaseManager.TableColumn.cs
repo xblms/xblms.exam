@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Datory;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Datory;
 
 namespace XBLMS.Services
 {

@@ -1,9 +1,8 @@
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 using XBLMS.Dto;
-using XBLMS.Core.Utils;
-using XBLMS.Utils;
 using XBLMS.Enums;
+using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Admin.Exam
 {
@@ -26,7 +25,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             var tmCount =0;
             if (tmCount > 0) return this.Error($"该分类下面包含【{tmCount}】份试卷，暂时不允许删除");
             await _examPaperTreeRepository.DeleteAsync(ids);
-            await _authManager.AddAdminLogAsync("删除试卷分类及所有下级", $"分类名称：{item.Name}");
+            await _authManager.AddAdminLogAsync("删除试卷分类及所有下级", $"{item.Name}");
             return new BoolResult
             {
                 Value = true

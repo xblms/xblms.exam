@@ -1,10 +1,8 @@
-﻿using System;
+﻿using Dapper;
+using SqlKata;
+using System;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using CacheManager.Core;
-using Dapper;
-using Newtonsoft.Json.Converters;
-using SqlKata;
 
 [assembly: InternalsVisibleTo("Datory.Data.Tests")]
 

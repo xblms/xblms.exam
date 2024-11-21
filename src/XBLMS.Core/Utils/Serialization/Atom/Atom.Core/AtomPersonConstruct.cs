@@ -39,10 +39,10 @@ using XBLMS.Utils;
 
 namespace XBLMS.Core.Utils.Serialization.Atom.Atom.Core
 {
-	/// <summary>
-	/// The class representing all person constructs.
-	/// </summary>
-	[Serializable]
+    /// <summary>
+    /// The class representing all person constructs.
+    /// </summary>
+    [Serializable]
 	public class AtomPersonConstruct : AtomElement
 	{
 		private string _name = String.Empty;

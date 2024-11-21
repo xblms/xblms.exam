@@ -38,11 +38,11 @@ using System.Collections.Specialized;
 
 namespace XBLMS.Core.Utils.Serialization.Atom.Atom.AdditionalElements
 {
-	/// <summary>
-	/// A strongly typed collection of <see cref="ScopedElement"/> objects.
-	/// <seealso cref="ScopedElement"/>
-	/// </summary>
-	[Serializable]
+    /// <summary>
+    /// A strongly typed collection of <see cref="ScopedElement"/> objects.
+    /// <seealso cref="ScopedElement"/>
+    /// </summary>
+    [Serializable]
 	public class ScopedElementCollection : CollectionBase
 	{
 		#region Collection methods

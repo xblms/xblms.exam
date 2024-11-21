@@ -41,11 +41,11 @@ using XBLMS.Utils;
 
 namespace XBLMS.Core.Utils.Serialization.Atom.Atom.Core
 {
-	/// <summary>
-	/// The content of an Atom entry.
-	/// <seealso cref="AtomEntry"/>
-	/// </summary>
-	[Serializable]
+    /// <summary>
+    /// The content of an Atom entry.
+    /// <seealso cref="AtomEntry"/>
+    /// </summary>
+    [Serializable]
 	public class AtomContent : AtomContentConstruct
 	{
 		#region Constructors

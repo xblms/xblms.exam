@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using Datory;
+﻿using Datory;
 using Datory.Annotations;
-using XBLMS.Enums;
+using System.Collections.Generic;
 
 namespace XBLMS.Models
 {

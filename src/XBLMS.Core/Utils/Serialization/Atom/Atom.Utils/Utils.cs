@@ -43,10 +43,10 @@ using XBLMS.Core.Utils.Serialization.Atom.Atom.Core;
 
 namespace XBLMS.Core.Utils.Serialization.Atom.Atom.Utils
 {
-	/// <summary>
-	/// A class with some useful methods.
-	/// </summary>
-	public sealed class Utils
+    /// <summary>
+    /// A class with some useful methods.
+    /// </summary>
+    public sealed class Utils
 	{
 		private static Hashtable _mediaTypes = null;
 

@@ -1,11 +1,9 @@
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+using XBLMS.Dto;
+using XBLMS.Enums;
 using XBLMS.Models;
 using XBLMS.Utils;
-using XBLMS.Core.Utils;
-using XBLMS.Dto;
-using Microsoft.AspNetCore.Identity.Data;
-using XBLMS.Enums;
 
 namespace XBLMS.Web.Controllers.Admin.Exam
 {
@@ -22,7 +20,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             var item = await _examPaperTreeRepository.GetAsync(request.Item.Id);
             item.Name = request.Item.Name;
             await _examPaperTreeRepository.UpdateAsync(item);
-            await _authManager.AddAdminLogAsync("修改试卷分类", $"分类名称:{item.Name}");
+            await _authManager.AddAdminLogAsync("修改试卷分类", $"{item.Name}");
 
             return new BoolResult
             {

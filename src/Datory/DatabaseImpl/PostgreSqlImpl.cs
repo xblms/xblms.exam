@@ -1,13 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using Dapper;
+using Datory.Utils;
+using Npgsql;
+using SqlKata.Compilers;
+using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Dapper;
-using Npgsql;
-using SqlKata.Compilers;
-using Datory.Utils;
-using MySql.Data.Common;
 
 [assembly: InternalsVisibleTo("Datory.Tests")]
 

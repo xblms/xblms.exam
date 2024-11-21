@@ -1,11 +1,10 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using XBLMS.Dto;
+using XBLMS.Enums;
 using XBLMS.Models;
 using XBLMS.Utils;
-using XBLMS.Core.Utils;
-using System.Collections.Generic;
-using XBLMS.Enums;
 
 namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
 {
@@ -54,7 +53,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
 
             _cacheManager.Clear();
 
-            await _authManager.AddAdminLogAsync("新增管理员角色", $"角色名称:{request.RoleName}");
+            await _authManager.AddAdminLogAsync("新增管理员角色", $"{request.RoleName}");
 
             return new BoolResult
             {

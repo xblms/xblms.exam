@@ -1,8 +1,8 @@
-﻿using System;
+﻿using NPOI.OpenXmlFormats.Wordprocessing;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using NPOI.OpenXmlFormats.Wordprocessing;
 
 namespace XBLMS.Core.Utils.Office.Word2Html
 {

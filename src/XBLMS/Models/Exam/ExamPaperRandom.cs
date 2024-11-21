@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using Datory;
+﻿using Datory;
 using Datory.Annotations;
-using XBLMS.Enums;
 namespace XBLMS.Models
 {
     [DataTable("exam_PaperRandom")]

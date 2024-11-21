@@ -1,7 +1,6 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 using XBLMS.Dto;
-using XBLMS.Core.Utils;
 using XBLMS.Enums;
 using XBLMS.Utils;
 
@@ -18,7 +17,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
             }
             var user = await _userRepository.DeleteAsync(request.Id);
 
-            await _authManager.AddAdminLogAsync("删除用户", $"用户:{user.UserName}");
+            await _authManager.AddAdminLogAsync("删除用户", $"{user.UserName}");
 
             return new BoolResult
             {

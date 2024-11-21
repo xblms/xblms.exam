@@ -1,5 +1,5 @@
-﻿using System;
-using CacheManager.Core;
+﻿using CacheManager.Core;
+using System;
 
 namespace XBLMS.Core.Services
 {

@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using NPOI.XWPF.UserModel;
+using System.Collections.Generic;
 using System.Text;
-using NPOI.XWPF.UserModel;
 
 namespace XBLMS.Core.Utils.Office.Word2Html
 {

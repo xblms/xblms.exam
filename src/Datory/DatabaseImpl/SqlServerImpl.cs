@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Dapper;
+using Datory.Utils;
+using SqlKata.Compilers;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -6,9 +9,6 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Dapper;
-using SqlKata.Compilers;
-using Datory.Utils;
 
 [assembly: InternalsVisibleTo("Datory.Tests")]
 

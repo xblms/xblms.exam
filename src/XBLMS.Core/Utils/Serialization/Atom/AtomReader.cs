@@ -43,7 +43,7 @@ using XBLMS.Core.Utils.Serialization.Atom.Atom.Utils;
 
 namespace XBLMS.Core.Utils.Serialization.Atom
 {
-	internal class AtomReader
+    internal class AtomReader
 	{
 		private XPathDocument _document = null;
 		private XPathNavigator _navigator = null;

@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using XBLMS.Configuration;
-using XBLMS.Core.Utils;
-using XBLMS.Core.Utils.Office;
 using XBLMS.Dto;
 using XBLMS.Enums;
 using XBLMS.Models;
@@ -54,7 +47,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                     return this.NoAuth();
                 }
             }
-        
+
 
             var admin = await _authManager.GetAdminAsync();
             var info = request.Item;
@@ -66,7 +59,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                     info.Answer = info.Answer.Replace(",", "").Trim();
                 }
                 await _examTmRepository.UpdateAsync(info);
-                await _authManager.AddAdminLogAsync("修改题目", $"{HtmlUtils.ClearFormat(info.Title)}");
+                await _authManager.AddAdminLogAsync("修改题目", $"{StringUtils.StripTags(info.Title) }");
             }
             else
             {
@@ -87,7 +80,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 info.Id = await _examTmRepository.InsertAsync(info);
 
                 await _statRepository.AddCountAsync(StatType.ExamTmAdd);
-                await _authManager.AddAdminLogAsync("新增题目", $"{HtmlUtils.ClearFormat(info.Title)}");
+                await _authManager.AddAdminLogAsync("新增题目", $"{ StringUtils.StripTags(info.Title) }");
             }
 
             return new BoolResult

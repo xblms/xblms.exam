@@ -1,5 +1,5 @@
-﻿using System.Text;
-using NPOI.OpenXmlFormats.Wordprocessing;
+﻿using NPOI.OpenXmlFormats.Wordprocessing;
+using System.Text;
 
 namespace XBLMS.Core.Utils.Office.Word2Html
 {

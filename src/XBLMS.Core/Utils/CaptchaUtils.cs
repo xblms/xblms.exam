@@ -1,11 +1,10 @@
-﻿using System;
-using System.IO;
-using SixLabors.Fonts;
-using SixLabors.ImageSharp;
+﻿using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
+using System;
+using System.IO;
 using XBLMS.Services;
 using XBLMS.Utils;
 

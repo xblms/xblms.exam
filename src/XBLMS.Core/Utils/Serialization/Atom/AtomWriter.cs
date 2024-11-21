@@ -45,7 +45,7 @@ using XBLMS.Core.Utils.Serialization.Atom.Atom.Utils;
 
 namespace XBLMS.Core.Utils.Serialization.Atom
 {
-	internal class AtomWriter
+    internal class AtomWriter
 	{
 		private XmlTextWriter _writer = null;
 

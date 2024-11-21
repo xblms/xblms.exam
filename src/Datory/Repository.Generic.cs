@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Datory.Utils;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Datory.Utils;
 
 namespace Datory
 {

@@ -1,9 +1,8 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Reflection;
 using Datory.Annotations;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace Datory.Utils
 {

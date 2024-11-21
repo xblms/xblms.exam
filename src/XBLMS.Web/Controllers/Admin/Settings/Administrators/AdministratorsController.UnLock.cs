@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using XBLMS.Core.Utils;
 using XBLMS.Dto;
 using XBLMS.Enums;
 using XBLMS.Utils;
@@ -25,7 +24,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
                 adminInfo.UserName
             });
 
-            await _authManager.AddAdminLogAsync("解锁管理员", $"管理员:{adminInfo.UserName}");
+            await _authManager.AddAdminLogAsync("解锁管理员", $"{adminInfo.UserName}");
 
             return new BoolResult
             {

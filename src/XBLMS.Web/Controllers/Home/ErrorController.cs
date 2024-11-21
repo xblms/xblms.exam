@@ -1,8 +1,7 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
+using System;
 using XBLMS.Configuration;
-using XBLMS.Models;
 using XBLMS.Repositories;
 
 namespace XBLMS.Web.Controllers.Home

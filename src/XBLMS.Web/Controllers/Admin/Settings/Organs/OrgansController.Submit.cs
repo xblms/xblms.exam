@@ -1,14 +1,9 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 using XBLMS.Dto;
-using XBLMS.Core.Utils;
-using XBLMS.Models;
-using NPOI.Util;
-using ICSharpCode.SharpZipLib.Core;
-using DocumentFormat.OpenXml.ExtendedProperties;
-using DocumentFormat.OpenXml.Wordprocessing;
-using XBLMS.Utils;
 using XBLMS.Enums;
+using XBLMS.Models;
+using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Admin.Settings.Organs
 {
@@ -43,7 +38,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Organs
                     if (!StringUtils.Equals(oldName, request.Name))
                     {
                         await _companyRepository.UpdateAsync(company);
-                        await _authManager.AddAdminLogAsync("修改单位", $"修改前:{oldName},修改后:{company.Name}");
+                        await _authManager.AddAdminLogAsync("修改单位", $"{oldName}>{company.Name}");
                     }
                 }
                 else
@@ -73,7 +68,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Organs
                     if (!StringUtils.Equals(oldName, request.Name))
                     {
                         await _organDepartmentRepository.UpdateAsync(department);
-                        await _authManager.AddAdminLogAsync("修改部门", $"修改前:{oldName},修改后:{department.Name}");
+                        await _authManager.AddAdminLogAsync("修改部门", $"{oldName}>{department.Name}");
                     }
                 }
                 else
@@ -119,7 +114,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Organs
                     if (!StringUtils.Equals(oldName, request.Name))
                     {
                         await _organDutyRepository.UpdateAsync(duty);
-                        await _authManager.AddAdminLogAsync("修改岗位", $"修改前:{oldName},修改后:{duty.Name}");
+                        await _authManager.AddAdminLogAsync("修改岗位", $"{oldName}>{duty.Name}");
                     }
                 }
                 else

@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
-using CacheManager.Core;
+﻿using CacheManager.Core;
 using Datory.Caching;
+using System.Threading.Tasks;
 
 namespace Datory
 {

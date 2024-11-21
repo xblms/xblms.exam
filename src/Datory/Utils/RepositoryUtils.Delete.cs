@@ -1,7 +1,7 @@
-﻿using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-using Dapper;
+﻿using Dapper;
 using SqlKata;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 [assembly: InternalsVisibleTo("Datory.Data.Tests")]
 

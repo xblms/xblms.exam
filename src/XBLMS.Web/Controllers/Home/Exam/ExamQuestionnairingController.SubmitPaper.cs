@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using XBLMS.Configuration;
 using XBLMS.Dto;
 using XBLMS.Enums;
 using XBLMS.Models;
-using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Home.Exam
 {

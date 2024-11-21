@@ -37,11 +37,11 @@ using System.Collections;
 
 namespace XBLMS.Core.Utils.Serialization.Atom.Atom.Core.Collections
 {
-	/// <summary>
-	/// A strongly typed collection of <see cref="AtomEntry"/> objects.
-	/// <seealso cref="AtomEntry"/>
-	/// </summary>
-	[Serializable]
+    /// <summary>
+    /// A strongly typed collection of <see cref="AtomEntry"/> objects.
+    /// <seealso cref="AtomEntry"/>
+    /// </summary>
+    [Serializable]
 	public class AtomEntryCollection : CollectionBase
 	{
 		#region Collection methods

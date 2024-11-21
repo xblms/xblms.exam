@@ -1,11 +1,6 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Datory;
 using Microsoft.AspNetCore.Mvc;
-using XBLMS.Dto;
+using System.Threading.Tasks;
 using XBLMS.Enums;
-using XBLMS.Models;
 using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Admin.Exam

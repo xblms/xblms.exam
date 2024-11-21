@@ -37,11 +37,11 @@ using XBLMS.Core.Utils.Serialization.Atom.Atom.Utils;
 
 namespace XBLMS.Core.Utils.Serialization.Atom.Atom.Core
 {
-	/// <summary>
-	/// The generator program of an atom feed.
-	/// <seealso cref="AtomFeed"/>
-	/// </summary>
-	[Serializable]
+    /// <summary>
+    /// The generator program of an atom feed.
+    /// <seealso cref="AtomFeed"/>
+    /// </summary>
+    [Serializable]
 	internal class AtomGenerator : AtomElement
 	{
 		private string _content = String.Empty;

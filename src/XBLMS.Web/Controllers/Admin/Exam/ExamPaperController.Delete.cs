@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using System.Threading.Tasks;
 using XBLMS.Dto;
 using XBLMS.Enums;
 using XBLMS.Utils;
@@ -20,7 +20,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             {
                 await _examPaperRepository.DeleteAsync(paper.Id);
                 await _examManager.ClearRandom(paper.Id, true);
-                await _authManager.AddAdminLogAsync("删除试卷", $"试卷名称：{paper.Title}");
+                await _authManager.AddAdminLogAsync("删除试卷", $"{paper.Title}");
 
             }
             return new BoolResult

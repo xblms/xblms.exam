@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Antiforgery;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
 using XBLMS.Configuration;
 using XBLMS.Models;
 using XBLMS.Services;

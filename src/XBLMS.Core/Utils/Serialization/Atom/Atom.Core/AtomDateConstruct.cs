@@ -39,10 +39,10 @@ using XBLMS.Utils;
 
 namespace XBLMS.Core.Utils.Serialization.Atom.Atom.Core
 {
-	/// <summary>
-	/// The class representing all date contructs.
-	/// </summary>
-	[Serializable]
+    /// <summary>
+    /// The class representing all date contructs.
+    /// </summary>
+    [Serializable]
 	public class AtomDateConstruct : AtomElement
 	{
 		#region Constructors

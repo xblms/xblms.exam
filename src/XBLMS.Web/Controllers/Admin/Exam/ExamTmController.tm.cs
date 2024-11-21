@@ -1,15 +1,8 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using XBLMS.Configuration;
-using XBLMS.Core.Utils;
-using XBLMS.Core.Utils.Office;
 using XBLMS.Dto;
 using XBLMS.Enums;
-using XBLMS.Models;
 using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Admin.Exam
@@ -64,7 +57,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             var tm = await _examTmRepository.GetAsync(request.Id);
             if (tm == null) return this.NotFound();
             await _examTmRepository.DeleteAsync(request.Id);
-            await _authManager.AddAdminLogAsync("删除题目", $"{tm.Title}");
+            await _authManager.AddAdminLogAsync("删除题目", $"{ StringUtils.StripTags(tm.Title) }");
 
             return new BoolResult
             {
@@ -84,7 +77,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 var info = await _examTmRepository.GetAsync(id);
                 if (info == null) continue;
                 await _examTmRepository.DeleteAsync(info.Id);
-                await _authManager.AddAdminLogAsync("删除题目", $"{info.Title}");
+                await _authManager.AddAdminLogAsync("删除题目", $"{StringUtils.StripTags(info.Title) }");
             }
             return new BoolResult
             {

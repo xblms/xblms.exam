@@ -303,6 +303,8 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             cacheInfo.IsOver = true;
             _cacheManager.AddOrUpdateAbsolute(cacheKey, cacheInfo, 1);
 
+            await _authManager.AddAdminLogAsync("导入题目");
+
 
             return new GetImportResult
             {

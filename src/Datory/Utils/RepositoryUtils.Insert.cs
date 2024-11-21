@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Dapper;
+using Newtonsoft.Json.Linq;
+using SqlKata;
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using Dapper;
-using Newtonsoft.Json.Linq;
-using SqlKata;
 
 [assembly: InternalsVisibleTo("Datory.Data.Tests")]
 

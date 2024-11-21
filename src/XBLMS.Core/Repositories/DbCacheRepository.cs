@@ -1,8 +1,8 @@
+using Datory;
+using Datory.Caching;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Datory;
-using Datory.Caching;
 using XBLMS.Configuration;
 using XBLMS.Models;
 using XBLMS.Repositories;

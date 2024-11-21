@@ -39,10 +39,10 @@ using XBLMS.Core.Utils.Serialization.Atom.Atom.Utils;
 
 namespace XBLMS.Core.Utils.Serialization.Atom.Atom.Core
 {
-	/// <summary>
-	/// The base class for all elements.
-	/// </summary>
-	[Serializable]
+    /// <summary>
+    /// The base class for all elements.
+    /// </summary>
+    [Serializable]
     public abstract class AtomElement
     {
 		private StringBuilder _buffer;

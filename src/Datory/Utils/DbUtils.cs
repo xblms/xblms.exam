@@ -1,5 +1,5 @@
-using SqlKata.Compilers;
 using Datory.DatabaseImpl;
+using SqlKata.Compilers;
 
 namespace Datory.Utils
 {

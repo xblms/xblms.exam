@@ -41,10 +41,10 @@ using XBLMS.Utils;
 
 namespace XBLMS.Core.Utils.Serialization.Atom.Atom.Core
 {
-	/// <summary>
-	/// The class representing all content constructs.
-	/// </summary>
-	[Serializable]
+    /// <summary>
+    /// The class representing all content constructs.
+    /// </summary>
+    [Serializable]
 	public class AtomContentConstruct : AtomElement
 	{
 		private MediaType _type = DefaultValues.MediaType;

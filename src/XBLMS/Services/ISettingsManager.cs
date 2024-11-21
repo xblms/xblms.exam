@@ -1,6 +1,6 @@
-﻿using System;
-using Datory;
+﻿using Datory;
 using Microsoft.Extensions.Configuration;
+using System;
 
 namespace XBLMS.Services
 {

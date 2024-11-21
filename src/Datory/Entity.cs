@@ -1,10 +1,9 @@
-﻿using System;
+﻿using Datory.Annotations;
+using Datory.Utils;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Dapper;
-using Datory.Annotations;
-using Newtonsoft.Json;
-using Datory.Utils;
 
 namespace Datory
 {

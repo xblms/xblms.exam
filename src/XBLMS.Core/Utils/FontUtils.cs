@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.Extensions.FileProviders;
+using SixLabors.Fonts;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Microsoft.Extensions.FileProviders;
-using SixLabors.Fonts;
 using XBLMS.Utils;
 
 namespace XBLMS.Core.Utils

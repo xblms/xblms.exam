@@ -1,8 +1,8 @@
-﻿using System;
+﻿using NPOI.XWPF.UserModel;
+using System;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using NPOI.XWPF.UserModel;
 
 namespace XBLMS.Core.Utils.Office.Word2Html
 {

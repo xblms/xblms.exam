@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using Datory;
+using System.Collections.Generic;
 using System.Linq;
-using Datory;
 using XBLMS.Enums;
 using XBLMS.Utils;
 
 namespace XBLMS.Core.Utils
 {
-	public static class InputTypeUtils
+    public static class InputTypeUtils
 	{
         public static bool EqualsAny(InputType type, params InputType[] types)
         {

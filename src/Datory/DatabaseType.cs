@@ -1,6 +1,6 @@
+using Datory.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using Datory.Annotations;
 
 namespace Datory
 {

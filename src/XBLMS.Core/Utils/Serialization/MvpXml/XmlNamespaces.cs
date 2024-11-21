@@ -39,11 +39,11 @@
 
 namespace XBLMS.Core.Utils.Serialization.MvpXml
 {
-	/// <summary>
-	/// Provides public constants for wellknown XML namespaces.
-	/// </summary>
-	/// <remarks>Author: Daniel Cazzulino, kzu@aspnet2.com</remarks>
-	internal sealed class XmlNamespaces
+    /// <summary>
+    /// Provides public constants for wellknown XML namespaces.
+    /// </summary>
+    /// <remarks>Author: Daniel Cazzulino, kzu@aspnet2.com</remarks>
+    internal sealed class XmlNamespaces
 	{
 		#region Ctor
 

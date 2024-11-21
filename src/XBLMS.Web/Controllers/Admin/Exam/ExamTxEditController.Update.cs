@@ -1,11 +1,9 @@
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+using XBLMS.Dto;
+using XBLMS.Enums;
 using XBLMS.Models;
 using XBLMS.Utils;
-using XBLMS.Core.Utils;
-using XBLMS.Dto;
-using Microsoft.AspNetCore.Identity.Data;
-using XBLMS.Enums;
 
 namespace XBLMS.Web.Controllers.Admin.Exam
 {
@@ -29,7 +27,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
             await _examTxRepository.UpdateAsync(tx);
 
-            await _authManager.AddAdminLogAsync("修改题型", $"题型名称:{tx.Name}");
+            await _authManager.AddAdminLogAsync("修改题型", $"{tx.Name}");
 
             return new BoolResult
             {

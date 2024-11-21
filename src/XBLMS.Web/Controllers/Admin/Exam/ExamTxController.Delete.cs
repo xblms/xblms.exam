@@ -1,9 +1,8 @@
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 using XBLMS.Dto;
-using XBLMS.Core.Utils;
-using XBLMS.Utils;
 using XBLMS.Enums;
+using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Admin.Exam
 {
@@ -24,7 +23,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             var txTmCount =0;
             if (txTmCount > 0) return this.Error($"有【{txTmCount}】题目用到了该题型，暂时不允许删除");
             await _examTxRepository.DeleteAsync(request.Id);
-            await _authManager.AddAdminLogAsync("删除题型", $"题型名称：{tx.Name}");
+            await _authManager.AddAdminLogAsync("删除题型", $"{tx.Name}");
             return new BoolResult
             {
                 Value = true

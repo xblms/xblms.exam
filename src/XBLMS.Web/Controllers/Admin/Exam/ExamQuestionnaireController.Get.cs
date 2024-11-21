@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using System.Threading.Tasks;
 namespace XBLMS.Web.Controllers.Admin.Exam
 {
     public partial class ExamQuestionnaireController

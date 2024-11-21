@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using CacheManager.Core;
+﻿using CacheManager.Core;
 using Datory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using XBLMS.Core.Services;
-using XBLMS.Repositories;
 using XBLMS.Services;
 
 namespace XBLMS.Core.Extensions

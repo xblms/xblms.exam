@@ -1,13 +1,7 @@
-﻿using System;
+﻿using Datory;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Datory;
-using DocumentFormat.OpenXml.Office2010.Excel;
-using DocumentFormat.OpenXml.Office2010.ExcelAc;
-using NPOI.POIFS.Properties;
-using XBLMS.Core.Utils;
-using XBLMS.Dto;
 using XBLMS.Models;
 
 namespace XBLMS.Core.Repositories

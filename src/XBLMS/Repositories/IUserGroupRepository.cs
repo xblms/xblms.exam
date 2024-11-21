@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Datory;
 using System.Threading.Tasks;
-using Datory;
 using XBLMS.Models;
 
 namespace XBLMS.Repositories

@@ -36,12 +36,12 @@ using System;
 
 namespace XBLMS.Core.Utils.Serialization.Atom.Atom.Core
 {
-	#region Person constructs exception
+    #region Person constructs exception
 
-	/// <summary>
-	/// The exception that is thrown when a required element is not found in the feed or entry.
-	/// </summary>
-	[Serializable]
+    /// <summary>
+    /// The exception that is thrown when a required element is not found in the feed or entry.
+    /// </summary>
+    [Serializable]
 	public class RequiredElementNotFoundException : ApplicationException
 	{
 		/// <summary>

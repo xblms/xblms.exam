@@ -44,23 +44,23 @@ using System.Xml.XPath;
 
 namespace XBLMS.Core.Utils.Serialization.MvpXml
 {
-	/// <summary>
-	/// Provides an <see cref="XmlReader"/> over an 
-	/// <see cref="XPathNavigator"/>.
-	/// </summary>
-	/// <remarks>
-	/// Reader is positioned at the current navigator position. Reading 
-	/// it completely is similar to querying for the <see cref="XmlNode.OuterXml"/> 
-	/// property. An additional option is to specify that the reader should 
-	/// expose an XML fragment with the current navigator and all its following siblings. 
-	/// This is done at construction time.
-	/// <para>The navigator is cloned at construction time to avoid side-effects 
-	/// in calling code.</para>
-	/// <para>Author: Daniel Cazzulino, kzu@aspnet2.com</para>
-	/// See: http://weblogs.asp.net/cazzu/archive/2004/04/19/115966.aspx and 
-	/// http://weblogs.asp.net/cazzu/archive/2004/05/10/129101.aspx.
-	/// </remarks>
-	internal class XPathNavigatorReader : XmlTextReader, IXmlSerializable
+    /// <summary>
+    /// Provides an <see cref="XmlReader"/> over an 
+    /// <see cref="XPathNavigator"/>.
+    /// </summary>
+    /// <remarks>
+    /// Reader is positioned at the current navigator position. Reading 
+    /// it completely is similar to querying for the <see cref="XmlNode.OuterXml"/> 
+    /// property. An additional option is to specify that the reader should 
+    /// expose an XML fragment with the current navigator and all its following siblings. 
+    /// This is done at construction time.
+    /// <para>The navigator is cloned at construction time to avoid side-effects 
+    /// in calling code.</para>
+    /// <para>Author: Daniel Cazzulino, kzu@aspnet2.com</para>
+    /// See: http://weblogs.asp.net/cazzu/archive/2004/04/19/115966.aspx and 
+    /// http://weblogs.asp.net/cazzu/archive/2004/05/10/129101.aspx.
+    /// </remarks>
+    internal class XPathNavigatorReader : XmlTextReader, IXmlSerializable
 	{
 		#region Fields
 

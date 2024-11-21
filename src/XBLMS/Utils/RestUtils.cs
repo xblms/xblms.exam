@@ -1,7 +1,7 @@
-﻿using System.IO;
+﻿using RestSharp;
+using System.IO;
 using System.Net;
 using System.Threading.Tasks;
-using RestSharp;
 
 namespace XBLMS.Utils
 {

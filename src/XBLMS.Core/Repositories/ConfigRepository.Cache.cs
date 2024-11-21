@@ -1,6 +1,6 @@
+using Datory;
 using System;
 using System.Threading.Tasks;
-using Datory;
 using XBLMS.Models;
 
 namespace XBLMS.Core.Repositories

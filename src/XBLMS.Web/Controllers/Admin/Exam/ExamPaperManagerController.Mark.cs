@@ -1,9 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using XBLMS.Core.Utils;
 using XBLMS.Dto;
-using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Admin.Exam
 {

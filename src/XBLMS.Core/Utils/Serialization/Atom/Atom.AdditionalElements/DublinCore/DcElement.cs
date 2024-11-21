@@ -38,11 +38,11 @@ using XBLMS.Core.Utils.Serialization.Atom.Atom.Utils;
 
 namespace XBLMS.Core.Utils.Serialization.Atom.Atom.AdditionalElements.DublinCore
 {
-	/// <summary>
-	/// The class representing any of the Dublin Core elements.
-	/// <seealso cref="ScopedElement"/>
-	/// </summary>
-	public class DcElement : ScopedElement
+    /// <summary>
+    /// The class representing any of the Dublin Core elements.
+    /// <seealso cref="ScopedElement"/>
+    /// </summary>
+    public class DcElement : ScopedElement
 	{
 		#region Constructors
 		/// <summary>

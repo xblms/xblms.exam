@@ -1,10 +1,9 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using XBLMS.Dto;
-using XBLMS.Utils;
-using XBLMS.Core.Utils;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 using XBLMS.Configuration;
+using XBLMS.Dto;
 using XBLMS.Enums;
+using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Admin.Settings.Users
 {
@@ -27,7 +26,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
                 return this.Error($"更改密码失败：{errorMessage}");
             }
 
-            await _authManager.AddAdminLogAsync("重设用户密码", $"用户:{user.UserName}");
+            await _authManager.AddAdminLogAsync("重设用户密码", $"{user.UserName}");
 
             return new BoolResult
             {

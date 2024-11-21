@@ -1,7 +1,7 @@
-﻿using System;
+﻿using CacheManager.Core;
+using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
-using CacheManager.Core;
 
 namespace Datory.Caching
 {

@@ -1,13 +1,13 @@
-﻿using System;
+﻿using Dapper;
+using Datory.Utils;
+using MySql.Data.MySqlClient;
+using SqlKata.Compilers;
+using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Dapper;
-using MySql.Data.MySqlClient;
-using SqlKata.Compilers;
-using Datory.Utils;
 
 [assembly: InternalsVisibleTo("Datory.Tests")]
 

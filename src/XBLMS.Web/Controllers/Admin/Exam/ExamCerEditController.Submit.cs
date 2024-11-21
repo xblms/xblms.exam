@@ -1,12 +1,12 @@
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using XBLMS.Models;
-using XBLMS.Utils;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using XBLMS.Core.Utils;
 using XBLMS.Dto;
-using System;
 using XBLMS.Enums;
-using System.Collections.Generic;
+using XBLMS.Models;
+using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Admin.Exam
 {
@@ -36,7 +36,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             {
                 var cerInfo = await _examCerRepository.GetAsync(cer.Id);
                 await _examCerRepository.UpdateAsync(cer);
-                await _authManager.AddAdminLogAsync("修改证书模板", $"名称:{cerInfo.Name}");
+                await _authManager.AddAdminLogAsync("修改证书模板", $"{cerInfo.Name}");
                 return new IntResult
                 {
                     Value = cerInfo.Id
@@ -50,7 +50,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 cer.DepartmentId = admin.DepartmentId;
                 var id = await _examCerRepository.InsertAsync(cer);
                 await _statRepository.AddCountAsync(StatType.ExamCerAdd);
-                await _authManager.AddAdminLogAsync("添加证书模板", $"名称:{cer.Name}");
+                await _authManager.AddAdminLogAsync("添加证书模板", $"{cer.Name}");
                 return new IntResult
                 {
                     Value = id

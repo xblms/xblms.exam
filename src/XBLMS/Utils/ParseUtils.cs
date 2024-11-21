@@ -1,9 +1,9 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Text.RegularExpressions;
-using HtmlAgilityPack;
 
 namespace XBLMS.Utils
 {

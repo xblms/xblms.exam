@@ -1,10 +1,6 @@
-﻿using System;
-using System.Linq;
-using Datory;
-using Datory.Annotations;
+﻿using Datory.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using XBLMS.Utils;
 
 namespace XBLMS.Enums
 {

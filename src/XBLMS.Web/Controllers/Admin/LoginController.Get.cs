@@ -1,7 +1,6 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using XBLMS.Configuration;
+using System.Threading.Tasks;
 
 namespace XBLMS.Web.Controllers.Admin
 {

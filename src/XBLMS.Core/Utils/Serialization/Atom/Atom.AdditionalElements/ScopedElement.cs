@@ -37,11 +37,11 @@ using XBLMS.Core.Utils.Serialization.Atom.Atom.Core;
 
 namespace XBLMS.Core.Utils.Serialization.Atom.Atom.AdditionalElements
 {
-	/// <summary>
-	/// The base class of all non Atom core elements.
-	/// <seealso cref="AtomElement"/>
-	/// </summary>
-	[Serializable]
+    /// <summary>
+    /// The base class of all non Atom core elements.
+    /// <seealso cref="AtomElement"/>
+    /// </summary>
+    [Serializable]
 	public abstract class ScopedElement : AtomElement
 	{
 		private string _content = String.Empty;

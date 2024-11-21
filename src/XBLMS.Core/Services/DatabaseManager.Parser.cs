@@ -1,11 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Dapper;
+﻿using Dapper;
 using Datory;
-using Datory.Utils;
 using SqlKata;
-using XBLMS.Enums;
-using XBLMS.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace XBLMS.Core.Services
 {

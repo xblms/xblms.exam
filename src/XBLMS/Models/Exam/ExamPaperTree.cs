@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using Datory;
+﻿using Datory;
 using Datory.Annotations;
+using System.Collections.Generic;
 
 namespace XBLMS.Models
 {

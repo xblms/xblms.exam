@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Datory;
+﻿using Datory;
 using SqlKata;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace XBLMS.Services
 {

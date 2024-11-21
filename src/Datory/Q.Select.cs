@@ -1,5 +1,5 @@
-﻿using System;
-using SqlKata;
+﻿using SqlKata;
+using System;
 
 namespace Datory
 {

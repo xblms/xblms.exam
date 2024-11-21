@@ -1,5 +1,4 @@
-﻿using CacheManager.Core;
-using Datory;
+﻿using Datory;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
@@ -7,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using XBLMS.Configuration;
-using XBLMS.Core.Services;
 using XBLMS.Models;
 using XBLMS.Repositories;
 using XBLMS.Services;
