@@ -11,10 +11,10 @@
               v-html="editContent"
               style="width: 100%;">
     </textarea>
-    <hr />
+    <div style="height:9px;"></div>
     <el-link :size="euiSize" type="warning" v-on:click="btnInsertExampleClick">插入示例题目</el-link>
     <el-divider direction="vertical"></el-divider>
-    <el-link :size="euiSize" type="warning" v-on:click="btnCheckClick">检查</el-link>
+    <el-link :size="euiSize" type="warning" v-on:click="btnCheckClick">检查（建议先检查再提交）</el-link>
     <el-divider direction="vertical"></el-divider>
     <el-link :size="euiSize" type="success" v-on:click="btnImportWordClick">导入word</el-link>
     <el-divider direction="vertical"></el-divider>

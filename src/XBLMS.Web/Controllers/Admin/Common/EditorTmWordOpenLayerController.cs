@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Markdig.Extensions.Figures;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
@@ -129,9 +130,20 @@ namespace XBLMS.Web.Controllers.Admin.Common
                                         }
                                         else
                                         {
+                                            bool checkTitankongti = true;
                                             if (tx.ExamTxBase == ExamTxBase.Tiankongti || tx.ExamTxBase == ExamTxBase.Jiandati)
                                             {
                                                 htmlTitle = tmContentHtml;
+
+                                                if (tx.ExamTxBase == ExamTxBase.Tiankongti)
+                                                {
+                                                    if (!StringUtils.Contains(htmlTitle, "___"))
+                                                    {
+                                                        errorTotal++;
+                                                        errorTm.ErrorMsg.Add("填空题需要包含___");
+                                                        checkTitankongti = false;
+                                                    }
+                                                }
                                             }
                                             else
                                             {
@@ -212,7 +224,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
                                             }
                                             else
                                             {
-                                                if (checkOptions)
+                                                if (checkOptions && checkTitankongti)
                                                 {
                                                     var info = new ExamTm();
                                                     info.TreeId = treeId;
