@@ -13,6 +13,14 @@ namespace XBLMS.Web.Controllers.Admin.Common.Editor
         [HttpPost, Route(RouteActionsUploadVideo)]
         public async Task<ActionResult<UploadVideoResult>> UploadVideo([FromForm] IFormFile file)
         {
+            //if (_settingsManager.IsSafeMode)
+            //{
+            //    return new UploadVideoResult
+            //    {
+            //        Error = Constants.ErrorSafe
+            //    };
+            //}
+
             if (file == null)
             {
                 return new UploadVideoResult

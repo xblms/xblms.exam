@@ -61,6 +61,8 @@ namespace XBLMS.Configuration
         public const string ActionsLoginSuccess = "登录成功";
         public const string ActionsLoginFailure = "登录失败";
 
+        public const string ErrorSafe = "系统已开启安全模式，该功能被禁止使用!";
+
         public const string ErrorNotFound = "未找到该数据!";
         public const string ErrorUpload = "请选择有效的文件上传!";
         public const string ErrorImageExtensionAllowed = "此图片格式已被禁止上传!";

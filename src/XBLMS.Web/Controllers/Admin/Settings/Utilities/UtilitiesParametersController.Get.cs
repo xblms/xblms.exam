@@ -32,6 +32,14 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Utilities
                 environments.Add(new KeyValuePair<string, string>("CPU Cores", _settingsManager.CPUCores.ToString()));
                 environments.Add(new KeyValuePair<string, string>("系统主机名", Dns.GetHostName().ToUpper()));
             }
+            else
+            {
+                environments.Add(new KeyValuePair<string, string>("运行环境", "******"));
+                environments.Add(new KeyValuePair<string, string>(".NET Core 版本", "******"));
+                environments.Add(new KeyValuePair<string, string>("OS 版本", "******"));
+                environments.Add(new KeyValuePair<string, string>("CPU Cores", "******"));
+                environments.Add(new KeyValuePair<string, string>("系统主机名", "******"));
+            }
 
             var settings = new List<KeyValuePair<string, string>>();
 
@@ -42,6 +50,14 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Utilities
                 settings.Add(new KeyValuePair<string, string>("数据库类型", _settingsManager.Database.DatabaseType.GetDisplayName()));
                 settings.Add(new KeyValuePair<string, string>("数据库名称", _databaseManager.GetDatabaseNameFormConnectionString(_settingsManager.Database.ConnectionString)));
                 settings.Add(new KeyValuePair<string, string>("缓存类型", string.IsNullOrEmpty(_settingsManager.Redis.ConnectionString) ? "Memory" : "Redis"));
+            }
+            else
+            {
+                settings.Add(new KeyValuePair<string, string>("系统根目录地址", "******"));
+                settings.Add(new KeyValuePair<string, string>("站点根目录地址", "******"));
+                settings.Add(new KeyValuePair<string, string>("数据库类型", "******"));
+                settings.Add(new KeyValuePair<string, string>("数据库名称", "******"));
+                settings.Add(new KeyValuePair<string, string>("缓存类型", "******"));
             }
 
             return new GetResult
