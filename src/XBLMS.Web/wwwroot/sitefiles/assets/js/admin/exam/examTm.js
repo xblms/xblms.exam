@@ -123,6 +123,24 @@ var methods = {
       this.btnExcelTmExportClick();
     }
   },
+  btnWordAddClick: function () {
+    if (this.treeSelectId > 0) {
+      var $this = this;
+      top.utils.openLayer({
+        title: false,
+        closebtn: 0,
+        url: utils.getCommonUrl('editorTmWordOpenLayer', { treeId: this.treeSelectId }),
+        width: "99%",
+        height: "99%",
+        end: function () {
+          $this.btnSearchClick();
+        }
+      });
+    }
+    else {
+      utils.error("请选择一个分类再进行操作");
+    }
+  },
   btnExcelTmExportClick: function () {
     var $this = this;
     utils.loading(this, true);

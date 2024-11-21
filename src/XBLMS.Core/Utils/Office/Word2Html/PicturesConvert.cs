@@ -9,12 +9,6 @@ namespace XBLMS.Core.Utils.Office.Word2Html
     {
         public event Func<byte[], string, string> uploadImgUrlyDelegate;
 
-        /// <summary>
-        ///     先把pData传阿里云得到url  如果有其他方式传改这里 或者转base64
-        /// </summary>
-        /// <param name="imgByte"></param>
-        /// <param name="PicType"></param>
-        /// <returns></returns>
         private string OnUploadImgUrl(byte[] imgByte, string PicType)
         {
             if (uploadImgUrlyDelegate != null) return uploadImgUrlyDelegate(imgByte, PicType);
@@ -35,11 +29,14 @@ namespace XBLMS.Core.Utils.Office.Word2Html
             {
                 var pData = pictures.Data;
                 var picPackagePart = pictures.GetPackagePart();
-                //var picPackageRelationship = pictures.GetPackageRelationship();
+
+#pragma warning disable
+                var picPackageRelationship = pictures.GetPackageRelationship();
+#pragma warning restore
 
                 var picInfo = new PicInfo
                 {
-                    //Id = picPackageRelationship.Id,
+                    Id = picPackageRelationship.Id,
                     PicType = picPackagePart.ContentType
                 };
 
@@ -55,7 +52,6 @@ namespace XBLMS.Core.Utils.Office.Word2Html
 
                 if (string.IsNullOrWhiteSpace(picInfo.Url))
                     picInfo.Url = $"data:{picInfo.PicType};base64,{Convert.ToBase64String(pData)}";
-                //先把pData传阿里云得到url  如果有其他方式传改这里 或者转base64
 
                 picInfoList.Add(picInfo);
             }

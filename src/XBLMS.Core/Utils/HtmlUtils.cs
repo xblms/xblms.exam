@@ -6,11 +6,6 @@ namespace XBLMS.Core.Utils
 {
     public static class HtmlUtils
     {
-        /// <summary>
-        /// 替换新闻内容中的Html标签的多余属性
-        /// </summary>
-        /// <param name="html"></param>
-        /// <returns></returns>
         public static string ClearFormat(string html)
         {
             if (string.IsNullOrEmpty(html)) return string.Empty;

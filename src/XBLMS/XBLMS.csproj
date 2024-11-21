@@ -9,7 +9,7 @@
     <Company>xblms</Company>
 	<Description></Description>
 	<PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
-	<RepositoryUrl>https://gitee.com/xblms/xblmes/</RepositoryUrl>
+	<RepositoryUrl></RepositoryUrl>
     <PackageIcon>logo.ico</PackageIcon>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
@@ -28,7 +28,7 @@
     <PackageReference Include="HtmlAgilityPack" Version="1.11.42" />
     <PackageReference Include="ExcelDataReader" Version="3.6.0" />
     <PackageReference Include="ExcelDataReader.DataSet" Version="3.6.0" />
-    <PackageReference Include="NPOI" Version="2.6.0" />
+    <PackageReference Include="NPOI" Version="2.7.2" />
     <PackageReference Include="HtmlSanitizer" Version="8.0.723" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.0" />
   </ItemGroup>

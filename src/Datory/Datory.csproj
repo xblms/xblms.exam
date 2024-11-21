@@ -8,7 +8,7 @@
     <Company>xblms</Company>
 	<Description></Description>
 	<PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
-	<RepositoryUrl>https://gitee.com/xblms/xblmes/</RepositoryUrl>
+	<RepositoryUrl></RepositoryUrl>
     <PackageIcon>logo.ico</PackageIcon>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>

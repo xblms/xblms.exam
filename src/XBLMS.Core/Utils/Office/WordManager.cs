@@ -1,17 +1,12 @@
-﻿using System;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using DocumentFormat.OpenXml.Drawing;
-using DocumentFormat.OpenXml.Packaging;
+﻿using DocumentFormat.OpenXml.Packaging;
 using HtmlAgilityPack;
 using OpenXmlPowerTools;
+using System;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Threading.Tasks;
+using System.Xml.Linq;
 using XBLMS.Core.Utils.Office.Word2Html;
-using XBLMS.Enums;
-using XBLMS.Models;
-using XBLMS.Services;
 using XBLMS.Utils;
 
 namespace XBLMS.Core.Utils.Office
@@ -20,105 +15,39 @@ namespace XBLMS.Core.Utils.Office
     {
         private string ImageDirectoryPath { get; set; }
         private string ImageDirectoryUrl { get; set; }
-        private bool IsFirstLineTitle { get; set; }
-        private bool IsClearFormat { get; set; }
-        private bool IsFirstLineIndent { get; set; }
-        private bool IsClearFontSize { get; set; }
-        private bool IsClearFontFamily { get; set; }
-        private bool IsClearImages { get; set; }
         private string DocsFilePath { get; set; }
-        private string DocsFileTitle { get; set; }
 
-        public string Title { get; set; }
-        public string ImageUrl { get; set; }
-        public string Body { get; set; }
-
-        public WordManager(bool isFirstLineTitle, bool isClearFormat, bool isFirstLineIndent, bool isClearFontSize, bool isClearFontFamily, bool isClearImages, string docsFilePath, string docsFileTitle)
+        public WordManager(string docsFilePath,string imageDirectoryPath,string imageDirectoryUrl)
         {
-            IsFirstLineTitle = isFirstLineTitle;
-            IsClearFormat = isClearFormat;
-            IsFirstLineIndent = isFirstLineIndent;
-            IsClearFontSize = isClearFontSize;
-            IsClearFontFamily = isClearFontFamily;
-            IsClearImages = isClearImages;
             DocsFilePath = docsFilePath;
-            DocsFileTitle = docsFileTitle;
+            ImageDirectoryPath = imageDirectoryPath;
+            ImageDirectoryUrl = imageDirectoryUrl;
         }
 
-        public void  InitAsync(IPathManager pathManager)
-        {
-            var fileName = PathUtils.GetFileName(DocsFilePath);
-            ImageDirectoryPath = PathUtils.Combine(pathManager.WebRootPath, PathUtils.GetMaterialVirtualDirectoryPath(UploadType.Image));
-            ImageDirectoryUrl = PathUtils.GetMaterialVirtualFilePath(UploadType.Image, fileName);
-        }
 
-        public async Task ParseAsync(IPathManager pathManager)
+        public async Task<string> ParseAsync()
         {
-            InitAsync(pathManager);
-
+            var wordContent = string.Empty;
             try
             {
-                ConvertToHtml();
-                if (string.IsNullOrEmpty(Body))
-                {
-                    await ConvertToHtmlAsync();
-                }
+                wordContent = await ConvertToHtmlAsync();
+
             }
             catch
             {
-                await ConvertToHtmlAsync();
+
             }
 
             XBLMS.Utils.FileUtils.DeleteFileIfExists(DocsFilePath);
 
-            if (string.IsNullOrEmpty(Title))
-            {
-                Title = DocsFileTitle;
-            }
-
-            if (IsFirstLineTitle)
-            {
-                var contentTitle = RegexUtils.GetInnerContent("p", Body);
-                contentTitle = StringUtils.StripTags(contentTitle);
-                if (!string.IsNullOrEmpty(contentTitle))
-                {
-                    contentTitle = contentTitle.Trim();
-                    contentTitle = contentTitle.Trim('　', ' ');
-                    contentTitle = StringUtils.StripEntities(contentTitle);
-                }
-
-                if (!string.IsNullOrEmpty(contentTitle))
-                {
-                    Title = contentTitle;
-                }
-            }
-
-            if (IsClearFormat)
-            {
-                Body = HtmlUtils.ClearFormat(Body);
-            }
-
-            if (IsFirstLineIndent)
-            {
-                Body = HtmlUtils.FirstLineIndent(Body);
-            }
-
-            if (IsClearFontSize)
-            {
-                Body = HtmlUtils.ClearFontSize(Body);
-            }
-
-            if (IsClearFontFamily)
-            {
-                Body = HtmlUtils.ClearFontFamily(Body);
-            }
+            return wordContent;
         }
 
-        public async Task ConvertToHtmlAsync()
+        private async Task<string> ConvertToHtmlAsync()
         {
             FileStream stream = new FileStream(DocsFilePath, FileMode.Open, FileAccess.Read);
             var npoiDoc = new NpoiDoc();
-            Body = await npoiDoc.NpoiDocx(stream, UploadImageUrlDelegate);
+            return await npoiDoc.NpoiDocx(stream, UploadImageUrlDelegate);
         }
 
         private string UploadImageUrlDelegate(byte[] imgByte, string picType)
@@ -130,16 +59,9 @@ namespace XBLMS.Core.Utils.Office
             try
             {
                 ImageUtils.Save(imgByte, imageFilePath);
-
                 ImageUtils.ResizeImageIfExceeding(imageFilePath,100);
 
-
                 var imgSrc = PageUtils.Combine(ImageDirectoryUrl, imageFileName);
-
-                if (string.IsNullOrEmpty(ImageUrl))
-                {
-                    ImageUrl = imgSrc;
-                }
 
                 return imgSrc;
             }
@@ -151,8 +73,10 @@ namespace XBLMS.Core.Utils.Office
             return $"data:{picType};base64,{Convert.ToBase64String(imgByte)}";
         }
 
-        private void ConvertToHtml()
+        private string ConvertToHtml()
         {
+            return string.Empty;
+
             //var fi = new FileInfo(DocsFilePath);
 
             //var byteArray = File.ReadAllBytes(fi.FullName);
@@ -162,23 +86,15 @@ namespace XBLMS.Core.Utils.Office
 
             //    using (var wDoc = WordprocessingDocument.Open(memoryStream, true))
             //    {
-            //        var part = wDoc.CoreFilePropertiesPart;
-            //        if (part != null)
-            //        {
-            //            Title = (string)part.GetXDocument().Descendants(DC.title).FirstOrDefault();
-            //        }
-
             //        var htmlSettings = new HtmlConverterSettings
             //        {
-            //            // AdditionalCss = "body { margin: 1cm auto; max-width: 20cm; padding: 0; }",
-            //            PageTitle = Title,
+
             //            FabricateCssClasses = true,
             //            CssClassPrefix = "pt-",
             //            RestrictToSupportedLanguages = false,
             //            RestrictToSupportedNumberingFormats = false,
             //            ImageHandler = imageInfo =>
             //            {
-            //                if (IsClearImages || string.IsNullOrEmpty(ImageDirectoryPath)) return null;
             //                DirectoryUtils.CreateDirectoryIfNotExists(ImageDirectoryPath);
 
             //                var extension = StringUtils.ToLower(imageInfo.ContentType.Split('/')[1]);
@@ -215,22 +131,13 @@ namespace XBLMS.Core.Utils.Office
             //                {
             //                    imageInfo.Bitmap.Save(imageFilePath, imageFormat);
 
-            //                    if (Site.IsImageAutoResize)
-            //                    {
-            //                        ImageUtils.ResizeImageIfExceeding(imageFilePath, Site.ImageAutoResizeWidth);
-            //                    }
-
-            //                    // AddWaterMarkAsync(Site, filePath);
+            //                    ImageUtils.ResizeImageIfExceeding(imageFilePath, 100);
             //                }
             //                catch (System.Runtime.InteropServices.ExternalException)
             //                {
             //                    return null;
             //                }
             //                var imageSource = PageUtils.Combine(ImageDirectoryUrl, imageFileName);
-            //                if (string.IsNullOrEmpty(ImageUrl))
-            //                {
-            //                    ImageUrl = imageSource;
-            //                }
 
             //                var img = new XElement(
             //                  Xhtml.img,
@@ -260,29 +167,11 @@ namespace XBLMS.Core.Utils.Office
             //        var htmlString = html.ToString(SaveOptions.DisableFormatting);
             //        var htmlDoc = new HtmlDocument();
             //        htmlDoc.LoadHtml(htmlString);
-            //        var style = IsClearFormat ? string.Empty : htmlDoc.DocumentNode.SelectSingleNode("//style").OuterHtml;
             //        var body = htmlDoc.DocumentNode.SelectSingleNode("//body").InnerHtml;
 
-            //        Body = $"{style}{Environment.NewLine}{body}";
+            //        return body;
             //    }
             //}
-        }
-
-        public static void OpenAndAddTextToWordDocument(string filepath, string txt)
-        {
-            // Open a WordprocessingDocument for editing using the filepath.
-            var wordprocessingDocument = WordprocessingDocument.Open(filepath, true);
-
-            // Assign a reference to the existing document body.
-            var body = wordprocessingDocument.MainDocumentPart.Document.Body;
-            
-            // Add new text.
-            var para = body.AppendChild(new Paragraph());
-            var run = para.AppendChild(new Run());
-            run.AppendChild(new Text(txt));
-            
-            // Close the handle explicitly.
-            wordprocessingDocument.Close();
         }
     }
 }

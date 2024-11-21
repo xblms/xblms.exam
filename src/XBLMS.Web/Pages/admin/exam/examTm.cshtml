@@ -103,6 +103,7 @@
                                 <el-dropdown-menu slot="dropdown">
                                     <el-dropdown-item icon="el-icon-upload" v-on:click.native="handleCommand('importExcel')">excel导入</el-dropdown-item>
                                     <el-dropdown-item icon="el-icon-download" v-on:click.native="handleCommand('exportExcel')">excel导出</el-dropdown-item>
+                                    <el-dropdown-item icon="el-icon-plus" v-on:click.native="btnWordAddClick">批量新增</el-dropdown-item>
                                     <el-dropdown-item icon="el-icon-delete" v-on:click.native="handleCommand('deletes')" style="color:red;">批量删除</el-dropdown-item>
                                 </el-dropdown-menu>
                             </el-dropdown>
