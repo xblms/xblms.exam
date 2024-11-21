@@ -20,7 +20,6 @@
 
 ## 演示地址
 
-* 集团版本源码地址 [点击前往集团版源码-在线培训系统](https://gitee.com/xblms/xblmls) ，主要区别在于按公司和部门进行权限划分，各自管理和组织考试。
 
 ### 管理端 [点击前往管理端演示](http://8.131.91.222:5000/admin)：
 
@@ -41,6 +40,10 @@
 * 扫码前往移动端演示
 
 * <img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/二维码.png"/>
+
+### 在线培训系统
+
+* [点击前往在线培训系统源码](https://gitee.com/xblms/xblmls)。
 
 ## 系统展示
 
