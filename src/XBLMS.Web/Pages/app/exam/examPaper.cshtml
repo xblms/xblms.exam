@@ -5,16 +5,21 @@
         .el-form-item {
             margin-bottom: 0px;
         }
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
     </style>
 }
-<div class="mb-3">
-    <el-input prefix-icon="el-icon-search" clearable placeholder="关键字查询" v-model="form.keyWords">
+<el-card class="rounded-0 sticky-top">
+    <el-input prefix-icon="el-icon-search" clearable placeholder="关键字" v-model="form.keyWords">
         <el-button slot="append" icon="el-icon-search" v-on:click="btnSearchClick">查 询</el-button>
     </el-input>
-</div>
-<div v-if="total>0">
+</el-card>
+<div class="p-3" v-if="total>0">
     <div v-for="(paper,index) in list" v-on:click="btnViewClick(paper.id)">
-        <el-card shadow="hover" class="mb-3">
+        <el-card class="mb-3 rounded-3">
             <div slot="header">
                 <div class="fw-bold">{{ paper.title }}</div>
             </div>
@@ -63,11 +68,11 @@
     </div>
     <div class="my-5 text-center">
         <el-button size="small" icon="el-icon-refresh-right" v-if="list.length>0 && list.length<total" v-on:click="btnLoadMoreClick" :loading="loadMoreLoading">加载更多</el-button>
-        <span v-else class="fw-light fs-6">没有更多了</span>
+        <small v-else>没有更多了</small>
     </div>
 </div>
 <div class="pt-10" v-else>
-    <el-empty></el-empty>
+    <el-empty image="/sitefiles/assets/images/nodata.svg" description="暂无安排"></el-empty>
 </div>
 <div class="py-8"></div>
 @await Html.PartialAsync("_PartialAppMenu")

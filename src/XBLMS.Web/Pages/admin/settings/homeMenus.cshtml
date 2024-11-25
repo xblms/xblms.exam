@@ -15,7 +15,7 @@
             重置用户菜单
         </el-button>
     </div>
-<el-row class="tac" :gutter="20">
+<el-row class="tac" :gutter="8">
   <el-col :span="6">
             <el-scrollbar class="scrollbar" :style="{ height: ($(window).height()-130) + 'px' }">
                 <div style="margin-right:18px;">
@@ -104,12 +104,12 @@
             <el-radio v-model="userMenu.disabled" :label="false">启用</el-radio>
             <el-radio v-model="userMenu.disabled" :label="true">禁用</el-radio>
           </el-form-item>
-      
-          <el-divider></el-divider>
-          <div style="margin-top: 15px;">
-                            <el-button type="primary" v-on:click="btnSubmitClick" :size="euiSize">保 存</el-button>
-                            <el-button type="default" v-on:click="btnCancelClick" :size="euiSize">取 消</el-button>
-          </div>
+                        <el-form-item>
+                            <el-divider></el-divider>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button icon="el-icon-check" type="primary" v-on:click="btnSubmitClick" :size="euiSize">保 存</el-button>
+                        </el-form-item>
         </el-form>
       </div>
     </el-card>

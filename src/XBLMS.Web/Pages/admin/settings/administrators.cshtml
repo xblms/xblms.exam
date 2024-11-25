@@ -144,11 +144,11 @@
                                 <i class="el-icon-arrow-left el-icon--right"></i>操作
                             </el-button>
                             <el-dropdown-menu slot="dropdown">
-                                <el-dropdown-item v-on:click.native="btnEditClick(scope.row)">编辑</el-dropdown-item>
-                                <el-dropdown-item v-on:click.native="btnPasswordClick(scope.row)">更改密码</el-dropdown-item>
-                                <el-dropdown-item v-if="scope.row.locked" v-on:click.native="btnUnLockClick(scope.row)">解锁</el-dropdown-item>
-                                <el-dropdown-item v-else v-on:click.native="btnLockClick(scope.row)">锁定</el-dropdown-item>
-                                <el-dropdown-item style="color:red;" v-on:click.native="btnDeleteClick(scope.row)">删除</el-dropdown-item>
+                                <el-dropdown-item icon="el-icon-edit" v-on:click.native="btnEditClick(scope.row)">编辑</el-dropdown-item>
+                                <el-dropdown-item icon="el-icon-key" v-on:click.native="btnPasswordClick(scope.row)">更改密码</el-dropdown-item>
+                                <el-dropdown-item icon="el-icon-unlock" v-if="scope.row.locked" v-on:click.native="btnUnLockClick(scope.row)">解锁</el-dropdown-item>
+                                <el-dropdown-item icon="el-icon-lock" v-else v-on:click.native="btnLockClick(scope.row)">锁定</el-dropdown-item>
+                                <el-dropdown-item icon="el-icon-delete" style="color:red;" v-on:click.native="btnDeleteClick(scope.row)">删除</el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
                     </template>

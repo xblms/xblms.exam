@@ -302,8 +302,8 @@
             </div>
             <i class="el-icon-info" style="padding:0 3px;color:red;"></i>
         </el-tooltip>
-        <el-button :size="euiSize" type="primary" v-on:click="btnSaveClick">保 存</el-button>
-        <el-button :size="euiSize" plain type="primary" v-on:click="btnSubmitClick">
+        <el-button icon="el-icon-check" :size="euiSize" type="primary" v-on:click="btnSaveClick">保 存</el-button>
+        <el-button icon="el-icon-s-promotion" :size="euiSize" plain type="primary" v-on:click="btnSubmitClick">
             <span v-if="form.submitType==='Save'">
                 <span>发 布</span>
             </span>
@@ -346,9 +346,9 @@
             </el-card>
         </div>
         <span slot="footer" class="dialog-footer">
-            <el-button :size="euiSize" plain type="warning" v-on:click="btnSubmitClear">清空后发布</el-button>
-            <el-button :size="euiSize" type="primary" v-on:click="btnSubmit">发 布</el-button>
-            <el-button :size="euiSize" plain type="info" v-on:click="submitDialogVisible=!submitDialogVisible">取 消</el-button>
+            <el-button icon="el-icon-delete" :size="euiSize" plain type="warning" v-on:click="btnSubmitClear">清空后发布</el-button>
+            <el-button icon="el-icon-s-promotion" :size="euiSize" type="primary" v-on:click="btnSubmit">发 布</el-button>
+            <el-button icon="el-icon-close" :size="euiSize" plain type="info" v-on:click="submitDialogVisible=!submitDialogVisible">取 消</el-button>
         </span>
     </el-dialog>
 </template>

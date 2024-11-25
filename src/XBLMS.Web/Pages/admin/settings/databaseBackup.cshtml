@@ -45,7 +45,7 @@
                 </el-table-column>
                 <el-table-column label="异常日志" prop="errorLog">
                 </el-table-column>
-                <el-table-column width="100">
+                <el-table-column width="100" align="right">
                     <template slot-scope="scope">
                         <el-dropdown :show-timeout="0" placement="left" >
                             <el-button :size="euiSize" v-on:click.stop="return false">
@@ -76,7 +76,7 @@
             <el-form :inline="true" :size="euiSize">
                 <el-form-item>
                     <el-button plain icon="el-icon-delete" type="danger" v-on:click="btnClearLogClick">
-                        清理恢复日志
+                        清空恢复日志
                     </el-button>
                 </el-form-item>
             </el-form>

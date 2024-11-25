@@ -67,11 +67,11 @@
             </div>
             <div class="my-5 text-center me-5">
                 <el-button icon="el-icon-refresh-right" v-if="list.length>0 && list.length<total" v-on:click="btnLoadMoreClick" :loading="loadMoreLoading">加载更多</el-button>
-                <span v-else class="fw-light">没有更多了</span>
+                <small v-else>没有更多了</small>
             </div>
         </div>
         <div class="pt-10" v-else>
-            <el-empty></el-empty>
+            <el-empty image="/sitefiles/assets/images/nodata.svg" description="暂时没有开放的模拟练习"></el-empty>
         </div>
     </el-scrollbar>
 </el-card>

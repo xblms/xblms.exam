@@ -17,8 +17,8 @@
                             <div class="el-form-item__error" v-if="treeEditValid">请输入分类内容</div>
                         </el-form-item>
                         <el-form-item label="" style="text-align:right;">
-                            <el-button size="mini" type="primary" v-on:click="treeBtnAddSubmitClick(0)">确 定</el-button>
-                            <el-button plain size="mini" type="primary" v-on:click="treeTopAddPopover=false">取 消</el-button>
+                            <el-button icon="el-icon-check" size="mini" type="primary" v-on:click="treeBtnAddSubmitClick(0)">确 定</el-button>
+                            <el-button icon="el-icon-close" plain size="mini" type="primary" v-on:click="treeTopAddPopover=false">取 消</el-button>
                         </el-form-item>
                     </el-form>
                 </el-card>
@@ -28,7 +28,7 @@
     </div>
     <el-form :size="euiSize">
         <el-form-item label="">
-            <el-input placeholder="分类关键字查询" v-model="treeFilterText" prefix-icon="el-icon-search" clearable>
+            <el-input clearable placeholder="分类关键字查询" v-model="treeFilterText" prefix-icon="el-icon-search" clearable>
                 <template slot="append">
                     <el-tooltip content="右侧列表查询是否包含下级" placement="top">
                         <el-checkbox v-model="formInline.treeIsChildren"></el-checkbox>
@@ -46,6 +46,7 @@
                  v-on:node-collapse="treeNodeCollapse"
                  node-key="value"
                  accordion
+                 highlight-current
                  :default-expanded-keys="treeDefaultExpandedKeys"
                  :filter-node-method="treeFilterNode"
                  ref="tree">
@@ -67,8 +68,8 @@
                                         <div class="el-form-item__error" v-if="treeEditValid">请输入分类名称</div>
                                     </el-form-item>
                                     <el-form-item label="" style="text-align:right;">
-                                        <el-button size="mini" type="primary" v-on:click="treeBtnAddSubmitClick(data.id)">确 定</el-button>
-                                        <el-button plain size="mini" type="primary" v-on:click="treeBtnHidePopover">取 消</el-button>
+                                        <el-button icon="el-icon-check" size="mini" type="primary" v-on:click="treeBtnAddSubmitClick(data.id)">确 定</el-button>
+                                        <el-button icon="el-icon-close" plain size="mini" type="primary" v-on:click="treeBtnHidePopover">取 消</el-button>
                                     </el-form-item>
                                 </el-form>
                             </div>
@@ -82,8 +83,8 @@
                                         <div class="el-form-item__error" v-if="treeEditValid">请输入分类名称</div>
                                     </el-form-item>
                                     <el-form-item label="" style="text-align:right;">
-                                        <el-button plain size="mini" type="primary" v-on:click="treeBtnUpdateSubmitClick(data.id)">确 定</el-button>
-                                        <el-button plain size="mini" v-on:click="treeClearPopover">取 消</el-button>
+                                        <el-button icon="el-icon-check" plain size="mini" type="primary" v-on:click="treeBtnUpdateSubmitClick(data.id)">确 定</el-button>
+                                        <el-button icon="el-icon-close" plain size="mini" v-on:click="treeClearPopover">取 消</el-button>
                                     </el-form-item>
                                 </el-form>
                             </div>

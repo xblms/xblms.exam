@@ -617,7 +617,7 @@ var utils = {
           type: "error",
           message: error,
           showIcon: true,
-          showClose: true,
+          showClose: true
         });
       }
     } else if (error.response) {
@@ -1090,6 +1090,8 @@ if (window.swal && swal.mixin) {
 
 var PER_PAGE = 15;
 var DEFAULT_AVATAR_URL = '/sitefiles/assets/images/default_avatar.png';
+var DEFAULT_AVATAR_BG_URL = '/sitefiles/assets/images/default_avatar_bg.jpg';
+
 var DOCUMENTTITLE = 'XBLMS.EXAM';
 var DOCUMENTTITLE_ADMIN = DOCUMENTTITLE + '-后台管理';
 var DOCUMENTTITLE_HOME = DOCUMENTTITLE + '-用户中心';

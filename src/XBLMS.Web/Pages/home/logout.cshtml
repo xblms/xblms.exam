@@ -3,13 +3,18 @@
 
 <el-card>
     <el-scrollbar class="scrollbar" :style="{ height: ($(window).height()-63) + 'px' }">
-        <div class="text-center px-21 py-8">
+        <div class="text-center">
             <el-card>
-                <el-button type="warning" plain :size="euiSize" v-on:click="logout" class="py-18 w-100">
+                <el-button type="warning" plain :size="euiSize" v-on:click="logout" class="py-8 w-100">
+                    <div class="py-8"></div>
                     <div><i class="el-icon-switch-button display-1"></i></div>
                     <div class="mt-5 fs-3">退出系统</div>
+                    <div class="py-8"></div>
                 </el-button>
             </el-card>
+            <div class="mt-3">
+                <el-button type="primary" plain icon="el-icon-back" v-on:click="top.$vue.btnTopMenuClick('index')">返 回</el-button>
+            </div>
         </div>
     </el-scrollbar>
 </el-card>

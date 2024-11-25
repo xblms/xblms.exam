@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
+using XBLMS.Core.Utils;
 using XBLMS.Models;
 
 namespace XBLMS.Web.Controllers.Home
@@ -59,7 +60,7 @@ namespace XBLMS.Web.Controllers.Home
                     {
                         if (paper.Moni)
                         {
-                           
+
                         }
                         else
                         {
@@ -88,6 +89,48 @@ namespace XBLMS.Web.Controllers.Home
                 }
             }
 
+            var topCer = new ExamCerUser();
+            var (cerTotal, cerList) = await _examCerUserRepository.GetListAsync(user.Id, 1, 1);
+            if (total > 0)
+            {
+                foreach (var item in cerList)
+                {
+                    var cerInfo = await _examCerRepository.GetAsync(item.CerId);
+                    if (cerInfo != null)
+                    {
+                        item.Set("CerName", cerInfo.Name);
+                        item.Set("CerOrganName", cerInfo.OrganName);
+                    }
+                    else
+                    {
+                        item.Set("CerName", "证书异常");
+                    }
+                    item.Set("AwartDate", item.CerDateTime.Value.ToString(DateUtils.FormatStringDateOnlyCN));
+                    var paper = await _examPaperRepository.GetAsync(item.ExamPaperId);
+                    if (paper != null)
+                    {
+                        item.Set("PaperName", paper.Title);
+                    }
+                    else
+                    {
+                        item.Set("PaperName", "试卷异常");
+                    }
+                    var start = await _examPaperStartRepository.GetAsync(item.ExamStartId);
+                    if (start != null)
+                    {
+                        item.Set("PaperScore", start.Score);
+                    }
+                    else
+                    {
+                        item.Set("PaperScore", "成绩异常");
+                    }
+                    topCer = item;
+                }
+            }
+
+
+            var dateStr = $"{DateTime.Now.ToString(DateUtils.FormatStringDateOnlyCN)} {DateTime.Now.ToString("dddd", new System.Globalization.CultureInfo("zh-CN"))}";
+
             return new GetResult
             {
                 User = user,
@@ -110,7 +153,10 @@ namespace XBLMS.Web.Controllers.Home
                 PracticeWrongPercent = wrongPercent,
 
                 TaskPaperTotal = taskPaperTotal,
-                TaskQTotal = qPaperTotal
+                TaskQTotal = qPaperTotal,
+
+                TopCer = topCer,
+                DateStr = dateStr,
             };
         }
     }

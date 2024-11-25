@@ -25,11 +25,11 @@
             </template>
         </el-table-column>
         <el-table-column prop="createdDate" label="添加日期" width="160"></el-table-column>
-        <el-table-column label="操作" width="150">
+        <el-table-column label="" width="180" align="right">
             <template slot-scope="scope">
                 <el-button-group>
-                    <el-button :size="euiSize" v-on:click.stop="btnEdit(scope.row.id)">修改</el-button>
-                    <el-button :size="euiSize" type="danger" v-on:click.stop="btnDeleteClick(scope.row)">删除</el-button>
+                    <el-button icon="el-icon-edit" :size="euiSize" v-on:click.stop="btnEdit(scope.row.id)">修改</el-button>
+                    <el-button icon="el-icon-delete" :size="euiSize" type="danger" v-on:click.stop="btnDeleteClick(scope.row)">删除</el-button>
                 </el-button-group>
             </template>
         </el-table-column>

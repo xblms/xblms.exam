@@ -117,9 +117,8 @@ var methods = {
     $api.post($url, userMenu).then(function (response) {
       var res = response.data;
 
-      $this.userMenu = null;
       $this.userMenus = $this.getItems(res.userMenus);
-      utils.success(userMenu.id === 0 ? '用户菜单新增成功！' : '用户菜单修改成功！');
+      utils.success('操作成功');
     }).catch(function (error) {
       utils.error(error);
     }).then(function () {

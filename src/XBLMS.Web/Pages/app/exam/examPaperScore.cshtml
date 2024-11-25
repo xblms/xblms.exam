@@ -5,21 +5,21 @@
         .el-form-item {
             margin-bottom: 0px;
         }
+        body {
+            margin: 0;
+            padding: 0;
+        }
     </style>
 }
-<div style="position:fixed;left:0;top:0;width:100%;" class="text-center py-3 bg-white z-1">
-    考试成绩
-</div>
-<div class="pb-8"></div>
-<div>
-    <div class="mb-3">
-        <el-input prefix-icon="el-icon-search" clearable placeholder="关键字查询" v-model="form.keyWords">
-            <el-button slot="append" icon="el-icon-search" v-on:click="btnSearchClick">查 询</el-button>
-        </el-input>
-    </div>
+<el-card class="rounded-0 sticky-top">
+    <el-input prefix-icon="el-icon-search" clearable placeholder="关键字" v-model="form.keyWords">
+        <el-button slot="append" icon="el-icon-search" v-on:click="btnSearchClick">查 询</el-button>
+    </el-input>
+</el-card>
+<div class="p-3">
     <div v-if="total>0">
         <div v-for="(paper,index) in list">
-            <el-card shadow="hover" class="mb-3">
+            <el-card class="mb-3 rounded-3">
                 <div slot="header" class="clearfix">
                     <div class="fw-bold">{{ paper.paper.title }}</div>
                 </div>
@@ -55,17 +55,17 @@
         </div>
         <div class="my-5 text-center">
             <el-button size="small" icon="el-icon-refresh-right" v-if="list.length>0 && list.length<total" v-on:click="btnLoadMoreClick" :loading="loadMoreLoading">加载更多</el-button>
-            <span v-else class="fw-light fs-6">没有更多了</span>
+            <small v-else>没有更多了</small>
         </div>
     </div>
     <div class="pt-10" v-else>
-        <el-empty></el-empty>
+        <el-empty image="/sitefiles/assets/images/nodata.svg" description="暂无成绩"></el-empty>
     </div>
 </div>
 <div class="py-8"></div>
 <div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 animate__animated animate__fadeInUp">
-    <el-button-group class="btn-group p-1 bg-gray-300 rounded-pill">
-        <el-button v-on:click="location.href=utils.getRootUrl('mine')" icon="el-icon-back" class="rounded-pill" type="primary">返 回</el-button>
+    <el-button-group>
+        <el-button v-on:click="location.href=utils.getRootUrl('mine')" icon="el-icon-back">返 回</el-button>
     </el-button-group>
 </div>
 @section Scripts{

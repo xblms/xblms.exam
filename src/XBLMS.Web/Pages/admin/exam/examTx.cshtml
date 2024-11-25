@@ -32,8 +32,8 @@
                         操作<i class="el-icon-arrow-down el-icon--right"></i>
                     </el-button>
                     <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item v-on:click.native="handleCommand('edit',scope.row)">修改</el-dropdown-item>
-                        <el-dropdown-item v-on:click.native="handleCommand('delete',scope.row)" style="color:red;">删除</el-dropdown-item>
+                        <el-dropdown-item icon="el-icon-edit" v-on:click.native="handleCommand('edit',scope.row)">修改</el-dropdown-item>
+                        <el-dropdown-item icon="el-icon-delete" v-on:click.native="handleCommand('delete',scope.row)" style="color:red;">删除</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
             </template>

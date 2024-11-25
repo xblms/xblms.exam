@@ -1,7 +1,7 @@
 <template>
     <div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 animate__animated animate__fadeInUp">
-        <div class="btn-group rounded-pill bg-light-primary border-0">
-            <button type="button" class="btn rounded-start-pill border-0" :class="appMenuActive==='index'?'btn-primary fw-bold':'btn-outline-primary fw-light'" v-on:click="btnAppMenuClick('index')">
+        <div class="btn-group bg-light-primary border-0">
+            <button type="button" class="btn border-0" :class="appMenuActive==='index'?'btn-primary fw-bold':'btn-outline-primary fw-light'" v-on:click="btnAppMenuClick('index')">
                 <i class="bi bi-house-heart-fill me-1"></i>首页
             </button>
             <button type="button" class="btn border-0" :class="appMenuActive==='exam'?'btn-primary fw-bold':'btn-outline-primary fw-light'" v-on:click="btnAppMenuClick('exam')">
@@ -10,7 +10,7 @@
             <button type="button" class="btn border-0" :class="appMenuActive==='wenjuan'?'btn-primary fw-bold':'btn-outline-primary fw-light'" v-on:click="btnAppMenuClick('wenjuan')">
                 <i class="bi bi-file-earmark-person me-1"></i>问卷
             </button>
-            <button type="button" class="btn rounded-end-pill border-0" :class="appMenuActive==='mine'?'btn-primary fw-bold':'btn-outline-primary fw-light'" v-on:click="btnAppMenuClick('mine')">
+            <button type="button" class="btn border-0" :class="appMenuActive==='mine'?'btn-primary fw-bold':'btn-outline-primary fw-light'" v-on:click="btnAppMenuClick('mine')">
                 <i class="bi bi-person-fill-check me-1"></i>我的
             </button>
         </div>

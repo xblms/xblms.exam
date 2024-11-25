@@ -68,6 +68,7 @@ var $vue = new Vue({
   data: data,
   methods: methods,
   created: function () {
+    top.document.title = "修改密码";
     this.apiGet();
   }
 });

@@ -15,7 +15,10 @@
                 <strong>{{ results }}</strong>
             </el-form-item>
             <el-form-item>
-                <el-button :size="euiSize" type="primary" v-on:click="btnSubmitClick">确 定</el-button>
+                <el-button icon="el-icon-check" :size="euiSize" type="primary" v-on:click="btnSubmitClick">
+                    <span v-if="form.isEncrypt">加 密</span>
+                    <span v-else>解 密</span>
+                </el-button>
             </el-form-item>
         </el-form>
         </el-scrollbar>

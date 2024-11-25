@@ -47,6 +47,7 @@ var methods = {
         width: "100%",
         height: "100%",
         end: function () {
+          $this.setDocumentTitle();
           $this.apiGet();
         }
       });
@@ -57,7 +58,10 @@ var methods = {
         closebtn: 0,
         url: utils.getRootUrl('password'),
         width: "100%",
-        height: "100%"
+        height: "100%",
+        end: function () {
+          $this.setDocumentTitle();
+        }
       });
     }
     if (common === 'logout') {
@@ -72,6 +76,9 @@ var methods = {
     if (common === 'score') {
       location.href = utils.getExamUrl("examPaperScore");
     }
+  },
+  setDocumentTitle: function () {
+    document.title = "用户中心";
   }
 };
 
@@ -80,7 +87,7 @@ var $vue = new Vue({
   data: data,
   methods: methods,
   created: function () {
-    document.title = "我的";
+    this.setDocumentTitle();
     this.apiGet();
   }
 });

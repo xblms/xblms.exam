@@ -5,21 +5,21 @@
     <link href="/sitefiles/assets/lib/animate/animate.min.css" rel="stylesheet" type="text/css" />
     <style>
         .el-tabs--border-card > .el-tabs__header .el-tabs__item.is-active {
-            border-radius:5px;
-            color:#ffffff;
-            background-color:#6600ff;
+            color: #6600ff;
+            background-color: #fafafa;
+            border: none;
+            text-align: left !important;
         }
 
-        .el-tabs--border-card > .el-tabs__header .el-tabs__item:first-child{
-            margin-left:0 !important;
+        .el-tabs--border-card > .el-tabs__header .el-tabs__item:first-child {
+            margin-left: 0 !important;
         }
 
-        .el-tabs--top.el-tabs--border-card > .el-tabs__header .el-tabs__item:last-child{
-           <!--width:138px;-->
-       }
+        .el-tabs--top.el-tabs--border-card > .el-tabs__header .el-tabs__item:last-child {
+            <!-- width: 138px; -->
+        }
 
-            .el-tabs--border-card > .el-tabs__header .el-tabs__item.is-active:hover {
-                color: #ffffff;
+        .el-tabs--border-card > .el-tabs__header .el-tabs__item.is-active:hover {
         }
 
         #sidebar .el-menu-item {
@@ -80,27 +80,39 @@
         <div>
             <el-tooltip placement="left-end">
                 <div slot="content">
-                    <div class="p-2">
+                    <div class="p-1">
                         <el-card>
+                            <div slot="header">
+                                <span>待完成</span>
+                            </div>
                             <div>
-                                <div v-if="paperTotal>0" class="mb-2">
-                                    <el-link :underline="true" v-on:click="btnTopMenuClick('examPaper')" type="warning">剩余<span class="text-danger mx-2">{{ paperTotal }}</span>份试卷未参考</el-link>
-                                 </div>
-                                <div v-if="qPaperTotal>0">
-                                    <el-link :underline="true" v-on:click="btnTopMenuClick('examQuestionnaire')" type="warning">剩余<span class="text-danger mx-2">{{ qPaperTotal }}</span>份问卷未填写</el-link>
-                                </div>
+                                <ul class="list-group lh-2g">
+                                    <li style="cursor:pointer;" class="list-group-item d-flex justify-content-between align-items-center" v-if="paperTotal>0" v-on:click="btnTopMenuClick('examPaper')">
+                                        <span class="me-5">
+                                            <i class="text-warning bi bi-star-half me-2"></i>待参加考试
+                                        </span>
+                                        <span class="badge bg-primary ms-5">{{ paperTotal }}</span>
+                                    </li>
+                                    <li style="cursor:pointer;" class="list-group-item d-flex justify-content-between align-items-center" v-if="qPaperTotal>0" v-on:click="btnTopMenuClick('examQuestionnaire')">
+                                        <span class="me-5">
+                                            <i class="text-warning bi bi-star-half me-2"></i>待填写问卷
+                                        </span>
+                                        <span class="badge bg-primary ms-5">{{ qPaperTotal }}</span>
+                                    </li>
+                                </ul>
                             </div>
                         </el-card>
                     </div>
                 </div>
-                <button type="button" class="btn btn-outline-danger btn-sm me-2 rounded-pill" v-if="taskTotal>0">
-                    <span class="mx-1 fw-bold">{{ taskTotal }}</span> 个待办任务
+                <button type="button" class="btn btn-outline-warning btn-sm me-2 rounded-pill border-0 position-relative" v-if="taskTotal>0">
+                    <span class="position-absolute top-0 end-0 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
+                    <span class="mx-1">{{ taskTotal }}</span> 个待办任务<i class="el-icon-arrow-down el-icon--right"></i>
                 </button>
             </el-tooltip>
         </div>
         <div class="me-2">
             <el-dropdown :show-timeout="0" v-on:command="btnUserMenuClick">
-                <button type="button" class="btn btn-outline-success btn-sm rounded-pill">{{ user.displayName }}<i class="el-icon-arrow-down el-icon--right"></i></button>
+                <button type="button" class="btn btn-outline-primary btn-sm rounded-pill border-0">{{ user.displayName }}<i class="el-icon-arrow-down el-icon--right"></i></button>
                 <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item command="profile"><i class="el-icon-edit-outline me-2"></i>修改资料</el-dropdown-item>
                     <el-dropdown-item command="password"><i class="el-icon-key me-2"></i>更改密码</el-dropdown-item>

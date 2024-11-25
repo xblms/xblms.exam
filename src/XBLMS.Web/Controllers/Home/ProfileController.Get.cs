@@ -23,6 +23,7 @@ namespace XBLMS.Web.Controllers.Home
             entity.Set(nameof(Models.User.UserName), user.UserName);
             entity.Set(nameof(Models.User.DisplayName), user.DisplayName);
             entity.Set(nameof(Models.User.AvatarUrl), user.AvatarUrl);
+            entity.Set(nameof(Models.User.AvatarbgUrl), user.AvatarbgUrl);
             entity.Set(nameof(Models.User.Mobile), user.Mobile);
             entity.Set(nameof(Models.User.Email), user.Email);
 

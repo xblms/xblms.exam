@@ -46,8 +46,8 @@
         <el-col :span="18">
             <el-card>
             <el-form :inline="true" :size="euiSize">
-                        <el-form-item label="">
-                            <el-input v-model="formInline.keyword" placeholder="关键字" prefix-icon="el-icon-search" clearable></el-input>
+                        <el-form-item label="试卷">
+                            <el-input clearable v-model="formInline.keyword" placeholder="关键字" prefix-icon="el-icon-search" clearable></el-input>
                         </el-form-item>
                         <el-form-item>
                             <el-button icon="el-icon-search" type="primary" v-on:click="btnSearchClick">查 询</el-button>

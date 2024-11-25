@@ -27,7 +27,9 @@ var data = utils.init({
   contextMenuVisible: false,
   contextTabName: null,
   contextLeft: 0,
-  contextTop: 0
+  contextTop: 0,
+
+  isSafeMode:false
 });
 
 var methods = {
@@ -47,6 +49,7 @@ var methods = {
           $this.redirectPassword(res.local.userName);
         } else {
 
+          $this.isSafeMode = res.isSafeMode;
           $this.local = res.local;
           $this.menus = res.menus;
           $this.getLevelMenus($this.menus);
@@ -161,6 +164,16 @@ var methods = {
 
   btnSideMenuClick: function (sideMenuIds) {
 
+    if (this.tabs.length > 5) {
+      var newTbas = [];
+      for (var ti = 0; ti < this.tabs.length; ti++) {
+        if (ti != 1) {
+          newTbas.push(this.tabs[ti]);
+        }
+      }
+      this.tabs = newTbas;
+    }
+
     var ids = sideMenuIds.split('/');
     var defaultOpeneds = [];
 
@@ -199,7 +212,37 @@ var methods = {
   btnMobileMenuClick: function () {
     this.isCollapse = false;
     this.isMobileMenu = !this.isMobileMenu;
-  }
+  },
+  btnUserMenuClick: function (command) {
+    var $this = this;
+    if (command === 'view') {
+      utils.openAdminView(this.local.userId);
+    } else if (command === 'profile') {
+      top.utils.openLayer({
+        title: false,
+        closebtn: 0,
+        url: utils.getSettingsUrl('administratorsLayerProfile', { userName: this.local.userName }),
+        width: "60%",
+        height: "88%"
+      });
+    } else if (command === 'password') {
+      top.utils.openLayer({
+        title: false,
+        closebtn: 0,
+        url: utils.getSettingsUrl('administratorsLayerPassword', { userName: this.local.userName }),
+        width: "38%",
+        height: "58%",
+      });
+    } else if (command === 'logout') {
+      top.utils.alertWarning({
+        title: '安全退出',
+        text: '确定要退出系统吗？',
+        callback: function () {
+          top.location.href = utils.getRootUrl('logout')
+        }
+      });
+    }
+  },
 
 };
 

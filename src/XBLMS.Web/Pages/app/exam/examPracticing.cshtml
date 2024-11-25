@@ -133,12 +133,12 @@
                         </el-card>
                     </div>
                     <div class="mt-2">
-                        <el-button type="primary" v-on:click="btnDownClick" class="rounded-pill">继续<i class="el-icon-right ms-2"></i></el-button>
+                        <el-button type="primary" v-on:click="btnDownClick" icon="el-icon-right">继续</el-button>
                     </div>
                 </div>
             </div>
             <div v-else class="text-center">
-                <el-button v-on:click="btnSubmitAnswerClick" type="primary" class="rounded-pill">提交答案</el-button>
+                <el-button v-on:click="btnSubmitAnswerClick" type="primary">提交答案</el-button>
             </div>
         </el-card>
     </div>
@@ -160,9 +160,9 @@
 </div>
 <div class="py-8"></div>
 <div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 animate__animated animate__fadeInUp">
-    <el-button-group class="btn-group p-1 bg-gray-300 rounded-pill">
-        <el-button type="warning" v-on:click="btnResultClick" class="rounded-start-pill">结束本次练习</el-button>
-        <el-button v-on:click="utils.closeLayerSelf" icon="el-icon-back" class="rounded-end-pill">返 回</el-button>
+    <el-button-group>
+        <el-button icon="el-icon-close" type="warning" v-on:click="btnResultClick">结束本次练习</el-button>
+        <el-button v-on:click="utils.closeLayerSelf" icon="el-icon-back">返 回</el-button>
     </el-button-group>
 </div>
 @section Scripts{

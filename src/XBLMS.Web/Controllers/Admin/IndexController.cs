@@ -50,6 +50,7 @@ namespace XBLMS.Web.Controllers.Admin
 
         public class GetResult
         {
+            public bool IsSafeMode { get; set; }
             public bool Value { get; set; }
             public string RedirectUrl { get; set; }
             public IList<Menu> Menus { get; set; }

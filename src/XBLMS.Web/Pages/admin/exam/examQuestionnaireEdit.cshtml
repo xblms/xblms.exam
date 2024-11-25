@@ -59,7 +59,7 @@
                     <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-180) + 'px' }">
                         <div style="margin-right:18px;">
                             <div v-if="tmList && tmList.length>0">
-                                <el-button :size="euiSize" type="primary" v-on:click="btnImportTmClick">重新导入内容</el-button>
+                                <el-button icon="el-icon-upload" :size="euiSize" plain type="warning" v-on:click="btnImportTmClick">重新导入内容</el-button>
                                 <div class="mt-3" v-for="(tm,tmIndex) in tmList">
                                     <el-card>
                                         <div :id="'tm_'+tm.id">
@@ -100,7 +100,7 @@
                             <div v-else>
                                 <el-result icon="warning" title="内容设置提醒" subTitle="请手动导入问卷内容">
                                     <template slot="extra">
-                                        <el-button type="primary" :size="euiSize" v-on:click="btnImportTmClick">去导入</el-button>
+                                        <el-button icon="el-icon-upload" type="primary" :size="euiSize" v-on:click="btnImportTmClick">去导入</el-button>
                                     </template>
                                 </el-result>
                             </div>
@@ -113,8 +113,8 @@
 </el-form>
 <el-row align="center" style="margin-top:18px;">
     <el-col :span="24" align="center">
-        <el-button :size="euiSize" type="primary" v-on:click="btnSaveClick">保 存</el-button>
-        <el-button :size="euiSize" plain type="primary" v-on:click="btnSubmitClick">
+        <el-button icon="el-icon-check" :size="euiSize" type="primary" v-on:click="btnSaveClick">保 存</el-button>
+        <el-button icon="el-icon-s-promotion" :size="euiSize" plain type="primary" v-on:click="btnSubmitClick">
             <span v-if="form.submitType==='Save'">
                 <span>发 布</span>
             </span>
@@ -151,8 +151,8 @@
             </el-card>
         </div>
         <span slot="footer" class="dialog-footer">
-            <el-button :size="euiSize" plain type="warning" v-on:click="btnSubmitClear">重新发布</el-button>
-            <el-button :size="euiSize" plain type="info" v-on:click="submitDialogVisible=!submitDialogVisible">取 消</el-button>
+            <el-button icon="el-icon-check" :size="euiSize" plain type="warning" v-on:click="btnSubmitClear">重新发布</el-button>
+            <el-button icon="el-icon-colose" :size="euiSize" plain type="info" v-on:click="submitDialogVisible=!submitDialogVisible">取 消</el-button>
         </span>
     </el-dialog>
 </template>

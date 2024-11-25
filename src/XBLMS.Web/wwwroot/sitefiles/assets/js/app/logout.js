@@ -9,7 +9,7 @@ var methods = {
     var $this = this;
     top.utils.alertWarning({
       title: '安全退出',
-      text: '确定要退出系统吗？',
+      text: '确定要退出登录吗？',
       callback: function () {
         localStorage.removeItem(ACCESS_TOKEN_NAME);
         $this.redirect();

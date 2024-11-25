@@ -71,7 +71,7 @@ var $vue = new Vue({
   data: data,
   methods: methods,
   created: function () {
-    document.title = "考试成绩";
+    top.document.title = "考试成绩";
     this.apiGet();
   },
 });

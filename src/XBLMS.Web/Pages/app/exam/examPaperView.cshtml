@@ -30,30 +30,38 @@
         html {
             background-color: #f1f1f1;
         }
+        body {
+            margin:0;
+            padding:0;
+        }
     </style>
     <link href="/sitefiles/assets/css/watermark.css" rel="stylesheet" type="text/css" />
 }
 @await Html.PartialAsync("_PartialWatermark")
 <template v-if="paper">
-    <div class="pb-3 d-flex justify-content-between align-items-center">
-        <div>
-            <div class="mb-2">{{ paper.title }}</div>
-            <div class="fs-5 mb-2">共：{{ paper.tmTotal }}题，总分：{{ paper.totalScore }}分，及格分：{{ paper.passScore }}分</div>
-            <div class="fs-5">
-                <span v-if="paper.isTiming">
-                    用时：{{ paper.useTime }}
-                </span>
-                <span v-else>
-                    不计时考试
-                </span>
+    <el-card class="rounded-0 sticky-top">
+        <div slot="header">
+            {{ paper.title }}
+        </div>
+        <div class="pb-3 d-flex justify-content-between align-items-center">
+            <div>
+                <div class="fs-5 mb-2">共{{ paper.tmTotal }}题，总分{{ paper.totalScore }}分，及格分{{ paper.passScore }}分</div>
+                <div class="fs-5">
+                    <span v-if="paper.isTiming">
+                        用时：{{ paper.useTime }}
+                    </span>
+                    <span v-else>
+                        不计时考试
+                    </span>
+                </div>
+            </div>
+            <div v-if="paper.secrecyScore">
+                <span class="fs-2 text-success" v-if="paper.userScore>=paper.passScore">{{ paper.userScore }}</span>
+                <span class="fs-2 text-danger" v-else>{{ paper.userScore }}</span>
             </div>
         </div>
-        <div>
-            <span class="fs-2 text-success" v-if="paper.userScore>=paper.passScore">{{ paper.userScore }}</span>
-            <span class="fs-2 text-danger" v-else>{{ paper.userScore }}</span>
-        </div>
-    </div>
-    <div>
+    </el-card>
+    <div class="p-3">
         <el-card v-if="tm" class="fs-4">
             <div slot="header" class="d-flex justify-content-between align-items-center">
                 <div>第<span class="px-1">{{ tm.tmIndex }}</span>题（<span>{{ tm.txName }}</span>）</div>
@@ -176,9 +184,9 @@
 </template>
 <div class="py-8"></div>
 <div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 animate__animated animate__fadeInUp">
-    <el-button-group class="btn-group p-1 bg-gray-300 rounded-pill">
-        <el-button type="primary" icon="el-icon-s-grid" v-on:click="datikaDialogVisible=true" class="rounded-start-pill">答题卡</el-button>
-        <el-button v-on:click="utils.closeLayerSelf" icon="el-icon-back" class="rounded-end-pill">返 回</el-button>
+    <el-button-group>
+        <el-button type="primary" icon="el-icon-s-grid" v-on:click="datikaDialogVisible=true">答题卡</el-button>
+        <el-button v-on:click="utils.closeLayerSelf" icon="el-icon-back">返 回</el-button>
     </el-button-group>
 </div>
 @section Scripts{

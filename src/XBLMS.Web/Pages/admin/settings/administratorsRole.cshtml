@@ -5,7 +5,7 @@
     <el-form :inline="true" :size="euiSize">
         <el-form-item label="">
             <el-button :size="euiSize" plain type="primary" style="margin-left: 0px;" icon="el-icon-plus" v-on:click="btnAddClick">
-                新 增
+                新增角色
             </el-button>
         </el-form-item>
     </el-form>
@@ -31,13 +31,15 @@
     prop="description"
     label="备注">
   </el-table-column>
-  <el-table-column label="操作" width="150">
+  <el-table-column label="" width="180" align="right">
     <template slot-scope="scope">
       <el-button-group>
         <el-button
+          icon="el-icon-edit"
           :size="euiSize"
           v-on:click="btnEditClick(scope.row)">编辑</el-button>
         <el-button :size="euiSize"
+          icon="el-icon-delete"
           type="danger"
           v-on:click="btnDeleteClick(scope.row)">删除</el-button>
       </el-button-group>

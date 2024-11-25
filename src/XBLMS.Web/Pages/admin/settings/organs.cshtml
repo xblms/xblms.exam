@@ -2,14 +2,14 @@
 @{ Layout = "_Layout"; }
 <el-card class="box-card">
     <el-form :inline="true" :size="euiSize">
-        <el-form-item label="">
+        <el-form-item label="组织名称">
             <el-input v-model="search"
                       prefix-icon="el-icon-search" clearable
-                      placeholder="输入关键字进行过滤">
+                      placeholder="关键字">
             </el-input>
         </el-form-item>
         <el-form-item label="">
-            <el-button icon="el-icon-refresh" circle :size="euiSize" v-on:click="btnSearch"></el-button>
+            <el-button icon="el-icon-search" type="primary" :size="euiSize" v-on:click="btnSearch">查 询</el-button>
         </el-form-item>
     </el-form>
     <el-table :data="treeTable" ref="companysTable"
@@ -42,14 +42,14 @@
                 {{ scope.row.userCount }}/{{ scope.row.userAllCount }}
             </template>
         </el-table-column>
-        <el-table-column align="right" width="288">
+        <el-table-column align="right" width="366">
             <template slot-scope="scope">
                 <el-button-group>
-                    <el-button :size="euiSize" v-if="scope.row.organType==='company'" v-on:click.stop="btnEdit(scope.row,true,'company')">添加单位</el-button>
-                    <el-button :size="euiSize" v-if="scope.row.organType==='company' || scope.row.organType==='department'" v-on:click.stop="btnEdit(scope.row,true,'department')">添加部门</el-button>
-                    <el-button :size="euiSize" v-if="scope.row.organType==='duty' || scope.row.organType==='department'" v-on:click.stop="btnEdit(scope.row,true,'duty')">添加岗位</el-button>
-                    <el-button :size="euiSize" v-on:click.stop="btnEdit(scope.row,false)">修改</el-button>
-                    <el-button :size="euiSize" type="danger" :disabled="scope.row.id===1 && scope.row.organType==='company'" v-on:click.stop="btnDelete(scope.row)">删除</el-button>
+                    <el-button icon="el-icon-plus" :size="euiSize" v-if="scope.row.organType==='company'" v-on:click.stop="btnEdit(scope.row,true,'company')">添加单位</el-button>
+                    <el-button icon="el-icon-plus" :size="euiSize" v-if="scope.row.organType==='company' || scope.row.organType==='department'" v-on:click.stop="btnEdit(scope.row,true,'department')">添加部门</el-button>
+                    <el-button icon="el-icon-plus" :size="euiSize" v-if="scope.row.organType==='duty' || scope.row.organType==='department'" v-on:click.stop="btnEdit(scope.row,true,'duty')">添加岗位</el-button>
+                    <el-button icon="el-icon-edit" :size="euiSize" v-on:click.stop="btnEdit(scope.row,false)">修改</el-button>
+                    <el-button icon="el-icon-delete" :size="euiSize" type="danger" :disabled="scope.row.id===1 && scope.row.organType==='company'" v-on:click.stop="btnDelete(scope.row)">删除</el-button>
                 </el-button-group>
             </template>
         </el-table-column>

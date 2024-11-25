@@ -20,10 +20,6 @@
         }
   </style>
 }
-<div style="position:fixed;left:0;top:0;width:100%;" class="text-center py-3 bg-white z-1">
-    修改个人信息
-</div>
-<div class="pb-8"></div>
 <el-card class="z-2">
     <el-form v-on:submit.native.prevent ref="form" :model="form" status-icon label-width="88px" label-position="left">
         <el-form-item label="用户名">
@@ -55,13 +51,28 @@
                 <i v-else class="el-icon-plus"></i>
             </el-upload>
         </el-form-item>
+        <el-form-item label="背景">
+            <el-upload :action="uploadUrl"
+                       :show-file-list="false"
+                       :headers="{Authorization: 'Bearer ' + $token}"
+                       list-type="picture-card"
+                       :before-upload="uploadBgBefore"
+                       :on-progress="uploadBgProgress"
+                       :on-success="uploadBgSuccess"
+                       :on-error="uploadBgError"
+                       :on-remove="uploadBgRemove"
+                       :multiple="false">
+                <img v-if="form.avatarbgUrl" :src="form.avatarbgUrl" class="avatar">
+                <i v-else class="el-icon-plus"></i>
+            </el-upload>
+        </el-form-item>
     </el-form>
 </el-card>
 <div class="py-8"></div>
 <div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 animate__animated animate__fadeInUp">
-    <el-button-group class="btn-group p-1 bg-gray-300 rounded-pill">
-        <el-button type="primary" v-on:click="btnSubmitClick" class="rounded-start-pill">保 存</el-button>
-        <el-button v-on:click="utils.closeLayerSelf" icon="el-icon-back" class="rounded-end-pill">返 回</el-button>
+    <el-button-group>
+        <el-button icon="el-icon-check" type="primary" v-on:click="btnSubmitClick">保 存</el-button>
+        <el-button v-on:click="utils.closeLayerSelf" icon="el-icon-back">返 回</el-button>
     </el-button-group>
 </div>
 @section Scripts{

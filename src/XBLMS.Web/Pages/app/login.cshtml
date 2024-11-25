@@ -10,13 +10,13 @@
 }
 
 <div>
-    <div class="py-3 pb-5 text-center">
+    <div class="py-5 text-center animate__animated animate__fadeInDown">
         <img src="/sitefiles/assets/images/logo.png" height="66" />
     </div>
-    <el-card class="box-card">
+    <el-card class="box-card rounded-3">
         <div slot="header">
-            <h1 class="text-center">
-                登 录
+            <h1>
+                请登录
             </h1>
         </div>
         <el-alert v-if="pageAlert" style="margin-bottom: 10px;" :closable="false" :type="pageAlert.type" v-html="pageAlert.title"></el-alert>
@@ -40,12 +40,12 @@
             </el-form-item>
         </el-form>
     </el-card>
-    <div class="mt-3">
-        <div class="p-2 bg-light rounded-pill">
-            <el-button type="primary" v-on:click="btnSubmitClick" class="w-100 py-3 rounded-pill">登 录<i class="bi bi-box-arrow-in-right ms-3"></i></el-button>
+    <div class="mt-4">
+        <div class="text-center">
+            <button type="button" v-on:click="btnSubmitClick" class="btn btn-primary p-2 px-5 fs-4 fw-bold">登 录<i class="bi bi-box-arrow-in-right ms-3 fw-bold fs-3"></i></button>
         </div>
     </div>
-    <div class="mt-5 text-center text-gray-300">{{ DOCUMENTTITLE }}</div>
+    <div class="mt-5 text-center text-gray-300 animate__animated animate__fadeInUpBig">{{ DOCUMENTTITLE }}</div>
 </div>
 
 @section Scripts{

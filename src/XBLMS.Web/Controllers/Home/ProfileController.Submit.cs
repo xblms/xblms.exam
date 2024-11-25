@@ -20,6 +20,10 @@ namespace XBLMS.Web.Controllers.Home
             {
                 user.AvatarUrl = request.AvatarUrl;
             }
+            if (!PageUtils.IsProtocolUrl(request.AvatarbgUrl))
+            {
+                user.AvatarbgUrl = request.AvatarbgUrl;
+            }
             user.Mobile = request.Mobile;
             user.Email = request.Email;
             user.DisplayName = request.DisplayName;

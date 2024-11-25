@@ -51,6 +51,8 @@ namespace XBLMS.Models
         [DataColumn]
         public string AvatarUrl { get; set; }
         [DataColumn]
+        public string AvatarbgUrl { get; set; }
+        [DataColumn]
         public string AvatarCerUrl { get; set; }
 
         [DataColumn]

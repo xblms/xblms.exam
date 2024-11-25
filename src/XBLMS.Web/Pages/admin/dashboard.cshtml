@@ -14,18 +14,8 @@
             <el-col :span="5" style="text-align:center;">
                 <el-avatar :size="128" :src="admin.avatarUrl || DEFAULT_AVATAR_URL"></el-avatar>
                 <div>
-                    <el-dropdown v-on:command="btnUserMenuClick" :show-timeout="0" placement="bottom">
-                        <div class="el-dropdown-link">
-                            <div style="padding:10px 0;">欢迎回来</div>
-                            <span><i class="el-icon-user" style="padding:0 3px"></i>{{ admin.displayName }}<i style="padding:0 3px" class="el-icon-arrow-down el-icon--down"></i></span>
-                        </div>
-                        <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item icon="el-icon-user" command="view">预览信息</el-dropdown-item>
-                            <el-dropdown-item icon="el-icon-edit" command="profile">修改信息</el-dropdown-item>
-                            <el-dropdown-item icon="el-icon-key" command="password">修改密码</el-dropdown-item>
-                            <el-dropdown-item icon="el-icon-switch-button" command="logout">安全退出</el-dropdown-item>
-                        </el-dropdown-menu>
-                    </el-dropdown>
+                    <div style="padding:10px 0;">欢迎回来</div>
+                    <div><i class="el-icon-user" style="padding:0 3px"></i>{{ admin.displayName }}</div>
                 </div>
             </el-col>
             <el-col :span="19">

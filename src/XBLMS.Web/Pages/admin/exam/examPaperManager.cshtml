@@ -190,7 +190,7 @@
                             <el-form-item>
                                 <el-button :size="euiSize" icon="el-icon-search" type="primary" v-on:click="btnUserSearchClick">查 询</el-button>
                                 <el-button :size="euiSize" plain type="primary" v-on:click="btnUserArrange" icon="el-icon-plus">安排考生</el-button>
-                                <el-button :size="euiSize" plain type="primary" v-on:click="btnUserUpdateDatetime">修改考试时间</el-button>
+                                <el-button :size="euiSize" plain type="primary" v-on:click="btnUserUpdateDatetime" icon="el-icon-date">修改考试时间</el-button>
                                 <el-button :size="euiSize" plain type="primary" v-on:click="btnUserUpdateExamTimes(1)" icon="el-icon-plus">考试次数</el-button>
                                 <el-button :size="euiSize" plain type="warning" v-on:click="btnUserUpdateExamTimes(0)" icon="el-icon-minus">考试次数</el-button>
                                 <el-button :size="euiSize" type="danger" plain v-on:click="btnUserRemove" icon="el-icon-delete">移出考生</el-button>
@@ -285,7 +285,7 @@
                             </el-form-item>
                             <el-form-item>
                                 <el-button :size="euiSize" icon="el-icon-search" type="primary" v-on:click="btnMarkSearchClick">查 询</el-button>
-                                <el-button :size="euiSize" plain type="primary" v-on:click="btnMarkerArrange">安排阅卷老师</el-button>
+                                <el-button icon="el-icon-user" :size="euiSize" plain type="primary" v-on:click="btnMarkerArrange">安排阅卷老师</el-button>
                             </el-form-item>
                         </el-form>
                     </div>
@@ -460,8 +460,8 @@
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-            <el-button v-on:click="userUpdateDateTimeDialogVisible = false">取 消</el-button>
-            <el-button type="primary" v-on:click="btnUserUpdateDatetimeSubmit">确 定</el-button>
+            <el-button icon="el-icon-check" type="primary" v-on:click="btnUserUpdateDatetimeSubmit">确 定</el-button>
+            <el-button icon="el-icon-colose" v-on:click="userUpdateDateTimeDialogVisible = false">取 消</el-button>
         </div>
     </el-dialog>
 </template>
@@ -481,8 +481,8 @@
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-            <el-button v-on:click="markerSelectDialogVisible = false">取 消</el-button>
-            <el-button type="primary" v-on:click="btnMarkerArrangeSubmit">确 定</el-button>
+            <el-button icon="el-icon-check" type="primary" v-on:click="btnMarkerArrangeSubmit">确 定</el-button>
+            <el-button icon="el-icon-colose" v-on:click="markerSelectDialogVisible = false">取 消</el-button>
         </div>
     </el-dialog>
 </template>

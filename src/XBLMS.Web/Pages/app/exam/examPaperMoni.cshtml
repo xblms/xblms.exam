@@ -8,13 +8,9 @@
         }
     </style>
 }
-<div style="position:fixed;left:0;top:0;width:100%;" class="text-center py-3 bg-white z-1">
-    模拟自测
-</div>
-<div class="pb-8"></div>
 <div class="z-2">
     <div class="mb-3">
-        <el-input prefix-icon="el-icon-search" clearable placeholder="关键字查询" v-model="form.keyWords">
+        <el-input prefix-icon="el-icon-search" clearable placeholder="关键字" v-model="form.keyWords">
             <el-button slot="append" icon="el-icon-search" v-on:click="btnSearchClick">查 询</el-button>
         </el-input>
     </div>
@@ -57,17 +53,17 @@
         </div>
         <div class="my-5 text-center">
             <el-button size="small" icon="el-icon-refresh-right" v-if="list.length>0 && list.length<total" v-on:click="btnLoadMoreClick" :loading="loadMoreLoading">加载更多</el-button>
-            <span v-else class="fw-light fs-6">没有更多了</span>
+            <small v-else>没有更多了</small>
         </div>
     </div>
     <div class="pt-10" v-else>
-        <el-empty></el-empty>
+        <el-empty image="/sitefiles/assets/images/nodata.svg" description="暂无安排"></el-empty>
     </div>
 </div>
 <div class="py-8"></div>
 <div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 animate__animated animate__fadeInUp">
-    <el-button-group class="btn-group p-1 bg-gray-300 rounded-pill">
-        <el-button v-on:click="location.href=utils.getIndexUrl()" icon="el-icon-back" class="rounded-pill" type="primary">返 回</el-button>
+    <el-button-group>
+        <el-button v-on:click="location.href=utils.getIndexUrl()" icon="el-icon-back"  type="primary">返 回</el-button>
     </el-button-group>
 </div>
 @section Scripts{

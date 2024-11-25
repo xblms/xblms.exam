@@ -90,6 +90,7 @@ namespace XBLMS.Web.Controllers.Admin
 
             return new GetResult
             {
+                IsSafeMode = _settingsManager.IsSafeMode,
                 Value = true,
                 Menus = allMenus,
                 IsEnforcePasswordChange = isEnforcePasswordChange,

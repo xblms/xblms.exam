@@ -110,7 +110,7 @@ var methods = {
         $this.redirectIndex();
       }
     }).catch(function (error) {
-      utils.error(error);
+      utils.notifyError(error);
     }).then(function () {
       $this.apiCaptcha();
       utils.loading($this, false);

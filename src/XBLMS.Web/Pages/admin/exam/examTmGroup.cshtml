@@ -3,10 +3,10 @@
 
 <el-card class="box-card">
     <el-form :inline="true" :size="euiSize">
-        <el-form-item label="">
+        <el-form-item label="题目组">
             <el-input v-model="search"
                       prefix-icon="el-icon-search" clearable
-                      placeholder="输入关键字进行过滤">
+                      placeholder="关键字">
             </el-input>
         </el-form-item>
         <el-form-item label="">
@@ -60,9 +60,9 @@
                         <i class="el-icon-arrow-left el-icon--right"></i>操作
                     </el-button>
                     <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item v-on:click.native="btnEditClick(scope.row.id)">编辑</el-dropdown-item>
-                        <el-dropdown-item v-on:click.native="btnRangeClick(scope.row.id)" v-if="scope.row.groupType==='Fixed'">选择题目</el-dropdown-item>
-                        <el-dropdown-item style="color:red;" v-on:click.native="btnDeleteClick(scope.row)">删除</el-dropdown-item>
+                        <el-dropdown-item icon="el-icon-edit" v-on:click.native="btnEditClick(scope.row.id)">编辑</el-dropdown-item>
+                        <el-dropdown-item icon="el-icon-plus" v-on:click.native="btnRangeClick(scope.row.id)" v-if="scope.row.groupType==='Fixed'">选择题目</el-dropdown-item>
+                        <el-dropdown-item icon="el-icon-delete" style="color:red;" v-on:click.native="btnDeleteClick(scope.row)">删除</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
             </template>

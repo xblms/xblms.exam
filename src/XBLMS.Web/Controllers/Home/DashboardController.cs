@@ -24,6 +24,8 @@ namespace XBLMS.Web.Controllers.Home
         private readonly IExamPaperStartRepository _examPaperStartRepository;
         private readonly IExamQuestionnaireRepository _examQuestionnaireRepository;
         private readonly IExamQuestionnaireUserRepository _examQuestionnaireUserRepository;
+        private readonly IExamCerRepository _examCerRepository;
+        private readonly IExamCerUserRepository _examCerUserRepository;
 
         public DashboardController(IConfigRepository configRepository,
             IOrganManager organManager,
@@ -33,7 +35,9 @@ namespace XBLMS.Web.Controllers.Home
             IExamPaperRepository examPaperRepository,
             IExamPaperStartRepository examPaperStartRepository,
             IExamQuestionnaireRepository examQuestionnaireRepository,
-            IExamQuestionnaireUserRepository examQuestionnaireUserRepository)
+            IExamQuestionnaireUserRepository examQuestionnaireUserRepository,
+            IExamCerRepository examCerRepository,
+            IExamCerUserRepository examCerUserRepository)
         {
             _configRepository = configRepository;
             _authManager = authManager;
@@ -44,6 +48,8 @@ namespace XBLMS.Web.Controllers.Home
             _examPaperStartRepository = examPaperStartRepository;
             _examQuestionnaireRepository = examQuestionnaireRepository;
             _examQuestionnaireUserRepository = examQuestionnaireUserRepository;
+            _examCerRepository = examCerRepository;
+            _examCerUserRepository = examCerUserRepository;
         }
 
         public class GetResult
@@ -69,6 +75,10 @@ namespace XBLMS.Web.Controllers.Home
 
             public int TaskPaperTotal { get; set; }
             public int TaskQTotal { get; set; }
+
+            public ExamCerUser TopCer { get; set; }
+
+            public string DateStr { get; set; }
 
         }
 

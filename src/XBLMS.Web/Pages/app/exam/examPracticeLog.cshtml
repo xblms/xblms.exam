@@ -11,13 +11,9 @@
 
     </style>
 }
-<div style="position:fixed;left:0;top:0;width:100%;" class="text-center py-3 bg-white z-1">
-    刷题记录
-</div>
-<div class="pb-8"></div>
 <div class="z-2" v-if="total>0">
     <div class="card-hover-with-icon" v-for="(practice,index) in list" v-on:click="goPracticeResult(practice.id)">
-        <el-card shadow="hover" class="mb-2">
+        <el-card class="mb-3 rounded-3">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <div class="mb-2 fw-light fs-5">
@@ -44,17 +40,17 @@
     </div>
     <div class="my-5 text-center">
         <el-button size="small" icon="el-icon-refresh-right" v-if="list.length>0 && list.length<total" v-on:click="btnLoadMoreClick" :loading="loadMoreLoading">加载更多</el-button>
-        <span v-else class="fw-light fs-6">没有更多了</span>
+        <small v-else>没有更多了</small>
     </div>
 </div>
 <div class="pt-10" v-else>
-    <el-empty></el-empty>
+    <el-empty image="/sitefiles/assets/images/nodata.svg" description="暂无刷题记录"></el-empty>
 </div>
 <div class="py-8"></div>
 <div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 animate__animated animate__fadeInUp">
-    <el-button-group class="btn-group p-1 bg-gray-300 rounded-pill">
-        <el-button type="warning" icon="el-icon-delete" v-on:click="btnClearClick" class="rounded-start-pill">清空记录</el-button>
-        <el-button v-on:click="location.href=utils.getRootUrl('mine')" icon="el-icon-back" class="rounded-end-pill">返 回</el-button>
+    <el-button-group>
+        <el-button type="warning" icon="el-icon-delete" v-on:click="btnClearClick">清空记录</el-button>
+        <el-button v-on:click="location.href=utils.getRootUrl('mine')" icon="el-icon-back">返 回</el-button>
     </el-button-group>
 </div>
 @section Scripts{

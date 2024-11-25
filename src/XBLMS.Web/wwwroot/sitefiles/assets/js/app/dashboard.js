@@ -93,7 +93,10 @@ var data = utils.init({
   taskTotal: 0,
   taskPaperTotal: 0,
   taskQTotal: 0,
-  taskDialogVisible:false,
+  taskDialogVisible: false,
+
+  topCer:null,
+  dateStr:'',
 
   appMenuActive:"index"
 
@@ -102,7 +105,6 @@ var data = utils.init({
 var methods = {
   apiGet: function () {
     var $this = this;
-
 
     utils.loading(this, true);
     $api.get($url).then(function (response) {
@@ -129,6 +131,9 @@ var methods = {
 
       $this.examPaper = res.examPaper;
       $this.examMoni = res.examMoni;
+      $this.topCer = res.topCer;
+
+      $this.dateStr = res.dateStr;
 
       $this.taskPaperTotal = res.taskPaperTotal;
       $this.taskQTotal = res.taskQTotal;
@@ -246,6 +251,13 @@ var methods = {
     if (common === 'mine') {
       location.href = utils.getRootUrl('mine');
     }
+  },
+  btnViewCer: function (row) {
+    top.utils.openLayerPhoto({
+      title: row.name,
+      id: row.id,
+      src: row.cerImg + '?r=' + Math.random()
+    })
   }
 };
 Vue.component("apexchart", {

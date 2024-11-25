@@ -7,6 +7,7 @@ var data = utils.init({
   passSeries: [0],
   passChartOptions: {
     chart: {
+      title:'testament',
       type: 'radialBar',
       toolbar: {
         show: false
@@ -89,7 +90,10 @@ var data = utils.init({
   practiceWrongPercent: 0,
 
   examPaper: null,
-  examMoni: null
+  examMoni: null,
+
+  topCer: null,
+
 
 });
 
@@ -124,6 +128,8 @@ var methods = {
       $this.examPaper = res.examPaper;
       $this.examMoni = res.examMoni;
 
+      $this.topCer = res.topCer;
+
       setTimeout(function () {
         $this.passSeries = [100];
       }, 1000);
@@ -137,6 +143,9 @@ var methods = {
     }).then(function () {
       utils.loading($this, false);
     });
+  },
+  btnUserMenuClick: function (command) {
+    top.$vue.btnUserMenuClick(command);
   },
   btnMoreMenuClick: function (command) {
     top.$vue.btnTopMenuClick(command);
@@ -214,6 +223,13 @@ var methods = {
       }
     });
   },
+  btnViewCer: function (row) {
+    top.utils.openLayerPhoto({
+      title: row.name,
+      id: row.id,
+      src: row.cerImg + '?r=' + Math.random()
+    })
+  }
 };
 Vue.component("apexchart", {
   extends: VueApexCharts
