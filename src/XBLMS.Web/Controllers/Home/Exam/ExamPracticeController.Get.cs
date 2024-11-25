@@ -25,7 +25,6 @@ namespace XBLMS.Web.Controllers.Home.Exam
                         var (total, tmList) = await _examTmRepository.GetListAsync(tmGroup, 0, int.MaxValue);
                         if (total > 0)
                         {
-                            resultTotal++;
                             var zsds = new List<string>();
                             foreach (var tmItem in tmList)
                             {
