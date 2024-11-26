@@ -1,8 +1,14 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+using OpenXmlPowerTools;
+using System;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
+using System.Xml;
 using XBLMS.Core.Utils.Office.Word2Html;
 using XBLMS.Utils;
+using System.Linq;
 
 namespace XBLMS.Core.Utils.Office
 {
@@ -12,7 +18,7 @@ namespace XBLMS.Core.Utils.Office
         private string ImageDirectoryUrl { get; set; }
         private string DocsFilePath { get; set; }
 
-        public WordManager(string docsFilePath,string imageDirectoryPath,string imageDirectoryUrl)
+        public WordManager(string docsFilePath, string imageDirectoryPath, string imageDirectoryUrl)
         {
             DocsFilePath = docsFilePath;
             ImageDirectoryPath = imageDirectoryPath;
@@ -54,7 +60,7 @@ namespace XBLMS.Core.Utils.Office
             try
             {
                 ImageUtils.Save(imgByte, imageFilePath);
-                ImageUtils.ResizeImageIfExceeding(imageFilePath,100);
+                ImageUtils.ResizeImageIfExceeding(imageFilePath, 100);
 
                 var imgSrc = PageUtils.Combine(ImageDirectoryUrl, imageFileName);
 
@@ -68,105 +74,152 @@ namespace XBLMS.Core.Utils.Office
             return $"data:{picType};base64,{Convert.ToBase64String(imgByte)}";
         }
 
-        private string ConvertToHtml()
+        public static string HtmlToWord(string fileHtmlPath, string fileWordPath)
         {
-            return string.Empty;
+            var sourceHtmlFi = new FileInfo(fileHtmlPath);
+            var destDocxFi = new FileInfo(fileWordPath);
 
-            //var fi = new FileInfo(DocsFilePath);
+            var html = ReadAsXElement(sourceHtmlFi);
 
-            //var byteArray = File.ReadAllBytes(fi.FullName);
-            //using (var memoryStream = new MemoryStream())
-            //{
-            //    memoryStream.Write(byteArray, 0, byteArray.Length);
+            var usedAuthorCss = HtmlToWmlConverter.CleanUpCss((string)html.Descendants().FirstOrDefault(d => StringUtils.ToLower(d.Name.LocalName) == "style"));
 
-            //    using (var wDoc = WordprocessingDocument.Open(memoryStream, true))
-            //    {
-            //        var htmlSettings = new HtmlConverterSettings
-            //        {
+            var settings = HtmlToWmlConverter.GetDefaultSettings();
 
-            //            FabricateCssClasses = true,
-            //            CssClassPrefix = "pt-",
-            //            RestrictToSupportedLanguages = false,
-            //            RestrictToSupportedNumberingFormats = false,
-            //            ImageHandler = imageInfo =>
-            //            {
-            //                DirectoryUtils.CreateDirectoryIfNotExists(ImageDirectoryPath);
+            settings.BaseUriForImages = destDocxFi.DirectoryName;
+            settings.DefaultFontSize = 10.5d;
 
-            //                var extension = StringUtils.ToLower(imageInfo.ContentType.Split('/')[1]);
-            //                ImageFormat imageFormat = null;
-            //                if (extension == "png")
-            //                    imageFormat = ImageFormat.Png;
-            //                else if (extension == "gif")
-            //                    imageFormat = ImageFormat.Gif;
-            //                else if (extension == "bmp")
-            //                    imageFormat = ImageFormat.Bmp;
-            //                else if (extension == "jpeg")
-            //                    imageFormat = ImageFormat.Jpeg;
-            //                else if (extension == "tiff")
-            //                {
-            //                    // Convert tiff to gif.
-            //                    extension = "gif";
-            //                    imageFormat = ImageFormat.Gif;
-            //                }
-            //                else if (extension == "x-wmf")
-            //                {
-            //                    extension = "wmf";
-            //                    imageFormat = ImageFormat.Wmf;
-            //                }
-
-            //                // If the image format isn't one that we expect, ignore it,
-            //                // and don't return markup for the link.
-            //                if (imageFormat == null)
-            //                    return null;
-
-            //                var imageFileName = StringUtils.GetShortGuid(false) + "." + extension;
-
-            //                var imageFilePath = PathUtils.Combine(ImageDirectoryPath, imageFileName);
-            //                try
-            //                {
-            //                    imageInfo.Bitmap.Save(imageFilePath, imageFormat);
-
-            //                    ImageUtils.ResizeImageIfExceeding(imageFilePath, 100);
-            //                }
-            //                catch (System.Runtime.InteropServices.ExternalException)
-            //                {
-            //                    return null;
-            //                }
-            //                var imageSource = PageUtils.Combine(ImageDirectoryUrl, imageFileName);
-
-            //                var img = new XElement(
-            //                  Xhtml.img,
-            //                  new XAttribute(NoNamespace.src, imageSource),
-            //                  // imageInfo.ImgStyleAttribute,
-            //                  imageInfo.AltText != null ? new XAttribute(NoNamespace.alt, imageInfo.AltText) : null
-            //                );
-            //                return img;
-            //            }
-            //        };
-            //        var htmlElement = HtmlConverter.ConvertToHtml(wDoc, htmlSettings);
-
-            //        // Produce HTML document with <!DOCTYPE html > declaration to tell the browser
-            //        // we are using HTML5.
-            //        var html = new XDocument(
-            //            new XDocumentType("html", null, null, null),
-            //            htmlElement);
-
-            //        // Note: the xhtml returned by ConvertToHtmlTransform contains objects of type
-            //        // XEntity.  PtOpenXmlUtil.cs define the XEntity class.  See
-            //        // http://blogs.msdn.com/ericwhite/archive/2010/01/21/writing-entity-references-using-linq-to-xml.aspx
-            //        // for detailed explanation.
-            //        //
-            //        // If you further transform the XML tree returned by ConvertToHtmlTransform, you
-            //        // must do it correctly, or entities will not be serialized properly.
-
-            //        var htmlString = html.ToString(SaveOptions.DisableFormatting);
-            //        var htmlDoc = new HtmlDocument();
-            //        htmlDoc.LoadHtml(htmlString);
-            //        var body = htmlDoc.DocumentNode.SelectSingleNode("//body").InnerHtml;
-
-            //        return body;
-            //    }
-            //}
+            var doc = HtmlToWmlConverter.ConvertHtmlToWml(DefaultCss, usedAuthorCss, UserCss, html, settings, null, null);
+            doc.SaveAs(destDocxFi.FullName);
+            return fileWordPath;
         }
+
+        private static XElement ReadAsXElement(FileInfo sourceHtmlFi)
+        {
+            var htmlString = File.ReadAllText(sourceHtmlFi.FullName);
+            var hdoc = new HtmlDocument();
+            hdoc.LoadHtml(htmlString);
+            hdoc.OptionOutputAsXml = true;
+            var sbxml = new StringBuilder();
+            using (var writer = new StringWriter(sbxml))
+            {
+                hdoc.Save(writer);
+            }
+            XElement html;
+            try
+            {
+                html = XElement.Parse(hdoc.DocumentNode.OuterHtml);
+            }
+            catch (XmlException)
+            {
+                var htmlDoc = new HtmlDocument();
+                htmlDoc.Load(sourceHtmlFi.FullName, Encoding.Default);
+                htmlDoc.OptionOutputAsXml = true;
+                htmlDoc.Save(sourceHtmlFi.FullName, Encoding.Default);
+                var sb = new StringBuilder(File.ReadAllText(sourceHtmlFi.FullName, Encoding.Default));
+                sb.Replace("&amp;", "&");
+                sb.Replace("&nbsp;", "\xA0");
+                sb.Replace("&quot;", "\"");
+                sb.Replace("&lt;", "~lt;");
+                sb.Replace("&gt;", "~gt;");
+                sb.Replace("&#", "~#");
+                sb.Replace("&", "&amp;");
+                sb.Replace("~lt;", "&lt;");
+                sb.Replace("~gt;", "&gt;");
+                sb.Replace("~#", "&#");
+                File.WriteAllText(sourceHtmlFi.FullName, sb.ToString(), Encoding.Default);
+                html = XElement.Parse(sb.ToString());
+            }
+            // HtmlToWmlConverter expects the HTML elements to be in no namespace, so convert all elements to no namespace.
+            html = (XElement)ConvertToNoNamespace(html);
+            return html;
+        }
+
+        private static object ConvertToNoNamespace(XNode node)
+        {
+            var element = node as XElement;
+            if (element != null)
+            {
+                return new XElement(element.Name.LocalName,
+                    element.Attributes().Where(a => !a.IsNamespaceDeclaration),
+                    element.Nodes().Select(n => ConvertToNoNamespace(n)));
+            }
+            return node;
+        }
+
+        private const string DefaultCss =
+            @"html, address,
+blockquote,
+body, dd, div,
+dl, dt, fieldset, form,
+frame, frameset,
+h1, h2, h3, h4,
+h5, h6, noframes,
+ol, p, ul, center,
+dir, hr, menu, pre { display: block; unicode-bidi: embed }
+li { display: list-item }
+head { display: none }
+table { display: table }
+tr { display: table-row }
+thead { display: table-header-group }
+tbody { display: table-row-group }
+tfoot { display: table-footer-group }
+col { display: table-column }
+colgroup { display: table-column-group }
+td, th { display: table-cell }
+caption { display: table-caption }
+th { font-weight: bolder; text-align: center }
+caption { text-align: center }
+body { margin: auto; }
+h1 { font-size: 2em; margin: auto; }
+h2 { font-size: 1.5em; margin: auto; }
+h3 { font-size: 1.17em; margin: auto; }
+h4, p,
+blockquote, ul,
+fieldset, form,
+ol, dl, dir,
+menu { margin: auto }
+a { color: blue; }
+h5 { font-size: .83em; margin: auto }
+h6 { font-size: .75em; margin: auto }
+h1, h2, h3, h4,
+h5, h6, b,
+strong { font-weight: bolder }
+blockquote { margin-left: 40px; margin-right: 40px }
+i, cite, em,
+var, address { font-style: italic }
+pre, tt, code,
+kbd, samp { font-family: monospace }
+pre { white-space: pre }
+button, textarea,
+input, select { display: inline-block }
+big { font-size: 1.17em }
+small, sub, sup { font-size: .83em }
+sub { vertical-align: sub }
+sup { vertical-align: super }
+table { border-spacing: 2px; }
+thead, tbody,
+tfoot { vertical-align: middle }
+td, th, tr { vertical-align: inherit }
+s, strike, del { text-decoration: line-through }
+hr { border: 1px inset }
+ol, ul, dir,
+menu, dd { margin-left: 40px }
+ol { list-style-type: decimal }
+ol ul, ul ol,
+ul ul, ol ol { margin-top: 0; margin-bottom: 0 }
+u, ins { text-decoration: underline }
+br:before { content: ""\A""; white-space: pre-line }
+center { text-align: center }
+:link, :visited { text-decoration: underline }
+:focus { outline: thin dotted invert }
+/* Begin bidirectionality settings (do not change) */
+BDO[DIR=""ltr""] { direction: ltr; unicode-bidi: bidi-override }
+BDO[DIR=""rtl""] { direction: rtl; unicode-bidi: bidi-override }
+*[DIR=""ltr""] { direction: ltr; unicode-bidi: embed }
+*[DIR=""rtl""] { direction: rtl; unicode-bidi: embed }
+";
+
+        private const string UserCss = @"";
+
     }
 }

@@ -15,6 +15,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
     public partial class ExamQuestionnaireAnalysisController : ControllerBase
     {
         private const string Route = "exam/examQuestionnaireAnalysis";
+        private const string RouteExportWord = Route + "/exportWord";
 
         private readonly IAuthManager _authManager;
         private readonly IExamManager _examManager;

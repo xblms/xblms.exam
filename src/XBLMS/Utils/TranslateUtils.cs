@@ -163,6 +163,24 @@ namespace XBLMS.Utils
             return Convert.ToInt32(Math.Ceiling((double)numerator / denominator));
         }
 
+        public static string ToPercent(decimal a, decimal b)
+        {
+            if (a > 0 && b > 0)
+            {
+                if (a > b)
+                {
+                    return "100";
+                }
+                else
+                {
+                    decimal t = decimal.Parse((a / b).ToString("0.000")); //保留3位小数
+                    var t1 = Math.Round(t, 2);  //四舍五入,精确2位
+                    var t2 = t1 * 100;  //乘以100     x100结果%
+                    return t2.ToString();
+                }
+            }
+            return "0";
+        }
         public static DateTime ToDateTime(string dateTimeStr)
         {
             var datetime = Constants.SqlMinValue;
