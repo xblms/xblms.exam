@@ -96,10 +96,9 @@ var methods = {
     });
   },
   tmDidScroll: function (id) {
-    this.$refs['answerScrollbar'].wrap.scrollTop = 0;
     var eid = '#tm_' + id;
     var scrollTop = ($(eid).offset().top) - 128;
-    this.$refs['answerScrollbar'].wrap.scrollTop = scrollTop;
+    document.documentElement.scrollTop = document.body.scrollTop = scrollTop;
   },
   checkAnswer: function () {
     for (let i = 0; i < this.tmList.length; i++) {
