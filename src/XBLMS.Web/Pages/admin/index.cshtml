@@ -17,7 +17,7 @@
 </style>
 }
 <div class="position-relative" v-if="local">
-    <div class="position-absolute top-0 end-0 z-3 d-flex justify-content-between align-items-center pt-2 me-2">
+    <div class="position-absolute top-0 end-0 z-3 d-flex justify-content-between align-items-center pt-2 me-1">
         <div class="me-2">
             <el-dropdown :show-timeout="0" v-on:command="btnUserMenuClick">
                 <button type="button" class="btn btn-outline-success btn-sm rounded">{{ local.auth }}-{{ local.displayName }}<i class="el-icon-arrow-down el-icon--right"></i></button>
@@ -34,7 +34,7 @@
                 <img :src="local.avatarUrl || DEFAULT_AVATAR_URL" class="rounded">
             </span>
         </div>
-        <div class="ms-2" v-if="isSafeMode">
+        <div class="ms-2 me-1" v-if="isSafeMode">
             <el-tooltip class="item" effect="dark" content="安全模式下可能会禁用一些功能，比如编辑器上传任意文件、系统运行环境等" placement="left">
                 <span class="p-3 bg-danger text-white rounded-0">安全模式</span>
             </el-tooltip>
