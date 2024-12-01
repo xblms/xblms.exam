@@ -41,7 +41,7 @@
 </div>
 <div>
     <div v-if="tm && tm.id>0">
-        <el-card v-if="tm" class="fs-4">
+        <el-card v-if="tm" class="fs-4 rounded-0">
             <div slot="header" class="d-flex justify-content-between align-items-center">
                 <div>第<span class="px-1">{{ tmIndex+1 }}</span>题（{{ tm.txName }}）</div>
                 <div><span>{{ tm.zhishidian }}</span></div>
@@ -103,17 +103,17 @@
             </div>
             <div>
                 <div class="text-end mt-3">
-                    <el-button size="mini" v-on:click="btnCollectionRemoveClick" type="danger" plain v-if="tm.isCollection"><i class="bi bi-heartbreak-fill me-2"></i>取消收藏</el-button>
-                    <el-button size="mini" v-on:click="btnCollectionClick" type="success" plain v-else><i class="bi bi-suit-heart-fill me-2"></i>收藏</el-button>
-                    <el-button size="mini" v-on:click="btnWrongRemoveClick" type="danger" plain v-if="tm.isWrong"><i class="bi bi-sign-turn-slight-left me-2"></i>移出错题库</el-button>
+                    <el-button class="rounded-0" size="mini" v-on:click="btnCollectionRemoveClick" type="danger" plain v-if="tm.isCollection"><i class="bi bi-heartbreak-fill me-2"></i>取消收藏</el-button>
+                    <el-button class="rounded-0" size="mini" v-on:click="btnCollectionClick" type="success" plain v-else><i class="bi bi-suit-heart-fill me-2"></i>收藏</el-button>
+                    <el-button class="rounded-0" size="mini" v-on:click="btnWrongRemoveClick" type="danger" plain v-if="tm.isWrong"><i class="bi bi-sign-turn-slight-left me-2"></i>移出错题库</el-button>
                 </div>
             </div>
         </el-card>
-        <el-card class="mt-2">
+        <el-card class="mt-2 rounded-0">
             <div v-if="answerResult">
                 <div class=" text-center">
                     <div>
-                        <el-card>
+                        <el-card class="rounded-0">
                             <div v-if="answerResult.isRight">
                                 <div>
                                     <i class="bi bi-emoji-sunglasses text-success me-3"></i>恭喜你，答对了。
@@ -133,12 +133,12 @@
                         </el-card>
                     </div>
                     <div class="mt-2">
-                        <el-button type="primary" v-on:click="btnDownClick" icon="el-icon-right">继续</el-button>
+                        <el-button class="rounded-0" type="primary" v-on:click="btnDownClick" icon="el-icon-right">继续</el-button>
                     </div>
                 </div>
             </div>
             <div v-else class="text-center">
-                <el-button v-on:click="btnSubmitAnswerClick" type="primary">提交答案</el-button>
+                <el-button class="rounded-0" v-on:click="btnSubmitAnswerClick" type="primary">提交答案</el-button>
             </div>
         </el-card>
     </div>
@@ -160,9 +160,9 @@
 </div>
 <div class="py-8"></div>
 <div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 animate__animated animate__fadeInUp">
-    <el-button-group>
-        <el-button icon="el-icon-close" type="warning" v-on:click="btnResultClick">结束本次练习</el-button>
-        <el-button v-on:click="utils.closeLayerSelf" icon="el-icon-back">返 回</el-button>
+    <el-button-group class="rounded-0">
+        <el-button class="rounded-0" icon="el-icon-close" type="warning" v-on:click="btnResultClick">结束本次练习</el-button>
+        <el-button class="rounded-0" v-on:click="utils.closeLayerSelf" icon="el-icon-back">返 回</el-button>
     </el-button-group>
 </div>
 @section Scripts{

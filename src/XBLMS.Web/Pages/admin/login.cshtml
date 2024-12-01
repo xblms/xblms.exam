@@ -3,6 +3,7 @@
 @section Styles{
   <link href="/sitefiles/assets/css/bootstrap-4.1.0.min.css" rel="stylesheet" type="text/css" />
     <link href="/sitefiles/assets/css/xblms.min.css" rel="stylesheet" type="text/css" />
+    <link href="/sitefiles/assets/lib/geeks/css/theme.min.css" rel="stylesheet" type="text/css" />
   <style>
     .ion-person:before,
     .ion-locked:before,
@@ -106,7 +107,9 @@
 
         <div class="form-group row">
           <div class="col-12">
-              <el-button plain class="py-3" type="primary" v-on:click="btnSubmitClick" style="width:100%;" icon="el-icon-s-promotion">登 录</el-button>
+              <div class="p-2 bg-light rounded-pill">
+                  <el-button plain round type="primary" v-on:click="btnSubmitClick" class="w-100" icon="el-icon-s-promotion">登 录</el-button>
+              </div>
           </div>
         </div>
 

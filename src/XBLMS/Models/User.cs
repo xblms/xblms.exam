@@ -57,5 +57,7 @@ namespace XBLMS.Models
 
         [DataColumn]
         public int DutyId { get; set; }
+        [DataColumn]
+        public int PkRoomId { get; set; }
     }
 }

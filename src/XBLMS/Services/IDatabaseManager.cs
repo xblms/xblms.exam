@@ -54,6 +54,11 @@ namespace XBLMS.Services
         IExamQuestionnaireTmRepository ExamQuestionnaireTmRepository { get; }
         IExamQuestionnaireUserRepository ExamQuestionnaireUserRepository { get; }
 
+        IExamPkRepository ExamPkRepository { get; }
+        IExamPkRoomRepository ExamPkRoomRepository { get; }
+        IExamPkUserRepository ExamPkUserRepository { get; }
+        IExamPkRoomAnswerRepository ExamPkRoomAnswerRepository { get; }
+
         List<IRepository> GetAllRepositories();
 
         Database GetDatabase(string connectionString = null);

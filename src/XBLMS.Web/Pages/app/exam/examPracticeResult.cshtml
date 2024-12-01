@@ -1,7 +1,7 @@
 @page
 @{ Layout = "_LayoutApp"; }
 
-<el-card>
+<el-card class="rounded-0">
     <div slot="header" class="text-center">
         练习情况
     </div>
@@ -19,8 +19,8 @@
 </el-card>
 <div class="py-8"></div>
 <div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 animate__animated animate__fadeInUp">
-    <el-button-group>
-        <el-button type="primary" v-on:click="utils.closeLayerSelf" icon="el-icon-back">返 回</el-button>
+    <el-button-group class="rounded-0">
+        <el-button class="rounded-0" type="primary" v-on:click="utils.closeLayerSelf" icon="el-icon-back">返 回</el-button>
     </el-button-group>
 </div>
 @section Scripts{

@@ -15,7 +15,7 @@ var data = utils.init({
     keyword: '',
     currentPage: 1,
     rangeUserIds: [],
-    rangeAll:false,
+    rangeAll: false,
     offset: 0,
     limit: PER_PAGE
   },
@@ -26,7 +26,8 @@ var data = utils.init({
   filterText: '',
   curOrganId: '',
   groupName: null,
-  multipleSelection: []
+  multipleSelection: [],
+  pageSizes: [PER_PAGE, 50, 300, 500, 1000]
 });
 
 var methods = {
@@ -98,7 +99,7 @@ var methods = {
         top.utils.alertSuccess({
           title: '安排用户',
           text: '此操作将安排范围内用户到用户组: ' + $this.groupName + '，确定吗？',
-          showCancelButton:true,
+          showCancelButton: true,
           callback: function () {
             $this.apiRange();
           }
@@ -116,7 +117,7 @@ var methods = {
       }
     }
     else {
-      utils.error("请选择用户", { layer:true });
+      utils.error("请选择用户", { layer: true });
     }
   },
   apiRange: function () {
@@ -126,11 +127,16 @@ var methods = {
       var res = response.data;
       if (res.value) {
         utils.success("操作成功");
+
+        $this.formInline.rangeUserIds = [];
+        $this.formInline.rangeAll = false;
+
+
         $this.apiGet();
       }
 
     }).catch(function (error) {
-      utils.error(error, { layer:true });
+      utils.error(error, { layer: true });
     }).then(function () {
       utils.loading($this, false);
     });
@@ -157,7 +163,12 @@ var methods = {
   btnSearchClick() {
     this.apiGet();
   },
+  handleSizeChange: function (val) {
+    this.formInline.currentValue = 1;
+    this.formInline.limit = val;
 
+    this.btnSearchClick();
+  },
   handleCurrentChange: function (val) {
     this.formInline.currentValue = val;
     this.formInline.offset = this.formInline.limit * (val - 1);

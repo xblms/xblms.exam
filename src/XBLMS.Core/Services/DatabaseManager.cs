@@ -62,6 +62,11 @@ namespace XBLMS.Core.Services
         public IExamQuestionnaireTmRepository ExamQuestionnaireTmRepository { get; }
         public IExamQuestionnaireUserRepository ExamQuestionnaireUserRepository { get; }
 
+        public IExamPkRepository ExamPkRepository { get; }
+        public IExamPkRoomRepository ExamPkRoomRepository { get; }
+        public IExamPkRoomAnswerRepository ExamPkRoomAnswerRepository { get; }
+        public IExamPkUserRepository ExamPkUserRepository { get; }
+
 
         public DatabaseManager(
             ISettingsManager settingsManager,
@@ -105,7 +110,11 @@ namespace XBLMS.Core.Services
             IExamQuestionnaireAnswerRepository examQuestionnaireAnswerRepository,
             IExamQuestionnaireRepository examQuestionnaireRepository,
             IExamQuestionnaireTmRepository examQuestionnaireTmRepository,
-            IExamQuestionnaireUserRepository examQuestionnaireUserRepository)
+            IExamQuestionnaireUserRepository examQuestionnaireUserRepository,
+            IExamPkRepository examPkRepository,
+            IExamPkRoomRepository examPkRoomRepository,
+            IExamPkRoomAnswerRepository examPkRoomAnswerRepository,
+            IExamPkUserRepository examPkUserRepository)
         {
             _settingsManager = settingsManager;
             AdministratorRepository = administratorRepository;
@@ -149,6 +158,10 @@ namespace XBLMS.Core.Services
             ExamQuestionnaireRepository = examQuestionnaireRepository;
             ExamQuestionnaireTmRepository = examQuestionnaireTmRepository;
             ExamQuestionnaireUserRepository = examQuestionnaireUserRepository;
+            ExamPkRepository = examPkRepository;
+            ExamPkRoomRepository = examPkRoomRepository;
+            ExamPkRoomAnswerRepository = examPkRoomAnswerRepository;
+            ExamPkUserRepository = examPkUserRepository;
         }
 
         public List<IRepository> GetAllRepositories()
@@ -195,7 +208,11 @@ namespace XBLMS.Core.Services
                 ExamQuestionnaireUserRepository,
                 ExamQuestionnaireTmRepository,
                 ExamQuestionnaireRepository,
-                ExamQuestionnaireAnswerRepository
+                ExamQuestionnaireAnswerRepository,
+                ExamPkRepository,
+                ExamPkRoomRepository,
+                ExamPkRoomAnswerRepository,
+                ExamPkUserRepository
             };
 
             return list;

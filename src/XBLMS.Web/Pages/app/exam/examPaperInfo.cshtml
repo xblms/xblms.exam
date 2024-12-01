@@ -8,7 +8,7 @@
         }
     </style>
 }
-<el-card>
+<el-card class="rounded-0">
     <div slot="header" class="text-center pt-3">
         <span class="fw-bold"><i class="el-icon-s-order me-2"></i>{{ item.title }}</span>
     </div>
@@ -144,10 +144,10 @@
                                     </template>
                                     <div>
                                         <div v-for="(paper,index) in item.cjList">
-                                            <el-card shadow="hover" class="mb-2">
+                                            <el-card shadow="hover" class="mb-2 rounded-0">
                                                 <div class="d-flex align-items-center justify-content-between">
                                                     <div>
-                                                        <div class="mb-2">交卷时间：{{ paper.endDateTime }}</div>
+                                                        <div class="mb-2">{{ paper.endDateTime }}</div>
                                                         <div class="mb-2" v-if="item.isTiming">用时：{{ paper.useTime }}</div>
                                                         <div class="mb-2">
                                                             成绩：
@@ -192,16 +192,16 @@
 </el-card>
 <div class="py-8"></div>
 <div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 animate__animated animate__fadeInUp">
-    <el-button-group>
+    <el-button-group class="rounded-0">
         <template v-if="item.examSubmiting">
-            <el-button icon="el-icon-s-promotion" type="warning" :loading="item.examSubmiting">正在交卷...</el-button>
+            <el-button class="rounded-0" icon="el-icon-s-promotion" type="warning" :loading="item.examSubmiting">正在交卷...</el-button>
         </template>
         <template v-else>
-            <el-button icon="el-icon-s-promotion" type="warning" v-on:click="btnStartExamClick" v-if="item.startId>0 && isStart">准备就绪，恢复考试</el-button>
-            <el-button icon="el-icon-s-promotion" type="success" v-on:click="btnStartExamClick" v-else-if="isStart">准备就绪，开始考试</el-button>
+            <el-button class="rounded-0" icon="el-icon-s-promotion" type="warning" v-on:click="btnStartExamClick" v-if="item.startId>0 && isStart">准备就绪，恢复考试</el-button>
+            <el-button class="rounded-0" icon="el-icon-s-promotion" type="success" v-on:click="btnStartExamClick" v-else-if="isStart">准备就绪，开始考试</el-button>
         </template>
-        <el-button v-on:click="utils.closeLayerSelf" icon="el-icon-back" v-if="isStart">返 回</el-button>
-        <el-button v-on:click="utils.closeLayerSelf" icon="el-icon-back" v-else>返 回</el-button>
+        <el-button class="rounded-0" v-on:click="utils.closeLayerSelf" icon="el-icon-back" v-if="isStart">返 回</el-button>
+        <el-button class="rounded-0" v-on:click="utils.closeLayerSelf" icon="el-icon-back" v-else>返 回</el-button>
     </el-button-group>
 </div>
 @section Scripts{

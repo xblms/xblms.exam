@@ -1,0 +1,67 @@
+﻿@page
+@{ Layout = "_Layout"; }
+
+<el-card>
+    <el-form :inline="true" :size="euiSize">
+        <el-form-item label="竞赛">
+            <el-input v-model="form.keyword" placeholder="关键字" prefix-icon="el-icon-search" clearable></el-input>
+        </el-form-item>
+        <el-form-item>
+            <el-button icon="el-icon-search" type="primary" v-on:click="btnSearchClick">查 询</el-button>
+            <el-button plain icon="el-icon-plus" type="primary" v-on:click="btnEditClick(0)">发布竞赛</el-button>
+        </el-form-item>
+        <el-form-item>
+        </el-form-item>
+    </el-form>
+    <el-table ref="pkTable" :data="list" :size="euiSize"
+              style="width: 100%" :height="$(window).height()-160">
+        <el-table-column label="#"
+                         type="index"
+                         width="60"
+                         align="left">
+            <template scope="scope">
+                <span>{{(form.pageIndex - 1) * form.pageSize + scope.$index + 1}}</span>
+            </template>
+        </el-table-column>
+        <el-table-column prop="name" label="竞赛名称" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column prop="userTotal" label="参赛人数" width="100">
+        </el-table-column>
+        <el-table-column label="竞赛时间" width="210">
+            <template slot-scope="scope">
+                {{ scope.row.pkBeginDateTimeStr }}/{{ scope.row.pkBeginDateTimeStr }}
+            </template>
+        </el-table-column>
+        <el-table-column prop="createdDate" label="创建时间"
+                         width="150">
+        </el-table-column>
+        <el-table-column width="93" align="right">
+            <template slot-scope="scope">
+                <el-dropdown :show-timeout="0" placement="left">
+                    <el-button size="mini" v-on:click.stop="return false">
+                        操作<i class="el-icon-arrow-down el-icon--right"></i>
+                    </el-button>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item icon="el-icon-edit" v-on:click.native="btnEditClick(scope.row.id)">修改</el-dropdown-item>
+                        <el-dropdown-item icon="el-icon-user" v-on:click.native="btnPkUsersClick(scope.row.id)">排名</el-dropdown-item>
+                        <el-dropdown-item icon="el-icon-date" v-on:click.native="btnPkRoomsClick(scope.row.id)">赛程</el-dropdown-item>
+                        <el-dropdown-item icon="el-icon-delete" style="color:red;" v-on:click.native="btnDeleteClick(scope.row.id)" divided>删除</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+            </template>
+        </el-table-column>
+        @await Html.PartialAsync("_PartialTableEmpty")
+    </el-table>
+
+    <div style="text-align: center; margin-top: 10px;">
+        <el-pagination v-on:current-change="handleCurrentChange" background
+                       :current-page="form.pageIndex"
+                       :page-size="form.pageSize"
+                       layout="total, prev, pager, next, jumper"
+                       :total="total">
+        </el-pagination>
+    </div>
+</el-card>
+@section Scripts{
+  <script src="/sitefiles/assets/js/admin/exam/examPk.js" type="text/javascript"></script>
+}

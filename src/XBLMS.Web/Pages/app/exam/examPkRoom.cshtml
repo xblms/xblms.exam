@@ -1,0 +1,171 @@
+@page
+@{ Layout = "_LayoutApp"; }
+@section Styles{
+    <style>
+        html{
+            margin:0 !important;padding:0 !important;
+            overflow:hidden !important;
+        }
+        body {
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow: hidden !important;
+        }
+    </style>
+}
+<div class="bg-cover vw-100 vh-100 position-relative" style="background-image:url('/sitefiles/assets/images/pk/coverapp.jpg');" v-if="room">
+    <div class="text-light position-absolute top-0 start-0 w-100 p-2 fs-6">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <div>
+                    {{ room.aUserDisplayName }}
+                </div>
+                <div>{{ room.aUserAnswer }} {{ room.aUserDuration }} {{ room.answerTotal }}-{{ room.aUserAnswerRightTotal }}</div>
+            </div>
+            <div class="text-center">
+                <div class="avatar avatar-sm">
+                    <img :src="room.aUserAvatarUrl || DEFAULT_AVATAR_URL" class="rounded-circle">
+                </div>
+                <div class="mt-1">
+                    {{ room.aUserStateStr }}
+                </div>
+            </div>
+            <div class="text-center">
+                <div>{{ room.roomName }}</div>
+                <div class="text-warning">vs</div>
+            </div>
+            <div class="text-center">
+                <div class="avatar avatar-sm">
+                    <img :src="room.bUserAvatarUrl || DEFAULT_AVATAR_URL" class="rounded-circle">
+                </div>
+                <div class="mt-1">
+                    {{ room.bUserStateStr }}
+                </div>
+            </div>
+            <div>
+                <div>
+                    {{ room.bUserDisplayName }}
+                </div>
+                <div class="text-end">{{ room.answerTotal }}-{{ room.bUserAnswerRightTotal }} {{ room.bUserDuration }} {{ room.bUserAnswer }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="position-absolute top-50 start-50 translate-middle px-3">
+        <div class="bg-dark px-5 py-3 opacity-75 z-2" v-if="daojishiLoading">
+            <div class="text-light z-1 text-center">
+                <span class="fs-1">{{ daojishiLimit }}</span>
+                <div class="mt-3">准备答题</div>
+            </div>
+        </div>
+        <div class="bg-dark opacity-75 z-2 vw-100 p-3" v-else-if="tm && tm.id>0">
+            <div class="z-1 text-light">
+                <div>
+                    <div class="mb-3 py-3 border-bottom border-white border-1 text-light">
+                        第 {{ (room.tmIndex+1) }} 题（{{tm.txName}}）
+                    </div>
+                    <div>
+                        <div>
+                            <div v-html="tm.titleHtml"></div>
+                        </div>
+                        <div class="py-3">
+                            <div v-if="tm.baseTx==='Danxuanti' || tm.baseTx==='Panduanti'">
+                                <div class="mb-3" v-for="(option,optionIndex) in tm.optionsRandom">
+                                    <div class="d-flex justify-content-start align-items-start">
+                                        <div class="me-1 position-relative">
+                                            {{optionsABC[optionIndex]}}.
+                                        </div>
+                                        <div>
+                                            <el-radio :label="option.key" v-model="tm.answer" v-on:change="answerChange" v-if="userId===room.aUserId || userId===room.bUserId">
+                                                <span class="text-light" v-html="option.value"></span>
+                                            </el-radio>
+                                            <span class="text-light" v-html="option.value" v-else></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else-if="tm.baseTx==='Duoxuanti'">
+                                <div class="mb-3" v-for="(option,optionIndex) in tm.optionsRandom">
+                                    <div class="d-flex justify-content-start align-items-start">
+                                        <div class="me-1 position-relative">
+                                            {{optionsABC[optionIndex]}}.
+                                        </div>
+                                        <div>
+                                            <el-checkbox :true-label="option.key" false-label="" v-model="tm.optionsValues[optionsABC.indexOf(option.key)]" v-on:change="answerChange" v-if="userId===room.aUserId || userId===room.bUserId">
+                                                <span class="text-light" v-html="option.value"></span>
+                                            </el-checkbox>
+                                            <span class="text-light" v-html="option.value" v-else></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-3 text-center" v-if="answerJishi && (room.aUserId==userId || room.bUserId==userId)">
+                        <button type="button" class="btn btn-success rounded-0 border-0" v-on:click="answerStopJishi">确定答案</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="bg-cover vw-100 vh-100 position-relative" style="background-image:url('/sitefiles/assets/images/pk/coverapp.jpg');" v-else>
+</div>
+<div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 pb-5 animate__animated animate__fadeInUp">
+    <div class="btn-group">
+        <template v-if="isSafeMode">
+            <el-tooltip content="安全模式下连接被禁用" placement="top">
+                <div>
+                    <button type="button" disabled="disabled" class="btn btn-warning rounded-0 border-0"><i class="bi bi-person-dash me-2"></i>准 备</button>
+                </div>
+            </el-tooltip>
+            <button type="button" class="btn btn-danger rounded-0 border-0" v-on:click="utils.closeLayerSelf"><i class="bi bi-x me-2"></i>退 出</button>
+        </template>
+        <template v-else>
+            <template v-if="room && (room.aUserId==userId || room.bUserId==userId)">
+                <template v-if="room.aUserId==userId">
+                    <template v-if="room.aUserState=='Ready' || room.aUserState=='OnLine'">
+                        <button type="button" class="btn btn-success rounded-0 border-0" v-if="room.aUserState=='Ready'" v-on:click="btnReadyClick"><i class="bi bi-person-check me-2"></i>取消准备</button>
+                        <button type="button" class="btn btn-warning rounded-0 border-0" v-if="room.aUserState=='OnLine'" v-on:click="btnReadyClick"><i class="bi bi-person-dash me-2"></i>准 备</button>
+                        <button type="button" class="btn btn-danger rounded-0 border-0" v-on:click="utils.closeLayerSelf"><i class="bi bi-x me-2"></i>退 出</button>
+                    </template>
+                </template>
+                <template v-if="room.bUserId==userId">
+                    <template v-if="room.bUserState=='Ready' || room.bUserState=='OnLine'">
+                        <button type="button" class="btn btn-success rounded-0 border-0" v-if="room.bUserState=='Ready'" v-on:click="btnReadyClick"><i class="bi bi-person-check me-2"></i>取消准备</button>
+                        <button type="button" class="btn btn-warning rounded-0 border-0" v-if="room.bUserState=='OnLine'" v-on:click="btnReadyClick"><i class="bi bi-person-dash me-2"></i>准 备</button>
+                        <button type="button" class="btn btn-danger rounded-0 border-0" v-on:click="utils.closeLayerSelf"><i class="bi bi-x me-2"></i>退 出</button>
+                    </template>
+                </template>
+            </template>
+            <template v-else>
+                <button type="button" class="btn btn-danger rounded-0 border-0" v-on:click="utils.closeLayerSelf"><i class="bi bi-x me-2"></i>退 出</button>
+            </template>
+        </template>
+    </div>
+</div>
+<div class="position-absolute bottom-0 start-0 w-100 bg-dark px-2 py-1 d-flex justify-content-between align-items-center text-light fs-6">
+    <div class="text-light">
+        <span><i class="bi bi-person me-2"></i><span v-if="room">{{ room.onlineUserTotal }}</span><span v-else>0</span></span>
+    </div>
+    <div>
+        <el-tooltip placement="top">
+            <div slot="content">
+                率先答对10题且用时最少者胜
+            </div>
+            <span><i class="el-icon-info me-2"></i>竞赛规则</span>
+        </el-tooltip>
+    </div>
+    <div>
+        <img src="/sitefiles/assets/images/ing.gif" v-if="music1 || music2 || music3" /><span class="mx-1">背景音乐</span><button type="button" class="btn btn-dark text-light rounded-0" v-on:click="musicClick"><i class="bi bi-pause" v-if="music1 || music2 || music3"></i><i class="bi bi-play" v-else></i></button>
+        <audio v-if="music1" id="pkaudios1" ref="pkaudios1" v-on:ended="music1Ended" autoplay src="/sitefiles/assets/images/pk/1.mp3">
+        </audio>
+        <audio v-if="music2" id="pkaudios2" ref="pkaudios2" v-on:ended="music2Ended" autoplay src="/sitefiles/assets/images/pk/2.mp3">
+        </audio>
+        <audio v-if="music3" id="pkaudios3" ref="pkaudios3" v-on:ended="music3Ended" autoplay src="/sitefiles/assets/images/pk/3.mp3">
+        </audio>
+    </div>
+</div>
+@section Scripts{
+    <script src="/sitefiles/assets/lib/signalr/signalr.js" type="text/javascript"></script>
+    <script src="/sitefiles/assets/js/app/exam/examPkRoom.js" type="text/javascript"></script>
+}

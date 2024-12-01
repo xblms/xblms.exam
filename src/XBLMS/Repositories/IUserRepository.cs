@@ -10,7 +10,7 @@ namespace XBLMS.Repositories
     {
         Task<(bool success, string errorMessage)> ValidateAsync(string userName, string email, string mobile, string password);
         Task<(User user, string errorMessage)> InsertAsync(User user, string password, bool isChecked, string ipAddress);
-
+        Task UpdateByPkRoomAsync(User user);
         Task<(bool success, string errorMessage)> UpdateAsync(User user);
 
         Task UpdateLastActivityDateAndCountOfLoginAsync(User user);

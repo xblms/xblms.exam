@@ -33,7 +33,7 @@ var methods = {
       title: false,
       closebtn: 0,
       url: utils.getSettingsUrl('usersGroupRange', { groupId: id }),
-      width: "90%",
+      width: "99%",
       height: "99%",
       end: function () { $this.apiGet() }
     });

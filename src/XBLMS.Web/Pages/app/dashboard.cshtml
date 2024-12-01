@@ -1,6 +1,7 @@
 @page
 @{ Layout = "_LayoutApp"; }
 @section Styles{
+    <link href="/sitefiles/assets/css/buttons.css" rel="stylesheet" type="text/css" />
     <style>
         html {
             overflow-x: hidden !important;
@@ -29,7 +30,7 @@
     </div>
 </div>
 <div class="p-3">
-    <div class="card rounded-4 mb-3 shadow-lg" v-on:click="top.$vue.btnAppMenuClick('exam')">
+    <div class="card rounded-0 mb-3 shadow-lg" v-on:click="top.$vue.btnAppMenuClick('exam')">
         <div class="card-body text-center">
             <div class="mb-2">
               <i class="bi bi-journal-medical fs-4 me-2 text-warning"></i>
@@ -43,7 +44,7 @@
     <div class="mb-3">
         <div class="row g-3">
             <div class="col-xl-6 col-lg-6 col-md-6 col-6">
-                <div class="card rounded-3 border-start-0 border-top-0 border-end-0 border-5 border-success card-hover-with-icon shadow-lg" v-on:click="btnExamMoniMoreMenuClick">
+                <div class="card rounded-0 border-start-0 border-top-0 border-end-0 border-5 border-success card-hover-with-icon shadow-lg" v-on:click="btnExamMoniMoreMenuClick">
                     <div class="card-body d-flex align-items-center justify-content-between py-3">
                         <div>
                             <i class="bi bi-journals text-warning fs-3"></i>
@@ -58,7 +59,7 @@
                 </div>
             </div>
             <div class="col-xl-6 col-lg-6 col-md-6 col-6">
-                <div class="card rounded-3 border-start-0 border-end-0 border-top-0 border-5 border-success card-hover-with-icon shadow-lg" v-on:click="btnShuatiMoreMenuClick">
+                <div class="card rounded-0 border-start-0 border-end-0 border-top-0 border-5 border-success card-hover-with-icon shadow-lg" v-on:click="btnShuatiMoreMenuClick">
                     <div class="card-body d-flex align-items-center justify-content-between py-3">
                         <div>
                             <i class="bi bi-journal-check text-success fs-3"></i>
@@ -80,12 +81,12 @@
             <el-link :underline="false" v-on:click="btnExamMoreMenuClick">更多<i class="el-icon-more ms-2"></i></el-link>
         </h5>
     </div>
-    <div class="card rounded-3 mb-3 shadow-lg" v-if="examPaper" v-on:click="btnViewPaperClick(examPaper.id)">
+    <div class="card rounded-0 mb-3 shadow-lg" v-if="examPaper" v-on:click="btnViewPaperClick(examPaper.id)">
         <div class="card-body">
             <div class="mb-3">
                 {{ examPaper.title }}
             </div>
-            <div class="row align-items-center g-3 mb-3">
+            <div class="row align-items-center g-3 mb-3 fs-6">
                 <div class="col">
                     <div>
                         <div class="fw-light">
@@ -109,13 +110,24 @@
                     </div>
                 </div>
             </div>
-            <div><i class="bi bi-calendar2 me-2 text-warning"></i>开考时间：{{ examPaper.examStartDateTimeStr }}</div>
+            <div><i class="bi bi-calendar2 me-2 text-warning"></i>{{ examPaper.examStartDateTimeStr }}</div>
         </div>
     </div>
-    <div class="card rounded-3 mb-3 shadow-lg" v-else>
+    <div class="card rounded-0 mb-3 shadow-lg" v-else>
         <div class="card-body">
             <div class="text-center p-5">
                 <small><i class="bi bi-clipboard me-2"></i>暂无安排</small>
+            </div>
+        </div>
+    </div>
+    <div class="card rounded-0 mt-5 shadow-lg bg-cover border border-dark border-5" style="background-image:url(/sitefiles/assets/images/pk/coverapp.jpg)" v-on:click="btnPkMoreMenuClick">
+        <div class="card-body btn-paomadeng">
+            <span class="btn-paomadeng-span"></span><span class="btn-paomadeng-span"></span><span class="btn-paomadeng-span"></span><span class="btn-paomadeng-span"></span>
+            <div class="text-center p-3 text-light">
+                <i class="bi bi-trophy-fill fs-2 text-light"></i>
+                <div class="mt-3">
+                    <span class="text-light bg-dark px-3 py-2 fs-6 rounded-0">答题竞赛</span>
+                </div>
             </div>
         </div>
     </div>
@@ -125,7 +137,7 @@
             <el-link :underline="false" v-on:click="btnShuatiMoreMenuClick">更多<i class="el-icon-more ms-2"></i></el-link>
         </h5>
     </div>
-    <div class="card rounded-3 mb-3 shadow-lg">
+    <div class="card rounded-0 mb-3 shadow-lg">
         <div class="card-body">
             <div class="py-3">
                 <div class="d-flex justify-content-between align-items-center mb-3">
@@ -133,8 +145,8 @@
                         <el-progress type="dashboard" :percentage="practiceCollectPercent" color="#5cb87a" :width="88" :stroke-width="8"></el-progress>
                     </div>
                     <div class="text-center">
-                        <div class="mb-1 p-2 bg-light w-100 rounded-pill">
-                            <el-button type="success" class="py-3 w-100 rounded-pill" v-on:click="btnCreatePracticeClick('Collect')"><i class="bi bi-person-hearts me-2"></i>收藏练习</el-button>
+                        <div class="mb-1 p-2 bg-light w-100 rounded-0">
+                            <el-button type="success" class="py-3 w-100 rounded-0" v-on:click="btnCreatePracticeClick('Collect')"><i class="bi bi-person-hearts me-2"></i>收藏练习</el-button>
                         </div>
                         <div class="fw-light">共<span class="fw-bold mx-2">{{ practiceCollectTmTotal }}</span>道题</div>
                     </div>
@@ -144,8 +156,8 @@
                         <el-progress type="dashboard" :percentage="practiceWrongPercent" color="#5cb87a" :width="88" :stroke-width="8"></el-progress>
                     </div>
                     <div class="text-center">
-                        <div class="mb-1 p-2 bg-light w-100 rounded-pill">
-                            <el-button type="danger" class="py-3 w-100 rounded-pill" v-on:click="btnCreatePracticeClick('Wrong')"><i class="bi bi-backspace-reverse me-2"></i>错题练习</el-button>
+                        <div class="mb-1 p-2 bg-light w-100 rounded-0">
+                            <el-button type="danger" class="py-3 w-100 rounded-0" v-on:click="btnCreatePracticeClick('Wrong')"><i class="bi bi-backspace-reverse me-2"></i>错题练习</el-button>
                         </div>
                         <div class="fw-light">共<span class="fw-bold mx-2">{{ practiceWrongTmTotal }}</span>道题</div>
                     </div>
@@ -155,8 +167,8 @@
                         <el-progress type="dashboard" :percentage="practiceAllPercent" color="#5cb87a" :width="88" :stroke-width="8"></el-progress>
                     </div>
                     <div class="text-center">
-                        <div class="mb-1 p-2 bg-light w-100 rounded-pill">
-                            <el-button type="primary" class="py-3 w-100 rounded-pill" v-on:click="btnCreatePracticeClick('All')"><i class="bi bi-fast-forward-circle-fill me-2"></i>快速开始</el-button>
+                        <div class="mb-1 p-2 bg-light w-100 rounded-0">
+                            <el-button type="primary" class="py-3 w-100 rounded-0" v-on:click="btnCreatePracticeClick('All')"><i class="bi bi-fast-forward-circle-fill me-2"></i>快速开始</el-button>
                         </div>
                         <div class="fw-light">共<span class="fw-bold mx-2">{{ practiceAllTmTotal }}</span>道题</div>
                     </div>
@@ -170,12 +182,12 @@
             <el-link :underline="false" v-on:click="btnExamMoniMoreMenuClick">更多<i class="el-icon-more ms-2"></i></el-link>
         </h5>
     </div>
-    <div class="card rounded-3 mb-3 shadow-lg" v-if="examMoni" v-on:click="btnViewPaperClick(examMoni.id)">
+    <div class="card rounded-0 mb-3 shadow-lg" v-if="examMoni" v-on:click="btnViewPaperClick(examMoni.id)">
         <div class="card-body">
             <div class="mb-3">
                 {{ examMoni.title }}
             </div>
-            <div class="row align-items-center g-3">
+            <div class="row align-items-center g-3 fs-6">
                 <div class="col">
                     <div>
                         <div class="fw-light">
@@ -201,7 +213,7 @@
             </div>
         </div>
     </div>
-    <div class="card rounded-3 mb-3 shadow-lg" v-else>
+    <div class="card rounded-0 mb-3 shadow-lg" v-else>
         <div class="card-body">
             <div class="text-center p-5">
                 <small><i class="bi bi-clipboard me-2"></i>暂无安排</small>
@@ -213,16 +225,16 @@
             <span>最近获得证书</span>
         </h5>
     </div>
-    <div class="card rounded-3 mb-3 shadow-lg" v-if="topCer && topCer.id>0" v-on:click="btnViewCer(topCer)">
+    <div class="card rounded-0 mb-3 shadow-lg" v-if="topCer && topCer.id>0" v-on:click="btnViewCer(topCer)">
         <div class="card-body">
             <div class="card card-hover">
                 <div class="row g-0">
-                    <img :src="topCer.cerImg" class="w-100 rounded-3">
+                    <img :src="topCer.cerImg" class="w-100 rounded-0">
                 </div>
             </div>
         </div>
     </div>
-    <div class="card rounded-3 mb-3 shadow-lg" v-else>
+    <div class="card rounded-0 mb-3 shadow-lg" v-else>
         <div class="card-body">
             <div class="text-center p-5">
                 <small><i class="bi bi-clipboard me-2"></i>暂无证书</small>
@@ -237,8 +249,8 @@
 <div class="py-8"></div>
 @await Html.PartialAsync("_PartialAppMenu")
 <div style="position:fixed;right:3%;top:60%;" class="text-center opacity-75" v-if="taskTotal>0">
-    <button type="button" class="btn btn-dark rounded-top-pill rounded-bottom-pill py-3 px-2 text-center" v-on:click="taskDialogVisible=true">
-        <div style="color: white;text-shadow: 0px 0px 10px #427ed1, 0px 0px 10px #427ed1;" class="fw-bold fs-3 px-1 pb-2">{{ taskTotal }}</div>
+    <button type="button" class="btn btn-dark rounded-0 py-3 px-2 text-center" v-on:click="taskDialogVisible=true">
+        <div style="color: white;text-shadow: 0px 0px 10px #427ed1, 0px 0px 10px #427ed1;" class="fw-bold px-1 pb-2">{{ taskTotal }}</div>
         <div class="fw-light fs-6 text-white">个</div>
         <div class="fw-light fs-6 text-white">待</div>
         <div class="fw-light fs-6 text-white">办</div>
@@ -250,7 +262,7 @@
                :visible.sync="taskDialogVisible"
                direction="btt">
         <div class="text-center p-2">
-            <div class="card">
+            <div class="card rounded-0">
                 <div class="card-body">
                     <div class="mb-5" v-if="taskPaperTotal>0">
                         <div class="d-flex justify-content-between align-items-center" v-on:click="btnExamMoreMenuClick">

@@ -1,7 +1,7 @@
 ﻿@page
 @{ Layout = "_LayoutApp"; }
 
-<el-card>
+<el-card class="rounded-0">
     <div slot="header" class="clearfix">
         <span style="color:red;">系统错误，请联系技术支持</span>
         <el-button style="float: right;padding:3px 0;" type="text" v-on:click="utils.closeLayerSelf"><i class="el-icon-close"></i></el-button>
@@ -18,7 +18,7 @@
 </el-card>
 <el-row align="center" style="margin-top:18px;">
     <el-col :span="24" align="center">
-        <el-button type="primary" icon="el-icon-close" v-on:click="utils.closeLayerSelf">关 闭</el-button>
+        <el-button class="rounded-0" type="primary" icon="el-icon-close" v-on:click="utils.closeLayerSelf">关 闭</el-button>
     </el-col>
 </el-row>
 

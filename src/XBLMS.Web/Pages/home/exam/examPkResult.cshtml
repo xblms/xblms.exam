@@ -1,0 +1,93 @@
+@page
+@{ Layout = "_LayoutHome"; }
+@section Styles{
+    <style>
+        html {
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow: hidden !important;
+        }
+
+        body {
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow: hidden !important;
+        }
+    </style>
+}
+<div class="bg-cover vw-100 vh-100 position-relative" style="background-image:url('/sitefiles/assets/images/pk/cover.jpg');" v-if="room">
+    <div class="position-absolute top-0 start-50 translate-middle-x">
+        <div class="px-4 py-3">
+            <div class="text-light">
+                <i class="bi bi-trophy-fill me-2 text-warning"></i><span class="text-light">{{ title }}</span>
+            </div>
+        </div>
+    </div>
+    <div class="position-absolute top-50 start-50 translate-middle">
+        <div class="rounded-0 border-0 p-5 bg-dark text-light">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="text-center p-5">
+                    <div>
+                        <div class="avatar avatar-lg">
+                            <img :src="room.userA.avatarUrl || DEFAULT_AVATAR_URL" class="rounded-circle">
+                        </div>
+                    </div>
+                    <div class="my-2">
+                        <div class="text-light">
+                            <span>
+                                {{ room.userA.displayName }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <span class="text-light">{{ room.answerTotal_A }}-{{ room.rightTotal_A }}</span>
+                    </div>
+                    <div class="mt-3">
+                        <span class="text-light">{{ room.durationTotal_A }}</span>
+                    </div>
+                </div>
+                <div class="px-5 text-center mx-5">
+                    <div class="bg-dark px-5 py-4 text-center">
+                        <p>
+                            <span v-if="room.winUserId==room.userId_A">
+                                <span>{{ room.userA.displayName }}</span>
+                            </span>
+                            <span v-else>
+                                <span>{{ room.userB.displayName }}</span>
+                            </span>
+                        </p>
+                        <p class="pt-3 fs-1 text-success">胜</p>
+                    </div>
+                </div>
+                <div class="text-center p-5">
+                    <div>
+                        <div class="avatar avatar-lg">
+                            <img :src="room.userB.avatarUrl || DEFAULT_AVATAR_URL" class="rounded-circle">
+                        </div>
+                    </div>
+                    <div class="my-2">
+                        <div class="text-light">
+                            <span>
+                                {{ room.userB.displayName }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <span class="text-light">{{ room.answerTotal_B }}-{{ room.rightTotal_B }}</span>
+                    </div>
+                    <div class="mt-3">
+                        <span class="text-light">{{ room.durationTotal_B }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-3 text-center pt-3">
+                <button type="button" class="btn btn-danger rounded-0 border-0 py-3 px-5" v-on:click="utils.closeLayerSelf"><i class="bi bi-x me-2"></i>退 出</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="bg-cover vw-100 vh-100 position-relative" style="background-image:url('/sitefiles/assets/images/pk/cover.jpg');" v-else>
+</div>
+@section Scripts{
+    <script src="/sitefiles/assets/js/home/exam/examPkResult.js" type="text/javascript"></script>
+}

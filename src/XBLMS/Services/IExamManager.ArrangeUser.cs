@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using XBLMS.Models;
 
 namespace XBLMS.Services
@@ -7,6 +8,7 @@ namespace XBLMS.Services
     {
         Task Arrange(ExamPaper paper);
         Task Arrange(int paperId, int userId);
+        Task<List<int>> GetUserIdsByUserGroups(List<int> userGroupIds);
     }
 
 }

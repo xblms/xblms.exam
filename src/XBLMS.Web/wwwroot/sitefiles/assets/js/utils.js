@@ -1090,6 +1090,7 @@ if (window.swal && swal.mixin) {
 
 var PER_PAGE = 15;
 var DEFAULT_AVATAR_URL = '/sitefiles/assets/images/default_avatar.png';
+var DEFAULT_NOBODY_AVATAR_URL = '/sitefiles/assets/images/nobody_avatar.svg';
 var DEFAULT_AVATAR_BG_URL = '/sitefiles/assets/images/default_avatar_bg.jpg';
 
 var DOCUMENTTITLE = 'XBLMS.EXAM';

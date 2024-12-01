@@ -162,6 +162,9 @@ var methods = {
   btnShuatiMoreMenuClick: function () {
     location.href = utils.getExamUrl("examPractice");
   },
+  btnPkMoreMenuClick: function () {
+    location.href = utils.getExamUrl("examPk");
+  },
   btnMoreMenuClick: function (command) {
     top.$vue.btnTopMenuClick(command);
   },

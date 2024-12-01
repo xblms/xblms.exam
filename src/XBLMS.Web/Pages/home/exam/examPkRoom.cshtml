@@ -1,0 +1,289 @@
+@page
+@{ Layout = "_LayoutHome"; }
+@section Styles{
+    <style>
+        html{
+            margin:0 !important;padding:0 !important;
+            overflow:hidden !important;
+        }
+        body {
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow: hidden !important;
+        }
+    </style>
+}
+<div class="bg-cover vw-100 vh-100 position-relative" style="background-image:url('/sitefiles/assets/images/pk/cover.jpg');" v-if="room">
+    <div class="position-absolute top-0 start-0">
+        <div class="mt-3 ms-5 bg-dark px-3 py-2 z-2">
+            <div class="text-light fs-6 z-1">
+                <el-tooltip content="在线人数" placement="right">
+                    <span><i class="bi bi-person me-2"></i><span class="text-light z-1">{{ room.onlineUserTotal }}</span></span>
+                </el-tooltip>
+            </div>
+        </div>
+    </div>
+    <div class="position-absolute top-0 start-50 translate-middle-x">
+        <div class="bg-dark px-4 py-3 z-2">
+            <div class="text-light z-1">
+                <i class="bi bi-trophy-fill me-2 text-warning"></i><span class="text-light z-1">{{ room.roomName }}</span>
+            </div>
+        </div>
+    </div>
+    <div class="position-absolute top-0 end-0 mt-3 me-5">
+        <img class="me-2" src="/sitefiles/assets/images/ing.gif" v-if="music1 || music2 || music3" /><span class="mx-2 text-light fs-6">背景音乐</span><button type="button" class="btn btn-dark text-light rounded-0 px-3 py-2" v-on:click="musicClick"><i class="bi bi-pause" v-if="music1 || music2 || music3"></i><i class="bi bi-play" v-else></i></button>
+        <audio v-if="music1" id="pkaudios" ref="pkaudios" v-on:ended="music1Ended" autoplay src="/sitefiles/assets/images/pk/1.mp3">
+        </audio>
+        <audio v-if="music2" id="pkaudios" ref="pkaudios" v-on:ended="music2Ended" autoplay src="/sitefiles/assets/images/pk/2.mp3">
+        </audio>
+        <audio v-if="music3" id="pkaudios" ref="pkaudios" v-on:ended="music3Ended" autoplay src="/sitefiles/assets/images/pk/3.mp3">
+        </audio>
+    </div>
+    <div class="position-absolute top-50 start-0 translate-middle-y ms-5 d-flex justify-content-between align-items-center bg-dark z-1 rounded-top-pill">
+        <div class="text-center z-2 p-3 pb-4">
+            <div>
+                <div class="avatar avatar-lg">
+                    <img :src="room.aUserAvatarUrl || DEFAULT_AVATAR_URL" class="rounded-circle">
+                </div>
+            </div>
+            <div class="my-2">
+                <div class="text-light z-2">
+                    <span class="d-inline-block text-truncate fs-6" style="max-width: 60px;">
+                        {{ room.aUserDisplayName }}
+                    </span>
+                    <div class="mt-3">
+                        <span class="text-light">{{ room.aUserStateStr }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-3">
+                <span class="text-light">{{ room.answerTotal }}-{{ room.aUserAnswerRightTotal }}</span>
+            </div>
+            <div class="mt-3">
+                <span class="text-light">{{ room.aUserAnswer }}</span>
+            </div>
+            <div class="mt-3">
+                <span class="text-light">{{ room.aUserDuration }}</span>
+            </div>
+        </div>
+    </div>
+    <div class="position-absolute top-50 start-50 translate-middle">
+        <div class="bg-dark px-5 py-3 opacity-75 z-2" v-if="daojishiLoading">
+            <div class="text-light z-1 text-center p-5">
+                <span class="fs-1">{{ daojishiLimit }}</span>
+                <div class="mt-3">准备答题</div>
+            </div>
+        </div>
+        <div class="bg-dark p-5 opacity-75 z-2" v-else-if="tm && tm.id>0">
+            <div class="z-1 text-light">
+                <div>
+                    <div class="mb-3 py-3 border-bottom border-white border-1 text-light">
+                        第 {{ (room.tmIndex+1) }} 题（{{tm.txName}}）
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="pe-3">
+                            <div v-html="tm.titleHtml"></div>
+                        </div>
+                        <div class="ps-3 border-start border-white border-1">
+                            <div v-if="tm.baseTx==='Danxuanti' || tm.baseTx==='Panduanti'">
+                                <div class="mb-3" v-for="(option,optionIndex) in tm.optionsRandom">
+                                    <div class="d-flex justify-content-start align-items-start">
+                                        <div class="me-1 position-relative">
+                                            {{optionsABC[optionIndex]}}.
+                                        </div>
+                                        <div>
+                                            <el-radio :label="option.key" v-model="tm.answer" v-on:change="answerChange" v-if="userId===room.aUserId || userId===room.bUserId">
+                                                <span class="text-light" v-html="option.value"></span>
+                                            </el-radio>
+                                            <span class="text-light" v-html="option.value" v-else></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else-if="tm.baseTx==='Duoxuanti'">
+                                <div class="mb-3" v-for="(option,optionIndex) in tm.optionsRandom">
+                                    <div class="d-flex justify-content-start align-items-start">
+                                        <div class="me-1 position-relative">
+                                            {{optionsABC[optionIndex]}}.
+                                        </div>
+                                        <div>
+                                            <el-checkbox :true-label="option.key" false-label="" v-model="tm.optionsValues[optionsABC.indexOf(option.key)]" v-on:change="answerChange" v-if="userId===room.aUserId || userId===room.bUserId">
+                                                <span class="text-light" v-html="option.value"></span>
+                                            </el-checkbox>
+                                            <span class="text-light" v-html="option.value" v-else></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-3 text-center" v-if="answerJishi && (room.aUserId==userId || room.bUserId==userId)">
+                        <button type="button" class="btn btn-success rounded-0 border-0" v-on:click="answerStopJishi">确定答案</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div v-else>
+            <span class="text-light fs-1">vs</span>
+        </div>
+    </div>
+    <div class="position-absolute top-50 end-0 translate-middle-y me-5  d-flex justify-content-between align-items-center bg-dark z-1 rounded-top-pill">
+        <div class="text-center z-2 p-3 pb-4">
+            <div>
+                <div class="avatar avatar-lg">
+                    <img :src="room.bUserAvatarUrl || DEFAULT_AVATAR_URL" class="rounded-circle">
+                </div>
+            </div>
+            <div class="my-2">
+                <div class="text-light z-2">
+                    <span class="d-inline-block text-truncate fs-6" style="max-width: 60px;">
+                        {{ room.bUserDisplayName }}
+                    </span>
+                    <div class="mt-3">
+                        <span class="text-light">{{ room.bUserStateStr }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-3">
+                <span class="text-light">{{ room.answerTotal }}-{{ room.bUserAnswerRightTotal }}</span>
+            </div>
+            <div class="mt-3">
+                <span class="text-light">{{ room.bUserAnswer }}</span>
+            </div>
+            <div class="mt-3">
+                <span class="text-light">{{ room.bUserDuration }}</span>
+            </div>
+        </div>
+    </div>
+    <div class="position-absolute bottom-0 start-50 translate-middle-x">
+        <div class="btn-group">
+            <template v-if="isSafeMode">
+                <el-tooltip content="安全模式下连接被禁用" placement="top">
+                    <div>
+                        <button type="button" disabled="disabled" class="btn btn-warning rounded-0 border-0 py-3 px-5"><i class="bi bi-person-dash fs-3 me-2"></i>准 备</button>
+                    </div>
+                </el-tooltip>
+                <button type="button" class="btn btn-danger rounded-0 border-0 py-3 px-5" v-on:click="utils.closeLayerSelf"><i class="bi bi-x me-2"></i>退 出</button>
+            </template>
+            <template v-else>
+                <template v-if="room && (room.aUserId==userId || room.bUserId==userId)">
+                    <template v-if="room.aUserId==userId">
+                        <template v-if="room.aUserState=='Ready' || room.aUserState=='OnLine'">
+                            <button type="button" class="btn btn-success rounded-0 border-0 py-3 px-5" v-if="room.aUserState=='Ready'" v-on:click="btnReadyClick"><i class="bi bi-person-check fs-3 me-2"></i>取消准备</button>
+                            <button type="button" class="btn btn-warning rounded-0 border-0 py-3 px-5" v-if="room.aUserState=='OnLine'" v-on:click="btnReadyClick"><i class="bi bi-person-dash fs-3 me-2"></i>准 备</button>
+                            <button type="button" class="btn btn-danger rounded-0 border-0 py-3 px-5" v-on:click="utils.closeLayerSelf"><i class="bi bi-x me-2"></i>退 出</button>
+                        </template>
+                    </template>
+                    <template v-if="room.bUserId==userId">
+                        <template v-if="room.bUserState=='Ready' || room.bUserState=='OnLine'">
+                            <button type="button" class="btn btn-success rounded-0 border-0 py-3 px-5" v-if="room.bUserState=='Ready'" v-on:click="btnReadyClick"><i class="bi bi-person-check fs-3 me-2"></i>取消准备</button>
+                            <button type="button" class="btn btn-warning rounded-0 border-0 py-3 px-5" v-if="room.bUserState=='OnLine'" v-on:click="btnReadyClick"><i class="bi bi-person-dash fs-3 me-2"></i>准 备</button>
+                            <button type="button" class="btn btn-danger rounded-0 border-0 py-3 px-5" v-on:click="utils.closeLayerSelf"><i class="bi bi-x me-2"></i>退 出</button>
+                        </template>
+                    </template>
+                </template>
+                <template v-else>
+                    <button type="button" class="btn btn-danger rounded-0 border-0 py-3 px-5" v-on:click="utils.closeLayerSelf"><i class="bi bi-x me-2"></i>退 出</button>
+                </template>
+            </template>
+        </div>
+    </div>
+    <div class="position-absolute bottom-0 start-0">
+        <div class="mb-3 ms-5 bg-dark px-3 py-2 z-2">
+            <div class="text-light z-1">
+                <el-tooltip placement="top">
+                    <div slot="content">
+                        率先答对10题且用时最少者胜
+                    </div>
+                    <span><i class="el-icon-info me-2"></i>竞赛规则</span>
+                </el-tooltip>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="bg-cover vw-100 vh-100 position-relative" style="background-image:url('/sitefiles/assets/images/pk/cover.jpg');" v-else-if="finished">
+    <div class="position-absolute top-50 start-50 translate-middle">
+        <el-card class="rounded-0 border-0">
+            <div class="justify-content-between align-items-center">
+                <div class="text-center z-2 p-3 pb-4">
+                    <div>
+                        <div class="avatar avatar-lg">
+                            <img :src="finishRoom.aUserAvatarUrl || DEFAULT_AVATAR_URL" class="rounded-circle">
+                        </div>
+                    </div>
+                    <div class="my-2">
+                        <div class="text-light z-2">
+                            <span class="d-inline-block text-truncate fs-6" style="max-width: 60px;">
+                                {{ finishRoom.aUserDisplayName }}
+                            </span>
+                            <div class="mt-3">
+                                <span class="text-light">{{ finishRoom.aUserStateStr }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <span class="text-light">{{ finishRoom.answerTotal }}-{{ finishRoom.aUserAnswerRightTotal }}</span>
+                    </div>
+                    <div class="mt-3">
+                        <span class="text-light">{{ finishRoom.aUserAnswer }}</span>
+                    </div>
+                    <div class="mt-3">
+                        <span class="text-light">{{ finishRoom.aUserDuration }}</span>
+                    </div>
+                </div>
+                <div class="px-5 text-center">
+                    <div class="bg-dark px-5 py-4 text-center">
+                        <p>
+                            <span v-if="finishRoom.aUserAnswerRightTotal>finishRoom.bUserAnswerRightTotal">
+                                <span>{{ finishRoom.aUserDisplayName }}</span>
+                            </span>
+                            <span v-else-if="finishRoom.aUserAnswerRightTotal=finishRoom.bUserAnswerRightTotal">
+                                <span v-if="finishRoom.aUserDuration>finishRoom.bUserDuration">{{ finishRoom.bUserDisplayName }}</span>
+                                <span v-else>{{ finishRoom.aUserDisplayName }}</span>
+                            </span>
+                            <span>
+                                <span>{{ finishRoom.bUserDisplayName }}</span>
+                            </span>
+                        </p>
+                        <p class="pt-3 display-1 text-success">胜</p>
+                    </div>
+                </div>
+                <div class="text-center z-2 p-3 pb-4">
+                    <div>
+                        <div class="avatar avatar-lg">
+                            <img :src="finishRoom.bUserAvatarUrl || DEFAULT_AVATAR_URL" class="rounded-circle">
+                        </div>
+                    </div>
+                    <div class="my-2">
+                        <div class="text-light z-2">
+                            <span class="d-inline-block text-truncate fs-6" style="max-width: 60px;">
+                                {{ finishRoom.bUserDisplayName }}
+                            </span>
+                            <div class="mt-3">
+                                <span class="text-light">{{ finishRoom.bUserStateStr }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <span class="text-light">{{ finishRoom.answerTotal }}-{{ finishRoom.bUserAnswerRightTotal }}</span>
+                    </div>
+                    <div class="mt-3">
+                        <span class="text-light">{{ finishRoom.bUserAnswer }}</span>
+                    </div>
+                    <div class="mt-3">
+                        <span class="text-light">{{ finishRoom.bUserDuration }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-3">
+                <button type="button" class="btn btn-danger rounded-0 border-0 py-3 px-5" v-on:click="utils.closeLayerSelf"><i class="bi bi-x me-2"></i>退 出</button>
+            </div>
+        </el-card>
+    </div>
+</div>
+<div class="bg-cover vw-100 vh-100 position-relative" style="background-image:url('/sitefiles/assets/images/pk/cover.jpg');" v-else>
+</div>
+@section Scripts{
+    <script src="/sitefiles/assets/lib/signalr/signalr.js" type="text/javascript"></script>
+    <script src="/sitefiles/assets/js/home/exam/examPkRoom.js" type="text/javascript"></script>
+}

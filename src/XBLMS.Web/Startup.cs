@@ -23,6 +23,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using XBLMS.Core.Extensions;
+using XBLMS.Core.Services;
 using XBLMS.Repositories;
 using XBLMS.Services;
 using XBLMS.Utils;
@@ -257,7 +258,6 @@ namespace XBLMS.Web
 
             });
 
-            //app.UseReplaceContentMiddleware();
 
             app.UseStaticFiles();
 
@@ -270,9 +270,7 @@ namespace XBLMS.Web
             app.UseRequestLocalization(new RequestLocalizationOptions
             {
                 DefaultRequestCulture = new RequestCulture("zh-CN"),
-                // Formatting numbers, dates, etc.
                 SupportedCultures = supportedCultures,
-                // UI strings that we have localized.
                 SupportedUICultures = supportedCultures
             });
 
@@ -287,6 +285,7 @@ namespace XBLMS.Web
             {
                 endpoints.MapControllers();
                 endpoints.MapRazorPages();
+                endpoints.MapHub<SignalRHubManager>("/xblmspkroomsocket");
             });
 
             app.UseRequestLocalization();

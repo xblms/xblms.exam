@@ -6,7 +6,7 @@
         "order": 1,
         "text": "首页",
         "link": "/admin/dashboard/",
-        "iconClass": "el-icon-home",
+        "iconClass": "el-icon-s-home",
         "children": [
         ]
       },
@@ -35,7 +35,7 @@
         "order": 4,
         "text": "考试管理",
         "link": "",
-        "iconClass": "el-icon-document-checked",
+        "iconClass": "el-icon-s-order",
         "Permissions": [],
         "children": [
           {
@@ -54,7 +54,7 @@
             "text": "题目管理",
             "link": "/admin/exam/examTm/",
             "iconClass": "el-icon-s-custom",
-            "Permissions": [ "Select", "Add", "Update", "Delete","Export","Import" ],
+            "Permissions": [ "Select", "Add", "Update", "Delete", "Export", "Import" ],
             "children": [
             ]
           },
@@ -85,14 +85,24 @@
         "order": 5,
         "text": "发布问卷",
         "link": "/admin/exam/examQuestionnaire",
-        "iconClass": "el-icon-document-checked",
+        "iconClass": "el-icon-eleme",
+        "Permissions": [ "Select", "Add", "Update", "Delete" ],
+        "children": [
+        ]
+      },
+      {
+        "id": "exampk",
+        "order": 6,
+        "text": "发布竞赛",
+        "link": "/admin/exam/examPk",
+        "iconClass": "el-icon-trophy",
         "Permissions": [ "Select", "Add", "Update", "Delete" ],
         "children": [
         ]
       },
       {
         "id": "account",
-        "order": 6,
+        "order": 7,
         "text": "企业管理",
         "link": "",
         "iconClass": "el-icon-s-custom",
@@ -152,7 +162,7 @@
       },
       {
         "id": "system",
-        "order": 7,
+        "order": 8,
         "text": "系统管理",
         "link": "",
         "iconClass": "el-icon-s-tools",
@@ -291,7 +301,7 @@
       },
       {
         "id": "logs",
-        "order": 8,
+        "order": 9,
         "text": "日志管理",
         "link": "",
         "iconClass": "el-icon-warning",
@@ -341,7 +351,7 @@
       },
       {
         "id": "analysis",
-        "order": 9,
+        "order": 10,
         "text": "统计图表",
         "link": "",
         "iconClass": "el-icon-s-operation",

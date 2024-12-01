@@ -106,12 +106,11 @@
                                     </template>
 
                                 </el-submenu>
-
                             </template>
                             <template v-else>
                                 <el-menu-item :class="{'is-active': level1.id === defaultActive }" :index="getIndex(level1)">
-                                    <i v-if="level1.id === defaultActive" :class="level1.id==='home' ? 'el-icon-s-home' : 'el-icon-success'"></i>
-                                    <i v-else class="el-icon-star-off"></i>
+                                    <i v-if="level1.id === defaultActive" class="el-icon-success"></i>
+                                    <i v-else :class="level1.iconClass"></i>
                                     <span>{{ level1.text }}</span>
                                 </el-menu-item>
                             </template>

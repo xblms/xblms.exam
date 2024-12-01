@@ -10,7 +10,7 @@
 <div class="z-2">
     <div v-if="total>0">
         <div v-for="(item,index) in list">
-            <el-card class="mb-3 rounded-3">
+            <el-card class="mb-3 rounded-0">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <div class="position-relative mb-2 text-success">
@@ -26,12 +26,12 @@
                                 </el-collapse-item>
                             </el-collapse>
                         </div>
-                        <div class="d-flex justify-content-between align-items-center mt-2">
+                        <div>
                             <span class="fs-5 me-2">共<span class="text-success mx-1">{{ item.tmTotal }}</span>道题</span>
-                            <div class="bg-light p-2 rounded-pill">
-                                <el-button type="primary" plain icon="el-icon-s-order" class="rounded-pill" v-on:click="btnCreateClick('Group',item.id,item.tmTotal)">开始练习</el-button>
-                            </div>
                         </div>
+                    </div>
+                    <div class="bg-light p-2 rounded-circle">
+                        <el-button type="primary" plain icon="el-icon-s-order" circle v-on:click="btnCreateClick('Group',item.id,item.tmTotal)"></el-button>
                     </div>
                 </div>
             </el-card>
@@ -46,9 +46,9 @@
 </div>
 <div class="py-8"></div>
 <div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 animate__animated animate__fadeInUp">
-    <el-button-group>
-        <el-button icon="el-icon-s-promotion" type="primary" v-on:click="btnCreateClick('All')">快速开始</el-button>
-        <el-button v-on:click="location.href=utils.getIndexUrl()" icon="el-icon-back">返 回</el-button>
+    <el-button-group class="rounded-0">
+        <el-button class="rounded-0" icon="el-icon-s-promotion" type="primary" v-on:click="btnCreateClick('All')">快速开始</el-button>
+        <el-button class="rounded-0" v-on:click="location.href=utils.getIndexUrl()" icon="el-icon-back">返 回</el-button>
     </el-button-group>
 </div>
 @section Scripts{

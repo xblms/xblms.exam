@@ -1,4 +1,5 @@
 ﻿using Datory;
+using Org.BouncyCastle.Bcpg;
 using SqlKata;
 using System;
 using System.Collections.Generic;
@@ -173,6 +174,11 @@ namespace XBLMS.Core.Repositories
             user.Id = await _repository.InsertAsync(user);
 
             return user.Id;
+        }
+
+        public async Task UpdateByPkRoomAsync(User user)
+        {
+            await _repository.UpdateAsync(Q.Set(nameof(User.PkRoomId), user.PkRoomId).Where(nameof(User.Id), user.Id).CachingRemove(GetCacheKeysToRemove(user)));
         }
 
         public async Task<(bool success, string errorMessage)> UpdateAsync(User user)

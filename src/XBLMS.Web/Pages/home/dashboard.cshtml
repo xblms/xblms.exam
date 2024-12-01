@@ -43,61 +43,59 @@
             <el-scrollbar class="scrollbar" :style="{ height: ($(window).height()-63) + 'px' }">
                 <div class="px-3 pb-5">
                     <div class="mb-3">
-                        <div class="card card-hover-with-icon border-top border-5 p-3 rounded-3" style="cursor:default;">
-                            <el-card class="bg-light">
-                                <div class="row g-3">
-                                    <div class="col-xl-6 col-lg-6 col-md-6 col-6">
-                                        <apexchart type="radialBar" :options="passChartOptions" :series="passSeries" height="335"></apexchart>
+                        <div class="row g-3">
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-6">
+                                <apexchart type="radialBar" :options="passChartOptions" :series="passSeries" height="335"></apexchart>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-6">
+                                <div class="card card-hover-with-icon border-top border-5 border-light p-3 rounded-3 shadow-lg" style="cursor:default;">
+                                    <div class="card card-hover shadow-lg">
+                                        <div class="d-flex justify-content-between align-items-center p-3">
+                                            <div>
+                                                <el-progress type="dashboard" :percentage="examPercent" color="#5cb87a" :width="60" :stroke-width="4"></el-progress>
+                                            </div>
+                                            <div class="ms-3">
+                                                <h4 class="mb-1">
+                                                    <span>累计考试<span class="mx-2 text-success fs-4">{{ examTotal }}</span>场</span>
+                                                </h4>
+                                                <p class="mb-0 fs-6">
+                                                    <span>及格率<span class="ms-2 text-success fs-4">{{ examPercent }}<span class="fs-6 fw-light ms-1">%</span></span></span>
+                                                </p>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="col-xl-6 col-lg-6 col-md-6 col-6">
-                                        <div class="card card-hover">
-                                            <div class="d-flex justify-content-between align-items-center p-3">
-                                                <div>
-                                                    <el-progress type="dashboard" :percentage="examPercent" color="#5cb87a" :width="60" :stroke-width="4"></el-progress>
-                                                </div>
-                                                <div class="ms-3">
-                                                    <h4 class="mb-1">
-                                                        <span>累计考试<span class="mx-2 text-success fs-4">{{ examTotal }}</span>场</span>
-                                                    </h4>
-                                                    <p class="mb-0 fs-6">
-                                                        <span>及格率<span class="ms-2 text-success fs-4">{{ examPercent }}<span class="fs-6 fw-light ms-1">%</span></span></span>
-                                                    </p>
-                                                </div>
+                                    <div class="card card-hover shadow-lg mt-3">
+                                        <div class="d-flex justify-content-between align-items-center p-3">
+                                            <div>
+                                                <el-progress type="dashboard" :percentage="examMoniPercent" color="#5cb87a" :width="60" :stroke-width="4"></el-progress>
+                                            </div>
+                                            <div class="ms-3">
+                                                <h4 class="mb-1">
+                                                    <span>累计模拟自测<span class="mx-2 text-success fs-4">{{ examMoniTotal }}</span>场</span>
+                                                </h4>
+                                                <p class="mb-0 fs-6">
+                                                    <span>及格率<span class="ms-2 text-success fs-4">{{ examMoniPercent }}<span class="fs-6 fw-light ms-1">%</span></span></span>
+                                                </p>
                                             </div>
                                         </div>
-                                        <div class="card card-hover mt-3">
-                                            <div class="d-flex justify-content-between align-items-center p-3">
-                                                <div>
-                                                    <el-progress type="dashboard" :percentage="examMoniPercent" color="#5cb87a" :width="60" :stroke-width="4"></el-progress>
-                                                </div>
-                                                <div class="ms-3">
-                                                    <h4 class="mb-1">
-                                                        <span>累计模拟自测<span class="mx-2 text-success fs-4">{{ examMoniTotal }}</span>场</span>
-                                                    </h4>
-                                                    <p class="mb-0 fs-6">
-                                                        <span>及格率<span class="ms-2 text-success fs-4">{{ examMoniPercent }}<span class="fs-6 fw-light ms-1">%</span></span></span>
-                                                    </p>
-                                                </div>
+                                    </div>
+                                    <div class="card card-hover shadow-lg mt-3">
+                                        <div class="d-flex justify-content-between align-items-center p-3">
+                                            <div>
+                                                <el-progress type="dashboard" :percentage="practiceAnswerPercent" color="#5cb87a" :width="60" :stroke-width="4"></el-progress>
                                             </div>
-                                        </div>
-                                        <div class="card card-hover mt-3">
-                                            <div class="d-flex justify-content-between align-items-center p-3">
-                                                <div>
-                                                    <el-progress type="dashboard" :percentage="practiceAnswerPercent" color="#5cb87a" :width="60" :stroke-width="4"></el-progress>
-                                                </div>
-                                                <div class="ms-3">
-                                                    <h4 class="mb-1">
-                                                        <span>累计刷题<span class="mx-2 text-success fs-4">{{ practiceAnswerTmTotal }}</span>道</span>
-                                                    </h4>
-                                                    <p class="mb-0 fs-6">
-                                                        <span>正确率<span class="ms-2 text-success fs-4">{{ practiceAnswerPercent }}<span class="fs-6 fw-light ms-1">%</span></span></span>
-                                                    </p>
-                                                </div>
+                                            <div class="ms-3">
+                                                <h4 class="mb-1">
+                                                    <span>累计刷题<span class="mx-2 text-success fs-4">{{ practiceAnswerTmTotal }}</span>道</span>
+                                                </h4>
+                                                <p class="mb-0 fs-6">
+                                                    <span>正确率<span class="ms-2 text-success fs-4">{{ practiceAnswerPercent }}<span class="fs-6 fw-light ms-1">%</span></span></span>
+                                                </p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </el-card>
+                            </div>
                         </div>
                     </div>
                     <div class="card card-hover-with-icon border-top border-5 border-light p-3 mb-3" style="cursor:default;">

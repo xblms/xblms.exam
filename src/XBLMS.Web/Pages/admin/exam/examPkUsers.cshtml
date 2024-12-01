@@ -1,0 +1,52 @@
+﻿@page
+@{ Layout = "_Layout"; }
+
+<el-card class="box-card">
+    <div slot="header" class="clearfix">
+        <span>{{ title }} 赛事</span>
+        <el-button style="float: right;padding:3px 0;" type="text" v-on:click="utils.closeLayerSelf"><i class="el-icon-close"></i></el-button>
+    </div>
+    <div>
+        <el-form :inline="true" :size="euiSize">
+            <el-form-item label="关键字">
+                <el-input v-model="form.keywords" placeholder="组织、用户名、姓名" prefix-icon="el-icon-search" clearable></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button :size="euiSize" icon="el-icon-search" type="primary" v-on:click="btnUserSearchClick">查 询</el-button>
+                <el-button :size="euiSize" icon="el-icon-back"  v-on:click="utils.closeLayerSelf">返 回</el-button>
+            </el-form-item>
+        </el-form>
+    </div>
+    <div>
+        <el-table ref="userTable" :data="list" :size="euiSize"
+                  style="width: 100%" :height="$(window).height()-170">
+            <el-table-column label="#"
+                             type="index"
+                             width="60"
+                             align="left">
+                <template scope="scope">
+                    <span>{{scope.$index + 1}}</span>
+                </template>
+            </el-table-column>
+            <el-table-column label="账号">
+                <template slot-scope="scope">
+                    <el-link :underline="false" type="primary" v-on:click="utils.openUserView(scope.row.user.id)">{{scope.row.user.userName}}</el-link>
+                </template>
+            </el-table-column>
+            <el-table-column prop="user.displayName" label="姓名">
+            </el-table-column>
+            <el-table-column prop="user.organNames" label="组织" show-overflow-toolti>
+            </el-table-column>
+            <el-table-column prop="answerTotal" label="累计答题" width="100">
+            </el-table-column>
+            <el-table-column prop="useTime" label="累计用时" width="100">
+            </el-table-column>
+            <el-table-column prop="rightTotal" label="累计答对" width="100" align="center">
+            </el-table-column>
+            @await Html.PartialAsync("_PartialTableEmpty")
+        </el-table>
+    </div>
+</el-card>
+@section Scripts{
+    <script src="/sitefiles/assets/js/admin/exam/examPkUsers.js" type="text/javascript"></script>
+}
