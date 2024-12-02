@@ -112,7 +112,7 @@ namespace XBLMS.Core.Services
         {
             tm.Set("Options", tm.Get("options"));
             tm.Set("OptionsValues", tm.Get("optionsValues"));
-          
+
             tm.Set("TitleHtml", tm.Title);
             tm.Title = StringUtils.StripTags(tm.Title);
 
@@ -176,7 +176,7 @@ namespace XBLMS.Core.Services
             {
                 optionsRandom.Add(new KeyValuePair<string, string>(abcList[i], options[i]));
             }
-            if (paper.IsExamingTmOptionRandomView)
+            if (paper.IsExamingTmOptionRandomView && !paperView)
             {
                 optionsRandom = ListUtils.GetRandomList(optionsRandom);
             }
