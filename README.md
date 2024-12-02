@@ -8,9 +8,9 @@
 
 基于 .NET Core 8 + Vue
 
-支持跨平台、国产化部署
+支持跨平台部署
 
-支持国产人大金仓、达梦、OceanBase数据库 及 MySql、SqlServer、PostgreSql、SQLite 等数据库
+支持人大金仓、达梦、OceanBase数据库 及 MySql、SqlServer、PostgreSql、SQLite 等数据库
 
 ### 系统升级
 
