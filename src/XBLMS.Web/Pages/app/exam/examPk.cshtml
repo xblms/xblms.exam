@@ -10,7 +10,7 @@
                 </div>
                 <div class="d-flex justify-content-between align-items-center">
                     <div v-if="room.userId_A>0" class="text-center">
-                        <div class="avatar avatar-sm">
+                        <div class="avatar avatar-lg">
                             <img :src="room.userA.avatarUrl || DEFAULT_AVATAR_URL" class="rounded-circle">
                         </div>
                         <div class="fs-6">
@@ -22,7 +22,7 @@
                         </div>
                     </div>
                     <div v-else>
-                        <div class="avatar avatar-sm">
+                        <div class="avatar avatar-lg">
                             <img :src="DEFAULT_NOBODY_AVATAR_URL" class="rounded-circle">
                         </div>
                     </div>
@@ -30,7 +30,7 @@
                         <span>vs</span>
                     </div>
                     <div v-if="room.userId_B>0" class="text-center">
-                        <div class="avatar avatar-sm">
+                        <div class="avatar avatar-lg">
                             <img :src="room.userB.avatarUrl || DEFAULT_AVATAR_URL" class="rounded-circle">
                         </div>
                         <div class="fs-6">
@@ -42,7 +42,7 @@
                         </div>
                     </div>
                     <div v-else>
-                        <div class="avatar avatar-sm">
+                        <div class="avatar avatar-lg">
                             <img :src="DEFAULT_NOBODY_AVATAR_URL" class="rounded-circle">
                         </div>
                     </div>
