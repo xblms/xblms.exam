@@ -99,6 +99,12 @@
                                         </span>
                                         <span class="badge bg-primary ms-5">{{ qPaperTotal }}</span>
                                     </li>
+                                    <li style="cursor:pointer;" class="list-group-item d-flex justify-content-between align-items-center" v-if="assTotal>0" v-on:click="btnTopMenuClick('examAssessment')">
+                                        <span class="me-5">
+                                            <i class="text-warning bi bi-star-half me-2"></i>待填写测评
+                                        </span>
+                                        <span class="badge bg-primary ms-5">{{ assTotal }}</span>
+                                    </li>
                                 </ul>
                             </div>
                         </el-card>

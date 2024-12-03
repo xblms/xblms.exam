@@ -15,6 +15,7 @@ var data = utils.init({
   uploadResult: false,
   errorMsgList: [],
   uploadExcelTmList: [],
+  userGroupList: null
 });
 
 var methods = {

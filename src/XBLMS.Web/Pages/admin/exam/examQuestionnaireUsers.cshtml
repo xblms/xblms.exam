@@ -22,9 +22,6 @@
     <div>
         <el-table ref="userTable" :data="list" :size="euiSize"
                   style="width: 100%" :height="$(window).height()-163">
-            <el-table-column type="selection"
-                             width="55">
-            </el-table-column>
             <el-table-column label="#"
                              type="index"
                              width="60"
@@ -50,7 +47,7 @@
                     <span v-else>/</span>
                 </template>
             </el-table-column>
-            <el-table-column label="状态" width="120">
+            <el-table-column label="状态" width="100" align="right">
                 <template slot-scope="scope">
                     <el-tag effect="dark" type="success" v-if="scope.row.submitType==='Submit'" :size="euiSize">已提交</el-tag>
                     <span v-else>/</span>

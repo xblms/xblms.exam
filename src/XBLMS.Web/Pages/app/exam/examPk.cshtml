@@ -3,7 +3,7 @@
 
 <div v-if="currentPk==0">
     <div v-if="roomTotal>0">
-        <el-card class="mb-3 card-hover-with-icon border-top border-3 rounded-0" v-for="room in roomList">
+        <el-card class="mt-3 card-hover-with-icon border-top border-3 rounded-0" v-for="room in roomList">
             <div v-on:click="btnViewRoomClick(room)">
                 <div class="text-center mb-3">
                     <span class="px-3 py-1 rounded-pill fs-6 card-icon">{{ room.mark }}</span>
@@ -58,13 +58,13 @@
         </div>
     </div>
     <div class="pt-10" v-else>
-        <el-empty :image-size="55" image="/sitefiles/assets/images/jiangbei.svg" description="暂无赛事"></el-empty>
+        <el-empty :image-size="55" description="暂无赛事"></el-empty>
     </div>
 </div>
 <div v-else>
     <div v-if="total>0">
         <div v-for="(pk,index) in list" v-on:click="btnViewClick(pk.id)">
-            <el-card class="mb-3 rounded-0">
+            <el-card class="mt-3 card-hover-with-icon border-top border-3 rounded-0">
                 <div slot="header">
                     <span>{{ pk.name }}</span>
                 </div>
@@ -98,8 +98,8 @@
             <small v-else>没有更多了</small>
         </div>
     </div>
-    <div class="pt-10 text-warning" v-else>
-        <el-empty :image-size="55" image="/sitefiles/assets/images/jiangbei.svg" description="暂无赛事"></el-empty>
+    <div class="pt-10" v-else>
+        <el-empty :image-size="55" description="暂无赛事"></el-empty>
     </div>
 </div>
 <div class="py-8"></div>

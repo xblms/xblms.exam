@@ -1,0 +1,64 @@
+﻿@page
+@{ Layout = "_Layout"; }
+
+<el-card>
+    <div slot="header" class="clearfix">
+        <span>{{ id > 0 ? "修改" : "新增" }}测评类别</span>
+        <el-button style="float: right;padding:3px 0;" type="text" v-on:click="utils.closeLayerSelf"><i class="el-icon-close"></i></el-button>
+    </div>
+    <div>
+        <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-180) + 'px' }">
+            <div style="margin-right:18px;">
+                <el-form v-on:submit.native.prevent ref="form" :model="form" :size="euiSize" status-icon label-width="100px">
+                    <el-form-item label="类别名称" prop="title" :rules="[{ required: true, message: '请输入类别名称' }]">
+                        <el-input v-model="form.title"></el-input>
+                    </el-form-item>
+                    <el-form-item label="测评结果">
+                        <el-table ref="itemList"
+                                  :row-key="Math.random()"
+                                  :data="itemList"
+                                  border
+                                  style="width: 100%"
+                                  size="mini"
+                                  empty-text="请添加项">
+                            <el-table-column type="index" label="#"
+                                             width="60">
+                            </el-table-column>
+                            <el-table-column label="结果名称">
+                                <template slot-scope="scope">
+                                    <el-input v-model.trim="scope.row.result"></el-input>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="分数区间">
+                                <template slot-scope="scope">
+                                    <el-input-number v-model="scope.row.minScore" :min="0"></el-input-number>
+                                    <el-divider direction="vertical"></el-divider>
+                                    <el-input-number v-model="scope.row.maxScore" :min="0"></el-input-number>
+                                </template>
+                            </el-table-column>
+                            <el-table-column width="70">
+                                <template slot-scope="scope">
+                                    <el-button type="danger" size="mini" icon="el-icon-delete" v-on:click.stop="btnRemoveClick(scope.row)">
+                                    </el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button plain type="success" icon="el-icon-plus" v-on:click.stop="btnAddItemClick(false)">添加项</el-button>
+                    </el-form-item>
+                </el-form>
+                </div>
+        </el-scrollbar>
+    </div>
+</el-card>
+<el-row align="center" style="margin-top:18px;">
+    <el-col :span="24" align="center">
+        <el-button icon="el-icon-check" type="primary" v-on:click="btnSubmitClick" :size="euiSize">确 定</el-button>
+        <el-button icon="el-icon-close" :size="euiSize" v-on:click="utils.closeLayerSelf">取 消</el-button>
+    </el-col>
+</el-row>
+
+@section Scripts{
+    <script src="/sitefiles/assets/js/admin/exam/examAssessmentConfigEdit.js" type="text/javascript"></script>
+}

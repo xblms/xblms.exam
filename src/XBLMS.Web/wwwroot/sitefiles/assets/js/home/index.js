@@ -27,6 +27,7 @@ var data = utils.init({
   contextTop: 0,
   paperTotal: 0,
   qPaperTotal: 0,
+  assTotal:0,
   taskTotal:0
 });
 
@@ -40,7 +41,8 @@ var methods = {
 
         $this.paperTotal = res.paperTotal;
         $this.qPaperTotal = res.qPaperTotal;
-        $this.taskTotal = $this.paperTotal + $this.qPaperTotal;
+        $this.assTotal = res.assTotal;
+        $this.taskTotal = $this.paperTotal + $this.qPaperTotal + $this.assTotal;
 
         $this.user = res.user;
         $this.menus = res.menus;
@@ -63,7 +65,8 @@ var methods = {
       var res = response.data;
       $this.paperTotal = res.paperTotal;
       $this.qPaperTotal = res.qPaperTotal;
-      $this.taskTotal = $this.paperTotal + $this.qPaperTotal;
+      $this.assTotal = res.assTotal;
+      $this.taskTotal = $this.paperTotal + $this.qPaperTotal + $this.assTotal;
     }).catch(function (error) {
       utils.error(error);
     });

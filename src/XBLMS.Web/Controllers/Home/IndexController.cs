@@ -24,6 +24,7 @@ namespace XBLMS.Web.Controllers.Home
         private readonly IExamPaperStartRepository _examPaperStartRepository;
         private readonly IExamQuestionnaireUserRepository _examQuestionnaireUserRepository;
         private readonly IExamQuestionnaireRepository _examQuestionnaireRepository;
+        private readonly IExamAssessmentUserRepository _examAssessmentUserRepository;
 
         public IndexController(IAuthManager authManager,
             IConfigRepository configRepository,
@@ -32,7 +33,8 @@ namespace XBLMS.Web.Controllers.Home
             IExamPaperUserRepository examPaperUserRepository,
             IExamPaperStartRepository examPaperStartRepository,
             IExamQuestionnaireUserRepository examQuestionnaireUserRepository,
-            IExamQuestionnaireRepository examQuestionnaireRepository)
+            IExamQuestionnaireRepository examQuestionnaireRepository,
+            IExamAssessmentUserRepository examAssessmentUserRepository)
         {
             _authManager = authManager;
             _configRepository = configRepository;
@@ -42,6 +44,7 @@ namespace XBLMS.Web.Controllers.Home
             _examPaperStartRepository = examPaperStartRepository;
             _examQuestionnaireUserRepository = examQuestionnaireUserRepository;
             _examQuestionnaireRepository = examQuestionnaireRepository;
+            _examAssessmentUserRepository = examAssessmentUserRepository;
         }
 
         public class GetResult
@@ -50,6 +53,7 @@ namespace XBLMS.Web.Controllers.Home
             public List<Menu> Menus { get; set; }
             public int PaperTotal { get; set; }
             public int QPaperTotal { get; set; }
+            public int AssTotal { get; set; }
         }
     }
 }

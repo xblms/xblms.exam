@@ -67,6 +67,13 @@ namespace XBLMS.Core.Services
         public IExamPkRoomAnswerRepository ExamPkRoomAnswerRepository { get; }
         public IExamPkUserRepository ExamPkUserRepository { get; }
 
+        public IExamAssessmentRepository ExamAssessmentRepository { get; }
+        public IExamAssessmentUserRepository ExamAssessmentUserRepository { get; }
+        public IExamAssessmentTmRepository ExamAssessmentTmRepository { get; }
+        public IExamAssessmentAnswerRepository ExamAssessmentAnswerRepository { get; }
+        public IExamAssessmentConfigRepository ExamAssessmentConfigRepository { get; }
+        public IExamAssessmentConfigSetRepository ExamAssessmentConfigSetRepository { get; }
+
 
         public DatabaseManager(
             ISettingsManager settingsManager,
@@ -114,7 +121,13 @@ namespace XBLMS.Core.Services
             IExamPkRepository examPkRepository,
             IExamPkRoomRepository examPkRoomRepository,
             IExamPkRoomAnswerRepository examPkRoomAnswerRepository,
-            IExamPkUserRepository examPkUserRepository)
+            IExamPkUserRepository examPkUserRepository,
+            IExamAssessmentRepository examAssessmentRepository,
+            IExamAssessmentUserRepository examAssessmentUserRepository,
+            IExamAssessmentTmRepository examAssessmentTmRepository,
+            IExamAssessmentAnswerRepository examAssessmentAnswerRepository,
+            IExamAssessmentConfigRepository examAssessmentConfigRepository,
+            IExamAssessmentConfigSetRepository examAssessmentConfigSetRepository)
         {
             _settingsManager = settingsManager;
             AdministratorRepository = administratorRepository;
@@ -162,6 +175,12 @@ namespace XBLMS.Core.Services
             ExamPkRoomRepository = examPkRoomRepository;
             ExamPkRoomAnswerRepository = examPkRoomAnswerRepository;
             ExamPkUserRepository = examPkUserRepository;
+            ExamAssessmentRepository = examAssessmentRepository;
+            ExamAssessmentUserRepository = examAssessmentUserRepository;
+            ExamAssessmentTmRepository = examAssessmentTmRepository;
+            ExamAssessmentAnswerRepository = examAssessmentAnswerRepository;
+            ExamAssessmentConfigRepository = examAssessmentConfigRepository;
+            ExamAssessmentConfigSetRepository = examAssessmentConfigSetRepository;
         }
 
         public List<IRepository> GetAllRepositories()
@@ -212,7 +231,13 @@ namespace XBLMS.Core.Services
                 ExamPkRepository,
                 ExamPkRoomRepository,
                 ExamPkRoomAnswerRepository,
-                ExamPkUserRepository
+                ExamPkUserRepository,
+                ExamAssessmentRepository,
+                ExamAssessmentUserRepository,
+                ExamAssessmentTmRepository,
+                ExamAssessmentAnswerRepository,
+                ExamAssessmentConfigRepository,
+                ExamAssessmentConfigSetRepository
             };
 
             return list;

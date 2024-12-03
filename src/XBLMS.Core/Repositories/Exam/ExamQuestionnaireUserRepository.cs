@@ -81,7 +81,6 @@ namespace XBLMS.Core.Repositories
         public async Task<(int total, List<ExamQuestionnaireUser> list)> GetListAsync(int paperId, string isSubmit, string keyWords, int pageIndex, int pageSize)
         {
             var query = Q.
-                WhereNullOrFalse(nameof(ExamQuestionnaireUser.Locked)).
                 Where(nameof(ExamQuestionnaireUser.ExamPaperId), paperId);
 
             if (!string.IsNullOrEmpty(isSubmit))
@@ -161,6 +160,18 @@ namespace XBLMS.Core.Repositories
                 Set(nameof(ExamQuestionnaireUser.ExamBeginDateTime), beginDateTime).
                 Set(nameof(ExamQuestionnaireUser.ExamEndDateTime), endDateTime).
                 Where(nameof(ExamQuestionnaireUser.ExamPaperId), paperId));
+        }
+
+        public async Task<int> GetTaskCountAsync(int userId)
+        {
+            var query = Q.
+                WhereNullOrFalse(nameof(ExamQuestionnaireUser.Locked)).
+                WhereNot(nameof(ExamQuestionnaireUser.SubmitType), SubmitType.Submit.GetValue()).
+                Where(nameof(ExamQuestionnaireUser.ExamBeginDateTime), "<", DateTime.Now).
+                Where(nameof(ExamQuestionnaireUser.ExamEndDateTime), ">", DateTime.Now).
+                Where(nameof(ExamQuestionnaireUser.UserId), userId);
+
+            return await _repository.CountAsync(query);
         }
     }
 }

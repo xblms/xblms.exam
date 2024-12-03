@@ -36,7 +36,6 @@ var methods = {
     this.apiGet();
   },
   btnSearchClick: function () {
-    this.formInline.treeId = this.treeSelectId;
     this.formInline.pageIndex = 1;
     this.apiGet();
   },
@@ -159,7 +158,7 @@ var methods = {
     top.utils.openLayer({
       title: false,
       closebtn: 0,
-      url: utils.getExamUrl('examQuestionnaireEdit', { id: id, treeId: this.treeSelectId }),
+      url: utils.getExamUrl('examQuestionnaireEdit', { id: id }),
       width: "98%",
       height: "98%",
       end: function () {

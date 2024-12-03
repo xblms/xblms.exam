@@ -94,6 +94,7 @@ var data = utils.init({
   taskPaperTotal: 0,
   taskQTotal: 0,
   taskDialogVisible: false,
+  taskAssTotal:0,
 
   topCer:null,
   dateStr:'',
@@ -137,7 +138,8 @@ var methods = {
 
       $this.taskPaperTotal = res.taskPaperTotal;
       $this.taskQTotal = res.taskQTotal;
-      $this.taskTotal = $this.taskPaperTotal + $this.taskQTotal;
+      $this.taskAssTotal = res.taskAssTotal;
+      $this.taskTotal = $this.taskPaperTotal + $this.taskQTotal + $this.taskAssTotal;
 
       setTimeout(function () {
         $this.passSeries = [100];
@@ -164,6 +166,9 @@ var methods = {
   },
   btnPkMoreMenuClick: function () {
     location.href = utils.getExamUrl("examPk");
+  },
+  btnAssMoreMenuClick: function () {
+    location.href = utils.getExamUrl("examAssessment");
   },
   btnMoreMenuClick: function (command) {
     top.$vue.btnTopMenuClick(command);

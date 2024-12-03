@@ -47,8 +47,8 @@ namespace XBLMS.Web.Controllers.Home
                         IconClass = menuInfo2.IconClass,
                         Link = menuInfo2.Link,
                         Target = menuInfo2.Target,
-                        Name= menuInfo2.Name,
-                        
+                        Name = menuInfo2.Name,
+
                     });
                 }
 
@@ -90,23 +90,9 @@ namespace XBLMS.Web.Controllers.Home
 
             }
 
-            var qPaperTotal = 0;
-            var qPaperIds = await _examQuestionnaireUserRepository.GetPaperIdsAsync(user.Id);
-            if (qPaperIds != null && qPaperIds.Count > 0)
-            {
-                foreach (var qPaperId in qPaperIds)
-                {
-                    var paper = await _examQuestionnaireRepository.GetAsync(qPaperId);
-                    if (paper != null)
-                    {
-                        if ((paper.ExamBeginDateTime.Value < DateTime.Now && paper.ExamEndDateTime.Value > DateTime.Now))
-                        {
-                            qPaperTotal++;
-                        }
-                    }
-                
-                }
-            }
+
+            var qPaperTotal = await _examQuestionnaireUserRepository.GetTaskCountAsync(user.Id);
+            var assesstantTask = await _examAssessmentUserRepository.GetTaskCountAsync(user.Id);
 
             return new GetResult
             {
@@ -114,6 +100,7 @@ namespace XBLMS.Web.Controllers.Home
                 Menus = menus,
                 PaperTotal = paperTotal,
                 QPaperTotal = qPaperTotal,
+                AssTotal = assesstantTask
             };
         }
     }
