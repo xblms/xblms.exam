@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Routing;
 using System.Threading.Tasks;
 using XBLMS.Core.Utils;
+using XBLMS.Enums;
+using XBLMS.Utils;
 namespace XBLMS.Web.Controllers.Admin.Exam
 {
     public partial class ExamPkController
@@ -9,6 +11,11 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         [HttpGet, Route(Route)]
         public async Task<ActionResult<GetResult>> GetManage([FromQuery] GetRequest request)
         {
+            if (!await _authManager.HasPermissionsAsync())
+            {
+                return this.NoAuth();
+            }
+
             var (total, list) = await _examPkRepository.GetListAsync(request.Keyword, request.PageIndex, request.PageSize);
 
             if (total > 0)

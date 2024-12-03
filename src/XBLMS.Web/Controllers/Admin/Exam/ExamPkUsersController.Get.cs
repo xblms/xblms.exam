@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using XBLMS.Core.Utils;
+using XBLMS.Enums;
+using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Admin.Exam
 {
@@ -9,6 +11,11 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         [HttpGet, Route(Route)]
         public async Task<ActionResult<GetUserResult>> GetUserList([FromQuery] GetUserRequest request)
         {
+            if (!await _authManager.HasPermissionsAsync(MenuPermissionType.Manage))
+            {
+                return this.NoAuth();
+            }
+
             var pk = await _examPkRepository.GetAsync(request.Id);
 
             var (total, list) = await _examPkUserRepository.GetListAsync(request.Id, request.KeyWords);

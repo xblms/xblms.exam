@@ -16,6 +16,11 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         [HttpGet, Route(RouteExportWord)]
         public async Task<ActionResult<StringResult>> ExportWord([FromQuery] IdRequest request)
         {
+            if (!await _authManager.HasPermissionsAsync(MenuPermissionType.Manage))
+            {
+                return this.NoAuth();
+            }
+
             var paper = await _questionnaireRepository.GetAsync(request.Id);
             var tmList = await _questionnaireTmRepository.GetListAsync(paper.Id);
 

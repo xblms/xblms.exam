@@ -1,15 +1,22 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using XBLMS.Core.Utils;
+using XBLMS.Enums;
 using XBLMS.Models;
+using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Admin.Exam
 {
     public partial class ExamPkRoomsController
     {
         [HttpGet, Route(Route)]
-        public async Task<ActionResult<GetResult>> GetUserList([FromQuery] GetRequest request)
+        public async Task<ActionResult<GetResult>> GetRoomList([FromQuery] GetRequest request)
         {
+            if (!await _authManager.HasPermissionsAsync(MenuPermissionType.Manage))
+            {
+                return this.NoAuth();
+            }
+
             var pk = await _examPkRepository.GetAsync(request.Id);
 
             var list = await _examPkRepository.GetChildList(request.Id);

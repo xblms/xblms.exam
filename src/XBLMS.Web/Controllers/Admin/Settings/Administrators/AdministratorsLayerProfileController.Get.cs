@@ -1,6 +1,9 @@
 ﻿using Datory;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using XBLMS.Dto;
+using XBLMS.Enums;
 
 namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
 {
@@ -9,9 +12,17 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
         [HttpGet, Route(Route)]
         public async Task<ActionResult<GetResult>> Get([FromQuery] GetRequest request)
         {
+            var admin = await _authManager.GetAdminAsync();
 
             var adminId = _authManager.AdminId;
             var organs = await _organManager.GetOrganTreeTableDataAsync();
+
+            var auths = _authManager.AuthorityTypes();
+            if (admin.Auth == AuthorityType.AdminSelf)
+            {
+                auths = new List<Dto.Select<string>>();
+                auths.Add(new Select<string>(AuthorityType.AdminSelf));
+            }
 
             if (!string.IsNullOrEmpty(request.UserName))
             {
@@ -35,14 +46,14 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
                     Email = administrator.Email,
                     Auth = administrator.Auth.GetValue(),
                     OrganId = organId,
-                    Auths = _authManager.AuthorityTypes(),
+                    Auths = auths,
                     Organs = organs
                 };
             }
 
             return new GetResult()
             {
-                Auths = _authManager.AuthorityTypes(),
+                Auths = auths,
                 Organs = organs
             };
 

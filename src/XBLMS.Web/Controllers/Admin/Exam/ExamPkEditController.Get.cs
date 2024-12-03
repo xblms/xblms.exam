@@ -12,6 +12,11 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         [HttpGet, Route(Route)]
         public async Task<ActionResult<GetResult>> Get([FromQuery] IdRequest request)
         {
+            if (!await _authManager.HasPermissionsAsync(MenuPermissionType.Update))
+            {
+                return this.NoAuth();
+            }
+
             var pk = new ExamPk();
             pk.Name = $"答题竞赛-{StringUtils.GetShortGuid()}";
             pk.RuleType = PkRuleType.Game1;

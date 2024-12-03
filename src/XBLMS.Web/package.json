@@ -86,7 +86,7 @@
         "text": "发布问卷",
         "link": "/admin/exam/examQuestionnaire",
         "iconClass": "el-icon-eleme",
-        "Permissions": [ "Select", "Add", "Update", "Delete" ],
+        "Permissions": [ "Select", "Add", "Update", "Delete", "Manage" ],
         "children": [
         ]
       },
@@ -96,7 +96,7 @@
         "text": "发布测评",
         "link": "/admin/exam/examAssessment",
         "iconClass": "el-icon-magic-stick",
-        "Permissions": [ "Select", "Add", "Update", "Delete" ],
+        "Permissions": [ "Select", "Add", "Update", "Delete", "Manage" ],
         "children": [
         ]
       },
@@ -106,7 +106,7 @@
         "text": "发布竞赛",
         "link": "/admin/exam/examPk",
         "iconClass": "el-icon-trophy",
-        "Permissions": [ "Select", "Add", "Update", "Delete" ],
+        "Permissions": [ "Select", "Add", "Update", "Delete", "Manage" ],
         "children": [
         ]
       },
