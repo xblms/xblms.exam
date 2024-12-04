@@ -47,8 +47,8 @@
                             <el-input ref="jiexi" type="textarea" :autosize="{ minRows: 3}" v-model="form.jiexi"></el-input>
                             <el-link type="primary" icon="el-icon-document" v-on:click="btnOpenEditClick('jiexi','form')">富文本编辑</el-link>
                         </el-form-item>
-                        <el-form-item label="状态" prop="isStop">
-                            <el-select v-model="form.isStop">
+                        <el-form-item label="状态" prop="locked">
+                            <el-select v-model="form.locked">
                                 <el-option label="启用" :value="false"></el-option>
                                 <el-option label="停用" :value="true"></el-option>
                             </el-select>

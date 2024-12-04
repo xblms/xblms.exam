@@ -99,7 +99,7 @@
                 <div class="d-flex justify-content-start align-items-center mt-3">
                     <div class="me-2" style="width:130px;">状态</div>
                     <div>
-                        <el-tag type="danger" size="mini" effect="dark" v-if="tm.isStop">停 用</el-tag>
+                        <el-tag type="danger" size="mini" effect="dark" v-if="tm.locked">停 用</el-tag>
                         <el-tag type="success" size="mini" effect="dark" v-else>启 用</el-tag>
                     </div>
                 </div>
