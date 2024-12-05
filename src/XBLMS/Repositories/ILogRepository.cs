@@ -22,12 +22,6 @@ namespace XBLMS.Repositories
 
         Task<List<Log>> GetUserLogsAsync(int userId, string keyword, string dateFrom, string dateTo, int offset, int limit);
 
-        Task<List<Log>> GetUserLogsAsync(int userId, int offset, int limit);
-
-        Task<List<Log>> GetAdminLogsAsync(int adminId, int offset, int limit);
-
-
-
         Task<int> GetAdminLogsCountAsync(List<int> adminIds, string keyword, string dateFrom, string dateTo);
 
         Task<List<Log>> GetAdminLogsAsync(List<int> adminIds, string keyword, string dateFrom, string dateTo, int offset, int limit);

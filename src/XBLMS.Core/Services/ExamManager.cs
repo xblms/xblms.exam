@@ -144,6 +144,34 @@ namespace XBLMS.Core.Services
 
 
         }
+        public async Task GetTmDeleteInfo(ExamTm tm)
+        {
+            tm.Set("Options", tm.Get("options"));
+            tm.Set("OptionsValues", tm.Get("optionsValues"));
+
+            tm.Set("TitleHtml", tm.Title);
+            tm.Title = StringUtils.StripTags(tm.Title);
+
+            tm.Set("NanduStar", $"{tm.Nandu}<i class='el-icon-star-on' style='color:#FF9900;margin-left:3px;font-size:14px;'></i>");
+
+            var tx = await _examTxRepository.GetAsync(tm.TxId);
+            if (tx != null)
+            {
+                tm.Set("TxName", tx.Name);
+                tm.Set("TxTaxis", tx.Taxis);
+                tm.Set("BaseTx", tx.ExamTxBase);
+            }
+            else
+            {
+                tm.Set("TxName","题型不存在");
+                tm.Set("TxTaxis", "题型不存在");
+                tm.Set("BaseTx", "题型不存在");
+            }
+     
+            var treeName = await _examTmTreeRepository.GetPathNamesAsync(tm.TreeId);
+            tm.Set("TreeName", treeName);
+
+        }
         public async Task GetTmInfo(ExamTm tm)
         {
             await GetBaseTmInfo(tm);

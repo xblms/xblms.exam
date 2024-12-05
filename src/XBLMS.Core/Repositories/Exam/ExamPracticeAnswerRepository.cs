@@ -22,22 +22,9 @@ namespace XBLMS.Core.Repositories
 
         public List<TableColumn> TableColumns => _repository.TableColumns;
 
-        public async Task<ExamPracticeAnswer> GetAsync(int userId,int tmId,int practiceId)
-        {
-            return await _repository.GetAsync(Q.
-                Where(nameof(ExamPracticeAnswer.TmId), tmId).
-                Where(nameof(ExamPracticeAnswer.PracticeId), practiceId).
-                Where(nameof(ExamPracticeAnswer.UserId), userId));
-        }
-
         public async Task<int> InsertAsync(ExamPracticeAnswer item)
         {
             return await _repository.InsertAsync(item);
-        }
-
-        public async Task UpdateAsync(ExamPracticeAnswer item)
-        {
-            await _repository.UpdateAsync(item);
         }
     }
 }

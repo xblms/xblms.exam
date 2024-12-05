@@ -11,8 +11,6 @@ namespace XBLMS.Repositories
         Task<ExamPaperRandomTm> GetAsync(int Id);
         Task<int> InsertAsync(ExamPaperRandomTm item);
         Task<int> DeleteByPaperAsync(int examPaperId);
-        Task<List<ExamPaperRandomTm>> GetListAsync(int examPaperRandomId);
         Task<List<ExamPaperRandomTm>> GetListAsync(int examPaperRandomId, int txId);
-        Task<List<int>> GetTmIdsAsync(int examPaperRandomId, int txId);
     }
 }

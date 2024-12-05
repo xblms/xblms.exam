@@ -53,7 +53,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                         CreatorId= admin.CreatorId
                     });
 
-                    await _authManager.AddAdminLogAsync("添加题目分类", $"{name}");
+                    await _authManager.AddAdminLogAsync("新增题目分类", $"{name}");
 
 
                     insertedTreeIdHashtable[count + 1] = insertedTkId;

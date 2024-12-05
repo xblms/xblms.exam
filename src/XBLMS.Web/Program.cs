@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Serilog;
@@ -31,7 +32,11 @@ namespace XBLMS.Web
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder
-                        .UseKestrel(options => { options.Limits.MaxRequestBodySize = long.MaxValue; })
+                        .UseKestrel(options =>
+                        {
+                            options.Limits.MaxRequestBodySize = long.MaxValue;
+                            options.Limits.MinRequestBodyDataRate = new MinDataRate(bytesPerSecond: 1024, gracePeriod: TimeSpan.FromSeconds(10));
+                        })
                         .UseIIS()
                         .UseStartup<Startup>();
                 })

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using DocumentFormat.OpenXml.EMMA;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -168,7 +169,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                                 if (!StringUtils.Contains(title, "___"))
                                 {
                                     cacheInfo.TmCurrent++;
-                                    errorMessageList.Add($"【行{rowIndexName}:填空题未包含___】"); 
+                                    errorMessageList.Add($"【行{rowIndexName}:填空题未包含___】");
 
                                     _cacheManager.AddOrUpdateAbsolute(cacheKey, cacheInfo, 1);
 
@@ -207,7 +208,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                                         {
                                             optionError = true;
                                             break;
-                                         
+
                                         }
                                     }
 
@@ -247,7 +248,10 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
                                     if (tmid > 0)
                                     {
-                                        await _statRepository.AddCountAsync(StatType.ExamTmAdd);
+                                        await _authManager.AddAdminLogAsync("新增题目-导入", $"{StringUtils.StripTags(examInfo.Title)}");
+                                        await _authManager.AddStatLogAsync(StatType.ExamTmAdd, "新增题目", tmid, StringUtils.StripTags(examInfo.Title));
+                                        await _authManager.AddStatCount(StatType.ExamTmAdd);
+
                                         success++;
 
                                         cacheInfo.TmCurrent++;

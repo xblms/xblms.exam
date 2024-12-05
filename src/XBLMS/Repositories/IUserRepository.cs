@@ -25,7 +25,7 @@ namespace XBLMS.Repositories
         Task UnLockAsync(IList<int> userIds);
 
         Task<bool> IsUserNameExistsAsync(string userName);
-
+        Task<bool> ExistsAsync(int id);
         Task<bool> IsEmailExistsAsync(string email);
 
         Task<bool> IsMobileExistsAsync(string mobile);
@@ -58,7 +58,6 @@ namespace XBLMS.Repositories
         Task<List<int>> GetUserIdsAsync(List<int> companyIds, List<int> departmentIds, List<int> dutyIds, List<int> userIds, int dayOfLastActivity, string keyword, string order);
         Task<List<int>> GetUserIdsAsync(List<int> companyIds, List<int> departmentIds, List<int> dutyIds);
         Task<List<int>> GetUserIdsWithOutLockedAsync(List<int> companyIds, List<int> departmentIds, List<int> dutyIds);
-        Task<List<int>> GetUserIdsWithOutLockedAsync(List<int> companyIds, List<int> departmentIds, List<int> dutyIds, string keyWords);
         Task<List<int>> GetUserIdsWithOutLockedAsync();
     }
 }

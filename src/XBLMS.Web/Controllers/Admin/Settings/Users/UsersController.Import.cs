@@ -197,6 +197,10 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
                         CreatorId = adminId
                     }, password, true, string.Empty);
 
+                    await _authManager.AddAdminLogAsync("新增用户账号-导入", $"{userName}");
+                    await _authManager.AddStatLogAsync(StatType.UserAdd, "新增用户账号", user.Id, user.DisplayName);
+                    await _authManager.AddStatCount(StatType.UserAdd);
+
                     success++;
                 }
             }

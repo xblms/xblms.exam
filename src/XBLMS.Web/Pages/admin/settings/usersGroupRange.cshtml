@@ -116,6 +116,14 @@
 
             <el-table :data="items" :size="euiSize" ref="userTable" v-on:selection-change="handleSelectionChange"
                       style="width: 100%" :height="$(window).innerHeight()-265">
+                <el-table-column label="#"
+                                 type="index"
+                                 width="60"
+                                 align="left">
+                    <template scope="scope">
+                        <span>{{(formInline.pageIndex - 1) * formInline.pageSize + scope.$index + 1}}</span>
+                    </template>
+                </el-table-column>
                 <el-table-column type="selection"
                                  width="55">
                 </el-table-column>

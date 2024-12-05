@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using XBLMS.Dto;
+using XBLMS.Enums;
 
 namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
 {
@@ -16,11 +17,12 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
             await _administratorsInRolesRepository.DeleteByRoleIdAsync(roleInfo.Id);
 
             await _authManager.AddAdminLogAsync("删除管理员角色", $"{roleInfo.RoleName}");
-            
+            await _authManager.AddStatLogAsync(StatType.AdminAuthDelete, "删除管理员角色", roleInfo.Id, roleInfo.RoleName, roleInfo);
+            await _authManager.AddStatCount(StatType.AdminAuthDelete);
 
             return new BoolResult
             {
-                Value =true
+                Value = true
             };
         }
     }

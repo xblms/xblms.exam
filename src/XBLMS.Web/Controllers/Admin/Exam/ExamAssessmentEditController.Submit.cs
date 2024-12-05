@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using XBLMS.Dto;
 using XBLMS.Enums;
+using XBLMS.Models;
 using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Admin.Exam
@@ -34,6 +36,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
             if (assInfo.Id > 0)
             {
+                var last = await _examAssessmentRepository.GetAsync(assInfo.Id);
 
                 if (request.SubmitType == SubmitType.Submit)
                 {
@@ -46,12 +49,14 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                     await _examManager.SerExamAssessmentTm(request.TmList, assInfo.Id);
 
                     await _authManager.AddAdminLogAsync("重新发布测评", $"{assInfo.Title}");
+                    await _authManager.AddStatLogAsync(StatType.ExamAssUpdate, "重新发布测评", assInfo.Id, assInfo.Title, last);
 
 
                 }
                 else
                 {
                     await _authManager.AddAdminLogAsync("修改测评", $"{assInfo.Title}");
+                    await _authManager.AddStatLogAsync(StatType.ExamAssUpdate, "修改测评", assInfo.Id, assInfo.Title, last);
                 }
 
 
@@ -80,10 +85,14 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                     await _examManager.ArrangerExamAssessment(assInfo);
 
                     await _authManager.AddAdminLogAsync("发布测评", $"{assInfo.Title}");
+                    await _authManager.AddStatLogAsync(StatType.ExamAssAdd, "发布测评", assInfo.Id, assInfo.Title);
+                    await _authManager.AddStatCount(StatType.ExamAssAdd);
                 }
                 else
                 {
                     await _authManager.AddAdminLogAsync("保存测评", $"{assInfo.Title}");
+                    await _authManager.AddStatLogAsync(StatType.ExamAssAdd, "保存测评", assInfo.Id, assInfo.Title);
+                    await _authManager.AddStatCount(StatType.ExamAssAdd);
                 }
             }
 

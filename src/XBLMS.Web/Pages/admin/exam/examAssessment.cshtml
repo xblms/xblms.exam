@@ -52,11 +52,11 @@
                 </span>
             </template>
         </el-table-column>
-        <el-table-column width="93" align="right">
+        <el-table-column width="100" align="right">
             <template slot-scope="scope">
                 <el-dropdown :show-timeout="0" placement="left">
-                    <el-button size="mini" v-on:click.stop="return false">
-                        操作<i class="el-icon-arrow-down el-icon--right"></i>
+                    <el-button icon="el-icon-arrow-left" size="mini" v-on:click.stop="return false">
+                        操作
                     </el-button>
                     <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item icon="el-icon-edit" v-on:click.native="btnEditClick(scope.row.id)">修改</el-dropdown-item>

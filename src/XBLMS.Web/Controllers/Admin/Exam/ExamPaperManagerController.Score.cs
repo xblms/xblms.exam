@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Runtime.ConstrainedExecution;
 using System.Threading.Tasks;
 using XBLMS.Core.Utils;
 using XBLMS.Dto;
+using XBLMS.Enums;
 using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Admin.Exam
@@ -86,8 +88,10 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             }
 
             ExcelUtils.Write(filePath, head, rows);
-
             var downloadUrl = _pathManager.GetDownloadFilesUrl(fileName);
+
+            await _authManager.AddAdminLogAsync("导出成绩单", paper.Title);
+            await _authManager.AddStatLogAsync(StatType.Export, "导出成绩单", 0, string.Empty, new StringResult { Value = downloadUrl });
 
             return new StringResult
             {

@@ -93,5 +93,10 @@ namespace XBLMS.Core.Repositories
         {
             await _repository.DeleteAsync();
         }
+
+        public async Task<int> SumAsync(StatType statType)
+        {
+            return await _repository.SumAsync(nameof(Stat.Count), Q.Where(nameof(Stat.StatType), statType.GetValue()));
+        }
     }
 }

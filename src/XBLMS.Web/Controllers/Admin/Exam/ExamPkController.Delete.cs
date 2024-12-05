@@ -38,7 +38,10 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 }
                 await _examPkRepository.DeleteAsync(pk.Id);
                 await _examPkUserRepository.DeleteByPkIdAsync(pk.Id);
+
                 await _authManager.AddAdminLogAsync("删除竞赛", $"{pk.Name}");
+                await _authManager.AddStatLogAsync(StatType.ExamPkDelete, "删除竞赛", pk.Id, pk.Name, pk);
+                await _authManager.AddStatCount(StatType.ExamPkDelete);
 
             }
             return new BoolResult

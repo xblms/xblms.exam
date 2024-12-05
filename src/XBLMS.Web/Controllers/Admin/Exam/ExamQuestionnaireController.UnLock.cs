@@ -27,6 +27,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             }
 
             await _authManager.AddAdminLogAsync("解锁问卷调查", $"{paper.Title}");
+            await _authManager.AddStatLogAsync(StatType.ExamQUpdate, "启用问卷调查", paper.Id, paper.Title);
 
             return new BoolResult
             {

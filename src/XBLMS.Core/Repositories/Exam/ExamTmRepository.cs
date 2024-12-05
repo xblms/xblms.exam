@@ -22,14 +22,15 @@ namespace XBLMS.Core.Repositories
         {
             _repository = new Repository<ExamTm>(settingsManager.Database, settingsManager.Redis);
         }
-
-
         public IDatabase Database => _repository.Database;
 
         public string TableName => _repository.TableName;
 
         public List<TableColumn> TableColumns => _repository.TableColumns;
-
+        public async Task<bool> ExistsAsync(int id)
+        {
+            return await _repository.ExistsAsync(id);
+        }
         public async Task<bool> ExistsAsync(string title, int txId)
         {
             return await _repository.ExistsAsync(Q.Where(nameof(ExamTm.TxId), txId).Where(nameof(ExamTm.Title), title));
@@ -64,61 +65,6 @@ namespace XBLMS.Core.Repositories
                 return list;
             }
             return null;
-        }
-        public async Task<List<ExamTm>> GetListWithOutLockedAsync(List<int> tmIds, int txId, int nandu1Count = 0, int nandu2Count = 0, int nandu3Count = 0, int nandu4Count = 0, int nandu5Count = 0)
-        {
-            var query = Q.WhereNullOrFalse(nameof(ExamTm.Locked));
-            if (tmIds != null && tmIds.Count > 0)
-            {
-                tmIds = ListUtils.GetRandomList(tmIds, 2000);
-                query.WhereIn(nameof(ExamTm.Id), tmIds);
-            }
-            else
-            {
-                return null;
-            }
-            if (txId > 0)
-            {
-                query.Where(nameof(ExamTm.TxId), txId);
-            }
-
-            if (nandu1Count > 0)
-            {
-                query.Where(nameof(ExamTm.Nandu), 1);
-
-                var list = await _repository.GetAllAsync(query);
-                return list.OrderBy(order => StringUtils.Guid()).Take(nandu1Count).ToList();
-            }
-            if (nandu2Count > 0)
-            {
-                query.Where(nameof(ExamTm.Nandu), 2);
-
-                var list = await _repository.GetAllAsync(query);
-                return list.OrderBy(order => StringUtils.Guid()).Take(nandu2Count).ToList();
-            }
-            if (nandu3Count > 0)
-            {
-                query.Where(nameof(ExamTm.Nandu), 3);
-
-                var list = await _repository.GetAllAsync(query);
-                return list.OrderBy(order => StringUtils.Guid()).Take(nandu3Count).ToList();
-            }
-            if (nandu4Count > 0)
-            {
-                query.Where(nameof(ExamTm.Nandu), 4);
-
-                var list = await _repository.GetAllAsync(query);
-                return list.OrderBy(order => StringUtils.Guid()).Take(nandu4Count).ToList();
-            }
-            if (nandu5Count > 0)
-            {
-                query.Where(nameof(ExamTm.Nandu), 5);
-
-                var list = await _repository.GetAllAsync(query);
-                return list.OrderBy(order => StringUtils.Guid()).Take(nandu5Count).ToList();
-            }
-            return null;
-
         }
         public async Task<(int total, List<ExamTm> list)> GetListAsync(List<int> withoutIds, List<int> treeIds, int txId, int nandu, string keyword, string order, string orderType, bool? isStop, int pageIndex, int pageSize)
         {
@@ -513,6 +459,13 @@ namespace XBLMS.Core.Repositories
             }
             return null;
 
+        }
+        public async Task<(int allCount, int addCount, int deleteCount, int lockedCount, int unLockedCount)> GetDataCount()
+        {
+            var count = await _repository.CountAsync();
+            var lockedCount = await _repository.CountAsync(Q.WhereTrue(nameof(ExamTm.Locked)));
+            var unLockedCount = await _repository.CountAsync(Q.WhereNullOrFalse(nameof(ExamTm.Locked)));
+            return (count, 0, 0, lockedCount, unLockedCount);
         }
     }
 }

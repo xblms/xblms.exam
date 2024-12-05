@@ -53,10 +53,6 @@ namespace XBLMS.Core.Repositories
             return await _repository.InsertAsync(item);
         }
 
-        public async Task UpdateAsync(ExamPractice item)
-        {
-            await _repository.UpdateAsync(item);
-        }
         public async Task IncrementAnswerCountAsync(int id)
         {
             await _repository.IncrementAsync(nameof(ExamPractice.AnswerCount), Q.Where(nameof(ExamPractice.Id), id));

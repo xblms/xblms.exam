@@ -78,14 +78,26 @@ namespace XBLMS.Core.Services
             {
                 if (repository.TableName == ConfigRepository.TableName) continue;
 
-                if (repository.TableName == AdministratorRepository.TableName)
-                {
-                    await AdministratorRepository.ClearAsync();
-                    continue;
-                }
                 if (repository.TableName == OrganCompanyRepository.TableName)
                 {
-                    await OrganCompanyRepository.ClearAsync();
+                    //await OrganCompanyRepository.ClearAsync();
+                    continue;
+                }
+                if (repository.TableName == OrganDepartmentRepository.TableName)
+                {
+                    continue;
+                }
+                if (repository.TableName == OrganDutyRepository.TableName)
+                {
+                    continue;
+                }
+                if (repository.TableName == AdministratorRepository.TableName)
+                {
+                    //await AdministratorRepository.ClearAsync();
+                    continue;
+                }
+                if (repository.TableName == UserRepository.TableName)
+                {
                     continue;
                 }
 
@@ -181,6 +193,10 @@ namespace XBLMS.Core.Services
                 else if (tableName == UserRepository.TableName)
                 {
                     await _settingsManager.Database.CreateIndexAsync(tableName, $"IX_{tableName}_General", $"{nameof(User.CompanyId)} DESC", $"{nameof(User.DepartmentId)} DESC", $"{nameof(User.DutyId)} DESC");
+                }
+                else if (tableName == StatLogRepository.TableName)
+                {
+                    await _settingsManager.Database.CreateIndexAsync(tableName, $"IX_{tableName}_General", $"{nameof(StatLog.AdminId)} DESC", $"{nameof(StatLog.ObjectId)} DESC");
                 }
             }
             catch (Exception ex)

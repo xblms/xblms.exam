@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using XBLMS.Dto;
+using XBLMS.Enums;
 using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Admin.Exam
@@ -39,6 +40,10 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             DirectoryUtils.DeleteDirectoryIfExists(filePath);
 
             var zipUrl = _pathManager.GetRootUrlByPath(zipPath);
+
+            await _authManager.AddAdminLogAsync("导出证书", cer.Name);
+            await _authManager.AddStatLogAsync(StatType.Export, "导出证书", 0, string.Empty, new StringResult { Value = zipUrl });
+
             return new StringResult
             {
                 Value = zipUrl

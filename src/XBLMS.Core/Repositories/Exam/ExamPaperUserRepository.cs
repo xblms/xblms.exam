@@ -37,18 +37,9 @@ namespace XBLMS.Core.Repositories
             await _repository.DeleteAsync(id);
         }
 
-        public async Task ClearByUserAsync(int userId)
-        {
-            await _repository.DeleteAsync(Q.Where(nameof(ExamPaperUser.UserId), userId));
-        }
         public async Task ClearByPaperAsync(int paperId)
         {
             await _repository.DeleteAsync(Q.Where(nameof(ExamPaperUser.ExamPaperId), paperId));
-        }
-
-        public async Task ClearByPaperAndUserAsync(int paperId, int userId)
-        {
-            await _repository.DeleteAsync(Q.Where(nameof(ExamPaperUser.ExamPaperId), paperId).Where(nameof(ExamPaperUser.UserId), userId));
         }
         public async Task<bool> ExistsAsync(int paperId, int userId)
         {
@@ -101,16 +92,6 @@ namespace XBLMS.Core.Repositories
         public async Task<ExamPaperUser> GetAsync(int id)
         {
             return await _repository.GetAsync(id);
-        }
-        public async Task<ExamPaperUser> GetOnlyOneAsync(int userId)
-        {
-            var query = Q.
-                WhereNullOrFalse(nameof(ExamPaperUser.Locked)).
-                Where(nameof(ExamPaperUser.UserId), userId);
-
-            return await _repository.GetAsync(query.
-                OrderByDesc(nameof(ExamPaperUser.Id)).
-                Limit(1));
         }
 
         public async Task<List<int>> GetPaperIdsByUser(int userId)
@@ -242,12 +223,6 @@ namespace XBLMS.Core.Repositories
             await _repository.UpdateAsync(Q.
                 Set(nameof(ExamPaperUser.KeyWords), keyWords).
                 Where(nameof(ExamPaperUser.ExamPaperId), paperId));
-        }
-        public async Task UpdateKeyWordsAdminAsync(int id, string keyWords)
-        {
-            await _repository.UpdateAsync(Q.
-                Set(nameof(ExamPaperUser.KeyWordsAdmin), keyWords).
-                Where(nameof(ExamPaperUser.Id), id));
         }
 
 

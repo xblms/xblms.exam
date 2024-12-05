@@ -155,6 +155,14 @@ namespace XBLMS.Core.Repositories
 
             return string.IsNullOrEmpty(user.DisplayName) || user.UserName == user.DisplayName ? user.UserName : $"{user.DisplayName}({user.UserName})";
         }
+
+        public async Task<(int allCount, int addCount, int deleteCount, int lockedCount, int unLockedCount)> GetDataCount()
+        {
+            var count = await _repository.CountAsync();
+            var lockedCount = await _repository.CountAsync(Q.WhereTrue(nameof(User.Locked)));
+            var unLockedCount = await _repository.CountAsync(Q.WhereNullOrFalse(nameof(User.Locked)));
+            return (count, 0, 0, lockedCount, unLockedCount);
+        }
     }
 }
 

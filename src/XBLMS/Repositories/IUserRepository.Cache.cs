@@ -20,5 +20,6 @@ namespace XBLMS.Repositories
         Task<string> GetDisplayAsync(int userId);
 
         string GetDisplay(User user);
+        Task<(int allCount, int addCount, int deleteCount, int lockedCount, int unLockedCount)> GetDataCount();
     }
 }

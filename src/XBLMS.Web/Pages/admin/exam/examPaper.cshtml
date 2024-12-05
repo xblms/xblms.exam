@@ -61,7 +61,7 @@
                 <el-table-column label="#"
                                  type="index"
                                  width="60"
-                                 align="center">
+                                 align="left">
                     <template scope="scope">
                         <span>{{(formInline.pageIndex - 1) * formInline.pageSize + scope.$index + 1}}</span>
                     </template>
@@ -100,8 +100,8 @@
                                 <el-dropdown-item icon="el-icon-document-copy" v-on:click.native="btnCopyClick(scope.row.id)">复制</el-dropdown-item>
                                 <el-dropdown-item icon="el-icon-unlock" v-if="scope.row.locked" v-on:click.native="btnUnLockClick(scope.row.id)">启用</el-dropdown-item>
                                 <el-dropdown-item icon="el-icon-lock" v-else v-on:click.native="btnLockClick(scope.row.id)">停用</el-dropdown-item>
-                                <el-dropdown-item icon="el-icon-delete" style="color:red;" v-on:click.native="btnDeleteClick(scope.row.id)">删除</el-dropdown-item>
                                 <el-dropdown-item icon="el-icon-s-data" v-on:click.native="btnManagerClick(scope.row.id)" divided>考试管理</el-dropdown-item>
+                                <el-dropdown-item icon="el-icon-delete" style="color:red;" v-on:click.native="btnDeleteClick(scope.row.id)" divided>删除</el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
                     </template>

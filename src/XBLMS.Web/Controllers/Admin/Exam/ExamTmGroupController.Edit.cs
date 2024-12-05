@@ -13,7 +13,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         [HttpGet, Route(RouteEditGet)]
         public async Task<ActionResult<GetEditResult>> GetEdit([FromQuery] IdRequest request)
         {
-          
+
 
             var group = new ExamTmGroup();
             var selectOrganIds = new List<string>();
@@ -73,6 +73,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
                 await _examTmGroupRepository.UpdateAsync(request.Group);
                 await _authManager.AddAdminLogAsync("修改题目组", $"{group.GroupName}");
+                await _authManager.AddStatLogAsync(StatType.ExamTmGroupUpdate, "修改题目组", group.Id, group.GroupName, group);
             }
             else
             {
@@ -80,8 +81,10 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 request.Group.CompanyId = admin.CompanyId;
                 request.Group.DepartmentId = admin.DepartmentId;
 
-                await _examTmGroupRepository.InsertAsync(request.Group);
+                var groupId = await _examTmGroupRepository.InsertAsync(request.Group);
                 await _authManager.AddAdminLogAsync("新增题目组", $"{request.Group.GroupName}");
+                await _authManager.AddStatLogAsync(StatType.ExamTmGroupAdd, "新增题目组", groupId, request.Group.GroupName);
+                await _authManager.AddStatCount(StatType.ExamTmGroupAdd);
             }
 
             return new BoolResult

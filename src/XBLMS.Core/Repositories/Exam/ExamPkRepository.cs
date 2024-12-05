@@ -35,10 +35,9 @@ namespace XBLMS.Core.Repositories
         {
             return await _repository.GetAsync(Q.Where(nameof(ExamPk.ParentId), parentId).Where(nameof(ExamPk.Current), current).Where(nameof(ExamPk.Vs), vs));
         }
-
-        public async Task<bool> IsExistsAsync(string name)
+        public async Task<bool> ExistsAsync(int id)
         {
-            return await _repository.ExistsAsync(Q.Where(nameof(ExamPk.Name), name));
+            return await _repository.ExistsAsync(id);
         }
 
         public async Task<int> InsertAsync(ExamPk examPk)
@@ -72,6 +71,11 @@ namespace XBLMS.Core.Repositories
             query.OrderByDesc(nameof(ExamPk.Id));
             var list= await _repository.GetAllAsync(query.ForPage(pageIndex, pageSize));
             return (total, list);
+        }
+        public async Task<(int allCount, int addCount, int deleteCount, int lockedCount, int unLockedCount)> GetDataCount()
+        {
+            var count = await _repository.CountAsync();
+            return (count, 0, 0, 0, count);
         }
     }
 }

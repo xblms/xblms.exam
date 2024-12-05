@@ -53,6 +53,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             var info = request.Item;
             if (info.Id > 0)
             {
+                var last = await _examTmRepository.GetAsync(info.Id);
                 var txInfo = await _examTxRepository.GetAsync(info.TxId);
                 if (txInfo.ExamTxBase == ExamTxBase.Duoxuanti)
                 {
@@ -60,6 +61,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 }
                 await _examTmRepository.UpdateAsync(info);
                 await _authManager.AddAdminLogAsync("修改题目", $"{StringUtils.StripTags(info.Title) }");
+                await _authManager.AddStatLogAsync(StatType.ExamTmUpdate, "修改题目", last.Id, StringUtils.StripTags(info.Title), last);
             }
             else
             {
@@ -79,8 +81,9 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
                 info.Id = await _examTmRepository.InsertAsync(info);
 
-                await _statRepository.AddCountAsync(StatType.ExamTmAdd);
                 await _authManager.AddAdminLogAsync("新增题目", $"{ StringUtils.StripTags(info.Title) }");
+                await _authManager.AddStatLogAsync(StatType.ExamTmAdd, "新增题目", info.Id, StringUtils.StripTags(info.Title));
+                await _authManager.AddStatCount(StatType.ExamTmAdd);
             }
 
             return new BoolResult

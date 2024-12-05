@@ -80,6 +80,12 @@
                         </span>
                     </el-tooltip>
                 </el-form-item>
+                <el-form-item label="状态" prop="locked">
+                    <el-select v-model="form.locked">
+                        <el-option label="启用" :value="false"></el-option>
+                        <el-option label="停用" :value="true"></el-option>
+                    </el-select>
+                </el-form-item>
             </el-form>
         </div>
     </el-scrollbar>

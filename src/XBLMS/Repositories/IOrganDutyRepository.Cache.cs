@@ -14,5 +14,6 @@ namespace XBLMS.Repositories
         Task<List<int>> GetIdsAsync(int id);
         Task<List<int>> GetIdsByDepartmentIdAsync(int departmentId);
         Task<List<string>> GetGuidsAsync(List<int> ids);
+        Task<(int allCount, int addCount, int deleteCount, int lockedCount, int unLockedCount)> GetDataCount();
     }
 }

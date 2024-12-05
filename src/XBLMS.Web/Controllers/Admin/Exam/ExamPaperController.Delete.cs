@@ -20,8 +20,10 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             {
                 await _examPaperRepository.DeleteAsync(paper.Id);
                 await _examManager.ClearRandom(paper.Id, true);
-                await _authManager.AddAdminLogAsync("删除试卷", $"{paper.Title}");
 
+                await _authManager.AddAdminLogAsync("删除试卷", $"{paper.Title}");
+                await _authManager.AddStatLogAsync(StatType.ExamDelete, "删除试卷", paper.Id, paper.Title, paper);
+                await _authManager.AddStatCount(StatType.ExamDelete);
             }
             return new BoolResult
             {

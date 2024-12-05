@@ -24,7 +24,10 @@ namespace XBLMS.Core.Repositories
         public List<TableColumn> TableColumns => _repository.TableColumns;
 
 
-
+        public async Task<bool> ExistsAsync(int id)
+        {
+            return await _repository.ExistsAsync(id);
+        }
         public async Task<int> InsertAsync(ExamAssessment item)
         {
             return await _repository.InsertAsync(item);
@@ -77,6 +80,14 @@ namespace XBLMS.Core.Repositories
         public async Task IncrementAsync(int id)
         {
             await _repository.IncrementAsync(nameof(ExamAssessment.AnswerTotal),Q.Where(nameof(ExamAssessment.Id), id));
+        }
+
+        public async Task<(int allCount, int addCount, int deleteCount, int lockedCount, int unLockedCount)> GetDataCount()
+        {
+            var count = await _repository.CountAsync();
+            var lockedCount = await _repository.CountAsync(Q.WhereTrue(nameof(ExamAssessment.Locked)));
+            var unLockedCount = await _repository.CountAsync(Q.WhereNullOrFalse(nameof(ExamAssessment.Locked)));
+            return (count, 0, 0, lockedCount, unLockedCount);
         }
     }
 }

@@ -30,7 +30,7 @@ namespace XBLMS.Repositories
         Task<bool> IsUserNameExistsAsync(string adminName);
 
         Task<bool> IsEmailExistsAsync(string email);
-
+        Task<bool> ExistsAsync(int id);
         Task<bool> IsMobileExistsAsync(string mobile);
 
         Task<(bool IsValid, string ErrorMessage)> InsertValidateAsync(string userName, string password, string email,
@@ -47,6 +47,5 @@ namespace XBLMS.Repositories
         Task<(bool Success, string ErrorMessage)> ValidateLockAsync(Administrator administrator);
 
         Task<Administrator> DeleteAsync(int id);
-        Task ClearAsync();
     }
 }

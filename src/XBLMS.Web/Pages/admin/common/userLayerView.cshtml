@@ -17,7 +17,10 @@
     <div style="margin-right:18px;">
         <el-row :gutter="0">
             <el-col :span="4" style="text-align:center;">
-                <el-avatar :size="100" :src="user.avatarUrl || DEFAULT_AVATAR_URL"></el-avatar>
+                <el-badge v-if="user.locked" style="margin-top: 10px;" value="锁定">
+                    <el-avatar :size="100" :src="user.avatarUrl || DEFAULT_AVATAR_URL"></el-avatar>
+                </el-badge>
+                <el-avatar v-else :size="100" :src="user.avatarUrl || DEFAULT_AVATAR_URL"></el-avatar>
                 <div style="padding:10px 0;">
                     <span><i class="el-icon-user" style="padding:0 3px"></i>{{ user.displayName }}</span>
                 </div>

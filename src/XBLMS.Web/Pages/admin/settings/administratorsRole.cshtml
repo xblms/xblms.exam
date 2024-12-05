@@ -11,6 +11,14 @@
     </el-form>
 <el-table
 :data="roles" :size="euiSize" style="width: 100%" :height="($(window).height() - 115)">
+        <el-table-column label="#"
+                         type="index"
+                         width="60"
+                         align="left">
+            <template scope="scope">
+                <span>{{ scope.$index + 1 }}</span>
+            </template>
+        </el-table-column>
   <el-table-column
     prop="roleName"
     label="角色名称">

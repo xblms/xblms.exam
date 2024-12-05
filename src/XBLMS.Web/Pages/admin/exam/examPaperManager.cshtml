@@ -203,16 +203,16 @@
                     <div>
                         <el-table ref="userTable" :data="userList" :size="euiSize" v-on:selection-change="userHandleSelectionChange"
                                   style="width: 100%" :height="$(window).height()-255">
-                            <el-table-column type="selection"
-                                             width="55">
-                            </el-table-column>
                             <el-table-column label="#"
                                              type="index"
                                              width="60"
-                                             align="center">
+                                             align="left">
                                 <template scope="scope">
                                     <span>{{(form.pageIndex - 1) * form.pageSize + scope.$index + 1}}</span>
                                 </template>
+                            </el-table-column>
+                            <el-table-column type="selection"
+                                             width="55">
                             </el-table-column>
                             <el-table-column label="账号">
                                 <template slot-scope="scope">
@@ -292,16 +292,16 @@
                     <div>
                         <el-table ref="markTable" :data="markList" :size="euiSize" v-on:selection-change="markHandleSelectionChange"
                                   style="width: 100%" :height="$(window).height()-255">
-                            <el-table-column type="selection"
-                                             width="55">
-                            </el-table-column>
                             <el-table-column label="#"
                                              type="index"
                                              width="60"
-                                             align="center">
+                                             align="left">
                                 <template scope="scope">
                                     <span>{{(formMark.pageIndex - 1) * formMark.pageSize + scope.$index + 1}}</span>
                                 </template>
+                            </el-table-column>
+                            <el-table-column type="selection"
+                                             width="55">
                             </el-table-column>
                             <el-table-column label="账号">
                                 <template slot-scope="scope">
@@ -385,7 +385,7 @@
                             <el-table-column label="#"
                                              type="index"
                                              width="60"
-                                             align="center">
+                                             align="left">
                                 <template scope="scope">
                                     <span>{{(formScore.pageIndex - 1) * formScore.pageSize + scope.$index + 1}}</span>
                                 </template>

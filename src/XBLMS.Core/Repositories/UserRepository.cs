@@ -406,7 +406,10 @@ namespace XBLMS.Core.Repositories
 
             return await _repository.ExistsAsync(Q.Where(nameof(User.Mobile), mobile));
         }
-
+        public async Task<bool> ExistsAsync(int id)
+        {
+            return await _repository.ExistsAsync(id);
+        }
         public async Task<bool> IsEmailExistsAsync(string email)
         {
             if (string.IsNullOrEmpty(email)) return false;
@@ -704,35 +707,6 @@ namespace XBLMS.Core.Repositories
         {
             var query = Q.Select(nameof(User.Id));
 
-
-            if (companyIds != null && companyIds.Count > 0)
-            {
-                query.WhereIn(nameof(User.CompanyId), companyIds);
-            }
-            if (departmentIds != null && departmentIds.Count > 0)
-            {
-                query.WhereIn(nameof(User.DepartmentId), departmentIds);
-            }
-            if (dutyIds != null && dutyIds.Count > 0)
-            {
-                query.WhereIn(nameof(User.DutyId), dutyIds);
-            }
-            query.WhereNullOrFalse(nameof(User.Locked));
-            return await _repository.GetAllAsync<int>(query);
-        }
-        public async Task<List<int>> GetUserIdsWithOutLockedAsync(List<int> companyIds, List<int> departmentIds, List<int> dutyIds,string keyWords)
-        {
-            var query = Q.Select(nameof(User.Id));
-            if (!string.IsNullOrEmpty(keyWords))
-            {
-                var like = $"%{keyWords}%";
-                query.Where(q => q
-                    .WhereLike(nameof(User.UserName), like)
-                    .OrWhereLike(nameof(User.Email), like)
-                    .OrWhereLike(nameof(User.Mobile), like)
-                    .OrWhereLike(nameof(User.DisplayName), like)
-                );
-            }
 
             if (companyIds != null && companyIds.Count > 0)
             {

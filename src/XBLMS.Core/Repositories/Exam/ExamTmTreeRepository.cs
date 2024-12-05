@@ -31,17 +31,10 @@ namespace XBLMS.Core.Repositories
         {
             return await _repository.InsertAsync(item, Q.CachingRemove(_cacheKey));
         }
-
         public async Task<bool> UpdateAsync(ExamTmTree item)
         {
             return await _repository.UpdateAsync(item, Q.CachingRemove(_cacheKey));
         }
-
-        public async Task<bool> DeleteAsync(int id)
-        {
-            return await _repository.DeleteAsync(id, Q.CachingRemove(_cacheKey));
-        }
-
         public async Task<bool> DeleteAsync(List<int> ids)
         {
             return await _repository.DeleteAsync(Q.WhereIn(nameof(ExamTmTree.Id), ids).CachingRemove(_cacheKey)) > 0;

@@ -37,6 +37,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
                     Email = user.Email,
                     OrganId = organId,
                     Organs = organs,
+                    Locked= user.Locked,
                 };
             }
             return new GetResult

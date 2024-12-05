@@ -14,6 +14,7 @@ namespace XBLMS.Services
         ILogRepository LogRepository { get; }
         IRoleRepository RoleRepository { get; }
         IStatRepository StatRepository { get; }
+        IStatLogRepository StatLogRepository { get; }
         IUserGroupRepository UserGroupRepository { get; }
         IUserMenuRepository UserMenuRepository { get; }
         IUserRepository UserRepository { get; }

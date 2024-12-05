@@ -17,6 +17,8 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Utilities
             }
             await _dbCacheRepository.ClearAllExceptAdminSessionsAsync();
 
+            await _authManager.AddStatLogAsync(StatType.None, "清空缓存");
+
             return new BoolResult
             {
                 Value = true

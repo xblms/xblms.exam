@@ -24,7 +24,10 @@ namespace XBLMS.Core.Repositories
         public List<TableColumn> TableColumns => _repository.TableColumns;
 
 
-
+        public async Task<bool> ExistsAsync(int id)
+        {
+            return await _repository.ExistsAsync(id);
+        }
         public async Task<int> InsertAsync(ExamPaper item)
         {
             return await _repository.InsertAsync(item);
@@ -74,28 +77,19 @@ namespace XBLMS.Core.Repositories
             if (maxId.HasValue) return maxId.Value;
             return 0;
         }
-        public async Task<List<int>> GetIdsAsync(List<int> ids, string keyword)
+        public async Task<(int allCount, int addCount, int deleteCount, int lockedCount, int unLockedCount)> GetDataCount()
         {
-            var query = Q.Select(nameof(ExamPaper.Id));
-
-            if (ids != null && ids.Count > 0)
-            {
-                query.WhereIn(nameof(ExamPaper.Id), ids);
-            }
-            else
-            {
-                return null;
-            }
-
-            if (!string.IsNullOrWhiteSpace(keyword))
-            {
-                var like = $"%{keyword}%";
-                query.Where(q => q
-                    .WhereLike(nameof(ExamPaper.Title), like)
-                    .OrWhereLike(nameof(ExamPaper.Subject), like)
-                );
-            }
-            return await _repository.GetAllAsync<int>(query);
+            var count = await _repository.CountAsync(Q.WhereNullOrFalse(nameof(ExamPaper.Moni)));
+            var lockedCount = await _repository.CountAsync(Q.WhereNullOrFalse(nameof(ExamPaper.Moni)).WhereTrue(nameof(ExamPaper.Locked)));
+            var unLockedCount = await _repository.CountAsync(Q.WhereNullOrFalse(nameof(ExamPaper.Moni)).WhereNullOrFalse(nameof(ExamPaper.Locked)));
+            return (count, 0, 0, lockedCount, unLockedCount);
+        }
+        public async Task<(int allCount, int addCount, int deleteCount, int lockedCount, int unLockedCount)> GetDataCountMoni()
+        {
+            var count = await _repository.CountAsync(Q.WhereTrue(nameof(ExamPaper.Moni)));
+            var lockedCount = await _repository.CountAsync(Q.WhereTrue(nameof(ExamPaper.Moni)).WhereTrue(nameof(ExamPaper.Locked)));
+            var unLockedCount = await _repository.CountAsync(Q.WhereTrue(nameof(ExamPaper.Moni)).WhereNullOrFalse(nameof(ExamPaper.Locked)));
+            return (count, 0, 0, lockedCount, unLockedCount);
         }
     }
 }

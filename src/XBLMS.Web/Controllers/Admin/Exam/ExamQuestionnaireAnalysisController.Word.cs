@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading.Tasks;
 using XBLMS.Core.Utils.Office;
@@ -119,6 +120,9 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             var wordurl = _pathManager.GetDownloadFilesUrl(wordFileName);
 
             FileUtils.DeleteFileIfExists(fileHtmlPath);
+
+            await _authManager.AddAdminLogAsync("导出问卷调查统计结果", paper.Title);
+            await _authManager.AddStatLogAsync(StatType.Export, "导出问卷调查统计结果", 0, string.Empty, new StringResult { Value = wordurl });
 
             return new StringResult
             {

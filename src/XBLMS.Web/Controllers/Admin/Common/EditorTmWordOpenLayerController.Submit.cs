@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DocumentFormat.OpenXml.EMMA;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using XBLMS.Dto;
 using XBLMS.Enums;
@@ -16,15 +17,16 @@ namespace XBLMS.Web.Controllers.Admin.Common
 
             var (total, successTotal, errorTotal, tmList, resultHtml) = await Check(reqeust.TmHtml, reqeust.TreeId, admin);
             successTotal = 0;
-            if (tmList!=null && tmList.Count>0)
+            if (tmList != null && tmList.Count > 0)
             {
                 foreach (var tm in tmList)
                 {
-                    await _examTmRepository.InsertAsync(tm);
+                    var tmId = await _examTmRepository.InsertAsync(tm);
                     successTotal++;
 
-                    await _statRepository.AddCountAsync(StatType.ExamTmAdd);
-                    await _authManager.AddAdminLogAsync("新增题目", $"{ StringUtils.StripTags(tm.Title)}");
+                    await _authManager.AddAdminLogAsync("新增题目", $"{StringUtils.StripTags(tm.Title)}");
+                    await _authManager.AddStatLogAsync(StatType.ExamTmAdd, "新增题目", tmId, StringUtils.StripTags(tm.Title));
+                    await _authManager.AddStatCount(StatType.ExamTmAdd);
                 }
             }
 

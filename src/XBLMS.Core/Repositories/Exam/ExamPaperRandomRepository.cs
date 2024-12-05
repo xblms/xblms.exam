@@ -31,19 +31,6 @@ namespace XBLMS.Core.Repositories
                 OrderBy(nameof(ExamPaperRandom.Id)));
             return infoList;
         }
-        public async Task<ExamPaperRandom> GetAsync(int id)
-        {
-            var info = await _repository.GetAsync(id);
-            return info;
-        }
-        public async Task<ExamPaperRandom> GetOneByPaperAsync(int PaperId)
-        {
-            var infoList = await _repository.GetAllAsync(Q.
-                Where(nameof(ExamPaperRandom.ExamPaperId), PaperId).
-                OrderByRandom(StringUtils.Guid()));
-            infoList = infoList.OrderBy(o => StringUtils.Guid()).ToList();
-            return infoList.FirstOrDefault();
-        }
         public async Task<int> GetOneIdByPaperAsync(int PaperId)
         {
             var infoList = await _repository.GetAllAsync<int>(Q.
@@ -68,10 +55,6 @@ namespace XBLMS.Core.Repositories
         public async Task<bool> UpdateAsync(ExamPaperRandom item)
         {
             return await _repository.UpdateAsync(item);
-        }
-        public async Task<bool> DeleteAsync(int Id)
-        {
-            return await _repository.DeleteAsync(Id);
         }
         public async Task<int> DeleteByPaperAsync(int paperId)
         {

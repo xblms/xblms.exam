@@ -48,37 +48,5 @@ namespace XBLMS.Core.Repositories
             }
         }
 
-
-        public async Task<string> GetPathNamesAsync(int id)
-        {
-            var result = new List<ExamPaperTree>();
-            var info = await GetAsync(id);
-            if (info != null)
-            {
-                result.Add(info);
-                await GetPathNamesAsync(result, info.ParentId);
-            }
-            result = result.OrderBy(d => d.Id).ToList();
-            var names = new List<string>();
-            if(result.Count > 0)
-            {
-                foreach (var item in result)
-                {
-                    names.Add(item.Name);
-                }
-
-            }
-            return ListUtils.ToString(names, ">"); ;
-        }
-        public async Task GetPathNamesAsync(List<ExamPaperTree> names, int parentId)
-        {
-            if (parentId > 0)
-            {
-                var info = await GetAsync(parentId);
-                names.Add(info);
-                await GetPathNamesAsync(names, info.ParentId);
-            }
-        }
-
     }
 }

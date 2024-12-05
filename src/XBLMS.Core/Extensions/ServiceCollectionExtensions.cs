@@ -18,7 +18,6 @@ namespace XBLMS.Core.Extensions
         {
             var settingsManager = new SettingsManager(services, configuration, contentRootPath, webRootPath, entryAssembly);
             services.TryAdd(ServiceDescriptor.Singleton<ISettingsManager>(settingsManager));
-
             return settingsManager;
         }
 

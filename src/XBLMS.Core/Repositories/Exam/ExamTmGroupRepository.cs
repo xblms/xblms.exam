@@ -26,8 +26,6 @@ namespace XBLMS.Core.Repositories
 
         public List<TableColumn> TableColumns => _repository.TableColumns;
 
-        private string CacheKey => CacheUtils.GetListKey(_repository.TableName);
-
         public async Task<int> InsertAsync(ExamTmGroup group)
         {
             return await _repository.InsertAsync(group);
@@ -37,12 +35,6 @@ namespace XBLMS.Core.Repositories
         {
             await _repository.UpdateAsync(group);
         }
-
-        public async Task ClearCache()
-        {
-            await _repository.RemoveCacheAsync(CacheKey);
-        }
-
         public async Task DeleteAsync(int groupId)
         {
             await _repository.DeleteAsync(groupId);

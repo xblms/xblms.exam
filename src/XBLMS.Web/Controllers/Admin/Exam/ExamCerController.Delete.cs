@@ -26,6 +26,9 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
                 await _examCerRepository.DeleteAsync(request.Id);
                 await _authManager.AddAdminLogAsync("删除证书模板", $"{cerInfo.Name}");
+
+                await _authManager.AddStatLogAsync(StatType.ExamCerDelete, "删除证书模板", cerInfo.Id, cerInfo.Name, cerInfo);
+                await _authManager.AddStatCount(StatType.ExamCerDelete);
             }
 
             return new BoolResult

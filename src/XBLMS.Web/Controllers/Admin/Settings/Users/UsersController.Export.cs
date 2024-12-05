@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using XBLMS.Core.Utils.Office;
 using XBLMS.Dto;
 using XBLMS.Enums;
+using XBLMS.Models;
 using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Admin.Settings.Users
@@ -65,6 +67,10 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
             await excelObject.CreateExcelFileForUsersAsync(ids, filePath);
 
             var downloadUrl = _pathManager.GetDownloadFilesUrl(fileName);
+
+            await _authManager.AddAdminLogAsync("导出用户账号");
+
+            await _authManager.AddStatLogAsync(StatType.Export, "导出用户账号", 0, string.Empty, new StringResult { Value = downloadUrl });
 
             return new StringResult
             {

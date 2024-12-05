@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using XBLMS.Core.Repositories;
 using XBLMS.Repositories;
 using XBLMS.Services;
 using XBLMS.Utils;
@@ -23,6 +24,7 @@ namespace XBLMS.Core.Services
         public ILogRepository LogRepository { get; }
         public IRoleRepository RoleRepository { get; }
         public IStatRepository StatRepository { get; }
+        public IStatLogRepository StatLogRepository { get; }
         public IUserGroupRepository UserGroupRepository { get; }
         public IUserMenuRepository UserMenuRepository { get; }
         public IUserRepository UserRepository { get; }
@@ -85,6 +87,7 @@ namespace XBLMS.Core.Services
             ILogRepository logRepository,
             IRoleRepository roleRepository,
             IStatRepository statRepository,
+            IStatLogRepository statLogRepository,
             IUserGroupRepository userGroupRepository,
             IUserMenuRepository userMenuRepository,
             IUserRepository userRepository,
@@ -138,6 +141,7 @@ namespace XBLMS.Core.Services
             LogRepository = logRepository;
             RoleRepository = roleRepository;
             StatRepository = statRepository;
+            StatLogRepository= statLogRepository;
             UserGroupRepository = userGroupRepository;
             UserMenuRepository = userMenuRepository;
             UserRepository = userRepository;
@@ -198,6 +202,7 @@ namespace XBLMS.Core.Services
                 ErrorLogRepository,
                 LogRepository,
                 StatRepository,
+                StatLogRepository,
                 UserGroupRepository,
                 UserRepository,
                 UserMenuRepository,

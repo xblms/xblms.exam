@@ -20,5 +20,6 @@ namespace XBLMS.Repositories
             StatType statType, int adminId);
 
         Task DeleteAllAsync();
+        Task<int> SumAsync(StatType statType);
     }
 }

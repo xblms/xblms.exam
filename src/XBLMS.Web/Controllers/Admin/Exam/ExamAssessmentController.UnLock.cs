@@ -24,6 +24,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             await _examAssessmentUserRepository.UpdateLockedAsync(assInfo.Id, assInfo.Locked);
 
             await _authManager.AddAdminLogAsync("解锁测评", $"{assInfo.Title}");
+            await _authManager.AddStatLogAsync(StatType.ExamAssUpdate, "启用测评", assInfo.Id, assInfo.Title);
 
             return new BoolResult
             {

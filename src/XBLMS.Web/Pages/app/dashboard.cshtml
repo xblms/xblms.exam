@@ -249,35 +249,31 @@
 <div class="py-8"></div>
 @await Html.PartialAsync("_PartialAppMenu")
 <div style="position:fixed;right:5%;top:70%;" class="text-center" v-if="taskTotal>0">
-    <button type="button" class="btn btn-warning rounded-0 p-2 text-center" v-on:click="taskDialogVisible=true">
-        <div><i class="bi bi-star-half text-danger"></i></div>
-        <div class="fw-bold px-1 py-2 text-light">{{ taskTotal }}</div>
-        <div class="fw-light fs-6 text-white">个</div>
-        <div class="fw-light fs-6 text-white">待</div>
-        <div class="fw-light fs-6 text-white">办</div>
-    </button>
+    <el-badge is-dot type="warning">
+        <el-button type="warning" icon="el-icon-star-off" circle v-on:click="taskDialogVisible=true" class="shadow-lg"></el-button>
+    </el-badge>
 </div>
 <template>
-    <el-drawer title="待办"
+    <el-drawer :title="taskTotal+' 个待办'"
                size="50%"
                :visible.sync="taskDialogVisible"
                direction="btt">
         <div class="text-center p-2">
             <div class="card rounded-0">
                 <div class="card-body">
-                    <div class="mb-5" v-if="taskPaperTotal>0">
+                    <div class="mb-3" v-if="taskPaperTotal>0">
                         <div class="d-flex justify-content-between align-items-center" v-on:click="btnExamMoreMenuClick">
                             <span><i class="bi bi-star-half me-2 text-warning"></i>剩余<span class="text-danger mx-2">{{ taskPaperTotal }}</span>份试卷未参考</span>
                             <span><i class="el-icon-arrow-right"></i></span>
                         </div>
                     </div>
-                    <div v-if="taskQTotal>0">
+                    <div class="mb-3" v-if="taskQTotal>0">
                         <div class="d-flex justify-content-between align-items-center" v-on:click="btnAppMenuClick('wenjuan')">
                             <span><i class="bi bi-star-half me-2 text-warning"></i>剩余<span class="text-danger mx-2">{{ taskQTotal }}</span>份问卷未填写</span>
                             <span><i class="el-icon-arrow-right"></i></span>
                         </div>
                     </div>
-                    <div v-if="taskAssTotal>0">
+                    <div class="mb-3" v-if="taskAssTotal>0">
                         <div class="d-flex justify-content-between align-items-center" v-on:click="btnAssMoreMenuClick">
                             <span><i class="bi bi-star-half me-2 text-warning"></i>剩余<span class="text-danger mx-2">{{ taskAssTotal }}</span>份测评未填写</span>
                             <span><i class="el-icon-arrow-right"></i></span>

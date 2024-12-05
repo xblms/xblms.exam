@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using XBLMS.Dto;
@@ -49,11 +50,13 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
                     }
                 }
             }
-            await _roleRepository.InsertRoleAsync(role);
+            var roleId = await _roleRepository.InsertRoleAsync(role);
 
             _cacheManager.Clear();
 
             await _authManager.AddAdminLogAsync("新增管理员角色", $"{request.RoleName}");
+            await _authManager.AddStatLogAsync(StatType.AdminAuthAdd, "新增管理员角色", roleId, request.RoleName);
+            await _authManager.AddStatCount(StatType.AdminAuthAdd);
 
             return new BoolResult
             {

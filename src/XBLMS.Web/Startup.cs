@@ -165,7 +165,9 @@ namespace XBLMS.Web
                 options.DefaultRequestCulture = new RequestCulture(culture: "zh-CN", uiCulture: "zh-CN");
                 options.SupportedCultures = supportedCultures;
                 options.SupportedUICultures = supportedCultures;
+
             });
+
 
             if (!settingsManager.IsSafeMode)
             {
@@ -193,7 +195,6 @@ namespace XBLMS.Web
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ISettingsManager settingsManager, IErrorLogRepository errorLogRepository)
         {
           
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

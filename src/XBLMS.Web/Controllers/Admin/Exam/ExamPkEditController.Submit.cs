@@ -39,8 +39,10 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
             if (pk.Id > 0)
             {
+                var last = await _examPkRepository.GetAsync(pk.Id);
                 await _examPkRepository.UpdateAsync(pk);
                 await _authManager.AddAdminLogAsync("修改竞赛", $"{pk.Name}");
+                await _authManager.AddStatLogAsync(StatType.ExamPkUpdate, "修改竞赛", pk.Id, pk.Name, last);
             }
             else
             {
@@ -151,6 +153,8 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
                     await SetPk(pk, userIds, vsList, pkTmids, 1);
                     await _authManager.AddAdminLogAsync("新增竞赛", $"{pk.Name}");
+                    await _authManager.AddStatLogAsync(StatType.ExamPkAdd, "新增竞赛", pk.Id, pk.Name);
+                    await _authManager.AddStatCount(StatType.ExamPkAdd);
                 }
                 else
                 {

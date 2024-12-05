@@ -42,6 +42,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
             public string Mobile { get; set; }
             public string Email { get; set; }
             public string OrganId { get; set; }
+            public bool Locked { get; set; }
             public List<OrganTree> Organs { get; set; }
         }
         public class SubmitRequest
@@ -54,6 +55,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
             public string Mobile { get; set; }
             public string Email { get; set; }
             public string OrganId { get; set; }
+            public bool Locked { get; set; }
         }
         public class UploadRequest
         {

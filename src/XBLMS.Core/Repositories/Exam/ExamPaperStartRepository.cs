@@ -34,18 +34,9 @@ namespace XBLMS.Core.Repositories
         {
             await _repository.UpdateAsync(item);
         }
-        public async Task DeleteAsync(int id)
-        {
-            await _repository.DeleteAsync(id);
-        }
         public async Task IncrementAsync(int id)
         {
             await _repository.IncrementAsync(nameof(ExamPaperStart.ExamTimeSeconds), Q.Where(nameof(ExamPaperStart.Id), id), 5);
-        }
-
-        public async Task ClearByUserAsync(int userId)
-        {
-            await _repository.DeleteAsync(Q.Where(nameof(ExamPaperStart.UserId), userId));
         }
         public async Task ClearByPaperAsync(int paperId)
         {
@@ -176,14 +167,6 @@ namespace XBLMS.Core.Repositories
             var list = await _repository.GetAllAsync(query.ForPage(pageIndex, pageSize));
             return (total, list);
         }
-        public async Task<List<int>> GetPaperIdsAsync(int userId)
-        {
-            return await _repository.GetAllAsync<int>(Q.
-                Select(nameof(ExamPaperStart.ExamPaperId)).
-                WhereTrue(nameof(ExamPaperStart.IsSubmit)).
-                WhereTrue(nameof(ExamPaperStart.IsMark)).
-                Where(nameof(ExamPaperStart.UserId), userId));
-        }
 
         public async Task UpdateLockedAsync(int paperId, bool locked)
         {
@@ -263,20 +246,6 @@ namespace XBLMS.Core.Repositories
                 WhereTrue(nameof(ExamPaperStart.IsMark)).
                 WhereTrue(nameof(ExamPaperStart.IsSubmit)).
                 Where(nameof(ExamPaperStart.ExamPaperId), paperId));
-            if (listScore != null && listScore.Count > 0)
-            {
-                return listScore.Sum();
-            }
-            return 0;
-        }
-        public async Task<decimal> SumScoreDistinctAsync(int paperId)
-        {
-            var listScore = await _repository.GetAllAsync<decimal>(Q.
-                Select(nameof(ExamPaperStart.Score)).
-                WhereTrue(nameof(ExamPaperStart.IsMark)).
-                WhereTrue(nameof(ExamPaperStart.IsSubmit)).
-                Where(nameof(ExamPaperStart.ExamPaperId), paperId).
-                GroupBy(nameof(ExamPaperStart.UserId), nameof(ExamPaperStart.Score)));
             if (listScore != null && listScore.Count > 0)
             {
                 return listScore.Sum();

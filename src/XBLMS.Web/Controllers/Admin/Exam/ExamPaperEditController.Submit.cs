@@ -53,10 +53,12 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                     await _examManager.PaperRandomSet(paper);
                     await _examManager.Arrange(paper);
                     await _authManager.AddAdminLogAsync("重新发布试卷", $"{paper.Title}");
+                    await _authManager.AddStatLogAsync(StatType.ExamUpdate, "重新发布试卷", paper.Id, paper.Title, oldPaper);
                 }
                 else
                 {
                     await _authManager.AddAdminLogAsync("修改试卷", $"{paper.Title}");
+                    await _authManager.AddStatLogAsync(StatType.ExamUpdate, "修改试卷", paper.Id, paper.Title, oldPaper);
                 }
 
                 await _examPaperRepository.UpdateAsync(paper);
@@ -91,17 +93,21 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
                 paper = await _examPaperRepository.GetAsync(paperId);
                 await SetRandomConfigs(request.ConfigList, paper);
-           
+
 
                 if (request.SubmitType == SubmitType.Submit)
                 {
                     await _examManager.PaperRandomSet(paper);
                     await _examManager.Arrange(paper);
                     await _authManager.AddAdminLogAsync("发布试卷", $"{paper.Title}");
+                    await _authManager.AddStatLogAsync(StatType.ExamAdd, "发布试卷", paper.Id, paper.Title);
+                    await _authManager.AddStatCount(StatType.ExamAdd);
                 }
                 else
                 {
                     await _authManager.AddAdminLogAsync("保存试卷", $"{paper.Title}");
+                    await _authManager.AddStatLogAsync(StatType.ExamAdd, "保存试卷", paper.Id, paper.Title);
+                    await _authManager.AddStatCount(StatType.ExamAdd);
                 }
                 await _examPaperRepository.UpdateAsync(paper);
             }

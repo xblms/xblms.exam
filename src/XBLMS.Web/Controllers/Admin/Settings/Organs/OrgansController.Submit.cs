@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DocumentFormat.OpenXml.Bibliography;
+using DocumentFormat.OpenXml.ExtendedProperties;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using XBLMS.Dto;
 using XBLMS.Enums;
@@ -32,6 +34,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Organs
             {
                 if (request.Id > 0)
                 {
+                    var last = await _companyRepository.GetAsync(request.Id); ;
                     var company = await _companyRepository.GetAsync(request.Id);
                     var oldName = company.Name;
                     company.Name = request.Name;
@@ -39,6 +42,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Organs
                     {
                         await _companyRepository.UpdateAsync(company);
                         await _authManager.AddAdminLogAsync("修改单位", $"{oldName}>{company.Name}");
+                        await _authManager.AddStatLogAsync(StatType.CompanyUpdate, "修改单位", company.Id, company.Name, last);
                     }
                 }
                 else
@@ -52,16 +56,19 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Organs
                         CreatorId = admin.Id
                     };
                     var companyId = await _companyRepository.InsertAsync(company);
-                    company.CompanyId= companyId;
+                    company.CompanyId = companyId;
                     await _companyRepository.UpdateAsync(company);
 
                     await _authManager.AddAdminLogAsync("新增单位", request.Name);
+                    await _authManager.AddStatLogAsync(StatType.CompanyAdd, "新增单位", company.Id, company.Name);
+                    await _authManager.AddStatCount(StatType.CompanyAdd);
                 }
             }
             if (request.Type == "department")
             {
                 if (request.Id > 0)
                 {
+                    var last = await _organDepartmentRepository.GetAsync(request.Id);
                     var department = await _organDepartmentRepository.GetAsync(request.Id);
                     var oldName = department.Name;
                     department.Name = request.Name;
@@ -69,6 +76,8 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Organs
                     {
                         await _organDepartmentRepository.UpdateAsync(department);
                         await _authManager.AddAdminLogAsync("修改部门", $"{oldName}>{department.Name}");
+
+                        await _authManager.AddStatLogAsync(StatType.DepartmentUpdate, "修改部门", department.Id, department.Name, last);
                     }
                 }
                 else
@@ -97,17 +106,20 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Organs
                         CreatorId = admin.Id
                     };
 
-                    var departmentId=  await _organDepartmentRepository.InsertAsync(department);
+                    var departmentId = await _organDepartmentRepository.InsertAsync(department);
                     department.DepartmentId = departmentId;
                     await _organDepartmentRepository.UpdateAsync(department);
 
                     await _authManager.AddAdminLogAsync("新增部门", request.Name);
+                    await _authManager.AddStatLogAsync(StatType.DepartmentAdd, "新增部门", department.Id, department.Name);
+                    await _authManager.AddStatCount(StatType.DepartmentAdd);
                 }
             }
             if (request.Type == "duty")
             {
                 if (request.Id > 0)
                 {
+                    var last = await _organDutyRepository.GetAsync(request.Id);
                     var duty = await _organDutyRepository.GetAsync(request.Id);
                     var oldName = duty.Name;
                     duty.Name = request.Name;
@@ -115,6 +127,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Organs
                     {
                         await _organDutyRepository.UpdateAsync(duty);
                         await _authManager.AddAdminLogAsync("修改岗位", $"{oldName}>{duty.Name}");
+                        await _authManager.AddStatLogAsync(StatType.DutyUpdate, "修改岗位", duty.Id, duty.Name, last);
                     }
                 }
                 else
@@ -146,8 +159,11 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Organs
                         CreatorId = admin.Id
                     };
 
-                    await _organDutyRepository.InsertAsync(duty);
+                    var dutyId = await _organDutyRepository.InsertAsync(duty);
                     await _authManager.AddAdminLogAsync("新增岗位", request.Name);
+
+                    await _authManager.AddStatLogAsync(StatType.DutyAdd, "新增岗位", dutyId, duty.Name);
+                    await _authManager.AddStatCount(StatType.DutyAdd);
                 }
             }
             return new BoolResult

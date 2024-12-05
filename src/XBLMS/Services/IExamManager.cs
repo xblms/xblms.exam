@@ -9,6 +9,7 @@ namespace XBLMS.Services
     {
         Task<ExamTm> GetTmInfo(int tmId);
         Task GetTmInfo(ExamTm tm);
+        Task GetTmDeleteInfo(ExamTm tm);
         Task GetTmInfoByPaper(ExamTm tm);
         Task GetTmInfoByPaperUser(ExamPaperRandomTm tm, ExamPaper paper, int startId, bool paperView = false);
         Task GetTmInfoByPaperViewAdmin(ExamPaperRandomTm tm, ExamPaper paper, int startId);

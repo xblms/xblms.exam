@@ -1,0 +1,63 @@
+﻿@page
+@{ Layout = "_Layout"; }
+@section Styles{
+    <link href="/sitefiles/assets/lib/geeks/css/theme.min.css" rel="stylesheet" type="text/css" />
+    <style>
+        html{
+            padding:5px;
+        }
+    </style>
+}
+
+<el-card>
+    <div slot="header" class="clearfix">
+        <span>证书模版预览</span>
+        <el-button style="float: right;padding:3px 0;" type="text" v-on:click="utils.closeLayerSelf"><i class="el-icon-close"></i></el-button>
+    </div>
+    <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-180) + 'px' }">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-start align-items-center mb-3">
+                    <div class="me-2" style="width:130px;">证书名称</div>
+                    <div>
+                        <span>{{ cer.name }}</span>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center mb-3">
+                    <div class="me-2" style="width:130px;">证书编码</div>
+                    <div>
+                        <span>{{ cer.prefix }}</span>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center mb-3">
+                    <div class="me-2" style="width:130px;">颁发单位</div>
+                    <div>
+                        <span>{{ cer.organName }}</span>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center mb-3">
+                    <div class="me-2" style="width:130px;">获证人数</div>
+                    <div>
+                        <el-link type="primary" v-on:click.native="btnCountClick" v-if="cer.userCount>0">{{ cer.userCount }}</el-link>
+                        <span v-else>0</span>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-start align-items-center mb-3">
+                    <div class="me-2" style="width:130px;">模版</div>
+                    <div>
+                        <el-image :src="cer.backgroundImg.replace('/cer/','/cer/preview_cer_')+ '?r=' + Math.random()"
+                                  class="image" lazy></el-image>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </el-scrollbar>
+</el-card>
+<el-row align="center" style="margin-top:18px;">
+    <el-col :span="24" align="center">
+        <el-button icon="el-icon-close" :size="euiSize" v-on:click="utils.closeLayerSelf">关 闭</el-button>
+    </el-col>
+</el-row>
+@section Scripts{
+<script src="/sitefiles/assets/js/admin/common/examCerLayerView.js" type="text/javascript"></script>
+}

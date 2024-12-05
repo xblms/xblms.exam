@@ -13,11 +13,7 @@ namespace XBLMS.Repositories
         Task<int> InsertAsync(ExamPractice item);
         Task IncrementAnswerCountAsync(int id);
         Task IncrementRightCountAsync(int id);
-
-        Task UpdateAsync(ExamPractice item);
-
         Task DeleteAsync(int userId);
         Task<(int answerTotal, int rightTotal, int allAnswerTotal, int allRightTotal, int collectAnswerTotal, int collectRightTotal, int wrongAnswerTotal, int wrongRightTotal)> SumAsync(int userId);
-
     }
 }

@@ -1,6 +1,7 @@
 @page
 @{ Layout = "_Layout"; }
 @section Styles{
+<link href="/sitefiles/assets/lib/geeks/css/bootstrap-icons.css" rel="stylesheet" />
 <link href="/sitefiles/assets/css/menu.css" rel="stylesheet" type="text/css" />
 <link href="/sitefiles/assets/lib/animate/animate.min.css" rel="stylesheet" type="text/css" />
 <link href="/sitefiles/assets/lib/geeks/css/theme.min.css" rel="stylesheet" type="text/css" />
@@ -121,11 +122,14 @@
         </el-container>
     </div>
     <div v-if="tabs && tabs.length > 0" id="tabs" :style="{width: (winWidth - leftWidth) + 'px', marginLeft: leftWidth + 'px',marginTop:8+'px'}">
-        <el-tabs v-on:contextmenu.prevent.native="openContextMenu($event)" v-model="tabName" type="border-card" :closable="false" v-on:tab-remove="utils.removeTab">
+        <el-tabs v-model="tabName" type="border-card" :closable="false" v-on:tab-remove="utils.removeTab" v-on:tab-click="tabClick">
             <el-tab-pane :key="item.name"
                          v-for="(item, index) in tabs"
-                         :label="item.title"
                          :name="item.name" :closable="item.title!=='首页'">
+                <span slot="label">
+                    <span v-if="item.title==='首页'"><i class="el-icon-s-home fs-4"></i> 欢迎：{{ local.displayName }}</span>
+                    <span v-else>{{ item.title }}</span>
+                </span>
                 <iframe class="animate__animated animate__fadeInRight" :id="'frm-' + item.name" :src="item.url" style="width: 100%; height: 100%; border: none" :style="{height: (winHeight - 40) + 'px'}"></iframe>
             </el-tab-pane>
         </el-tabs>

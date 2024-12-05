@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using XBLMS.Dto;
 using XBLMS.Enums;
+using XBLMS.Models;
 using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Admin.Settings.Users
@@ -20,6 +21,8 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
             await _userGroupRepository.DeleteAsync(group.Id);
 
             await _authManager.AddAdminLogAsync("删除用户组", $"{group.GroupName}");
+            await _authManager.AddStatLogAsync(StatType.UserGroupDelete, "删除用户组", group.Id, group.GroupName, group);
+            await _authManager.AddStatCount(StatType.UserGroupDelete);
 
             return new BoolResult
             {

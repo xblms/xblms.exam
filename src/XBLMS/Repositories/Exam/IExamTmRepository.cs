@@ -9,13 +9,13 @@ namespace XBLMS.Repositories
 {
     public interface IExamTmRepository: IRepository
     {
+        Task<bool> ExistsAsync(int id);
         Task<bool> ExistsAsync(string title, int txId);
         Task<int> InsertAsync(ExamTm item);
         Task<bool> UpdateAsync(ExamTm item);
         Task<bool> DeleteAsync(int id);
         Task<List<ExamTm>> GetListAsync(List<int> tmIds);
         Task<List<ExamTm>> GetListWithOutLockedAsync(List<int> tmIds);
-        Task<List<ExamTm>> GetListWithOutLockedAsync(List<int> tmIds, int txId, int nandu1Count = 0, int nandu2Count = 0, int nandu3Count = 0, int nandu4Count = 0, int nandu5Count = 0);
         Task<(int total, List<ExamTm> list)> GetListAsync(List<int> withoutIds, List<int> treeIds, int txId, int nandu, string keyword, string order, string orderType, bool? isStop, int pageIndex, int pageSize);
         Task<(int total, List<ExamTm> list)> GetListAsync(ExamTmGroup group, List<int> treeIds, int txId, int nandu, string keyword, string order, string orderType, bool? isStop, int pageIndex, int pageSize);
         Task<(int total, List<ExamTm> list)> GetListAsync(ExamTmGroup group, int pageIndex, int pageSize);
@@ -34,5 +34,6 @@ namespace XBLMS.Repositories
 
         Task<int> GetCountAsync(List<int> tmIds, int txId,int nandu);
         Task<List<ExamTm>> GetListByRandomAsync(bool allTm, bool hasGroup, List<int> tmIds, int txId, int nandu1Count = 0, int nandu2Count = 0, int nandu3Count = 0, int nandu4Count = 0, int nandu5Count = 0);
+        Task<(int allCount, int addCount, int deleteCount, int lockedCount, int unLockedCount)> GetDataCount();
     }
 }

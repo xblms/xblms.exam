@@ -97,5 +97,10 @@ namespace XBLMS.Core.Repositories
                 await GetPathNamesAsync(names, info.ParentId);
             }
         }
+        public async Task<(int allCount, int addCount, int deleteCount, int lockedCount, int unLockedCount)> GetDataCount()
+        {
+            var count = await _repository.CountAsync();
+            return (count, 0, 0, 0, count);
+        }
     }
 }

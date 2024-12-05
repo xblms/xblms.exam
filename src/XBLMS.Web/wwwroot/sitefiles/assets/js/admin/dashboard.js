@@ -61,6 +61,6 @@ var $vue = new Vue({
   data: data,
   methods: methods,
   created: function () {
-    this.apiGet();
+    location.href = utils.getRootUrl('dashboardAdmin')
   },
 });

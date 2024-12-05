@@ -66,13 +66,13 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
                 group.UserIds.AddRange(userIds);
                 group.UserIds = group.UserIds.Distinct().ToList();
                 await _userGroupRepository.UpdateAsync(group);
-                await _authManager.AddAdminLogAsync("安排用户", $"{group.GroupName}");
+                await _authManager.AddAdminLogAsync("用户组安排用户", $"{group.GroupName}");
             }
             else//移出
             {
                 group.UserIds = group.UserIds.Where(id => !userIds.Contains(id)).ToList();
                 await _userGroupRepository.UpdateAsync(group);
-                await _authManager.AddAdminLogAsync("移出用户", $"{group.GroupName}");
+                await _authManager.AddAdminLogAsync("用户组移出用户", $"{group.GroupName}");
             }
 
             return new BoolResult

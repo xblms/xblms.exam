@@ -36,24 +36,9 @@ namespace XBLMS.Core.Repositories
         {
             return await _repository.UpdateAsync(item);
         }
-
-        public async Task DeleteAsync(int id)
-        {
-            await _repository.DeleteAsync(id);
-        }
-
-        public async Task ClearByUserAsync(int userId)
-        {
-            await _repository.DeleteAsync(Q.Where(nameof(ExamQuestionnaireUser.UserId), userId));
-        }
         public async Task ClearByPaperAsync(int paperId)
         {
             await _repository.DeleteAsync(Q.Where(nameof(ExamQuestionnaireUser.ExamPaperId), paperId));
-        }
-
-        public async Task ClearByPaperAndUserAsync(int paperId, int userId)
-        {
-            await _repository.DeleteAsync(Q.Where(nameof(ExamQuestionnaireUser.ExamPaperId), paperId).Where(nameof(ExamQuestionnaireUser.UserId), userId));
         }
         public async Task<bool> ExistsAsync(int paperId, int userId)
         {
@@ -113,29 +98,6 @@ namespace XBLMS.Core.Repositories
                 Where(nameof(ExamQuestionnaireUser.ExamPaperId), paperId).
                 Where(nameof(ExamQuestionnaireUser.UserId), userId));
         }
-        public async Task<ExamQuestionnaireUser> GetOnlyOneAsync(int userId)
-        {
-            var query = Q.
-                Where(nameof(ExamQuestionnaireUser.UserId), userId);
-
-            return await _repository.GetAsync(query.
-                OrderByDesc(nameof(ExamQuestionnaireUser.Id)).
-                Limit(1));
-        }
-
-
-        public async Task<List<int>> GetPaperIdsAsync(int userId)
-        {
-            var query = Q.
-                Select(nameof(ExamQuestionnaireUser.ExamPaperId)).
-                Where(nameof(ExamQuestionnaireUser.UserId), userId).
-                WhereNullOrFalse(nameof(ExamQuestionnaireUser.Locked)).
-                Where(nameof(ExamQuestionnaireUser.ExamEndDateTime), ">", DateTime.Now).
-                Where(nameof(ExamQuestionnaireUser.SubmitType),SubmitType.Save.GetValue());
-
-            return await _repository.GetAllAsync<int>(query);
-        }
-
         public async Task UpdateLockedAsync(int paperId, bool locked)
         {
             await _repository.UpdateAsync(Q.
@@ -147,12 +109,6 @@ namespace XBLMS.Core.Repositories
             await _repository.UpdateAsync(Q.
                 Set(nameof(ExamQuestionnaireUser.KeyWords), keyWords).
                 Where(nameof(ExamQuestionnaireUser.ExamPaperId), paperId));
-        }
-        public async Task UpdateKeyWordsAdminAsync(int id, string keyWords)
-        {
-            await _repository.UpdateAsync(Q.
-                Set(nameof(ExamQuestionnaireUser.KeyWordsAdmin), keyWords).
-                Where(nameof(ExamQuestionnaireUser.Id), id));
         }
         public async Task UpdateExamDateTimeAsync(int paperId, DateTime beginDateTime, DateTime endDateTime)
         {

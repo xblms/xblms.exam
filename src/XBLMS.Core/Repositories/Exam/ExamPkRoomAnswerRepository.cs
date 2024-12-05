@@ -26,10 +26,6 @@ namespace XBLMS.Core.Repositories
         {
             await _repository.DeleteAsync(Q.Where(nameof(ExamPkRoomAnswer.RoomId), roomId));
         }
-        public async Task<int> InsertAsync(ExamPkRoomAnswer examPkRoomAnswer)
-        {
-            return await _repository.InsertAsync(examPkRoomAnswer);
-        }
 
     }
 }

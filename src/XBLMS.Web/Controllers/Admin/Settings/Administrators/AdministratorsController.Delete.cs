@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using XBLMS.Dto;
 using XBLMS.Enums;
+using XBLMS.Models;
 using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
@@ -23,6 +24,8 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
             await _administratorRepository.DeleteAsync(adminInfo.Id);
 
             await _authManager.AddAdminLogAsync("删除管理员", $"{adminInfo.UserName}");
+            await _authManager.AddStatLogAsync(StatType.AdminDelete, "删除管理员", adminInfo.Id, adminInfo.UserName, adminInfo);
+            await _authManager.AddStatCount(StatType.AdminDelete);
 
             return new BoolResult
             {

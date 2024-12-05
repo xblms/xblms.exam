@@ -7,7 +7,5 @@ namespace XBLMS.Repositories
     public interface IExamPkRoomAnswerRepository : IRepository
     {
         Task DeleteByRoomIdAsync(int roomId);
-        Task<int> InsertAsync(ExamPkRoomAnswer examPkRoomAnswer);
-
     }
 }

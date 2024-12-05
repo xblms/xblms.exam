@@ -38,17 +38,9 @@ namespace XBLMS.Core.Repositories
         {
             return await _repository.InsertAsync(info);
         }
-        public async Task<bool> UpdateAsync(DbBackup info)
-        {
-            return await _repository.UpdateAsync(info);
-        }
         public async Task DeleteAsync(int id)
         {
             await _repository.DeleteAsync(id);
-        }
-        public async Task<bool> ExcutionAsync()
-        {
-            return await _repository.ExistsAsync(Q.Where(nameof(DbBackup.Status), 0));
         }
     }
 }

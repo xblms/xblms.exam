@@ -22,13 +22,6 @@ namespace XBLMS.Core.Repositories
 
         public List<TableColumn> TableColumns => _repository.TableColumns;
 
-
-        public async Task<ExamQuestionnaireTm> GetAsync(int Id)
-        {
-            return await _repository.GetAsync(Id);
-        }
-
-
         public async Task<int> InsertAsync(ExamQuestionnaireTm item)
         {
             return await _repository.InsertAsync(item);

@@ -30,36 +30,9 @@ namespace XBLMS.Core.Repositories
         {
             return await _repository.ExistsAsync(Q.Where(nameof(ExamCerUser.UserId), userID).Where(nameof(ExamCerUser.ExamPaperId), examPaperId));
         }
-        public async Task<bool> DeleteAsync(int id)
-        {
-            return await _repository.DeleteAsync(id);
-        }
-        public async Task<bool> ClearAsync(int userId)
-        {
-            return await _repository.DeleteAsync(Q.Where(nameof(ExamCerUser.UserId), userId)) > 0;
-        }
         public async Task<ExamCerUser> GetAsync(int id)
         {
             return await _repository.GetAsync(id);
-        }
-        public async Task<ExamCerUser> GetAsync(int userId,int examPaperId)
-        {
-            return await _repository.GetAsync(Q.Where(nameof(ExamCerUser.UserId), userId).Where(nameof(ExamCerUser.ExamPaperId), examPaperId));
-        }
-        public async Task<List<ExamCerUser>> GetListAsync(int examPaperId)
-        {
-            var list = (await _repository.GetAllAsync(Q
-                .Where(nameof(ExamCerUser.ExamPaperId), examPaperId)
-                .OrderBy(nameof(ExamCerUser.Id))
-            )).ToList();
-            return list;
-        }
-        public async Task<List<ExamCerUser>> GetListAsync()
-        {
-            var list = (await _repository.GetAllAsync(Q
-                .OrderBy(nameof(ExamCerUser.Id))
-            )).ToList();
-            return list;
         }
 
         public async Task<int> InsertAsync(ExamCerUser item)
@@ -74,14 +47,6 @@ namespace XBLMS.Core.Repositories
             var total = await _repository.CountAsync(query);
             var list = await _repository.GetAllAsync(query.ForPage(pageIndex, pageSize));
             return (total, list);
-        }
-        public async Task<int> GetCountAsync(int userId,DateTime beginDate,DateTime endDate)
-        {
-            var query = Q
-                .Where(nameof(ExamCerUser.UserId), userId)
-                .WhereBetween(nameof(ExamCerUser.CreatedDate),beginDate,endDate);
-            var total = await _repository.CountAsync(query);
-            return total;
         }
         public async Task<int> UpdateImgAsync(int id,string img)
         {

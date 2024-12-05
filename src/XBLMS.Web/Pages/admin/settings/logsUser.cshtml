@@ -33,6 +33,14 @@
 
     <el-table :data="items" :size="euiSize"
               style="width: 100%" :height="($(window).height() - 215)">
+        <el-table-column label="#"
+                         type="index"
+                         width="60"
+                         align="left">
+            <template scope="scope">
+                <span>{{(formInline.currentPage - 1) * formInline.limit + scope.$index + 1}}</span>
+            </template>
+        </el-table-column>
         <el-table-column label="用户">
             <template slot-scope="scope">
                 <el-link :underline="false" type="primary" v-on:click="btnViewClick(scope.row)">{{scope.row.userName}}</el-link>

@@ -39,7 +39,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
                 {
                     user.AvatarCerUrl = url;
                     await _userRepository.UpdateAsync(user);
-                    await _authManager.AddAdminLogAsync("上传证件照", user.DisplayName);
+                    await _authManager.AddAdminLogAsync("上传用户证件照", user.DisplayName);
                 }
             }
             else

@@ -113,6 +113,14 @@
             </el-form>
             <el-table ref="tmTable" :data="tmList" :size="euiSize"
                       style="width: 100%" :height="$(window).height()-210">
+                <el-table-column label="#"
+                                 type="index"
+                                 width="60"
+                                 align="left">
+                    <template scope="scope">
+                        <span>{{(formInline.pageIndex - 1) * formInline.pageSize + scope.$index + 1}}</span>
+                    </template>
+                </el-table-column>
                 <el-table-column type="selection"
                                  width="43">
                 </el-table-column>
@@ -139,13 +147,13 @@
                 <el-table-column width="100" align="right">
                     <template slot-scope="scope">
                         <el-dropdown :show-timeout="0" placement="left">
-                            <el-button :size="euiSize" v-on:click.stop="return false">
-                                <i class="el-icon-arrow-left el-icon--right"></i>操作
+                            <el-button icon="el-icon-arrow-left" size="mini" v-on:click.stop="return false">
+                                操作
                             </el-button>
                             <el-dropdown-menu slot="dropdown">
                                 <el-dropdown-item icon="el-icon-view" v-on:click.native="handleCommand('info',scope.row)">预览</el-dropdown-item>
                                 <el-dropdown-item icon="el-icon-edit" v-on:click.native="handleCommand('edit',scope.row)">修改</el-dropdown-item>
-                                <el-dropdown-item icon="el-icon-delete" v-on:click.native="handleCommand('delete',scope.row)" style="color:red;">删除</el-dropdown-item>
+                                <el-dropdown-item icon="el-icon-delete" v-on:click.native="handleCommand('delete',scope.row)" style="color:red;" divided>删除</el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
                     </template>

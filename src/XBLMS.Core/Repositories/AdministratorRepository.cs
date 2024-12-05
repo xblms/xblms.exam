@@ -336,7 +336,10 @@ namespace XBLMS.Core.Repositories
         {
             return await _repository.ExistsAsync(Q.Where(nameof(Administrator.Mobile), mobile));
         }
-
+        public async Task<bool> ExistsAsync(int id)
+        {
+            return await _repository.ExistsAsync(id);
+        }
         private string EncodePassword(string password, PasswordFormat passwordFormat, out string passwordSalt)
         {
             var retVal = string.Empty;
@@ -658,10 +661,6 @@ namespace XBLMS.Core.Repositories
             await _repository.DeleteAsync(id, Q.CachingRemove(cacheKeys.ToArray()));
 
             return admin;
-        }
-        public async Task ClearAsync()
-        {
-            await _repository.DeleteAsync(Q.WhereNot(nameof(OrganCompany.Id), 1));
         }
     }
 }

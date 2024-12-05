@@ -1,3 +1,4 @@
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -37,6 +38,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 var cerInfo = await _examCerRepository.GetAsync(cer.Id);
                 await _examCerRepository.UpdateAsync(cer);
                 await _authManager.AddAdminLogAsync("修改证书模板", $"{cerInfo.Name}");
+                await _authManager.AddStatLogAsync(StatType.ExamCerUpdate, "修改证书模板", cerInfo.Id, cerInfo.Name, cerInfo);
                 return new IntResult
                 {
                     Value = cerInfo.Id
@@ -50,7 +52,10 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 cer.DepartmentId = admin.DepartmentId;
                 var id = await _examCerRepository.InsertAsync(cer);
                 await _statRepository.AddCountAsync(StatType.ExamCerAdd);
-                await _authManager.AddAdminLogAsync("添加证书模板", $"{cer.Name}");
+                await _authManager.AddAdminLogAsync("新增证书模板", $"{cer.Name}");
+
+                await _authManager.AddStatLogAsync(StatType.ExamCerAdd, "新增证书模板", id, cer.Name);
+                await _authManager.AddStatCount(StatType.ExamCerAdd);
                 return new IntResult
                 {
                     Value = id

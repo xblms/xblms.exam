@@ -24,7 +24,10 @@ namespace XBLMS.Core.Repositories
         public List<TableColumn> TableColumns => _repository.TableColumns;
 
 
-
+        public async Task<bool> ExistsAsync(int id)
+        {
+            return await _repository.ExistsAsync(id);
+        }
         public async Task<int> InsertAsync(ExamQuestionnaire item)
         {
             return await _repository.InsertAsync(item);
@@ -64,30 +67,6 @@ namespace XBLMS.Core.Repositories
             return result;
         }
 
-        public async Task<List<int>> GetIdsAsync(List<int> ids, string keyword)
-        {
-            var query = Q.Select(nameof(ExamQuestionnaire.Id));
-
-            if (ids != null && ids.Count > 0)
-            {
-                query.WhereIn(nameof(ExamQuestionnaire.Id), ids);
-            }
-            else
-            {
-                return null;
-            }
-
-            if (!string.IsNullOrWhiteSpace(keyword))
-            {
-                var like = $"%{keyword}%";
-                query.Where(q => q
-                    .WhereLike(nameof(ExamQuestionnaire.Title), like)
-                );
-            }
-            return await _repository.GetAllAsync<int>(query);
-        }
-
-
         public async Task<int> MaxIdAsync()
         {
             var maxId= await _repository.MaxAsync(nameof(ExamQuestionnaire.Id));
@@ -101,6 +80,14 @@ namespace XBLMS.Core.Repositories
         public async Task IncrementAsync(int id)
         {
             await _repository.IncrementAsync(nameof(ExamQuestionnaire.AnswerTotal),Q.Where(nameof(ExamQuestionnaire.Id), id));
+        }
+
+        public async Task<(int allCount, int addCount, int deleteCount, int lockedCount, int unLockedCount)> GetDataCount()
+        {
+            var count = await _repository.CountAsync();
+            var lockedCount = await _repository.CountAsync(Q.WhereTrue(nameof(ExamQuestionnaire.Locked)));
+            var unLockedCount = await _repository.CountAsync(Q.WhereNullOrFalse(nameof(ExamQuestionnaire.Locked)));
+            return (count, 0, 0, lockedCount, unLockedCount);
         }
     }
 }

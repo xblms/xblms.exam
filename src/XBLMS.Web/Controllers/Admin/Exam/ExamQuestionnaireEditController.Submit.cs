@@ -34,6 +34,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
             if (paper.Id > 0)
             {
+                var last = await _questionnaireRepository.GetAsync(paper.Id);
 
                 if (request.SubmitType == SubmitType.Submit)
                 {
@@ -46,12 +47,13 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                     await _examManager.SetQuestionnairTm(request.TmList, paper.Id);
 
                     await _authManager.AddAdminLogAsync("重新发布调查问卷", $"{paper.Title}");
-
+                    await _authManager.AddStatLogAsync(StatType.ExamQUpdate, "重新发布调查问卷", paper.Id, paper.Title, last);
 
                 }
                 else
                 {
                     await _authManager.AddAdminLogAsync("修改调查问卷", $"{paper.Title}");
+                    await _authManager.AddStatLogAsync(StatType.ExamQUpdate, "修改调查问卷", paper.Id, paper.Title, last);
                 }
 
 
@@ -61,7 +63,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                     await _questionnaireUserRepository.UpdateKeyWordsAsync(paper.Id, paper.Title);
                     await _questionnaireUserRepository.UpdateExamDateTimeAsync(paper.Id, paper.ExamBeginDateTime.Value, paper.ExamEndDateTime.Value);
                 }
-          
+
 
                 await _questionnaireRepository.UpdateAsync(paper);
 
@@ -84,10 +86,14 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                     await _examManager.ArrangeQuestionnaire(paper);
 
                     await _authManager.AddAdminLogAsync("发布调查问卷", $"{paper.Title}");
+                    await _authManager.AddStatLogAsync(StatType.ExamQAdd, "发布调查问卷", paper.Id, paper.Title);
+                    await _authManager.AddStatCount(StatType.ExamQAdd);
                 }
                 else
                 {
                     await _authManager.AddAdminLogAsync("保存调查问卷", $"{paper.Title}");
+                    await _authManager.AddStatLogAsync(StatType.ExamQAdd, "保存调查问卷", paper.Id, paper.Title);
+                    await _authManager.AddStatCount(StatType.ExamQAdd);
                 }
             }
 

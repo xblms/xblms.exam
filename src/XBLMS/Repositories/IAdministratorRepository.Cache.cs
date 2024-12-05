@@ -9,18 +9,13 @@ namespace XBLMS.Repositories
 
         Task<Administrator> GetByUserIdAsync(int userId);
 
-        Task<Administrator> GetByGuidAsync(string guid);
-
         Task<Administrator> GetByUserNameAsync(string userName);
 
         Task<Administrator> GetByMobileAsync(string mobile);
 
         Task<Administrator> GetByEmailAsync(string email);
 
-        string GetUserUploadFileName(string filePath);
-
-        Task<string> GetDisplayAsync(int userId);
-
         string GetDisplay(Administrator admin);
+        Task<(int allCount, int addCount, int deleteCount, int lockedCount, int unLockedCount)> GetDataCount();
     }
 }

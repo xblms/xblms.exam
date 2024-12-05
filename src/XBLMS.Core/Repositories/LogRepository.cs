@@ -234,35 +234,5 @@ namespace XBLMS.Core.Repositories
             return await _repository.GetAllAsync(query);
         }
 
-        public async Task<DateTimeOffset> GetLastRemoveLogDateAsync()
-        {
-            var addDate = await _repository.GetAsync<DateTime?>(Q
-                .Select(nameof(Log.CreatedDate))
-                .Where(nameof(Log.Action), "清空数据库日志")
-                .OrderByDesc(nameof(Log.Id))
-            );
-
-            return addDate ?? DateTime.MinValue;
-        }
-
-        public async Task<List<Log>> GetUserLogsAsync(int userId, int offset, int limit)
-        {
-            return await _repository.GetAllAsync(Q
-                .Where(nameof(Log.UserId), userId)
-                .Offset(offset)
-                .Limit(limit)
-                .OrderByDesc(nameof(Log.Id))
-            );
-        }
-
-        public async Task<List<Log>> GetAdminLogsAsync(int adminId, int offset, int limit)
-        {
-            return await _repository.GetAllAsync(Q
-                .Where(nameof(Log.AdminId), adminId)
-                .Offset(offset)
-                .Limit(limit)
-                .OrderByDesc(nameof(Log.Id))
-            );
-        }
     }
 }

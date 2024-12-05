@@ -29,6 +29,14 @@
     </el-form>
     <el-table :data="items" :size="euiSize"
               style="width: 100%" :height="($(window).height() - 155)">
+        <el-table-column label="#"
+                         type="index"
+                         width="60"
+                         align="left">
+            <template scope="scope">
+                <span>{{(formInline.currentPage - 1) * formInline.limit + scope.$index + 1}}</span>
+            </template>
+        </el-table-column>
         <el-table-column width="100"
                          label="Id">
             <template slot-scope="scope">

@@ -18,6 +18,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
             }
 
             var role = await _roleRepository.GetRoleAsync(request.RoleId);
+            var last = await _roleRepository.GetRoleAsync(request.RoleId); ;
             if (role.RoleName != request.RoleName)
             {
                 if (await _roleRepository.IsRoleExistsAsync(request.RoleName))
@@ -54,6 +55,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
             _cacheManager.Clear();
 
             await _authManager.AddAdminLogAsync("修改管理员角色", $"{request.RoleName}");
+            await _authManager.AddStatLogAsync(StatType.AdminAuthUpdate, "修改管理员角色", role.Id, role.RoleName, last);
 
             return new BoolResult
             {

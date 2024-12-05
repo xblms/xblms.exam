@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using XBLMS.Dto;
 using XBLMS.Enums;
+using XBLMS.Models;
 using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Admin.Settings.Home
@@ -19,6 +20,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Home
 
             var menu = await _userMenuRepository.GetAsync(request.Id);
             await _authManager.AddAdminLogAsync("删除用户菜单", $"{ menu.Text }");
+
             return new UserMenusResult
             {
                 UserMenus = await _userMenuRepository.GetUserMenusAsync()

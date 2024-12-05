@@ -30,30 +30,10 @@ namespace XBLMS.Core.Repositories
         {
             return await _repository.InsertAsync(item);
         }
-        public async Task<bool> UpdateAsync(ExamQuestionnaireAnswer item)
-        {
-            return await _repository.UpdateAsync(item);
-        }
-
-        public async Task DeleteAsync(int id)
-        {
-            await _repository.DeleteAsync(id);
-        }
-
-        public async Task ClearByUserAsync(int userId)
-        {
-            await _repository.DeleteAsync(Q.Where(nameof(ExamQuestionnaireAnswer.UserId), userId));
-        }
         public async Task ClearByPaperAsync(int paperId)
         {
             await _repository.DeleteAsync(Q.Where(nameof(ExamQuestionnaireAnswer.ExamPaperId), paperId));
         }
-
-        public async Task ClearByPaperAndUserAsync(int paperId, int userId)
-        {
-            await _repository.DeleteAsync(Q.Where(nameof(ExamQuestionnaireAnswer.ExamPaperId), paperId).Where(nameof(ExamQuestionnaireAnswer.UserId), userId));
-        }
-
 
         public async Task<List<string>> GetListAnswer(int paperId,int tmId)
         {

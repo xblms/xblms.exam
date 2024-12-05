@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using XBLMS.Configuration;
 using XBLMS.Dto;
+using XBLMS.Enums;
 using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
@@ -40,6 +41,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
             }
 
             await _authManager.AddAdminLogAsync("重设管理员密码", $"{adminInfo.UserName}");
+            await _authManager.AddStatLogAsync(StatType.AdminUpdate, "重设管理员密码", adminInfo.Id, adminInfo.UserName);
 
             return new BoolResult
             {

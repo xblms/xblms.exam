@@ -21,6 +21,14 @@
 
     <el-table :data="groups" style="width: 100%;" :size="euiSize"
               :height="($(window).height() - 115)">
+        <el-table-column label="#"
+                         type="index"
+                         width="60"
+                         align="left">
+            <template scope="scope">
+                <span>{{ scope.$index + 1 }}</span>
+            </template>
+        </el-table-column>
         <el-table-column label="用户组" prop="groupName"></el-table-column>
         <el-table-column width="130" prop="userTotal">
             <template slot="header" slot-scope="scope">
@@ -50,16 +58,16 @@
                 <span v-else><el-tag size="mini" type="success" effect="dark">启用</el-tag></span>
             </template>
         </el-table-column>
-        <el-table-column label="" align="right" width="93">
+        <el-table-column label="" align="right" width="100">
             <template slot-scope="scope">
                 <el-dropdown :show-timeout="0" placement="left">
-                    <el-button :size="euiSize" v-on:click.stop="return false">
-                        <i class="el-icon-arrow-left el-icon--right"></i>操作
+                    <el-button icon="el-icon-arrow-left" size="mini" v-on:click.stop="return false">
+                        操作
                     </el-button>
                     <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item icon="el-icon-edit" v-on:click.native="btnEditClick(scope.row.id)">编辑</el-dropdown-item>
                         <el-dropdown-item icon="el-icon-user" v-on:click.native="btnRangeClick(scope.row.id)" v-if="scope.row.groupType==='Fixed'">安排用户</el-dropdown-item>
-                        <el-dropdown-item icon="el-icon-delete" style="color:red;" v-on:click.native="btnDeleteClick(scope.row)">删除</el-dropdown-item>
+                        <el-dropdown-item icon="el-icon-delete" style="color:red;" v-on:click.native="btnDeleteClick(scope.row)" divided>删除</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
             </template>

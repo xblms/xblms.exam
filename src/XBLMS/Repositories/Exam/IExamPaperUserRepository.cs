@@ -11,10 +11,7 @@ namespace XBLMS.Repositories
         Task<int> CountAsync(int paperId);
         Task<ExamPaperUser> GetAsync(int id);
         Task<ExamPaperUser> GetAsync(int paperId, int userId);
-        Task<ExamPaperUser> GetOnlyOneAsync(int userId);
-        Task ClearByUserAsync(int userId);
         Task ClearByPaperAsync(int paperId);
-        Task ClearByPaperAndUserAsync(int paperId, int userId);
         Task DeleteAsync(int id);
         Task<int> InsertAsync(ExamPaperUser item);
         Task<bool> ExistsAsync(int paperId, int userId);
@@ -30,7 +27,6 @@ namespace XBLMS.Repositories
         Task UpdateExamTimesAsync(int paperId, int examTimes);
         Task UpdateLockedAsync(int paperId, bool locked);
         Task UpdateKeyWordsAsync(int paperId, string keyWords);
-        Task UpdateKeyWordsAdminAsync(int id, string keyWords);
         Task UpdateMoniAsync(int paperId, bool moni);
     }
 }

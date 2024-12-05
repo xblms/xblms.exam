@@ -21,8 +21,10 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             {
                 await _examAssessmentRepository.DeleteAsync(assInfo.Id);
                 await _examManager.ClearExamAssessment(assInfo.Id);
-                await _authManager.AddAdminLogAsync("删除测评", $"{assInfo.Title}");
 
+                await _authManager.AddAdminLogAsync("删除测评", $"{assInfo.Title}");
+                await _authManager.AddStatLogAsync(StatType.ExamAssDelete, "删除测评", assInfo.Id, assInfo.Title, assInfo);
+                await _authManager.AddStatCount(StatType.ExamAssDelete);
             }
             return new BoolResult
             {

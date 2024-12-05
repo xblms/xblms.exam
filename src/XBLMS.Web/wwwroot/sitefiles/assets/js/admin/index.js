@@ -113,11 +113,18 @@ var methods = {
       this.contextTop = e.clientY;
     }
   },
-
-  closeContextMenu: function () {
-    this.contextMenuVisible = false;
+  tabClick: function (e) {
+    var $this = this;
+    var index = $this.tabs.findIndex(function (tab) {
+      return tab.name === e.name;
+    });
+    if (index === 0) {
+      var tab = $this.tabs[index];
+      var url = tab.url;
+      var iframe = top.document.getElementById('frm-' + tab.name).contentWindow;
+      iframe.location.href = url;
+    }
   },
-
   btnContextClick: function (command) {
     var $this = this;
     if (command === 'this') {

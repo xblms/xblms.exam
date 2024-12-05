@@ -28,12 +28,12 @@
         <el-table-column width="100" align="right">
             <template slot-scope="scope">
                 <el-dropdown :show-timeout="0" placement="left">
-                    <el-button :size="euiSize" v-on:click.stop="return false">
-                        操作<i class="el-icon-arrow-down el-icon--right"></i>
+                    <el-button icon="el-icon-arrow-left" size="mini" v-on:click.stop="return false">
+                        操作
                     </el-button>
                     <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item icon="el-icon-edit" v-on:click.native="handleCommand('edit',scope.row)">修改</el-dropdown-item>
-                        <el-dropdown-item icon="el-icon-delete" v-on:click.native="handleCommand('delete',scope.row)" style="color:red;">删除</el-dropdown-item>
+                        <el-dropdown-item icon="el-icon-delete" v-on:click.native="handleCommand('delete',scope.row)" style="color:red;" divided>删除</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
             </template>

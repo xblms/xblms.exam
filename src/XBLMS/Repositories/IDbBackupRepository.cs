@@ -10,8 +10,6 @@ namespace XBLMS.Repositories
         Task<(int total, List<DbBackup> list)> GetListAsync(int pageIndex, int pageSize);
         Task<DbBackup> GetAsync(int id);
         Task<int> InsertAsync(DbBackup info);
-        Task<bool> UpdateAsync(DbBackup info);
         Task DeleteAsync(int id);
-        Task<bool> ExcutionAsync();
     }
 }

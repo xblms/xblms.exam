@@ -106,7 +106,7 @@ var methods = {
   handleCurrentChange: function(val) {
     var $this = this;
 
-    this.formInline.currentValue = val;
+    this.formInline.currentPage = val;
     this.formInline.offset = this.formInline.limit * (val - 1);
 
     utils.loading(this, true);

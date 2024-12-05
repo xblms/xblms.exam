@@ -27,6 +27,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
             }
 
             await _authManager.AddAdminLogAsync("重设用户密码", $"{user.UserName}");
+            await _authManager.AddStatLogAsync(StatType.UserUpdate, "重设用户密码", user.Id, user.DisplayName);
 
             return new BoolResult
             {

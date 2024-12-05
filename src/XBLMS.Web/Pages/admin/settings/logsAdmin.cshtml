@@ -32,6 +32,14 @@
 
     <el-table :data="items" :size="euiSize"
               style="width: 100%" :height="($(window).height() - 205)">
+        <el-table-column label="#"
+                         type="index"
+                         width="60"
+                         align="left">
+            <template scope="scope">
+                <span>{{(formInline.currentPage - 1) * formInline.limit + scope.$index + 1}}</span>
+            </template>
+        </el-table-column>
         <el-table-column width="180"
                          label="管理员">
             <template slot-scope="scope">

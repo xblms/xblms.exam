@@ -33,9 +33,10 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
             var adminId = _authManager.AdminId;
 
             User user;
+            User last = new User();
             if (userId > 0)
             {
-                user = await _userRepository.GetByUserIdAsync(userId);
+                last = user = await _userRepository.GetByUserIdAsync(userId);
                 if (user == null) return this.Error(Constants.ErrorNotFound);
             }
             else
@@ -47,7 +48,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
             user.AvatarUrl = request.AvatarUrl;
             user.Mobile = request.Mobile;
             user.Email = request.Email;
-
+            user.Locked = request.Locked;
 
             var company = await _organManager.GetCompanyByGuidAsync(request.OrganId);
             var department = await _organManager.GetDepartmentByGuidAsync(request.OrganId);
@@ -73,7 +74,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
 
             if (request.UserId == 0)
             {
-                user.UserName= request.UserName;
+                user.UserName = request.UserName;
                 user.CreatorId = adminId;
 
                 if (!string.IsNullOrEmpty(request.Mobile))
@@ -101,7 +102,9 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
                     await _userRepository.UpdateAsync(resultUser);
                 }
 
-                await _authManager.AddAdminLogAsync("添加用户", $"{ request.UserName }");
+                await _authManager.AddAdminLogAsync("新增用户账号", $"{request.UserName}");
+                await _authManager.AddStatLogAsync(StatType.UserAdd, "新增用户账号", user.Id, user.DisplayName);
+                await _authManager.AddStatCount(StatType.UserAdd);
             }
             else
             {
@@ -123,7 +126,8 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
                     return this.Error($"用户修改失败：{errorMessage}");
                 }
 
-                await _authManager.AddAdminLogAsync("修改用户", $"{ request.UserName }");
+                await _authManager.AddAdminLogAsync("修改用户账号", $"{request.UserName}");
+                await _authManager.AddStatLogAsync(StatType.UserUpdate, "修改用户账号", user.Id, user.DisplayName, last);
             }
 
             return new BoolResult

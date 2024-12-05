@@ -13,6 +13,7 @@ var data = utils.init({
     avatarUrl: null,
     mobile: null,
     email: null,
+    locked: false,
     organId: ''
   }
 });
@@ -37,6 +38,7 @@ var methods = {
         $this.form.mobile = res.mobile;
         $this.form.email = res.email;
         $this.form.organId = res.organId;
+        $this.form.locked = res.locked;
       }
 
 
@@ -59,7 +61,8 @@ var methods = {
       avatarUrl: this.form.avatarUrl,
       mobile: this.form.mobile,
       email: this.form.email,
-      organId: this.form.organId
+      organId: this.form.organId,
+      locked: this.form.locked
     }).then(function (response) {
       utils.success('操作成功！');
       utils.closeLayer(false);
@@ -70,7 +73,7 @@ var methods = {
     });
   },
 
-  validatePass: function(rule, value, callback) {
+  validatePass: function (rule, value, callback) {
     if (value === '') {
       callback(new Error('请再次输入密码'));
     } else if (value !== this.form.password) {
@@ -83,7 +86,7 @@ var methods = {
   btnSubmitClick: function () {
     var $this = this;
 
-    this.$refs.form.validate(function(valid) {
+    this.$refs.form.validate(function (valid) {
       if (valid) {
         $this.apiSubmit();
       }
@@ -92,8 +95,7 @@ var methods = {
 
   uploadBefore(file) {
     var re = /(\.jpg|\.jpeg|\.bmp|\.gif|\.png|\.webp)$/i;
-    if(!re.exec(file.name))
-    {
+    if (!re.exec(file.name)) {
       utils.error('头像只能是图片格式，请选择有效的文件上传!', { layer: true });
       return false;
     }
@@ -106,17 +108,17 @@ var methods = {
     return true;
   },
 
-  uploadProgress: function() {
+  uploadProgress: function () {
     utils.loading(this, true);
   },
 
-  uploadSuccess: function(res, file, fileList) {
+  uploadSuccess: function (res, file, fileList) {
     this.form.avatarUrl = res.value;
     utils.loading(this, false);
     if (fileList.length > 1) fileList.splice(0, 1);
   },
 
-  uploadError: function(err) {
+  uploadError: function (err) {
     utils.loading(this, false);
     var error = JSON.parse(err.message);
     utils.error(error.message, { layer: true });

@@ -38,16 +38,6 @@ namespace XBLMS.Core.Repositories
         {
             return await _repository.DeleteAsync(Q.Where(nameof(ExamPaperRandomTm.ExamPaperId), examPaperId));
         }
-
-        public async Task<List<ExamPaperRandomTm>> GetListAsync(int examPaperRandomId)
-        {
-            var infoList = await _repository.GetAllAsync(Q.
-                Where(nameof(ExamPaperRandomTm.ExamPaperRandomId), examPaperRandomId).
-                OrderBy(nameof(ExamPaperRandomTm.Id)));
-            return infoList;
-        }
-
-
         public async Task<List<ExamPaperRandomTm>> GetListAsync(int examPaperRandomId, int txId)
         {
             var infoList = await _repository.GetAllAsync(Q.
@@ -55,19 +45,6 @@ namespace XBLMS.Core.Repositories
                 Where(nameof(ExamPaperRandomTm.TxId), txId).
                 OrderBy(nameof(ExamPaperRandomTm.Id)));
             return infoList;
-        }
-        public async Task<List<int>> GetTmIdsAsync(int examPaperRandomId, int txId)
-        {
-            var infoList = await _repository.GetAllAsync<int>(Q.
-                Select(nameof(ExamPaperRandomTm.Id)).
-                Where(nameof(ExamPaperRandomTm.ExamPaperRandomId), examPaperRandomId).
-                Where(nameof(ExamPaperRandomTm.TxId), txId).
-                OrderBy(nameof(ExamPaperRandomTm.Id)));
-            return infoList;
-        }
-        public async Task UpdateScoreAsync(ExamPaperRandomTm item)
-        {
-            await _repository.UpdateAsync(item);
         }
     }
 }

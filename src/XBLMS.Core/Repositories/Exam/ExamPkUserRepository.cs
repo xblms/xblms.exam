@@ -41,10 +41,6 @@ namespace XBLMS.Core.Repositories
         {
             await _repository.DeleteAsync(Q.Where(nameof(ExamPkUser.PkId), pkId));
         }
-        public async Task DeleteAsync(int id)
-        {
-            await _repository.DeleteAsync(id);
-        }
 
         public async Task<int> CountAsync(int pkId)
         {

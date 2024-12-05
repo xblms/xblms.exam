@@ -27,8 +27,10 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             tx.DepartmentId = admin.DepartmentId;
             tx.CreatorId = admin.Id;
 
-            await _examTxRepository.InsertAsync(tx);
-            await _authManager.AddAdminLogAsync("添加题型", $"{tx.Name}");
+            var txId = await _examTxRepository.InsertAsync(tx);
+            await _authManager.AddAdminLogAsync("新增题型", $"{tx.Name}");
+            await _authManager.AddStatLogAsync(StatType.ExamTxAdd, "新增题型", txId, tx.Name);
+            await _authManager.AddStatCount(StatType.ExamTxAdd);
             return new BoolResult
             {
                 Value = true

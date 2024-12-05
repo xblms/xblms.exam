@@ -47,7 +47,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
                 foreach (var adminId in request.AdminIds)
                 {
                     var setAdmin = await _administratorRepository.GetByUserIdAsync(adminId);
-                    await _authManager.AddAdminLogAsync("配置角色", $"管理员:{setAdmin.DisplayName}>角色:{ListUtils.ToString(roleNames)}");
+                    await _authManager.AddAdminLogAsync("配置管理员角色", $"管理员:{setAdmin.DisplayName}>角色:{ListUtils.ToString(roleNames)}");
                 }
             }
             return new BoolResult

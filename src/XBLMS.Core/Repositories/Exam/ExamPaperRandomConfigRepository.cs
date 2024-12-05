@@ -34,15 +34,6 @@ namespace XBLMS.Core.Repositories
         {
             return await _repository.InsertAsync(item);
         }
-        public async Task<bool> UpdateAsync(ExamPaperRandomConfig item)
-        {
-            return await _repository.UpdateAsync(item);
-        }
-
-        public async Task<bool> DeleteAsync(int id)
-        {
-            return await _repository.DeleteAsync(id);
-        }
         public async Task<int> DeleteByPaperAsync(int examPaperId)
         {
             return await _repository.DeleteAsync(Q.Where(nameof(ExamPaperRandomConfig.ExamPaperId), examPaperId));

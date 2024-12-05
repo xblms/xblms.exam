@@ -121,7 +121,7 @@ var methods = {
     location.href = utils.getIndexUrl();
   },
 
-  btnTypeClick: function() {
+  btnTypeClick: function () {
     var $this = this;
 
     this.$refs.formAccount && this.$refs.formAccount.clearValidate();
@@ -148,13 +148,13 @@ var methods = {
     var $this = this;
 
     if (this.form.type == 'account') {
-      this.$refs.formAccount.validate(function(valid) {
+      this.$refs.formAccount.validate(function (valid) {
         if (valid) {
           $this.apiCaptchaCheck();
         }
       });
     } else {
-      this.$refs.formMobile.validate(function(valid) {
+      this.$refs.formMobile.validate(function (valid) {
         if (valid) {
           $this.apiSubmit();
         }
@@ -162,7 +162,7 @@ var methods = {
     }
   },
 
-  btnRegisterClick: function(e) {
+  btnRegisterClick: function (e) {
     e.preventDefault();
     location.href = utils.getRootUrl('register');
   }
@@ -172,8 +172,8 @@ var $vue = new Vue({
   el: '#main',
   data: data,
   methods: methods,
-    created: function() {
-    document.title=DOCUMENTTITLE_HOME+'-登录';
+  created: function () {
+    document.title = DOCUMENTTITLE_HOME + '-登录';
     this.apiGet();
   }
 });
