@@ -231,43 +231,43 @@ namespace XBLMS.Web.Controllers.Admin
             var o3 = c3 + d3 + g3;
             var o4 = c4 + d4 + g4;
             var o5 = c5 + d5 + g5;
-            var o2 = o1 - o3;
+            var o2 = o1 + o3;
 
 
 
             var (admin1, admin2, admin3, admin4, admin5) = await _databaseManager.AdministratorRepository.GetDataCount();
             admin3 = await _statRepository.SumAsync(StatType.AdminDelete);
-            admin2 = admin1 - admin3;
+            admin2 = admin1 + admin3;
 
             var (user1, user2, user3, user4, user5) = await _databaseManager.UserRepository.GetDataCount();
             user3 = await _statRepository.SumAsync(StatType.UserDelete);
-            user2 = user1 - user3;
+            user2 = user1 + user3;
 
             var (e1, e2, e3, e4, e5) = await _databaseManager.ExamPaperRepository.GetDataCount();
             e3 = await _statRepository.SumAsync(StatType.ExamDelete);
-            e2 = e1 - e3;
+            e2 = e1 + e3;
 
             var (m1, m2, m3, m4, m5) = await _databaseManager.ExamPaperRepository.GetDataCountMoni();
 
             var (q1, q2, q3, q4, q5) = await _databaseManager.ExamQuestionnaireRepository.GetDataCount();
             q3 = await _statRepository.SumAsync(StatType.ExamQDelete);
-            q2 = q1 - q3;
+            q2 = q1 + q3;
 
             var (s1, s2, s3, s4, s5) = await _databaseManager.ExamAssessmentRepository.GetDataCount();
             s3 = await _statRepository.SumAsync(StatType.ExamAssDelete);
-            s2 = s1 - s3;
+            s2 = s1 + s3;
 
             var (p1, p2, p3, p4, p5) = await _databaseManager.ExamPkRepository.GetDataCount();
             p3 = await _statRepository.SumAsync(StatType.ExamPkDelete);
-            p2 = p1 - p3;
+            p2 = p1 + p3;
 
             var (cer1, cer2, cer3, cer4, cer5) = await _databaseManager.ExamCerRepository.GetDataCount();
             cer3 = await _statRepository.SumAsync(StatType.ExamCerDelete);
-            cer2 = cer1 - cer3;
+            cer2 = cer1 + cer3;
 
             var (t1, t2, t3, t4, t5) = await _databaseManager.ExamTmRepository.GetDataCount();
             t3 = await _statRepository.SumAsync(StatType.ExamTmDelete);
-            t2 = t1 - t3;
+            t2 = t1 + t3;
 
             var dataList = new List<GetDataInfo>();
             dataList.Add(new GetDataInfo
