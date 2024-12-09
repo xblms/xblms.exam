@@ -248,10 +248,10 @@
 
 <div class="py-8"></div>
 @await Html.PartialAsync("_PartialAppMenu")
-<div style="position:fixed;right:5%;top:70%;" class="text-center" v-if="taskTotal>0">
-    <el-badge is-dot type="warning">
-        <el-button type="warning" icon="el-icon-star-off" circle v-on:click="taskDialogVisible=true" class="shadow-lg"></el-button>
-    </el-badge>
+<div style="position:fixed;right:0;top:70%;" class="text-center" v-if="taskTotal>0">
+    <button type="button" class="btn btn-dark rounded-start-pill" v-on:click="taskDialogVisible=true">
+        <i class="el-icon-star-off text-warning"></i><span class="mx-2 text-light">{{ taskTotal }}</span>
+    </button>
 </div>
 <template>
     <el-drawer :title="taskTotal+' 个待办'"
