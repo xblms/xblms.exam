@@ -117,9 +117,23 @@
                                                        active-text="候选项顺序随机">
                                             </el-switch>
                                         </el-form-item>
-                                        <el-form-item>
+                                        <el-form-item label="自动判分">
                                             <el-switch v-model="form.isAutoScore" active-color="#13ce66"
                                                        active-text="主观题自动判分">
+                                            </el-switch>
+                                        </el-form-item>
+                                        <el-form-item label="退出次数">
+                                            <el-input-number v-model="form.existCount" :min="0"></el-input-number>
+                                            <div class="tips">0不限制，否则到达次数自动交卷</div>
+                                        </el-form-item>
+                                        <el-form-item label="全屏考试">
+                                            <el-switch v-model="form.fullScreen" active-color="#13ce66"
+                                                       active-text="全屏考试">
+                                            </el-switch>
+                                        </el-form-item>
+                                        <el-form-item label="移动端考试">
+                                            <el-switch v-model="form.lockedApp" active-color="#13ce66"
+                                                       active-text="开启后移动端将禁用该场考试">
                                             </el-switch>
                                         </el-form-item>
                                     </div>

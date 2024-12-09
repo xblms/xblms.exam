@@ -91,10 +91,15 @@ namespace XBLMS.Models
         [DataColumn]
         public bool IsClientExam { get; set; } = false;//普通考试 客户端考试
         /// <summary>
-        /// 是否显示推出考试按钮
+        /// 是否显示退出考试按钮
         /// </summary>
         [DataColumn]
         public bool OpenExist { get; set; } = true;
+        /// <summary>
+        /// 退出次数，切屏次数，>= 后自动交卷 0不限制
+        /// </summary>
+        [DataColumn]
+        public int ExistCount { get; set; } = 0;
         /// <summary>
         /// 题目随机显示
         /// </summary>
@@ -109,5 +114,9 @@ namespace XBLMS.Models
         public SubmitType SubmitType { get; set; } = SubmitType.Save;
         [DataColumn]
         public bool Locked { get; set; } = false;
+        [DataColumn]
+        public bool LockedApp { get; set; } = false;
+        [DataColumn]
+        public bool FullScreen { get; set; } = false;
     }
 }

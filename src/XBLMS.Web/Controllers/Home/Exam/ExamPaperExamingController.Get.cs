@@ -26,6 +26,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
             var startId = 0;
             var isNewExam = true;
 
+            var existCount = 0;
             long useTimeSecond = 0;
             var noSubmitStart = await _examPaperStartRepository.GetNoSubmitAsync(paper.Id, user.Id);
             if (noSubmitStart != null)
@@ -48,6 +49,13 @@ namespace XBLMS.Web.Controllers.Home.Exam
                 }
 
                 noSubmitStart.ExamTimeSeconds = (long)useTotalSecond;
+
+                if (paper.ExistCount >= 0)
+                {
+                    noSubmitStart.ExistCount++;
+                    existCount = noSubmitStart.ExistCount;
+                }
+
                 await _examPaperStartRepository.UpdateAsync(noSubmitStart);
             }
             else
@@ -133,6 +141,8 @@ namespace XBLMS.Web.Controllers.Home.Exam
             paper.Set("UserAvatar", user.AvatarUrl);
 
             paper.Set("UseTimeSecond", useTimeSecond);
+
+            paper.Set("ExistUserCount", existCount);
 
 
             return new GetResult

@@ -103,7 +103,7 @@ var methods = {
 
 
     utils.loading(this, true);
-    $api.get($url).then(function (response) {
+    $api.get($url, { params: { isApp: false } }).then(function (response) {
       var res = response.data;
 
       $this.user = res.user;

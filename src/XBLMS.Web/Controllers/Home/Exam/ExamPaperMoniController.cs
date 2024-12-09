@@ -33,6 +33,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
         }
         public class GetRequest
         {
+            public bool IsApp { get; set; }
             public string KeyWords { get; set; }
             public string Date { get; set; }
             public int PageIndex { get; set; }

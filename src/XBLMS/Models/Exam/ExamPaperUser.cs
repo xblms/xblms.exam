@@ -20,7 +20,8 @@ namespace XBLMS.Models
         [DataColumn]
         public bool Moni { get; set; }
         [DataColumn]
-        public bool Locked { get; set; } 
-
+        public bool Locked { get; set; }
+        [DataColumn]
+        public bool LockedApp { get; set; } = false;
     }
 }

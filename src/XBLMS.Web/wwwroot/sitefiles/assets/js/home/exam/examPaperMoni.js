@@ -3,6 +3,7 @@ var $urlItem = $url + "/item";
 
 var data = utils.init({
   form: {
+    isApp: false,
     keyWords: '',
     date:'',
     pageIndex: 1,

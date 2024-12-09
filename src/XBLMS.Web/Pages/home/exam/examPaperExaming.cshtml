@@ -31,7 +31,7 @@
     <link href="/sitefiles/assets/css/watermark.css" rel="stylesheet" type="text/css" />
 }
 @await Html.PartialAsync("_PartialWatermark")
-<template v-if="paper">
+<template v-if="isLoad">
 <div class="d-flex justify-content-between align-items-center px-8 py-3">
     <span><span class="fw-bold fs-4">考试中：{{ paper.title }}<span class="fw-light fs-5">（共：{{ paper.tmTotal }}题，总分：{{ paper.totalScore }}分，及格分：{{ paper.passScore }}分）</span></span></span>
     <div class="d-flex justify-content-between align-items-center">

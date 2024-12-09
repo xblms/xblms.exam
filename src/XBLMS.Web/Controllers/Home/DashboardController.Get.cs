@@ -9,7 +9,7 @@ namespace XBLMS.Web.Controllers.Home
     public partial class DashboardController
     {
         [HttpGet, Route(Route)]
-        public async Task<ActionResult<GetResult>> Get()
+        public async Task<ActionResult<GetResult>> Get([FromQuery] GetRequest request)
         {
             var user = await _authManager.GetUserAsync();
             if (user == null) return Unauthorized();
@@ -22,7 +22,7 @@ namespace XBLMS.Web.Controllers.Home
             var resultPaper = new ExamPaper();
             var resultMoni = new ExamPaper();
 
-            var paperIds = await _examPaperUserRepository.GetPaperIdsByUser(user.Id, "");
+            var paperIds = await _examPaperUserRepository.GetPaperIdsByUser(user.Id, request.IsApp);
             var (paperTotal, paperList) = await _examPaperRepository.GetListByUserAsync(paperIds, "", 1, 1);
             var (moniPaperTotal, moniPaperList) = await _examPaperRepository.GetListByUserAsync(paperIds, "", 1, 1, true);
 
@@ -49,7 +49,7 @@ namespace XBLMS.Web.Controllers.Home
 
             var taskPaperTotal = 0;
 
-            var taskPaperIds = await _examPaperUserRepository.GetPaperIdsByUser(user.Id);
+            var taskPaperIds = paperIds;
             if (taskPaperIds != null && taskPaperIds.Count > 0)
             {
                 foreach (var paperId in taskPaperIds)

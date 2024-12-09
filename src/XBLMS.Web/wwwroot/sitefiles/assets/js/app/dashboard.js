@@ -94,12 +94,12 @@ var data = utils.init({
   taskPaperTotal: 0,
   taskQTotal: 0,
   taskDialogVisible: false,
-  taskAssTotal:0,
+  taskAssTotal: 0,
 
-  topCer:null,
-  dateStr:'',
+  topCer: null,
+  dateStr: '',
 
-  appMenuActive:"index"
+  appMenuActive: "index"
 
 });
 
@@ -108,7 +108,7 @@ var methods = {
     var $this = this;
 
     utils.loading(this, true);
-    $api.get($url).then(function (response) {
+    $api.get($url, { params: { isApp: true } }).then(function (response) {
       var res = response.data;
 
       $this.user = res.user;

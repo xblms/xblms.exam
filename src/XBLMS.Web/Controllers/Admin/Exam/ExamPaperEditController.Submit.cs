@@ -80,6 +80,10 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 {
                     await _examPaperUserRepository.UpdateMoniAsync(paper.Id, paper.Moni);
                 }
+                if (oldPaper.LockedApp != paper.LockedApp)
+                {
+                    await _examPaperUserRepository.UpdateLockedAppAsync(paper.Id, paper.LockedApp);
+                }
             }
             else
             {

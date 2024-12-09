@@ -14,7 +14,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
             var user = await _authManager.GetUserAsync();
             if (user == null) return Unauthorized();
 
-            var (total, list) = await _examPaperUserRepository.GetListAsync(user.Id,true, request.Date, request.KeyWords, request.PageIndex, request.PageSize);
+            var (total, list) = await _examPaperUserRepository.GetListAsync(user.Id, true, request.IsApp, request.Date, request.KeyWords, request.PageIndex, request.PageSize);
             var resultList = new List<ExamPaper>();
             if (total > 0)
             {

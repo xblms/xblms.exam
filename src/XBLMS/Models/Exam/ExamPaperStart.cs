@@ -38,5 +38,7 @@ namespace XBLMS.Models
         public bool IsSubmit { get; set; }
         [DataColumn]
         public bool Locked { get; set; }
+        [DataColumn]
+        public int ExistCount { get; set; } = 0;
     }
 }

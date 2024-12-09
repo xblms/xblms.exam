@@ -35,6 +35,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
         {
             public string KeyWords { get; set; }
             public string Date { get; set; }
+            public bool IsApp { get; set; }
             public int PageIndex { get; set; }
             public int PageSize { get; set; }
         }

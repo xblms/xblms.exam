@@ -113,7 +113,6 @@
                     </template>
                 </el-form-item>
             </el-form>
-
             <el-table :data="items" :size="euiSize" ref="userTable" v-on:selection-change="handleSelectionChange"
                       style="width: 100%" :height="$(window).innerHeight()-265">
                 <el-table-column label="#"
@@ -121,7 +120,7 @@
                                  width="60"
                                  align="left">
                     <template scope="scope">
-                        <span>{{(formInline.pageIndex - 1) * formInline.pageSize + scope.$index + 1}}</span>
+                        <span>{{(formInline.currentPage - 1) * formInline.limit + scope.$index + 1}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column type="selection"

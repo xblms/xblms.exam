@@ -514,6 +514,25 @@ var utils = {
 
     return false;
   },
+  alertExamWarning: function (config) {
+    if (!config) return false;
+
+    alert({
+      title: config.title,
+      text: config.text,
+      type: "warning",
+      confirmButtonText: config.button || "确 定",
+      cancelButtonText: "取 消",
+      confirmButtonClass: "el-button el-button--warning",
+      showCancelButton: false
+    }).then(function (result) {
+      if (result.value && config.callback) {
+        config.callback();
+      }
+    });
+
+    return false;
+  },
 
   getErrorMessage: function (error) {
     if (error.response && error.response.status === 500) {

@@ -104,6 +104,21 @@ namespace XBLMS.Core.Repositories
 
             return await _repository.GetAllAsync<int>(query);
         }
+        public async Task<List<int>> GetPaperIdsByUser(int userId,bool isApp)
+        {
+            var query = Q.
+                Select(nameof(ExamPaperUser.ExamPaperId)).
+                WhereNullOrFalse(nameof(ExamPaperUser.Locked)).
+                Where(nameof(ExamPaperUser.ExamEndDateTime), ">", DateTime.Now).
+                Where(nameof(ExamPaperUser.UserId), userId);
+
+            if (isApp)
+            {
+                query.WhereNullOrFalse(nameof(ExamPaperUser.LockedApp));
+            }
+
+            return await _repository.GetAllAsync<int>(query);
+        }
 
 
         public async Task<(int total, List<ExamPaperUser> list)> GetListAsync(int paperId, string keyWords, int pageIndex, int pageSize)
@@ -122,11 +137,15 @@ namespace XBLMS.Core.Repositories
 
             return (total, list);
         }
-        public async Task<(int total, List<ExamPaperUser> list)> GetListAsync(int userId,bool isMoni, string date, string keyWords, int pageIndex, int pageSize)
+        public async Task<(int total, List<ExamPaperUser> list)> GetListAsync(int userId,bool isMoni,bool isApp, string date, string keyWords, int pageIndex, int pageSize)
         {
             var query = Q.
                 WhereNullOrFalse(nameof(ExamPaperUser.Locked)).
                 Where(nameof(ExamPaperUser.UserId), userId);
+            if (isApp)
+            {
+                query.WhereNullOrFalse(nameof(ExamPaperUser.LockedApp));
+            }
             if (isMoni)
             {
                 query.WhereTrue(nameof(ExamPaperUser.Moni));
@@ -210,6 +229,12 @@ namespace XBLMS.Core.Repositories
         {
             await _repository.UpdateAsync(Q.
                 Set(nameof(ExamPaperUser.Locked), locked).
+                Where(nameof(ExamPaperUser.ExamPaperId), paperId));
+        }
+        public async Task UpdateLockedAppAsync(int paperId, bool locked)
+        {
+            await _repository.UpdateAsync(Q.
+                Set(nameof(ExamPaperUser.LockedApp), locked).
                 Where(nameof(ExamPaperUser.ExamPaperId), paperId));
         }
         public async Task UpdateMoniAsync(int paperId, bool moni)

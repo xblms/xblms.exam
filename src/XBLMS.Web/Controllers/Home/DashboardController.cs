@@ -56,6 +56,11 @@ namespace XBLMS.Web.Controllers.Home
             _examAssessmentUserRepository = examAssessmentUserRepository;
         }
 
+        public class GetRequest
+        {
+            public bool IsApp { get; set; }
+        }
+
         public class GetResult
         {
             public User User { get; set; }

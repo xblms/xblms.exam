@@ -68,7 +68,7 @@ namespace XBLMS.Web.Controllers.Home
             var paperTmoniTotal = 0;
             var paperTotal = 0;
 
-            var paperIds = await _examPaperUserRepository.GetPaperIdsByUser(user.Id);
+            var paperIds = await _examPaperUserRepository.GetPaperIdsByUser(user.Id, false);
             if (paperIds != null && paperIds.Count > 0)
             {
                 foreach (var paperId in paperIds)
