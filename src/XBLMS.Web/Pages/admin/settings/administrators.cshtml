@@ -111,7 +111,7 @@
                                  width="60"
                                  align="left">
                     <template scope="scope">
-                        <span>{{(formInline.offset - 1) * formInline.limit + scope.$index + 1}}</span>
+                        <span>{{(formInline.currentPage - 1) * formInline.limit + scope.$index + 1}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column type="selection"

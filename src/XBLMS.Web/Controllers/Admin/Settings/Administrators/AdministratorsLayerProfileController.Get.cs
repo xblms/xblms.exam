@@ -13,8 +13,6 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
         public async Task<ActionResult<GetResult>> Get([FromQuery] GetRequest request)
         {
             var admin = await _authManager.GetAdminAsync();
-
-            var adminId = _authManager.AdminId;
             var organs = await _organManager.GetOrganTreeTableDataAsync();
 
             var auths = _authManager.AuthorityTypes();
