@@ -30,7 +30,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
             await _configRepository.UpdateAsync(config);
 
             await _authManager.AddAdminLogAsync("修改用户设置");
-
+            await _authManager.AddStatLogAsync(StatType.None, "修改用户设置");
             return new BoolResult
             {
                 Value = true

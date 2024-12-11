@@ -38,7 +38,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
             await _configRepository.UpdateAsync(config);
 
             await _authManager.AddAdminLogAsync("修改管理员设置");
-
+            await _authManager.AddStatLogAsync(StatType.None, "修改管理员设置");
             return new BoolResult
             {
                 Value = true

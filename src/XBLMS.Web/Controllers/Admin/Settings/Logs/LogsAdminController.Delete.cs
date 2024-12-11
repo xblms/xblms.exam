@@ -19,6 +19,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Logs
             await _logRepository.DeleteAllAdminLogsAsync();
 
             await _authManager.AddAdminLogAsync("清空管理员日志");
+            await _authManager.AddStatLogAsync(StatType.None, "清空管理员日志");
 
             return new BoolResult
             {

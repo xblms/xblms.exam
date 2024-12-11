@@ -47,8 +47,9 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Logs
 
             ExcelUtils.Write(filePath, head, rows);
             var downloadUrl = _pathManager.GetDownloadFilesUrl(fileName);
-            await _authManager.AddAdminLogAsync("导出系统错误日志");
 
+            await _authManager.AddAdminLogAsync("导出系统错误日志");
+            await _authManager.AddStatLogAsync(StatType.Export, "导出系统错误日志", 0, string.Empty, new StringResult { Value = downloadUrl });
             return new StringResult
             {
                 Value = downloadUrl

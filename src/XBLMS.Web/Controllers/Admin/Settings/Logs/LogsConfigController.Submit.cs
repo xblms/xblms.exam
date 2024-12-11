@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using XBLMS.Dto;
 using XBLMS.Enums;
 using XBLMS.Utils;
 
@@ -29,7 +30,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Logs
             await _configRepository.UpdateAsync(config);
 
             await _authManager.AddAdminLogAsync("修改日志设置");
-
+            await _authManager.AddStatLogAsync(StatType.None, "修改日志设置");
             return new GetResult
             {
                 Config = config

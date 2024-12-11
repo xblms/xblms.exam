@@ -21,8 +21,8 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Utilities
             }
             var admin = await _authManager.GetAdminAsync();
 
+            await _authManager.AddAdminLogAsync("重启系统");
             await _authManager.AddStatLogAsync(StatType.None, "重启系统");
-
             _hostApplicationLifetime.StopApplication();
 
             return new BoolResult
