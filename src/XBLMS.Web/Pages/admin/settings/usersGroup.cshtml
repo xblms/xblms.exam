@@ -58,6 +58,7 @@
                 <span v-else><el-tag size="mini" type="success" effect="dark">启用</el-tag></span>
             </template>
         </el-table-column>
+        <el-table-column width="88" label="被使用" prop="useCount"></el-table-column>
         <el-table-column label="" align="right" width="100">
             <template slot-scope="scope">
                 <el-dropdown :show-timeout="0" placement="left">

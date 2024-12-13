@@ -29,8 +29,9 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         private readonly IExamManager _examManager;
         private readonly IAdministratorRepository _administratorRepository;
         private readonly IExamTmRepository _examTmRepository;
+        private readonly IExamPaperRepository _examPaperRepository;
 
-        public ExamTmGroupController(IAuthManager authManager, ICacheManager cacheManager, IConfigRepository configRepository, IExamTmGroupRepository examTmGroupRepository, IExamManager examManager, IExamTxRepository examTxRepository, IAdministratorRepository administratorRepository, IExamTmRepository examTmRepository)
+        public ExamTmGroupController(IAuthManager authManager, ICacheManager cacheManager, IConfigRepository configRepository, IExamTmGroupRepository examTmGroupRepository, IExamManager examManager, IExamTxRepository examTxRepository, IAdministratorRepository administratorRepository, IExamTmRepository examTmRepository, IExamPaperRepository examPaperRepository)
         {
             _authManager = authManager;
             _cacheManager = cacheManager;
@@ -40,6 +41,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             _examTxRepository = examTxRepository;
             _administratorRepository = administratorRepository;
             _examTmRepository = examTmRepository;
+            _examPaperRepository = examPaperRepository;
         }
         public class GetRequest
         {

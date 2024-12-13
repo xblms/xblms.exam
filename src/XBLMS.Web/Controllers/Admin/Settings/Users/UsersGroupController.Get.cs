@@ -49,6 +49,9 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
                     group.UserTotal = await _userRepository.GetCountByUserGroupAsync(group.CompanyIds, group.DepartmentIds, group.DutyIds);
                 }
 
+
+                group.Set("UseCount", await _organManager.GetGroupCount(group.Id));
+
                 if (!string.IsNullOrEmpty(request.Search))
                 {
                     if (group.GroupName.Contains(request.Search) || StringUtils.Contains(group.Description, request.Search))

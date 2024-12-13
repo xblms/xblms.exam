@@ -45,6 +45,8 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 }
                 group.TmTotal = tmTotal;
 
+                group.Set("UseCount", await _examPaperRepository.GetTmGroupCount(group.Id));
+
                 var keyWord = request.Search;
                 if (!string.IsNullOrEmpty(keyWord))
                 {

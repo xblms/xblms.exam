@@ -17,5 +17,6 @@ namespace XBLMS.Repositories
         Task<List<ExamPk>> GetChildList(int id);
         Task<(int total, List<ExamPk> list)> GetListAsync(string name, int pageIndex, int pageSize);
         Task<(int allCount, int addCount, int deleteCount, int lockedCount, int unLockedCount)> GetDataCount();
+        Task<int> GetGroupCount(int groupId);
     }
 }

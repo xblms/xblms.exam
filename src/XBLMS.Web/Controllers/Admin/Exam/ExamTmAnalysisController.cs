@@ -19,6 +19,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         private const string Route = "exam/examTmAnalysis";
         private const string RouteGetData = Route + "/data";
         private const string RouteGetPaper = Route + "/paper";
+        private const string RouteNewGroup = Route + "/newGroup";
 
         private readonly IAuthManager _authManager;
         private readonly IExamPaperRepository _examPaperRepository;
@@ -29,10 +30,12 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         private readonly IExamPaperRandomTmRepository _examPaperRandomTmRepository;
         private readonly IExamPaperAnswerRepository _examPaperAnswerRepository;
         private readonly IExamPracticeAnswerRepository _examPracticeAnswerRepository;
+        private readonly IExamTmGroupRepository _examTmGroupRepository;
 
         public ExamTmAnalysisController(IAuthManager authManager, IExamPaperRepository examPaperRepository, IExamTxRepository examTxRepository, IExamTmRepository examTmRepository,
             IExamTmAnalysisRepository examTmAnalysisRepository, IExamTmAnalysisTmRepository examTmAnalysisTmRepository,
-            IExamPaperRandomTmRepository examPaperRandomTmRepository, IExamPaperAnswerRepository examPaperAnswerRepository, IExamPracticeAnswerRepository examPracticeAnswerRepository)
+            IExamPaperRandomTmRepository examPaperRandomTmRepository, IExamPaperAnswerRepository examPaperAnswerRepository, IExamPracticeAnswerRepository examPracticeAnswerRepository,
+            IExamTmGroupRepository examTmGroupRepository)
         {
             _authManager = authManager;
             _examPaperRepository = examPaperRepository;
@@ -43,6 +46,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             _examPaperRandomTmRepository = examPaperRandomTmRepository;
             _examPaperAnswerRepository = examPaperAnswerRepository;
             _examPracticeAnswerRepository = examPracticeAnswerRepository;
+            _examTmGroupRepository = examTmGroupRepository;
         }
         public class GetRequest
         {
@@ -73,6 +77,13 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         public class GetPaperResult
         {
             public List<KeyValuePair<int, string>> List { get; set; }
+        }
+
+
+        public class GetNewGroupRequest
+        {
+            public string GroupName { get; set; }
+            public List<int> TmIdList { get; set; }
         }
     }
 }

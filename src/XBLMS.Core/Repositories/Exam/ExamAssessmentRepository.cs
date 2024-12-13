@@ -1,10 +1,12 @@
 using Datory;
 using SqlKata;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using XBLMS.Models;
 using XBLMS.Repositories;
 using XBLMS.Services;
+using XBLMS.Utils;
 
 namespace XBLMS.Core.Repositories
 {
@@ -69,7 +71,7 @@ namespace XBLMS.Core.Repositories
 
         public async Task<int> MaxIdAsync()
         {
-            var maxId= await _repository.MaxAsync(nameof(ExamAssessment.Id));
+            var maxId = await _repository.MaxAsync(nameof(ExamAssessment.Id));
             if (maxId.HasValue)
             {
                 return maxId.Value;
@@ -79,7 +81,7 @@ namespace XBLMS.Core.Repositories
 
         public async Task IncrementAsync(int id)
         {
-            await _repository.IncrementAsync(nameof(ExamAssessment.AnswerTotal),Q.Where(nameof(ExamAssessment.Id), id));
+            await _repository.IncrementAsync(nameof(ExamAssessment.AnswerTotal), Q.Where(nameof(ExamAssessment.Id), id));
         }
 
         public async Task<(int allCount, int addCount, int deleteCount, int lockedCount, int unLockedCount)> GetDataCount()
@@ -88,6 +90,24 @@ namespace XBLMS.Core.Repositories
             var lockedCount = await _repository.CountAsync(Q.WhereTrue(nameof(ExamAssessment.Locked)));
             var unLockedCount = await _repository.CountAsync(Q.WhereNullOrFalse(nameof(ExamAssessment.Locked)));
             return (count, 0, 0, lockedCount, unLockedCount);
+        }
+
+        public async Task<int> GetGroupCount(int groupId)
+        {
+            var total = 0;
+            var allGroupIds = await _repository.GetAllAsync<string>(Q.Select(nameof(ExamAssessment.UserGroupIds)));
+            var allGroupIdList = ListUtils.ToList(allGroupIds);
+            if (allGroupIdList != null)
+            {
+                foreach (var groupIds in allGroupIdList)
+                {
+                    if (groupIds != null && groupIds.Contains(groupId.ToString()))
+                    {
+                        total++;
+                    }
+                }
+            }
+            return total;
         }
     }
 }

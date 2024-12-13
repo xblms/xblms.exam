@@ -1,6 +1,7 @@
 ﻿var $url = '/exam/examTmAnalysis';
 var $urlData = $url + '/data';
 var $urlPaper = $url + '/paper';
+var $urlNewGroup = $url + '/newGroup';
 
 var data = utils.init({
   form: {
@@ -19,7 +20,9 @@ var data = utils.init({
   total: 0,
   pageSizes: [PER_PAGE, 100, 500, 1000, 3000, 5000],
   pId: 0,
-  pDate: null
+  pDate: null,
+  newTmGroupName: '',
+  newTmGroupPopover:false
 });
 
 var methods = {
@@ -128,7 +131,52 @@ var methods = {
     top.$vue.topFrameSrc = utils.getExamUrl("examTmAnalysisChat", { id: this.pId });
     top.$vue.topFrameTitle = "题库统计-错误分布图表";
     top.$vue.topFrameDrawer = true;
-  }
+  },
+  btnNewGroupClick: function () {
+    var nodes = this.$refs.tmTable.selection;
+    var ids = _.map(nodes, function (item) {
+      return item.tmId;
+    });
+    if (ids.length > 0) {
+      if (ids.length > 2000) {
+        utils.error("不能超过2000道题");
+      }
+      else {
+        this.newTmGroupPopover = true;
+      }
+    }
+    else {
+      utils.error("请选择一些题目");
+    }
+  },
+  btnNewGroupSubmitClick: function () {
+    if (this.newTmGroupName.length > 0) {
+      this.apiSubmitTmGroup();
+    }
+    else {
+      utils.error("请输入新题目组名称");
+    }
+  },
+  apiSubmitTmGroup: function () {
+    var $this = this;
+    utils.loading(this, true);
+    var nodes = this.$refs.tmTable.selection;
+    var ids = _.map(nodes, function (item) {
+      return item.tmId;
+    });
+    $api.post($urlNewGroup, { groupName: this.newTmGroupName, tmIdList: ids }).then(function (response) {
+      var res = response.data;
+      utils.success("操作成功");
+      $this.newTmGroupPopover = false;
+      $this.$refs.tmTable.clearSelection();
+
+    }).catch(function (error) {
+      utils.loading($this, false);
+      utils.error(error);
+    }).then(function () {
+      utils.loading($this, false);
+    });
+  },
 };
 
 var $vue = new Vue({

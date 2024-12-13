@@ -17,5 +17,6 @@ namespace XBLMS.Repositories
         Task<int> MaxIdAsync();
         Task IncrementAsync(int id);
         Task<(int allCount, int addCount, int deleteCount, int lockedCount, int unLockedCount)> GetDataCount();
+        Task<int> GetGroupCount(int groupId);
     }
 }

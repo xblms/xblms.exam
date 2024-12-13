@@ -45,6 +45,23 @@
                     <el-button icon="el-icon-s-data" type="warning" v-on:click="btnReanalysisClick">重新统计</el-button>
                 </el-tooltip>
                 <el-button icon="el-icon-s-marketing" type="success" v-on:click="btnChatClick">图 表</el-button>
+                <el-popover placement="right"
+                            width="500"
+                            trigger="manual" v-model="newTmGroupPopover">
+                    <el-card class="box-card">
+                        <div slot="header" class="clearfix">
+                            <span>批量加入新的题目组</span>
+                        </div>
+                        <div>
+                            <el-input v-model="newTmGroupName" placeholder="请输入新题目组名称" clearable></el-input>
+                            <div style="margin-top:28px;text-align:right;">
+                                <el-button icon="el-icon-check" type="primary" v-on:click="btnNewGroupSubmitClick">确 定</el-button>
+                                <el-button icon="el-icon-close" v-on:click="newTmGroupPopover=false">取 消</el-button>
+                            </div>
+                        </div>
+                    </el-card>
+                    <el-button style="margin-left:18px;" slot="reference" icon="el-icon-plus" v-on:click="btnNewGroupClick">加入新组</el-button>
+                </el-popover>
             </template>
         </el-form-item>
     </el-form>
@@ -76,12 +93,15 @@
                 </el-link>
             </template>
         </el-table-column>
-        <el-table-column width="88" align="right">
+        <el-table-column width="66" align="right">
             <template slot-scope="scope">
                 <el-tooltip class="item" effect="dark" placement="top" content="编辑">
                     <el-link type="primary" icon="el-icon-edit" :underline="false" v-on:click="btnEditClick(scope.row.tmId)"></el-link>
                 </el-tooltip>
             </template>
+        </el-table-column>
+        <el-table-column type="selection" align="right"
+                         width="43">
         </el-table-column>
         @await Html.PartialAsync("_PartialTableEmpty")
     </el-table>

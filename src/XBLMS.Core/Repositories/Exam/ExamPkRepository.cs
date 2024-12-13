@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using XBLMS.Models;
 using XBLMS.Repositories;
 using XBLMS.Services;
+using XBLMS.Utils;
 
 namespace XBLMS.Core.Repositories
 {
@@ -76,6 +77,10 @@ namespace XBLMS.Core.Repositories
         {
             var count = await _repository.CountAsync(Q.Where(nameof(ExamPk.ParentId), 0));
             return (count, 0, 0, 0, count);
+        }
+        public async Task<int> GetGroupCount(int groupId)
+        {
+            return await _repository.CountAsync(Q.Where(nameof(ExamPk.UserGroupId), groupId));
         }
     }
 }

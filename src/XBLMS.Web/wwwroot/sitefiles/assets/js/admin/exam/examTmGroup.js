@@ -57,7 +57,7 @@ var methods = {
       id: id
     }).then(function (response) {
       var res = response.data;
-      utils.success('题目组删除成功！');
+      utils.success('操作成功！');
       $this.apiGet();
     }).catch(function (error) {
       utils.error(error);
@@ -76,14 +76,18 @@ var methods = {
 
   btnDeleteClick: function (group) {
     var $this = this;
-
-    top.utils.alertDelete({
-      title: '删除题目组',
-      text: '此操作将删除题目组 ' + group.groupName + '，确定吗？',
-      callback: function () {
-        $this.apiDelete(group.id);
-      }
-    });
+    if (group.useCount > 0) {
+      utils.error("不能删除被使用的组");
+    }
+    else {
+      top.utils.alertDelete({
+        title: '删除题目组',
+        text: '此操作将删除题目组 ' + group.groupName + '，确定吗？',
+        callback: function () {
+          $this.apiDelete(group.id);
+        }
+      });
+    }
   },
 
   btnSubmitClick: function () {
