@@ -29,7 +29,11 @@ var data = utils.init({
   contextLeft: 0,
   contextTop: 0,
 
-  isSafeMode:false
+  topFrameDrawer: false,
+  topFrameTitle: null,
+  topFrameSrc:'',
+
+  isSafeMode: false
 });
 
 var methods = {
@@ -71,15 +75,15 @@ var methods = {
       utils.error(error);
     });
   },
-    redirectPassword: function(userName) {
-        var $this = this;
+  redirectPassword: function (userName) {
+    var $this = this;
     top.utils.openLayer({
       title: false,
       closebtn: 0,
       url: utils.getSettingsUrl('administratorsLayerPassword', { userName: userName }),
       width: "38%",
       height: "58%",
-      end: function() { $this.apiGet() }
+      end: function () { $this.apiGet() }
     });
   },
 

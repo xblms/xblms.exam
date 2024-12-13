@@ -21,6 +21,13 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 await _examPaperRepository.DeleteAsync(paper.Id);
                 await _examManager.ClearRandom(paper.Id, true);
 
+                var analysis = await _examTmAnalysisRepository.GetAsync(TmAnalysisType.ByExamOnlyOne, paper.Id);
+                if (analysis!=null)
+                {
+                    await _examTmAnalysisRepository.DeleteAsync(analysis.Id);
+                    await _examTmAnalysisTmRepository.DeleteAsync(analysis.Id);
+                }
+
                 await _authManager.AddAdminLogAsync("删除试卷", $"{paper.Title}");
                 await _authManager.AddStatLogAsync(StatType.ExamDelete, "删除试卷", paper.Id, paper.Title, paper);
                 await _authManager.AddStatCount(StatType.ExamDelete);

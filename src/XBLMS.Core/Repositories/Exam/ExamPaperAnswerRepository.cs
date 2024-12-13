@@ -41,7 +41,7 @@ namespace XBLMS.Core.Repositories
             await _repository.DeleteAsync(Q.Where(nameof(ExamPaperAnswer.ExamPaperId), paperId));
         }
 
-        public async Task ClearByPaperAndUserAsync(int paperId,int userId)
+        public async Task ClearByPaperAndUserAsync(int paperId, int userId)
         {
             await _repository.DeleteAsync(Q.Where(nameof(ExamPaperAnswer.ExamPaperId), paperId).Where(nameof(ExamPaperAnswer.UserId), userId));
         }
@@ -50,7 +50,7 @@ namespace XBLMS.Core.Repositories
         {
             return await _repository.GetAsync(Q.Where(nameof(ExamPaperAnswer.Id), id));
         }
-        public async Task<ExamPaperAnswer> GetAsync(int tmId,int startId,int paperId)
+        public async Task<ExamPaperAnswer> GetAsync(int tmId, int startId, int paperId)
         {
             return await _repository.GetAsync(Q.
                 Where(nameof(ExamPaperAnswer.ExamPaperId), paperId).
@@ -65,7 +65,7 @@ namespace XBLMS.Core.Repositories
                 Select(nameof(ExamPaperAnswer.Score)).
                 Where(nameof(ExamPaperAnswer.ExamStartId), startId));
 
-            if(scoreList!=null && scoreList.Count > 0)
+            if (scoreList != null && scoreList.Count > 0)
             {
                 return scoreList.Sum();
             }
@@ -99,6 +99,30 @@ namespace XBLMS.Core.Repositories
             }
 
             return 0;
+        }
+        public async Task<(int rightCount, int wrongCount)> CountAsync(int tmId, int paperId)
+        {
+            var query = Q.NewQuery();
+            if (paperId > 0)
+            {
+                query.Where(nameof(ExamPaperAnswer.ExamPaperId), paperId);
+            }
+
+            var rightCount = await _repository.CountAsync(query.
+                Where(nameof(ExamPaperAnswer.RandomTmId), tmId).
+                Where(nameof(ExamPaperAnswer.Score), ">", 0));
+
+            query = Q.NewQuery();
+            if (paperId > 0)
+            {
+                query.Where(nameof(ExamPaperAnswer.ExamPaperId), paperId);
+            }
+            var wrongCount = await _repository.CountAsync(query.
+                Where(nameof(ExamPaperAnswer.RandomTmId), tmId).
+                WhereNotNullOrEmpty(nameof(ExamPaperAnswer.Answer)).
+                Where(nameof(ExamPaperAnswer.Score), 0));
+
+            return (rightCount, wrongCount);
         }
     }
 }

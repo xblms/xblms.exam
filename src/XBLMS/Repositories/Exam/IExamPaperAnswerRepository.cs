@@ -15,5 +15,6 @@ namespace XBLMS.Repositories
         Task<decimal> ScoreSumAsync(int startId);
         Task<decimal> ObjectiveScoreSumAsync(int startId);
         Task<decimal> SubjectiveScoreSumAsync(int startId);
+        Task<(int rightCount, int wrongCount)> CountAsync(int tmId, int paperId);
     }
 }

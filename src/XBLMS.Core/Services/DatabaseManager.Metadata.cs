@@ -198,6 +198,10 @@ namespace XBLMS.Core.Services
                 {
                     await _settingsManager.Database.CreateIndexAsync(tableName, $"IX_{tableName}_General", $"{nameof(StatLog.AdminId)} DESC", $"{nameof(StatLog.ObjectId)} DESC");
                 }
+                else if (tableName == ExamTmAnalysisTmRepository.TableName)
+                {
+                    await _settingsManager.Database.CreateIndexAsync(tableName, $"IX_{tableName}_General", $"{nameof(ExamTmAnalysisTm.AnalysisId)} DESC", $"{nameof(ExamTmAnalysisTm.TmId)} DESC", $"{nameof(ExamTmAnalysisTm.TxId)} DESC");
+                }
             }
             catch (Exception ex)
             {

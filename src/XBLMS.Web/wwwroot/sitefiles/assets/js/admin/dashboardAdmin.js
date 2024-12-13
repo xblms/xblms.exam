@@ -131,7 +131,7 @@ var methods = {
     }
     else if (log.isExamAss) {
       top.utils.openLayer({
-        title: row.title + '-用户列表',
+        title: log.name,
         url: utils.getExamUrl('examAssessmentUsers', { id: log.objectId }),
         width: "98%",
         height: "98%"

@@ -26,5 +26,21 @@ namespace XBLMS.Core.Repositories
         {
             return await _repository.InsertAsync(item);
         }
+        public async Task DeleteByTmIdAsync(int tmId)
+        {
+            await _repository.DeleteAsync(Q.Where(nameof(ExamPracticeAnswer.TmId), tmId));
+        }
+        public async Task<(int rightCount, int wrongCount)> CountAsync(int tmId)
+        {
+            var rightCount = await _repository.CountAsync(Q.
+                Where(nameof(ExamPracticeAnswer.TmId), tmId).
+                WhereTrue(nameof(ExamPracticeAnswer.IsRight)));
+
+            var wrongCount = await _repository.CountAsync(Q.
+                Where(nameof(ExamPracticeAnswer.TmId), tmId).
+                WhereNullOrFalse(nameof(ExamPracticeAnswer.IsRight)));
+
+            return (rightCount, wrongCount);
+        }
     }
 }

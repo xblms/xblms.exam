@@ -1,0 +1,101 @@
+﻿@page
+@{ Layout = "_Layout"; }
+
+@section Styles{
+    <style>
+        .el-progress-bar__outer{
+            background-color:#f1f1f1 !important;
+        }
+    </style>
+}
+
+<el-card>
+    <el-form :inline="true" :size="euiSize">
+        <el-form-item label="">
+            <el-select v-model="form.type">
+                <el-option v-for="type in typeList"
+                           :key="type.value"
+                           :label="type.label"
+                           :value="type.value">
+                </el-option>
+            </el-select>
+        </el-form-item>
+        <el-form-item label="" v-if="form.type==='ByExamOnlyOne'">
+            <el-select v-model="form.paperId"
+                       filterable
+                       remote
+                       reserve-keyword
+                       placeholder="输入关键词查询试卷"
+                       :remote-method="apiGetPaper"
+                       :loading="paperLoading">
+                <el-option v-for="item in paperList"
+                           :key="item.key"
+                           :label="item.value"
+                           :value="item.key">
+                </el-option>
+            </el-select>
+        </el-form-item>
+        <el-form-item label="题目">
+            <el-input v-model="form.keyWords" placeholder="关键字" prefix-icon="el-icon-search" clearable></el-input>
+        </el-form-item>
+        <el-form-item>
+            <el-button icon="el-icon-search" type="primary" v-on:click="btnSearchClick">查 询</el-button>
+            <template v-if="total>0">
+                <el-tooltip class="item" effect="dark" :content="'上次统计：'+pDate">
+                    <el-button icon="el-icon-s-data" type="warning" v-on:click="btnReanalysisClick">重新统计</el-button>
+                </el-tooltip>
+                <el-button icon="el-icon-s-marketing" type="success" v-on:click="btnChatClick">图 表</el-button>
+            </template>
+        </el-form-item>
+    </el-form>
+    <el-table ref="tmTable" :data="list" :size="euiSize"
+              style="width: 100%" :height="$(window).height()-168">
+        <el-table-column label="#"
+                         type="index"
+                         width="60"
+                         align="left">
+            <template scope="scope">
+                <span>{{(form.pageIndex - 1) * form.pageSize + scope.$index + 1}}</span>
+            </template>
+        </el-table-column>
+        <el-table-column label="错误率" width="200" align="left">
+            <template slot-scope="scope">
+                <el-progress :stroke-width="16" :percentage="scope.row.wrongPercent" :text-inside="true" color="#FF0000" text-color="#ffffff" define-back-color="red"></el-progress>
+            </template>
+        </el-table-column>
+        <el-table-column prop="wrongRate" label="置信度" width="65" align="left">
+        </el-table-column>
+        <el-table-column prop="answerCount" label="答题人次" width="80">
+        </el-table-column>
+        <el-table-column prop="wrongCount" label="错误人次" width="80">
+        </el-table-column>
+        <el-table-column show-overflow-tooltip prop="title" label="题目" align="right">
+            <template slot-scope="scope">
+                <el-link type="primary" :underline="false" v-on:click="btnViewClick(scope.row.tmId)">
+                    {{ scope.row.title }}
+                </el-link>
+            </template>
+        </el-table-column>
+        <el-table-column width="88" align="right">
+            <template slot-scope="scope">
+                <el-tooltip class="item" effect="dark" placement="top" content="编辑">
+                    <el-link type="primary" icon="el-icon-edit" :underline="false" v-on:click="btnEditClick(scope.row.tmId)"></el-link>
+                </el-tooltip>
+            </template>
+        </el-table-column>
+        @await Html.PartialAsync("_PartialTableEmpty")
+    </el-table>
+    <div style="text-align: center; margin-top: 20px;">
+        <el-pagination v-on:current-change="handleCurrentChange" background
+                       v-on:size-change="handleSizeChange"
+                       :current-page="form.pageIndex"
+                       :page-size="form.pageSize"
+                       :page-sizes="pageSizes"
+                       layout="total,sizes, prev, pager, next, jumper"
+                       :total="total">
+        </el-pagination>
+    </div>
+</el-card>
+@section Scripts{
+    <script src="/sitefiles/assets/js/admin/exam/examTmAnalysis.js" type="text/javascript"></script>
+}

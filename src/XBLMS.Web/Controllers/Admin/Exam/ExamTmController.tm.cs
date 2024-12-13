@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.EMMA;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using XBLMS.Dto;
@@ -58,6 +57,9 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             var tm = await _examTmRepository.GetAsync(request.Id);
             if (tm == null) return this.NotFound();
             await _examTmRepository.DeleteAsync(request.Id);
+
+            await DeleteTm(new List<int> { tm.Id });
+
             await _authManager.AddAdminLogAsync("删除题目", $"{StringUtils.StripTags(tm.Title)}");
             await _authManager.AddStatLogAsync(StatType.ExamTmDelete, "删除题目", tm.Id, StringUtils.StripTags(tm.Title), tm);
             await _authManager.AddStatCount(StatType.ExamTmDelete);
@@ -80,9 +82,14 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 var info = await _examTmRepository.GetAsync(id);
                 if (info == null) continue;
                 await _examTmRepository.DeleteAsync(info.Id);
+
                 await _authManager.AddAdminLogAsync("删除题目", $"{StringUtils.StripTags(info.Title)}");
                 await _authManager.AddStatLogAsync(StatType.ExamTmDelete, "删除题目", info.Id, StringUtils.StripTags(info.Title), info);
                 await _authManager.AddStatCount(StatType.ExamTmDelete);
+            }
+            if (request.Ids != null && request.Ids.Count > 0)
+            {
+                await DeleteTm(request.Ids);
             }
             return new BoolResult
             {

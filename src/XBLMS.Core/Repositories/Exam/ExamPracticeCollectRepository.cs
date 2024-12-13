@@ -21,7 +21,10 @@ namespace XBLMS.Core.Repositories
         public string TableName => _repository.TableName;
 
         public List<TableColumn> TableColumns => _repository.TableColumns;
-
+        public async Task<List<ExamPracticeCollect>> GetListAsync()
+        {
+            return await _repository.GetAllAsync();
+        }
         public async Task<ExamPracticeCollect> GetAsync(int userId)
         {
             return await _repository.GetAsync(Q.Where(nameof(ExamPracticeCollect.UserId), userId));

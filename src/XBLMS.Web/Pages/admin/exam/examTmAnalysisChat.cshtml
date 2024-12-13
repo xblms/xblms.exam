@@ -1,0 +1,26 @@
+﻿@page
+@{ Layout = "_Layout"; }
+
+<el-row :gutter="13">
+    <el-col :span="24" style="margin-bottom:13px;">
+        <el-card class="box-card" shadow="never">
+            <apexchart height="380" type="bar" :options="chartOptionsZsd" :series="seriesZsd"></apexchart>
+        </el-card>
+    </el-col>
+    <el-col :span="12">
+        <el-card class="box-card" shadow="never">
+            <apexchart height="300" type="pie" :options="chartOptionsTx" :series="seriesTx"></apexchart>
+        </el-card>
+    </el-col>
+    <el-col :span="12">
+        <el-card class="box-card" shadow="never">
+            <apexchart height="300" type="donut" :options="chartOptionsNd" :series="seriesNd"></apexchart>
+        </el-card>
+    </el-col>
+</el-row>
+
+@section Scripts{
+    <script src="/sitefiles/assets/lib/apexcharts/apexcharts.js" type="text/javascript"></script>
+    <script src="/sitefiles/assets/lib/apexcharts/vue-apexcharts.js" type="text/javascript"></script>
+    <script src="/sitefiles/assets/js/admin/exam/examTmAnalysisChat.js" type="text/javascript"></script>
+}

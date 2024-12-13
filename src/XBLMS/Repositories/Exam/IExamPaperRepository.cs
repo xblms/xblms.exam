@@ -12,6 +12,7 @@ namespace XBLMS.Repositories
         Task<ExamPaper> GetAsync(int id);
         Task<int> InsertAsync(ExamPaper item);
         Task<bool> UpdateAsync(ExamPaper item);
+        Task<List<ExamPaper>> GetListAsync(string keyword);
         Task<(int total, List<ExamPaper> list)> GetListAsync(List<int> treeIds, string keyword, int pageIndex, int pageSize);
         Task<bool> DeleteAsync(int Id);
         Task<int> MaxAsync();

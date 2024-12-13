@@ -111,7 +111,7 @@ var methods = {
     if (this.tmList && this.tmList.length > 0) {
       return true;
     }
-    utils.error("请配置问卷内容", { layer: true });
+    utils.error("请导入问卷内容", { layer: true });
     return false;
   },
   btnImportTmClick: function () {

@@ -27,7 +27,10 @@ namespace XBLMS.Core.Repositories
         {
             return await _repository.GetAsync(id);
         }
-
+        public async Task<List<ExamPractice>> GetListAsync()
+        {
+            return await _repository.GetAllAsync();
+        }
         public async Task<(int total, List<ExamPractice> list)> GetListAsync(int userId, string dateFrom, string dateTo, int pageIndex, int pageSize)
         {
             var query = Q.Where(nameof(ExamPractice.UserId), userId);
@@ -52,7 +55,10 @@ namespace XBLMS.Core.Repositories
         {
             return await _repository.InsertAsync(item);
         }
-
+        public async Task<bool> UpdateAsync(ExamPractice item)
+        {
+            return await _repository.UpdateAsync(item);
+        }
         public async Task IncrementAnswerCountAsync(int id)
         {
             await _repository.IncrementAsync(nameof(ExamPractice.AnswerCount), Q.Where(nameof(ExamPractice.Id), id));

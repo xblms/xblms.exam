@@ -36,6 +36,21 @@ namespace XBLMS.Core.Repositories
         {
             return await _repository.UpdateAsync(item);
         }
+        public async Task<List<ExamPaper>> GetListAsync(string keyword)
+        {
+            var query = new Query();
+
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+                var like = $"%{keyword}%";
+                query.Where(q => q
+                    .WhereLike(nameof(ExamPaper.Title), like)
+                    .OrWhereLike(nameof(ExamPaper.Subject), like)
+                );
+            }
+            query.OrderByDesc(nameof(ExamPaper.Id));
+            return await _repository.GetAllAsync(query);
+        }
         public async Task<(int total, List<ExamPaper> list)> GetListAsync(List<int> treeIds, string keyword, int pageIndex, int pageSize)
         {
             var query = new Query();

@@ -30,7 +30,8 @@ namespace XBLMS.Services
         IExamTxRepository ExamTxRepository { get; }
         IExamTmTreeRepository ExamTmTreeRepository { get; }
         IExamTmRepository ExamTmRepository { get; }
-
+        IExamTmAnalysisRepository ExamTmAnalysisRepository { get; }
+        IExamTmAnalysisTmRepository ExamTmAnalysisTmRepository { get; }
         IExamCerRepository ExamCerRepository { get; }
         IExamCerUserRepository ExamCerUserRepository { get; }
 

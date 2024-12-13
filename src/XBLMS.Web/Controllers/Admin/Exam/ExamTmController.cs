@@ -1,12 +1,17 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
+using OpenXmlPowerTools;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using XBLMS.Configuration;
 using XBLMS.Dto;
+using XBLMS.Enums;
 using XBLMS.Models;
 using XBLMS.Repositories;
 using XBLMS.Services;
+using XBLMS.Utils;
 namespace XBLMS.Web.Controllers.Admin.Exam
 {
     [OpenApiIgnore]
@@ -40,11 +45,21 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         private readonly IExamManager _examManager;
         private readonly IOrganManager _organManager;
         private readonly IExamTmGroupRepository _examTmGroupRepository;
+        private readonly IExamPracticeAnswerRepository _examPracticeAnswerRepository;
+        private readonly IExamPracticeCollectRepository _examPracticeCollectRepository;
+        private readonly IExamPracticeWrongRepository _examPracticeWrongRepository;
+        private readonly IExamPracticeRepository _examPracticeRepository;
+        private readonly IExamTmAnalysisTmRepository _examTmAnalysisTmRepository;
 
         public ExamTmController(IAuthManager authManager, IPathManager pathManager, IDatabaseManager databaseManager, ICacheManager cacheManager,
             IConfigRepository configRepository, IExamManager examManager,
             IAdministratorRepository administratorRepository, IOrganManager organManager,
-            IExamTxRepository examTxRepository, IExamTmTreeRepository examTmTreeRepository, IExamTmRepository examTmRepository, IStatRepository statRepository, IExamTmGroupRepository examTmGroupRepository)
+            IExamTxRepository examTxRepository, IExamTmTreeRepository examTmTreeRepository, IExamTmRepository examTmRepository, IStatRepository statRepository, IExamTmGroupRepository examTmGroupRepository,
+            IExamPracticeRepository examPracticeRepository,
+            IExamPracticeAnswerRepository examPracticeAnswerRepository,
+            IExamPracticeCollectRepository examPracticeCollectRepository,
+            IExamPracticeWrongRepository examPracticeWrongRepository,
+            IExamTmAnalysisTmRepository examTmAnalysisTmRepository)
         {
             _organManager = organManager;
             _examManager = examManager;
@@ -59,6 +74,11 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             _examTmRepository = examTmRepository;
             _statRepository = statRepository;
             _examTmGroupRepository = examTmGroupRepository;
+            _examPracticeRepository = examPracticeRepository;
+            _examPracticeAnswerRepository = examPracticeAnswerRepository;
+            _examPracticeCollectRepository = examPracticeCollectRepository;
+            _examPracticeWrongRepository = examPracticeWrongRepository;
+            _examTmAnalysisTmRepository = examTmAnalysisTmRepository;
         }
         public class GetEditResult
         {
@@ -120,6 +140,102 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             public bool IsOver { get; set; } = false;
             public int TmTotal { get; set; } = 0;
             public int TmCurrent { get; set; } = 0;
+        }
+
+        private async Task DeleteTm(List<int> tmIds)
+        {
+            var groupList = await _examTmGroupRepository.GetListAsync();
+            foreach (var group in groupList)
+            {
+                if (group.GroupType == TmGroupType.Fixed && group.TmIds != null && group.TmIds.Count > 0)
+                {
+                    if (tmIds != null && tmIds.Count > 0)
+                    {
+                        var isUpdate = false;
+                        foreach (var tmId in tmIds)
+                        {
+                            if (group.TmIds.Contains(tmId))
+                            {
+                                group.TmIds.Remove(tmId);
+                                isUpdate = true;
+                            }
+                        }
+                        if (isUpdate)
+                        {
+                            await _examTmGroupRepository.UpdateAsync(group);
+                        }
+                    }
+                }
+            }
+
+            foreach (var tmId in tmIds)
+            {
+                await _examPracticeAnswerRepository.DeleteByTmIdAsync(tmId);
+                await _examTmAnalysisTmRepository.DeleteByTmIdAsync(tmId);
+            }
+
+            var practiceList = await _examPracticeRepository.GetListAsync();
+            foreach (var p in practiceList)
+            {
+                if (p.TmIds != null && tmIds.Count > 0)
+                {
+                    var isUpdate = false;
+                    foreach (var tmId in tmIds)
+                    {
+                        if (p.TmIds.Contains(tmId))
+                        {
+                            p.TmIds.Remove(tmId);
+                            isUpdate = true;
+                        }
+                    }
+                    if (isUpdate)
+                    {
+                        await _examPracticeRepository.UpdateAsync(p);
+                    }
+                }
+            }
+
+            var wrongList = await _examPracticeWrongRepository.GetListAsync();
+            foreach (var wrong in wrongList)
+            {
+                if (wrong.TmIds != null && wrong.TmIds.Count > 0)
+                {
+                    var isUpdate = false;
+                    foreach (var tmId in tmIds)
+                    {
+                        if (wrong.TmIds.Contains(tmId))
+                        {
+                            wrong.TmIds.Remove(tmId);
+                            isUpdate = true;
+                        }
+                    }
+                    if (isUpdate)
+                    {
+                        await _examPracticeWrongRepository.UpdateAsync(wrong);
+                    }
+                }
+            }
+
+            var collection = await _examPracticeCollectRepository.GetListAsync();
+            foreach (var collect in collection)
+            {
+                if (collect.TmIds != null && collect.TmIds.Count > 0)
+                {
+                    var isUpdate = false;
+                    foreach (var tmId in tmIds)
+                    {
+                        if (collect.TmIds.Contains(tmId))
+                        {
+                            collect.TmIds.Remove(tmId);
+                            isUpdate = true;
+                        }
+                    }
+                    if (isUpdate)
+                    {
+                        await _examPracticeCollectRepository.UpdateAsync(collect);
+                    }
+                }
+            }
         }
     }
 }

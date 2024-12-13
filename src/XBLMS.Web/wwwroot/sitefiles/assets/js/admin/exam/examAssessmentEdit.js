@@ -113,26 +113,21 @@ var methods = {
     });
   },
   submitValid: function () {
-
     if (this.submitSubmitType == 'Submit') {
       if (this.form.userGroupIds && this.form.userGroupIds.length > 0) {
-        return true;
+        if (this.tmList && this.tmList.length > 0) {
+          return true;
+        }
+        else {
+          utils.error("请导入测评内容", { layer: true });
+          return false;
+        }
       }
       else {
         utils.error("请选择测评范围", { layer: true });
         return false;
       }
     }
-    else {
-      if (this.tmList && this.tmList.length > 0) {
-        return true;
-      }
-      else {
-        utils.error("请配置测评内容", { layer: true });
-        return false;
-      }
-    }
-
     return true;
   },
   btnImportTmClick: function () {

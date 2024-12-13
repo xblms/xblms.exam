@@ -7,5 +7,7 @@ namespace XBLMS.Repositories
     public interface IExamPracticeAnswerRepository : IRepository
     {
         Task<int> InsertAsync(ExamPracticeAnswer item);
+        Task DeleteByTmIdAsync(int tmId);
+        Task<(int rightCount, int wrongCount)> CountAsync(int tmId);
     }
 }

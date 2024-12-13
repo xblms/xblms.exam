@@ -77,6 +77,16 @@
             "Permissions": [ "Select", "Add", "Update", "Delete" ],
             "children": [
             ]
+          },
+          {
+            "id": "examtmanalysis",
+            "order": 5,
+            "text": "题库统计",
+            "link": "/admin/exam/examTmAnalysis/",
+            "iconClass": "el-icon-s-data",
+            "Permissions": [ "Select" ],
+            "children": [
+            ]
           }
         ]
       },

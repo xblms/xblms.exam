@@ -46,5 +46,12 @@ namespace XBLMS.Core.Repositories
                 OrderBy(nameof(ExamPaperRandomTm.Id)));
             return infoList;
         }
+        public async Task<List<int>> GetIdsAsync(int tmId)
+        {
+            var idsList = await _repository.GetAllAsync<int>(Q.
+                Select(nameof(ExamPaperRandomTm.Id)).
+                Where(nameof(ExamPaperRandomTm.SourceTmId), tmId));
+            return idsList;
+        }
     }
 }
