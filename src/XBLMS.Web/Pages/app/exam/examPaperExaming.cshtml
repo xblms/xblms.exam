@@ -145,11 +145,11 @@
                     <ul class="list-group mb-1" v-for="(tx,txIndex) in list">
                         <li class="list-group-item border-0 p-1 fw-light">{{tx.txName}}</li>
                         <li class="list-group-item border-0 p-1">
-                            <span v-for="tabTm in tx.tmList" v-on:click="btnGoTm(tabTm.id)" style="margin-right:3px; margin-bottom:3px;cursor:pointer;">
-                                <el-tag :key="tabTm.id" size="mini" type="success" effect="dark" v-if="getTmAnswerStatus(tabTm.id)">
+                            <span v-for="tabTm in tx.tmList" v-on:click="btnGoTm(tabTm.id)">
+                                <el-tag :key="tabTm.id" type="success" effect="dark" v-if="getTmAnswerStatus(tabTm.id)" class="m-2">
                                     {{ tabTm.tmIndex }}
                                 </el-tag>
-                                <el-tag :key="tabTm.id" size="mini" type="warning" v-else>
+                                <el-tag :key="tabTm.id" type="warning" v-else class="m-2">
                                     {{ tabTm.tmIndex }}
                                 </el-tag>
                             </span>

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
+using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Admin.Common
 {
@@ -25,6 +26,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
 
             var paperTmTotal = 0;
             var tmIndex = 1;
+            var txIndex = 1;
             foreach (var config in configs)
             {
                 var tmTotal = 0;
@@ -44,7 +46,10 @@ namespace XBLMS.Web.Controllers.Admin.Common
                 }
                 config.ScoreTotal = Math.Round(scoreTotal, 2);
                 config.TmTotal = tmTotal;
+                
                 config.Set("TmList", tms);
+                config.Set("TxIndex", StringUtils.ParseNumberToChinese(txIndex));
+                txIndex++;
             }
 
             paper.Set("TmTotal", paperTmTotal);

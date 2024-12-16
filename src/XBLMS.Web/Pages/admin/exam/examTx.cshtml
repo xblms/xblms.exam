@@ -13,8 +13,9 @@
         </el-form-item>
     </el-form>
     <el-table :data="list" :size="euiSize" :height="($(window).height() - 115)">
-        <el-table-column label="#" type="index" :default-sort="{prop: 'createdDate', order: 'descending'}" width="40">
+        <el-table-column label="#" type="index" :default-sort="{prop: 'createdDate', order: 'descending'}" width="60">
         </el-table-column>
+        <el-table-column label="排序号" prop="taxis" width="88" sortable></el-table-column>
         <el-table-column label="名称" prop="name" sortable>
               <template slot-scope="scope">
                   {{ scope.row.name }}
@@ -24,7 +25,6 @@
         <el-table-column label="默认分数" prop="score" width="120" sortable></el-table-column>
         <el-table-column label="题目数量" prop="tmCount" width="120" sortable></el-table-column>
         <el-table-column label="创建时间" prop="createdDate" width="150" sortable></el-table-column>
-        <el-table-column label="排序号" prop="taxis" width="120" sortable></el-table-column>
         <el-table-column width="100" align="right">
             <template slot-scope="scope">
                 <el-dropdown :show-timeout="0" placement="left">

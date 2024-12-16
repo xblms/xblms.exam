@@ -1,5 +1,4 @@
-﻿using Datory;
-using Datory.Annotations;
+﻿using Datory.Annotations;
 
 namespace XBLMS.Models
 {

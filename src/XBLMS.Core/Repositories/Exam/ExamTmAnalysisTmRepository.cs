@@ -1,7 +1,5 @@
 using Datory;
-using DocumentFormat.OpenXml.Wordprocessing;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using XBLMS.Models;
 using XBLMS.Repositories;
@@ -40,11 +38,11 @@ namespace XBLMS.Core.Repositories
             var total = await _repository.CountAsync(query);
             if (orderType == "percent")
             {
-                query.OrderByDesc(nameof(ExamTmAnalysisTm.WrongPercent));
+                query.OrderByDesc(nameof(ExamTmAnalysisTm.WrongPercent), nameof(ExamTmAnalysisTm.AnswerCount), nameof(ExamTmAnalysisTm.WrongCount));
             }
             else
             {
-                query.OrderByDesc(nameof(ExamTmAnalysisTm.WrongRate));
+                query.OrderByDesc(nameof(ExamTmAnalysisTm.WrongRate), nameof(ExamTmAnalysisTm.AnswerCount), nameof(ExamTmAnalysisTm.WrongCount));
             }
             var list = await _repository.GetAllAsync(query.ForPage(pageIndex, pageSize));
             return (total, list);

@@ -15,14 +15,16 @@
 }
 <el-card>
     <div slot="header" class="clearfix">
-        <span class="fw-bold fs-4">试卷预览-{{ paper.title }}（共：{{ paper.tmTotal }}题，总分：{{ paper.totalScore }}分，及格分：{{ paper.passScore }}分）</span>
-        <div style="float:right;">
-            <el-select v-model="curRandomId" v-on:change="selectChangeRandomConfig">
-                <el-option v-for="(item,configIndex) in randomIds"
-                           :key="item"
-                           :value="item" :label="'第'+ (configIndex+1) +'套试卷'">
-                </el-option>
-            </el-select>
+        <div class="d-flex justify-content-between align-items-center">
+            <span class="fw-bold fs-4">试卷预览-{{ paper.title }}（共：{{ paper.tmTotal }}题，总分：{{ paper.totalScore }}分，及格分：{{ paper.passScore }}分）</span>
+            <div>
+                <el-select v-model="curRandomId" v-on:change="selectChangeRandomConfig">
+                    <el-option v-for="(item,configIndex) in randomIds"
+                               :key="item"
+                               :value="item" :label="'第'+ (configIndex+1) +'套试卷'">
+                    </el-option>
+                </el-select>
+            </div>
         </div>
     </div>
     <el-row :gutter="8">
@@ -32,7 +34,7 @@
                     <div v-for="(tx,txIndex) in list">
                         <el-card>
                             <div slot="header" class="clearfix fw-bold">
-                                <span>{{tx.txName}}(共{{tx.tmTotal}}题，共{{tx.scoreTotal}}分)</span>
+                                <span>{{ tx.txIndex }}、{{tx.txName}}(共{{tx.tmTotal}}题，共{{tx.scoreTotal}}分)</span>
                             </div>
                             <div>
                                 <div class="mb-3" v-for="(tm,tmIndex) in tx.tmList">
@@ -126,7 +128,7 @@
                 <div>
                     <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-300) + 'px' }">
                         <ul class="list-group mb-1" v-for="(tx,txIndex) in list">
-                            <li class="list-group-item border-0 p-1 fw-light">{{tx.txName}}</li>
+                            <li class="list-group-item border-0 p-1 fw-light">{{ tx.txIndex }}、{{tx.txName}}</li>
                             <li class="list-group-item border-0 p-1">
                                 <span v-for="(tab,index) in tx.tmList" v-on:click="tmDidScroll(tab.id)" style="margin-right:3px; margin-bottom:3px;cursor:pointer;">
                                     <el-tag :key="tab.id" size="mini" type="info" effect="plain">

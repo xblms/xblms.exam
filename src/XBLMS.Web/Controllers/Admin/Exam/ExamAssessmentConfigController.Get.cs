@@ -19,6 +19,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             {
                 foreach (var item in list)
                 {
+                    item.Set("PaperCount", await _examAssessmentRepository.GetConfigCount(item.Id));
                     item.Set("TotalItem", await _examAssessmentConfigSetRepository.GetCountAsync(item.Id));
                 }
             }

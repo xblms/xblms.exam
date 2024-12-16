@@ -19,6 +19,14 @@
               :size="euiSize"
               :height="($(window).height() - 115)"
               :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
+        <el-table-column label="#"
+                         type="index"
+                         width="60"
+                         align="left">
+            <template scope="scope">
+                <span>{{scope.$index + 1}}</span>
+            </template>
+        </el-table-column>
         <el-table-column prop="name"
                          label="组织名称">
             <template slot="header" slot-scope="scope">

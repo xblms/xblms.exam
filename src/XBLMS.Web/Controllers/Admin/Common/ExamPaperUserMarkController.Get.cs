@@ -36,6 +36,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
             var paperTmTotal = 0;
 
             var tmIndex = 1;
+            var txIndex = 1;
             var txList = new List<ExamPaperRandomConfig>();
             foreach (var config in configs)
             {
@@ -55,7 +56,9 @@ namespace XBLMS.Web.Controllers.Admin.Common
                         }
                         config.Set("TmList", tms);
                     }
+                    config.Set("TxIndex", StringUtils.ParseNumberToChinese(txIndex));
                     txList.Add(config);
+                    txIndex++;
                 }
             }
 

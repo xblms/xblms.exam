@@ -67,6 +67,9 @@
     </el-form>
     <el-table ref="tmTable" :data="list" :size="euiSize"
               style="width: 100%" :height="$(window).height()-168">
+        <el-table-column type="selection" align="left"
+                         width="45">
+        </el-table-column>
         <el-table-column label="#"
                          type="index"
                          width="60"
@@ -93,15 +96,12 @@
                 </el-link>
             </template>
         </el-table-column>
-        <el-table-column width="66" align="right">
+        <el-table-column width="45" align="right">
             <template slot-scope="scope">
                 <el-tooltip class="item" effect="dark" placement="top" content="编辑">
                     <el-link type="primary" icon="el-icon-edit" :underline="false" v-on:click="btnEditClick(scope.row.tmId)"></el-link>
                 </el-tooltip>
             </template>
-        </el-table-column>
-        <el-table-column type="selection" align="right"
-                         width="43">
         </el-table-column>
         @await Html.PartialAsync("_PartialTableEmpty")
     </el-table>

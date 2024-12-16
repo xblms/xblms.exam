@@ -38,6 +38,7 @@
                 <span v-else>0</span>
             </template>
         </el-table-column>
+        <el-table-column width="88" label="被使用" prop="paperCount" sortable></el-table-column>
         <el-table-column label="创建时间" prop="createdDate" width="150" sortable></el-table-column>
         <el-table-column width="100" align="right">
             <template slot-scope="scope">
@@ -47,7 +48,7 @@
                     </el-button>
                     <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item icon="el-icon-edit" v-on:click.native="btnEditClick(scope.row)">修改</el-dropdown-item>
-                        <el-dropdown-item icon="el-icon-delete" v-on:click.native="btnDeleteClick(scope.row)" style="color:red;">删除</el-dropdown-item>
+                        <el-dropdown-item icon="el-icon-delete" v-on:click.native="btnDeleteClick(scope.row)" style="color:red;" divided>删除</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
             </template>

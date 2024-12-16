@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using XBLMS.Enums;
-using XBLMS.Models;
 
 namespace XBLMS.Dto
 {

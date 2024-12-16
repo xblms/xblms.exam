@@ -30,6 +30,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
             var paperTmTotal = 0;
 
             var tmIndex = 1;
+            var txIndex = 1;
             foreach (var config in configs)
             {
                 var tms = await _examPaperRandomTmRepository.GetListAsync(randomId, config.TxId);
@@ -45,6 +46,8 @@ namespace XBLMS.Web.Controllers.Admin.Common
                     }
                     config.Set("TmList", tms);
                 }
+                config.Set("TxIndex", StringUtils.ParseNumberToChinese(txIndex));
+                txIndex++;
             }
 
             paper.Set("TmTotal", paperTmTotal);

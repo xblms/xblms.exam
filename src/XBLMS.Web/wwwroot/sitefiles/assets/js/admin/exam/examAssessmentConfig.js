@@ -38,15 +38,20 @@ var methods = {
     this.form.pageIndex = 1;
     this.apiGet();
   },
-  btnDeleteClick: function (id) {
+  btnDeleteClick: function (config) {
     var $this = this;
-    top.utils.alertDelete({
-      title: '正在删除测评类别',
-      text: '确定删除吗？',
-      callback: function () {
-        $this.apiDelete(id);
-      }
-    });
+    if (config.paperCount > 0) {
+      utils.error("不能删除被使用的测评类别", { layer: true });
+    }
+    else {
+      top.utils.alertDelete({
+        title: '正在删除测评类别',
+        text: '确定删除吗？',
+        callback: function () {
+          $this.apiDelete(config.id);
+        }
+      });
+    }
   },
   apiDelete: function (id) {
     var $this = this;

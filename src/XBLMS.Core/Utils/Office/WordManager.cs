@@ -2,13 +2,13 @@
 using OpenXmlPowerTools;
 using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 using System.Xml;
+using System.Xml.Linq;
 using XBLMS.Core.Utils.Office.Word2Html;
 using XBLMS.Utils;
-using System.Linq;
 
 namespace XBLMS.Core.Utils.Office
 {

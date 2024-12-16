@@ -29,7 +29,7 @@ var methods = {
     utils.loading(this, true);
     $api.post($url+'/del', { id: id }).then(function (response) {
       var res = response.data;
-      utils.success('题型删除成功！');
+      utils.success('操作成功！');
     }).catch(function (error) {
       utils.loading($this, false);
       utils.error(error);
@@ -69,12 +69,12 @@ var methods = {
   btnDeleteClick: function (tx) {
     var $this = this;
     if (tx.tmCount > 0) {
-      utils.error("该题型包含" + tx.tmCount + "道题目，不允许删除");
+      utils.error("不能删除被使用的题型");
     }
     else {
       top.utils.alertDelete({
         title: '删除题型',
-        text: '此操作将删除题型 ' + tx.name + '，确定吗？',
+        text: '此操作将删除题型 ' + tx.name + '，确定删除吗？',
         callback: function () {
           $this.apiDelete(tx.id);
         }

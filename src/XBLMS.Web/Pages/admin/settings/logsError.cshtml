@@ -37,22 +37,17 @@
                 <span>{{(formInline.currentPage - 1) * formInline.limit + scope.$index + 1}}</span>
             </template>
         </el-table-column>
-        <el-table-column width="100"
-                         label="Id">
-            <template slot-scope="scope">
-                <el-link :underline="false" type="primary" v-on:click="btnLogView(scope.row.id)">{{scope.row.id}}</el-link>
-            </template>
-        </el-table-column>
-        <el-table-column prop="createdDate"
-                         width="180"
+        <el-table-column prop="createdDate" align="left"
+                         width="150"
                          label="日期">
         </el-table-column>
-        <el-table-column label="错误摘要" width="280">
+        <el-table-column width="350" align="left"
+                         label="Id">
             <template slot-scope="scope">
-                <span v-html="scope.row.summary"></span>
+                <el-link :underline="false" type="primary" v-on:click="btnLogView(scope.row.id)">{{scope.row.guid}}</el-link>
             </template>
         </el-table-column>
-        <el-table-column label="错误消息">
+        <el-table-column label="错误消息" show-overflow-tooltip align="right">
             <template slot-scope="scope">
                 <span v-html="scope.row.message"></span>
             </template>

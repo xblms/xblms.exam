@@ -802,7 +802,27 @@ namespace XBLMS.Utils
             var reg = new Regex(StrictNameRegex, RegexOptions.Singleline | RegexOptions.IgnoreCase);
             return reg.IsMatch(name);
         }
+        public static string ParseNumberToChinese(int number)
+        {
+            string[] chineseNumbers = new string[] { "零", "一", "二", "三", "四", "五", "六", "七", "八", "九" };
+            string result = "";
 
+            if (number == 0)
+            {
+                result = chineseNumbers[0];
+            }
+            else
+            {
+                while (number > 0)
+                {
+                    int digit = number % 10;
+                    result = chineseNumbers[digit] + result;
+                    number /= 10;
+                }
+            }
+
+            return result;
+        }
         public static string ParseString(string content, string replace, string to, int startIndex, int length, int wordNum, string ellipsis, bool isClearTags, bool isClearBlank, bool isReturnToBr, bool isLower, bool isUpper, string formatString)
         {
             if (string.IsNullOrEmpty(content)) return string.Empty;

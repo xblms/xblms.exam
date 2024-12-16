@@ -33,11 +33,11 @@
     <div class="card rounded-0 mb-3 shadow-lg" v-on:click="top.$vue.btnAppMenuClick('exam')">
         <div class="card-body text-center">
             <div class="mb-2">
-              <i class="bi bi-journal-medical fs-4 me-2 text-warning"></i>
+              <i class="bi bi-journal-medicalme-2 text-warning"></i>
                 累计考试<span class="text-primary fw-bold mx-2 fs-3">{{ examTotal }}</span>场
             </div>
             <div class="mt-3">
-                <apexchart type="radialBar" :options="passChartOptions" :series="passSeries"></apexchart>
+                <apexchart height="380" type="radialBar" :options="passChartOptions" :series="passSeries"></apexchart>
             </div>
         </div>
     </div>
@@ -248,7 +248,7 @@
 
 <div class="py-8"></div>
 @await Html.PartialAsync("_PartialAppMenu")
-<div style="position:fixed;right:0;top:70%;" class="text-center" v-if="taskTotal>0">
+<div style="position:fixed;right:0;top:80%;" class="animate__animated animate__fadeInRightBig" v-if="taskTotal>0">
     <button type="button" class="btn btn-dark rounded-start-pill" v-on:click="taskDialogVisible=true">
         <i class="el-icon-star-off text-warning"></i><span class="mx-2 text-light">{{ taskTotal }}</span>
     </button>
@@ -280,6 +280,9 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="mt-3">
+                <el-button class="rounded-0" icon="el-icon-close" v-on:click="taskDialogVisible=false">关 闭</el-button>
             </div>
         </div>
     </el-drawer>

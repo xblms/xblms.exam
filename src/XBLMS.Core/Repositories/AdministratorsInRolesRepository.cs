@@ -31,6 +31,14 @@ namespace XBLMS.Core.Repositories
             return roleIds;
         }
 
+        public async Task<List<int>> GetUserIdsInRoleAsync(int roleId)
+        {
+            var userIds = await _repository.GetAllAsync<int>(Q
+                .Select(nameof(AdministratorsInRoles.AdminId))
+                .Where(nameof(AdministratorsInRoles.RoleId), roleId));
+            return userIds;
+        }
+
         public async Task<IList<string>> GetUsersInRoleAsync(string roleName)
         {
             var userNames = await _repository.GetAllAsync<string>();

@@ -16,6 +16,7 @@ namespace XBLMS.Repositories
         Task<bool> DeleteAsync(int Id);
         Task<int> MaxIdAsync();
         Task IncrementAsync(int id);
+        Task<int> GetConfigCount(int configId);
         Task<(int allCount, int addCount, int deleteCount, int lockedCount, int unLockedCount)> GetDataCount();
         Task<int> GetGroupCount(int groupId);
     }

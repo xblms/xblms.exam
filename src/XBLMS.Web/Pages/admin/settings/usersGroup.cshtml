@@ -21,7 +21,7 @@
 
     <el-table :data="groups" style="width: 100%;" :size="euiSize"
               :height="($(window).height() - 115)">
-        <el-table-column label="#"
+        <el-table-column label="#" :default-sort="{prop: 'createdDate', order: 'descending'}"
                          type="index"
                          width="60"
                          align="left">
@@ -29,36 +29,29 @@
                 <span>{{ scope.$index + 1 }}</span>
             </template>
         </el-table-column>
-        <el-table-column label="用户组" prop="groupName"></el-table-column>
-        <el-table-column width="130" prop="userTotal">
+        <el-table-column label="用户组" prop="groupName" sortable></el-table-column>
+        <el-table-column width="130" prop="userTotal" sortable>
             <template slot="header" slot-scope="scope">
                 <el-tooltip content="仅包含启用状态的账户" placement="top" effect="light">
                     <span><i class="el-icon-info"></i>用户数</span>
                 </el-tooltip>
             </template>
         </el-table-column>
-        <el-table-column width="130" label="类型" prop="typeName"></el-table-column>
-        <el-table-column width="130" label="创建人">
-            <template slot-scope="scope">
-                <el-button-group>
-                    <el-link :underline="false" type="primary" v-on:click="btnAdminViewClick(scope.row.creatorId)">{{scope.row.creatorDisplayName}}</el-link>
-                </el-button-group>
-            </template>
-        </el-table-column>
-        <el-table-column width="150"
-                         prop="createdDate"
-                         label="创建时间">
-        </el-table-column>
-        <el-table-column prop="description"
-                         label="备注">
-        </el-table-column>
-        <el-table-column label="状态" width="80">
+        <el-table-column width="130" label="类型" prop="typeName" sortable></el-table-column>
+        <el-table-column prop="locked" label="状态" width="80" sortable>
             <template slot-scope="scope">
                 <span v-if="scope.row.locked"><el-tag size="mini" type="danger" effect="dark">已停用</el-tag></span>
                 <span v-else><el-tag size="mini" type="success" effect="dark">启用</el-tag></span>
             </template>
         </el-table-column>
-        <el-table-column width="88" label="被使用" prop="useCount"></el-table-column>
+        <el-table-column width="88" label="被使用" prop="useCount" sortable></el-table-column>
+        <el-table-column prop="description"
+                         label="备注">
+        </el-table-column>
+        <el-table-column width="150" sortable
+                         prop="createdDate"
+                         label="创建时间">
+        </el-table-column>
         <el-table-column label="" align="right" width="100">
             <template slot-scope="scope">
                 <el-dropdown :show-timeout="0" placement="left">

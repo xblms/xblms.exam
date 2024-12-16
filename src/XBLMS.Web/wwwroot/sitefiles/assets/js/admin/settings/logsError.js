@@ -67,7 +67,7 @@ var methods = {
     top.utils.openLayer({
       title: false,
       closebtn:0,
-      url: utils.getRootUrl('error', { logId: logId }),
+      url: utils.getRootUrl('errorView', { logId: logId }),
       width: '80%',
       height: '80%'
     });

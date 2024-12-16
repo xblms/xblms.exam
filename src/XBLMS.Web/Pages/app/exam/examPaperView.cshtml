@@ -165,10 +165,10 @@
                         <li class="list-group-item border-0 p-1 fw-light">{{tx.txName}}</li>
                         <li class="list-group-item border-0 p-1">
                             <span v-for="tabTm in tx.tmList" v-on:click="btnGetTm(tabTm.id)">
-                                <el-tag :key="tabTm.id" size="mini" type="success" effect="dark" v-if="getTmAnswerStatus(tabTm.id)" class="m-2">
+                                <el-tag :key="tabTm.id" type="success" effect="dark" v-if="getTmAnswerStatus(tabTm.id)" class="m-2">
                                     {{ tabTm.tmIndex }}
                                 </el-tag>
-                                <el-tag :key="tabTm.id" size="mini" type="danger" v-else class="m-2">
+                                <el-tag :key="tabTm.id" type="danger" v-else class="m-2">
                                     {{ tabTm.tmIndex }}
                                 </el-tag>
                             </span>

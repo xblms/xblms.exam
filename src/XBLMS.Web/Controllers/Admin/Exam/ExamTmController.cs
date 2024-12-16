@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
-using OpenXmlPowerTools;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using XBLMS.Configuration;
 using XBLMS.Dto;
@@ -11,7 +9,6 @@ using XBLMS.Enums;
 using XBLMS.Models;
 using XBLMS.Repositories;
 using XBLMS.Services;
-using XBLMS.Utils;
 namespace XBLMS.Web.Controllers.Admin.Exam
 {
     [OpenApiIgnore]

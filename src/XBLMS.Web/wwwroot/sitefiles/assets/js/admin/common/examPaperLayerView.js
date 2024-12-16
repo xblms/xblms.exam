@@ -41,6 +41,9 @@ var methods = {
   selectChangeRandomConfig: function (value) {
     this.curRandomId = value;
     this.apiGet();
+  },
+  btnExportWordClick: function () {
+
   }
 };
 

@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Routing;
 using System.Threading.Tasks;
 using XBLMS.Core.Utils;
-using XBLMS.Enums;
 using XBLMS.Utils;
 namespace XBLMS.Web.Controllers.Admin.Exam
 {

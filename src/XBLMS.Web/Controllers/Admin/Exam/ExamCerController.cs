@@ -22,10 +22,11 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         private readonly ISettingsManager _settingsManager;
         private readonly IExamCerRepository _examCerRepository;
         private readonly IExamCerUserRepository _examCerUserRepository;
+        private readonly IExamPaperRepository _examPaperRepository;
         private readonly IDatabaseManager _databaseManager;
 
         public ExamCerController(IDatabaseManager databaseManager, IAuthManager authManager, ISettingsManager settingsManager, IPathManager pathManager,
-            IExamCerRepository examCerRepository, IExamCerUserRepository examCerUserRepository)
+            IExamCerRepository examCerRepository, IExamCerUserRepository examCerUserRepository, IExamPaperRepository examPaperRepository)
         {
             _databaseManager = databaseManager;
             _authManager = authManager;
@@ -33,6 +34,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             _pathManager = pathManager;
             _examCerRepository = examCerRepository;
             _examCerUserRepository = examCerUserRepository;
+            _examPaperRepository = examPaperRepository;
         }
         public class GetRequest
         {

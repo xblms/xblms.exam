@@ -1,7 +1,6 @@
 using Datory;
 using SqlKata;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using XBLMS.Models;
 using XBLMS.Repositories;
@@ -92,6 +91,10 @@ namespace XBLMS.Core.Repositories
             return (count, 0, 0, lockedCount, unLockedCount);
         }
 
+        public async Task<int> GetConfigCount(int configId)
+        {
+            return await _repository.CountAsync(Q.Where(nameof(ExamAssessment.ConfigId), configId));
+        }
         public async Task<int> GetGroupCount(int groupId)
         {
             var total = 0;

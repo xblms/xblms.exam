@@ -19,6 +19,7 @@ namespace XBLMS.Repositories
         Task<(int allCount, int addCount, int deleteCount, int lockedCount, int unLockedCount)> GetDataCount();
         Task<(int allCount, int addCount, int deleteCount, int lockedCount, int unLockedCount)> GetDataCountMoni();
         Task<int> GetGroupCount(int groupId);
+        Task<int> GetCerCount(int cerId);
         Task<int> GetTmGroupCount(int groupId);
     }
 }

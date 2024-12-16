@@ -1,47 +1,14 @@
 ﻿@page
 @{ Layout = "_Layout"; }
 
-@section Styles{
-    <style>
-
-        .el-table th.el-table__cell > .cell {
-            padding-left: 14px;
-        }
-
-        .el-tree-node {
-            white-space: normal;
-            outline: 0;
-            .el-tree-node__content
-
-        {
-            text-align: left;
-            align-items: start;
-            height: 100%;
-            .el-tree-node
-
-        {
-            white-space: normal;
-            outline: 0;
-            .el-tree-node__content
-
-        {
-            text-align: left;
-            align-items: start;
-            height: 100%;
-        }
-
-        }
-        }
-        }</style>
-}
 <el-card>
     <div slot="header" class="clearfix">
         <span>{{ groupName }}-用户安排</span>
         <el-button style="float: right;padding:3px 0;" type="text" v-on:click="utils.closeLayer(false)"><i class="el-icon-close"></i></el-button>
     </div>
-    <el-row :gutter="18">
-        <el-col :span="6">
-            <el-card shadow="hover">
+    <el-row :gutter="16">
+        <el-col :span="5">
+            <el-card>
                 <el-form :size="euiSize">
                     <el-form-item label="">
                         <el-input placeholder="输入关键字进行过滤"
@@ -49,7 +16,7 @@
                         </el-input>
                     </el-form-item>
                 </el-form>
-                <el-scrollbar class="scrollbar" :style="{height: $(window).innerHeight()-280 + 'px'}">
+                <el-scrollbar class="scrollbar" :style="{height: $(window).innerHeight()-215 + 'px'}">
                     <el-tree class="filter-tree"
                              :data="organs"
                              v-on:node-click="btnTreeClick"
@@ -62,7 +29,7 @@
                 </el-scrollbar>
             </el-card>
         </el-col>
-        <el-col :span="18">
+        <el-col :span="19">
             <el-form v-on:submit.native.prevent :inline="true" :model="formInline" :size="euiSize">
                 <el-form-item label="">
                     <el-radio-group v-model="formInline.range" v-on:input="btnSearchClick">
@@ -71,12 +38,12 @@
                     </el-radio-group>
                 </el-form-item>
                 <br />
-                <el-form-item label="关键字">
-                    <el-input v-model="formInline.keyword" placeholder="关键字"></el-input>
+                <el-form-item label="">
+                    <el-input v-model="formInline.keyword" placeholder="关键字查询"></el-input>
                 </el-form-item>
-                <el-form-item label="排序">
+                <el-form-item label="">
                     <el-select v-model="formInline.order" placeholder="排序">
-                        <el-option label="<默认>" value=""></el-option>
+                        <el-option label="<默认排序>" value=""></el-option>
                         <el-option label="登录名称" value="UserName"></el-option>
                         <el-option label="最后登录日期" value="LastActivityDate"></el-option>
                         <el-option label="创建日期" value="CreatedDate"></el-option>
@@ -97,7 +64,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" v-on:click="btnSearchClick">查询</el-button>
+                    <el-button type="primary" icon="el-icon-search" v-on:click="btnSearchClick">查询</el-button>
                     <template v-if="formInline.range==0">
                         <el-button :size="euiSize" plain type="primary" icon="el-icon-plus" v-on:click="btnRangeClick('select')">
                             安 排
@@ -115,6 +82,9 @@
             </el-form>
             <el-table :data="items" :size="euiSize" ref="userTable" v-on:selection-change="handleSelectionChange"
                       style="width: 100%" :height="$(window).innerHeight()-265">
+                <el-table-column type="selection" align="left"
+                                 width="45">
+                </el-table-column>
                 <el-table-column label="#"
                                  type="index"
                                  width="60"
@@ -122,9 +92,6 @@
                     <template scope="scope">
                         <span>{{(formInline.currentPage - 1) * formInline.limit + scope.$index + 1}}</span>
                     </template>
-                </el-table-column>
-                <el-table-column type="selection"
-                                 width="55">
                 </el-table-column>
                 <el-table-column label="账号">
                     <template slot-scope="scope">
@@ -145,12 +112,12 @@
                         <template slot-scope="scope">
                         <el-button-group>
                             <template v-if="formInline.range==0">
-                                <el-button :size="euiSize" plain type="primary" v-on:click="btnRangeClick('only',scope.row.id)">
+                                <el-button :size="euiSize" icon="el-icon-plus" type="primary" v-on:click="btnRangeClick('only',scope.row.id)">
                                     安 排
                                 </el-button>
                             </template>
                             <template v-else>
-                                <el-button :size="euiSize" plain type="warning" v-on:click="btnRangeClick('only',scope.row.id)">
+                                <el-button :size="euiSize" icon="el-icon-minus" type="warning" v-on:click="btnRangeClick('only',scope.row.id)">
                                     移 出
                                 </el-button>
                             </template>

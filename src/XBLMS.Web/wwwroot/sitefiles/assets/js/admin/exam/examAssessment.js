@@ -137,7 +137,7 @@ var methods = {
       title: false,
       closebtn: 0,
       url: utils.getExamUrl('examAssessmentConfig'),
-      width: "88%",
+      width: "68%",
       height: "88%"
     });
   },

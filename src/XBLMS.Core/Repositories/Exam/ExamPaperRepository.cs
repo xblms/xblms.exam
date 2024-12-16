@@ -124,6 +124,10 @@ namespace XBLMS.Core.Repositories
             }
             return total;
         }
+        public async Task<int> GetCerCount(int cerId)
+        {
+            return await _repository.CountAsync(Q.Where(nameof(ExamPaper.CerId), cerId));
+        }
         public async Task<int> GetTmGroupCount(int groupId)
         {
             var total = 0;

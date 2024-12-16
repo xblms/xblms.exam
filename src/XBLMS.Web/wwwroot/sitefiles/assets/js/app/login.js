@@ -169,7 +169,7 @@ var $vue = new Vue({
   data: data,
   methods: methods,
   created: function () {
-    document.title = '登 录';
+    document.title = DOCUMENTTITLE_HOME + '-登录';
     this.apiGet();
   }
 });
