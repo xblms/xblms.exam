@@ -13,8 +13,6 @@ namespace XBLMS.Web.Controllers.Home
     {
         private const string Route = "login";
         private const string RouteCaptcha = "login/captcha";
-        private const string RouteCheckCaptcha = "login/captcha/actions/check";
-        private const string RouteSendSms = "login/actions/sendSms";
 
         private readonly ISettingsManager _settingsManager;
         private readonly IAuthManager _authManager;
@@ -40,18 +38,13 @@ namespace XBLMS.Web.Controllers.Home
             public bool IsUserCaptchaDisabled { get; set; }
         }
 
-        public class CheckRequest
-        {
-            public string Token { get; set; }
-            public string Value { get; set; }
-        }
-
         public class SubmitRequest
         {
             public string Account { get; set; }
             public string Password { get; set; }
-            public string Mobile { get; set; }
             public bool IsPersistent { get; set; }
+            public string Token { get; set; }
+            public string Value { get; set; }
         }
 
         public class SubmitResult

@@ -7,7 +7,7 @@ var $sidebarWidth = 238;
 var $collapseWidth = 60;
 
 var data = utils.init({
-  sessionId: localStorage.getItem('sessionId'),
+  sessionId: localStorage.getItem(SESSION_ID_NAME),
   menus: null,
   levelMenus: [],
   local: null,

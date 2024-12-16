@@ -75,7 +75,6 @@ namespace XBLMS.Web.Controllers.Admin
             var sessionId = StringUtils.Guid();
             await _dbCacheRepository.RemoveAndInsertAsync(cacheKey, sessionId);
 
-       
             return new SubmitResult
             {
                 IsLoginExists = false,
