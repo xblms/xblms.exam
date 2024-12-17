@@ -25,6 +25,7 @@ namespace XBLMS.Web.Controllers.Admin
             return new GetResult
             {
                 Success = true,
+                Version = _settingsManager.Version,
                 IsAdminCaptchaDisabled = config.IsAdminCaptchaDisabled,
             };
         }

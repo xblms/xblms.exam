@@ -419,16 +419,6 @@ namespace XBLMS.Core.Repositories
             return await _repository.ExistsAsync(Q.Where(nameof(User.Email), email));
         }
 
-        public bool CheckPassword(string password, bool isPasswordMd5, string dbPassword, PasswordFormat passwordFormat, string passwordSalt)
-        {
-            var decodePassword = DecodePassword(dbPassword, passwordFormat, passwordSalt);
-            if (isPasswordMd5)
-            {
-                return password == AuthUtils.Md5ByString(decodePassword);
-            }
-            return password == decodePassword;
-        }
-
         public async Task<(User user, string userName, string errorMessage)> ValidateAsync(string account, string password, bool isPasswordMd5)
         {
             if (string.IsNullOrEmpty(account))
@@ -455,7 +445,9 @@ namespace XBLMS.Core.Repositories
 
             var userEntity = await GetByUserIdAsync(user.Id);
 
-            if (!CheckPassword(password, isPasswordMd5, userEntity.Password, userEntity.PasswordFormat, userEntity.PasswordSalt))
+            var checkPassword = await CheckPasswordByUserIdAsync(user.Id, password, isPasswordMd5);
+
+            if (!checkPassword)
             {
                 await UpdateLastActivityDateAndCountOfFailedLoginAsync(user);
                 return (null, user.UserName, "帐号或密码错误");
@@ -463,7 +455,27 @@ namespace XBLMS.Core.Repositories
 
             return (user, user.UserName, string.Empty);
         }
+        private async Task<bool> CheckPasswordByUserIdAsync(int userId, string password, bool isPasswordMd5)
+        {
+            var dbUser = await _repository.GetAsync<User>(Q
+                .Select(nameof(User.Password))
+                .Select(nameof(User.PasswordFormat))
+                .Select(nameof(User.PasswordSalt))
+                .Where(nameof(User.Id), userId)
+            );
 
+            if (dbUser == null || string.IsNullOrEmpty(dbUser.Password) || string.IsNullOrEmpty(dbUser.PasswordSalt))
+            {
+                return false;
+            }
+
+            var decodePassword = DecodePassword(dbUser.Password, dbUser.PasswordFormat, dbUser.PasswordSalt);
+            if (isPasswordMd5)
+            {
+                return password == AuthUtils.Md5ByString(decodePassword);
+            }
+            return password == decodePassword;
+        }
         public async Task<(bool success, string errorMessage)> ValidateStateAsync(User user)
         {
 

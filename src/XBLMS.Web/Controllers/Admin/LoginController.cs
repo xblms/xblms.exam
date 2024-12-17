@@ -42,6 +42,7 @@ namespace XBLMS.Web.Controllers.Admin
         public class GetResult
         {
             public bool Success { get; set; }
+            public string Version { get; set; }
             public string RedirectUrl { get; set; }
             public bool IsAdminCaptchaDisabled { get; set; }
         }

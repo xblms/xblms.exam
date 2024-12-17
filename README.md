@@ -1,4 +1,4 @@
-# XBLMES 在线考试系统
+# XBLMS.EXAM 在线考试系统
 
 <img src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/logo.png" height="180" align="center">
 
@@ -16,18 +16,19 @@
 
 * 访问/admin/syncDatabase 进行系统升级。发布最新的代码替换到原来的部署包即可，不要替换xblms.json和web.config文件。
 
-* 访问/admin/clearDatabase 进行系统数据清理，请谨慎使用，清理后仅保留一个管理员账号，其他数据库数据会全部删除。
-
 ## 演示地址
 
-
-### 管理端 [点击前往管理端演示](http://8.131.91.222:5000/admin)：
+### 管理端
 
 * 账号：admin，密码：123123
 
-### 用户端 [点击前往用户端演示](http://8.131.91.222:5000/home)：
+* [点击前往管理端演示](http://8.131.91.222:5000/admin)
+
+### 用户端
 
 * 账号：test1，密码：123123
+
+* [点击前往用户端演示](http://8.131.91.222:5000/home)
 
 ### 移动端
 
@@ -40,10 +41,6 @@
 * 扫码前往移动端演示
 
 * <img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/二维码.png"/>
-
-### 在线培训系统
-
-* [点击前往在线培训系统源码](https://gitee.com/xblms/xblmls)。
 
 ## 系统展示
 
@@ -62,9 +59,6 @@
 <img width="180"  src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/练习结果.jpg"/>
 <img width="180"  src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/刷题记录.jpg"/>
 <img width="180"  src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/我的.jpg"/>
-
-
-
 
 ## 发布手册
 发布和部署手册：(https://gitee.com/xblms/xblmes/tree/master/src/XBLMS.Web/wwwroot/sitefiles/assets/uploadtemplates/doc)

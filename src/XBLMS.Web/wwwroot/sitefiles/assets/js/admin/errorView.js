@@ -9,7 +9,7 @@ var data = utils.init({
 });
 
 var methods = {
-  apiGet: function() {
+  apiGet: function () {
     var $this = this;
 
     utils.loading(this, true);
@@ -24,7 +24,7 @@ var methods = {
       $this.stackTrace = res.stackTrace;
       $this.createdDate = res.createdDate;
     }).catch(function (error) {
-      utils.error(error);
+      utils.error(error, { layer: true });
     }).then(function () {
       utils.loading($this, false);
     });

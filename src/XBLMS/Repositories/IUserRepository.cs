@@ -30,9 +30,6 @@ namespace XBLMS.Repositories
 
         Task<bool> IsMobileExistsAsync(string mobile);
 
-        bool CheckPassword(string password, bool isPasswordMd5, string dbPassword, PasswordFormat passwordFormat,
-            string passwordSalt);
-
         Task<(User user, string userName, string errorMessage)> ValidateAsync(string account, string password,
             bool isPasswordMd5);
 

@@ -15,6 +15,7 @@ namespace XBLMS.Web.Controllers.Home
 
             return new GetResult
             {
+                Version = _settingsManager.Version,
                 IsUserCaptchaDisabled = config.IsUserCaptchaDisabled
             };
         }

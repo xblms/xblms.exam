@@ -87,8 +87,11 @@ namespace XBLMS.Web.Controllers.Admin
                 }
             }
 
+            var version = _settingsManager.Version;
+
             return new GetResult
             {
+                Version = version,
                 IsSafeMode = _settingsManager.IsSafeMode,
                 Value = true,
                 Menus = allMenus,

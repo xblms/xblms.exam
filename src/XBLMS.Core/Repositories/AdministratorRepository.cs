@@ -577,12 +577,31 @@ namespace XBLMS.Core.Repositories
                 return (null, userName, errorMessage);
             }
 
-            return CheckPassword(password, isPasswordMd5, administrator.Password,
-                administrator.PasswordFormat, administrator.PasswordSalt)
-                ? (administrator, userName, string.Empty)
-                : (null, userName, "账号或密码错误");
+            return await CheckPasswordByAdminIdAsync(administrator.Id, password, isPasswordMd5)
+               ? (administrator, userName, string.Empty)
+               : (null, userName, "账号或密码错误");
         }
+        private async Task<bool> CheckPasswordByAdminIdAsync(int adminId, string password, bool isPasswordMd5)
+        {
+            var dbAdmin = await _repository.GetAsync<Administrator>(Q
+                .Select(nameof(Administrator.Password))
+                .Select(nameof(Administrator.PasswordFormat))
+                .Select(nameof(Administrator.PasswordSalt))
+                .Where(nameof(Administrator.Id), adminId)
+            );
 
+            if (dbAdmin == null || string.IsNullOrEmpty(dbAdmin.Password) || string.IsNullOrEmpty(dbAdmin.PasswordSalt))
+            {
+                return false;
+            }
+
+            var decodePassword = DecodePassword(dbAdmin.Password, dbAdmin.PasswordFormat, dbAdmin.PasswordSalt);
+            if (isPasswordMd5)
+            {
+                return password == AuthUtils.Md5ByString(decodePassword);
+            }
+            return password == decodePassword;
+        }
         public async Task<(bool Success, string ErrorMessage)> ValidateLockAsync(Administrator administrator)
         {
             if (administrator.Locked)
@@ -644,15 +663,6 @@ namespace XBLMS.Core.Repositories
             return retVal;
         }
 
-        private static bool CheckPassword(string password, bool isPasswordMd5, string dbPassword, PasswordFormat passwordFormat, string passwordSalt)
-        {
-            var decodePassword = DecodePassword(dbPassword, passwordFormat, passwordSalt);
-            if (isPasswordMd5)
-            {
-                return password == AuthUtils.Md5ByString(decodePassword);
-            }
-            return password == decodePassword;
-        }
         public async Task<Administrator> DeleteAsync(int id)
         {
             var admin = await GetByUserIdAsync(id);

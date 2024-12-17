@@ -15,6 +15,7 @@ var data = utils.init({
   captchaToken: null,
   captchaValue: null,
   captchaUrl: null,
+  version:null,
   isAdminCaptchaDisabled: false,
   loginTitle: DOCUMENTTITLE_ADMIN
 });
@@ -34,6 +35,7 @@ var methods = {
     $api.get($url).then(function (response) {
       var res = response.data;
       if (res.success) {
+        $this.version = res.version;
         $this.isAdminCaptchaDisabled = res.isAdminCaptchaDisabled;
         $this.apiCaptcha();
       } else {

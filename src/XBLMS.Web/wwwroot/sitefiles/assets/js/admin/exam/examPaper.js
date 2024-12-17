@@ -73,7 +73,7 @@ var methods = {
     var $this = this;
     top.utils.alertDelete({
       title: '删除试卷',
-      text: '确认删除吗？',
+      text: '确定删除吗？',
       callback: function () {
         $this.apiDelete(id);
       }
@@ -85,7 +85,7 @@ var methods = {
     $api.post($urlDelete, { id: id }).then(function (response) {
       var res = response.data;
       if (res.value) {
-        utils.success("成功删除试卷")
+        utils.success("操作成功")
       }
     }).catch(function (error) {
       utils.error(error);
@@ -120,7 +120,7 @@ var methods = {
     $api.post($urlLock, { id: id }).then(function (response) {
       var res = response.data;
       if (res.value) {
-        utils.success("成功锁定试卷")
+        utils.success("操作成功")
       }
     }).catch(function (error) {
       utils.error(error);
@@ -135,7 +135,7 @@ var methods = {
     $api.post($urlUnLock, { id: id }).then(function (response) {
       var res = response.data;
       if (res.value) {
-        utils.success("成功解锁试卷")
+        utils.success("操作成功")
       }
     }).catch(function (error) {
       utils.error(error);
@@ -264,14 +264,14 @@ var methods = {
   },
   treeBtnDeleteClick: function (node, data) {
     if (data.total > 0 || data.selfTotal > 0) {
-      utils.error("该分类下有题目数据，请勿删除");
+      utils.error("该分类下有试卷，无法删除分类");
     }
     else {
       var $this = this;
       this.treeClearPopover();
       top.utils.alertDelete({
         title: '删除分类',
-        text: '此操作将删除分类及所有下级: ' + data.label + '，确定吗？',
+        text: '此操作将删除分类及所有下级: ' + data.label + '，确定删除吗？',
         callback: function () {
           $this.treeApiDelete(node, data);
         }
@@ -289,7 +289,7 @@ var methods = {
         const children = parent.data.children || parent.data;
         const index = children.findIndex(d => d.id === data.id);
         children.splice(index, 1);
-        utils.success('删除成功');
+        utils.success('操作成功');
       }
     }).catch(function (error) {
       utils.error(error);
@@ -306,7 +306,7 @@ var methods = {
     $api.post($treeUrlAdd, this.treeAddForm).then(function (response) {
       var res = response.data;
       if (res.value) {
-        utils.success("分类添加成功")
+        utils.success("操作成功");
       }
     }).catch(function (error) {
       utils.error(error);
@@ -334,7 +334,7 @@ var methods = {
     $api.post($treeUrlUpdate, { item: this.treeUpdateForm }).then(function (response) {
       var res = response.data;
       if (res.value) {
-        utils.success("分类修改成功")
+        utils.success("操作成功");
       }
     }).catch(function (error) {
       utils.error(error);

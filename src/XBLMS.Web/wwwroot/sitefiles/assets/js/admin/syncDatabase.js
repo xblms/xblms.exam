@@ -27,7 +27,7 @@ var methods = {
           $this.apiSubmit();
         }).catch(() => {
           top.location.href="/admin/"
-        });;
+        });
       }
     }).catch(function (error) {
       utils.error(error);

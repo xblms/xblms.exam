@@ -15,7 +15,9 @@
 
 <div>
     <div class="py-5 text-center animate__animated animate__fadeInDown">
-        <img src="/sitefiles/assets/images/logo.png" height="66" />
+        <div class="py-3">
+            <img src="/sitefiles/assets/images/logo.png" height="66" />
+        </div>
     </div>
     <el-card class="box-card rounded-0 mx-3">
         <div slot="header">
@@ -45,7 +47,7 @@
         </el-form>
         <button type="button" v-on:click="btnSubmitClick" class="btn btn-primary rounded-0 w-100">登 录<i class="bi bi-box-arrow-in-right ms-3"></i></button>
     </el-card>
-    <div class="mt-5 text-center fw-light animate__animated animate__fadeInUpBig fs-6">{{ DOCUMENTTITLE }}</div>
+    <div class="mt-5 text-center animate__animated animate__fadeInUpBig fs-5">{{ DOCUMENTTITLE }}<span class="ms-2 text-warning">v{{ version }}</span></div>
 </div>
 
 @section Scripts{

@@ -26,7 +26,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             {
                 if (string.IsNullOrEmpty(item)) continue;
 
-                var count = StringUtils.GetStartCount('гн', item) == 0 ? StringUtils.GetStartCount('-', item) : StringUtils.GetStartCount('гн', item);
+                var count = StringUtils.GetStartCount("гн", item) == 0 ? StringUtils.GetStartCount("-", item) : StringUtils.GetStartCount("гн", item);
                 var name = item.Substring(count, item.Length - count);
                 count++;
 

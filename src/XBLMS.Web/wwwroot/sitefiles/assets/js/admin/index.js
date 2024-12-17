@@ -7,6 +7,7 @@ var $sidebarWidth = 238;
 var $collapseWidth = 60;
 
 var data = utils.init({
+  version: null,
   sessionId: localStorage.getItem(SESSION_ID_NAME),
   menus: null,
   levelMenus: [],
@@ -31,7 +32,7 @@ var data = utils.init({
 
   topFrameDrawer: false,
   topFrameTitle: null,
-  topFrameSrc:'',
+  topFrameSrc: '',
 
   isSafeMode: false
 });
@@ -53,6 +54,7 @@ var methods = {
           $this.redirectPassword(res.local.userName);
         } else {
 
+          $this.version = res.version;
           $this.isSafeMode = res.isSafeMode;
           $this.local = res.local;
           $this.menus = res.menus;

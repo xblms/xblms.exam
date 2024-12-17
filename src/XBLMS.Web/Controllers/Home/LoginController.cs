@@ -35,6 +35,7 @@ namespace XBLMS.Web.Controllers.Home
 
         public class GetResult
         {
+            public string Version { get; set; }
             public bool IsUserCaptchaDisabled { get; set; }
         }
 
