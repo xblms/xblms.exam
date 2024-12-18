@@ -12,6 +12,12 @@
 
 支持人大金仓、达梦、OceanBase数据库 及 MySql、SqlServer、PostgreSql、SQLite 等数据库
 
+### 版本
+
+* master 为开发板，这里会经常提交优化和更新，为下一个版本做准备。
+
+* [发行版提供较稳定的生成环境部署包和源代码，前往下载](https://gitee.com/xblms/xblmes/releases)
+
 ### 系统升级
 
 * 访问/admin/syncDatabase 进行数据库升级。发布最新的代码替换到原来的部署包即可升级部署文件，不要替换xblms.json文件。
@@ -227,13 +233,13 @@ npm run copy-win-x64
 
 ```
 npm install
-npm run build-win-x32
-dotnet build ./build-win-x32/build.sln -c Release
-dotnet publish ./build-win-x32/src/XBLMS.Web/XBLMS.Web.csproj -r win-x32 -c Release -o ./publish/xblms-win-x32
-npm run copy-win-x32
+npm run build-win-x86
+dotnet build ./build-win-x86/build.sln -c Release
+dotnet publish ./build-win-x86/src/XBLMS.Web/XBLMS.Web.csproj -r win-x86 -c Release -o ./publish/xblms-win-x86
+npm run copy-win-x86
 ```
 
-> 进入文件夹 `./publish/xblms-win-x32` 获取部署文件
+> 进入文件夹 `./publish/xblms-win-x86` 获取部署文件
 
 ### Linux(x64)：
 
