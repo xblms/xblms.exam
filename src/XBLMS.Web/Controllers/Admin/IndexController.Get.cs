@@ -17,26 +17,6 @@ namespace XBLMS.Web.Controllers.Admin
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<GetResult>> Get([FromQuery] GetRequest request)
         {
-            if (_settingsManager.Containerized)
-            {
-                var envSecurityKey = SettingsManager.GetEnvironmentVariable(SettingsManager.EnvSecurityKey);
-                var envDatabaseType = SettingsManager.GetEnvironmentVariable(SettingsManager.EnvDatabaseType);
-                var envDatabaseHost = SettingsManager.GetEnvironmentVariable(SettingsManager.EnvDatabaseHost);
-                var envDatabasePort = SettingsManager.GetEnvironmentVariable(SettingsManager.EnvDatabasePort);
-                var envDatabaseUser = SettingsManager.GetEnvironmentVariable(SettingsManager.EnvDatabaseUser);
-                var envDatabasePassword = SettingsManager.GetEnvironmentVariable(SettingsManager.EnvDatabasePassword);
-                var envDatabaseName = SettingsManager.GetEnvironmentVariable(SettingsManager.EnvDatabaseName);
-                var envDatabaseConnectionString = SettingsManager.GetEnvironmentVariable(SettingsManager.EnvDatabaseConnectionString);
-                var envRedisConnectionString = SettingsManager.GetEnvironmentVariable(SettingsManager.EnvRedisConnectionString);
-
-                var isEnvironment = SettingsManager.IsEnvironment(envSecurityKey, envDatabaseType, envDatabaseConnectionString,
-                    envDatabaseHost, envDatabaseUser, envDatabasePassword, envDatabaseName);
-                if (!isEnvironment)
-                {
-                    return this.Error("系统启动失败，请检查 XBLMS 容器运行环境变量设置");
-                }
-            }
-
             var allowed = PageUtils.IsVisitAllowed(_settingsManager, Request);
             if (!allowed)
             {
