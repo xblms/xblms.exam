@@ -30,8 +30,14 @@
                 </el-table-column>
                 <el-table-column label="试卷名称" show-overflow-tooltip prop="title">
                     <template slot-scope="scope">
-                        <span v-if="scope.row.moni"><el-tag type="warning" size="mini">模拟</el-tag>{{ scope.row.title }}</span>
-                        <span v-else>{{ scope.row.title }}</span>
+                        <el-link size="mini" type="primary" v-on:click="btnViewClick(scope.row)" v-if="scope.row.tmRandomType!=='RandomExaming'">
+                            <span v-if="scope.row.moni"><el-tag type="warning" size="mini">模拟</el-tag>{{ scope.row.title }}</span>
+                            <span v-else>{{ scope.row.title }}</span>
+                        </el-link>
+                        <template v-else>
+                            <span v-if="scope.row.moni"><el-tag type="warning" size="mini">模拟</el-tag>{{ scope.row.title }}</span>
+                            <span v-else>{{ scope.row.title }}</span>
+                        </template>
                     </template>
                 </el-table-column>
                 <el-table-column prop="examBeginDateTime" label="开考时间" width="150">
@@ -57,7 +63,6 @@
                                 操作
                             </el-button>
                             <el-dropdown-menu slot="dropdown">
-                                <el-dropdown-item icon="el-icon-view" v-on:click.native="btnViewClick(scope.row)" v-if="scope.row.tmRandomType!=='RandomExaming'">预览</el-dropdown-item>
                                 <el-dropdown-item icon="el-icon-edit" v-on:click.native="btnEditClick(scope.row.id)">修改</el-dropdown-item>
                                 <el-dropdown-item icon="el-icon-document-copy" v-on:click.native="btnCopyClick(scope.row.id)">复制</el-dropdown-item>
                                 <el-dropdown-item icon="el-icon-unlock" v-if="scope.row.locked" v-on:click.native="btnUnLockClick(scope.row.id)">启用</el-dropdown-item>

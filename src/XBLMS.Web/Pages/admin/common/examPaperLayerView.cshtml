@@ -16,29 +16,34 @@
 <el-card>
     <div slot="header" class="clearfix">
         <div class="d-flex justify-content-between align-items-center">
-            <span class="fw-bold fs-4">试卷预览-{{ paper.title }}（共：{{ paper.tmTotal }}题，总分：{{ paper.totalScore }}分，及格分：{{ paper.passScore }}分）</span>
+            <span><span class="fw-bold fs-4">试卷预览-{{ paper.title }}</span>（共{{ paper.tmTotal }}题，总分{{ paper.totalScore }}分，及格分{{ paper.passScore }}分）</span>
             <div>
-                <el-select v-model="curRandomId" v-on:change="selectChangeRandomConfig">
+                <el-select v-model="curRandomId" v-on:change="selectChangeRandomConfig" style="width:120px;">
                     <el-option v-for="(item,configIndex) in randomIds"
                                :key="item"
-                               :value="item" :label="'第'+ (configIndex+1) +'套试卷'">
+                               :value="item" :label="'第'+ (configIndex+1) +'套'">
                     </el-option>
                 </el-select>
+                <span class="mx-1"></span>
+                <el-link icon="el-icon-download" v-on:click="btnExportWordClick" :size="euiSize">导出Word</el-link>
+                <el-link icon="el-icon-download" v-on:click="btnExportWordZipClick" :size="euiSize" v-if="randomIds && randomIds.length>1">Word打包</el-link>
+                <span class="mx-1"></span>
+                <el-button plain v-on:click="utils.closeLayerSelf" icon="el-icon-close" :size="euiSize">返 回</el-button>
             </div>
         </div>
     </div>
     <el-row :gutter="8">
         <el-col :span="18">
-            <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-145) + 'px' }" ref="answerScrollbar">
-                <div class="pe-3">
-                    <div v-for="(tx,txIndex) in list">
-                        <el-card>
-                            <div slot="header" class="clearfix fw-bold">
-                                <span>{{ tx.txIndex }}、{{tx.txName}}(共{{tx.tmTotal}}题，共{{tx.scoreTotal}}分)</span>
-                            </div>
-                            <div>
-                                <div class="mb-3" v-for="(tm,tmIndex) in tx.tmList">
-                                    <el-card>
+            <el-card>
+                <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-178) + 'px' }" ref="answerScrollbar">
+                    <div class="pe-3">
+                        <div v-for="(tx,txIndex) in list">
+                            <el-card>
+                                <div slot="header" class="clearfix fw-bold">
+                                    <span>{{ tx.txIndex }}、{{tx.txName}}(共{{tx.tmTotal}}题，共{{tx.scoreTotal}}分)</span>
+                                </div>
+                                <div>
+                                    <div class="mb-3" v-for="(tm,tmIndex) in tx.tmList">
                                         <div :id="'tm_'+tm.id">
                                             <div class="mb-3 d-flex justify-content-start  align-items-start">
                                                 <div>{{ tm.tmIndex }}、</div>
@@ -53,7 +58,7 @@
                                                     </span>
                                                     <div v-else v-html="tm.titleHtml"></div>
                                                 </div>
-                                                <div v-else v-html="tm.title"></div>
+                                                <div v-else v-html="tm.titleHtml"></div>
                                                 <span class="ms-auto badge text-dark px-0">({{tm.score}}分)</span>
                                             </div>
                                             <div class="list-group" v-if="tm.baseTx!=='Tiankongti' && tm.baseTx!=='Jiandati'">
@@ -112,13 +117,13 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </el-card>
+                                    </div>
                                 </div>
-                            </div>
-                        </el-card>
+                            </el-card>
+                        </div>
                     </div>
-                </div>
-            </el-scrollbar>
+                </el-scrollbar>
+            </el-card>
         </el-col>
         <el-col :span="6">
             <el-card>
@@ -126,7 +131,7 @@
                     <span>答题卡</span>
                 </div>
                 <div>
-                    <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-300) + 'px' }">
+                    <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-235) + 'px' }">
                         <ul class="list-group mb-1" v-for="(tx,txIndex) in list">
                             <li class="list-group-item border-0 p-1 fw-light">{{ tx.txIndex }}、{{tx.txName}}</li>
                             <li class="list-group-item border-0 p-1">
@@ -140,9 +145,6 @@
                     </el-scrollbar>
                 </div>
             </el-card>
-            <div class="mt-2 text-end">
-                <el-button class="btn btn-outline-success py-3 w-100" v-on:click="utils.closeLayerSelf">退出预览</el-button>
-            </div>
         </el-col>
     </el-row>
 </el-card>

@@ -43,7 +43,22 @@ var methods = {
     this.apiGet();
   },
   btnExportWordClick: function () {
-
+    top.utils.openLayer({
+      title: false,
+      closebtn: 0,
+      url: utils.getCommonUrl('examPaperExportLayer', { id: this.curRandomId, paperId: this.id, type:'PaperOnlyOne' }),
+      width: "58%",
+      height: "58%",
+    });
+  },
+  btnExportWordZipClick: function () {
+    top.utils.openLayer({
+      title: false,
+      closebtn: 0,
+      url: utils.getCommonUrl('examPaperExportLayer', { paperId: this.id, type: 'PaperRar' }),
+      width: "58%",
+      height: "58%",
+    });
   }
 };
 
