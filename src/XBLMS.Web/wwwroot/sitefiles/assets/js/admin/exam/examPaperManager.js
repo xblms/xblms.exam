@@ -586,6 +586,24 @@ var methods = {
       height: "99%"
     });
   },
+  btnExportWordClick: function (id) {
+    top.utils.openLayer({
+      title: false,
+      closebtn: 0,
+      url: utils.getCommonUrl('examPaperExportLayer', { id: id, paperId: this.id, type: 'PaperScoreOnlyOne' }),
+      width: "58%",
+      height: "58%",
+    });
+  },
+  btnExportWordZipClick: function () {
+    top.utils.openLayer({
+      title: false,
+      closebtn: 0,
+      url: utils.getCommonUrl('examPaperExportLayer', { paperId: this.id, type: 'PaperScoreRar', dateFrom: this.formScore.dateFrom, dateTo: this.formScore.dateTo, keywords: this.formScore.keywords }),
+      width: "58%",
+      height: "58%",
+    });
+  }
 };
 Vue.component("apexchart", {
   extends: VueApexCharts

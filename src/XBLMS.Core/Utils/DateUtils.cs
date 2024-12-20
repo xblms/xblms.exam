@@ -11,6 +11,7 @@ namespace XBLMS.Core.Utils
         public const string FormatStringDateTimeCN = "MM月dd日 HH:mm";
         public const string FormatStringDateOnlyCN = "yyyy年MM月dd日";
 
+        public const string FormatStringDateTimeWithOutSpace = "yyyyMMddHHmmss";
         public const string FormatStringDateTime = "yyyy-MM-dd HH:mm:ss";
         public const string FormatStringDateOnly = "yyyy-MM-dd";
         private static readonly DateTime JanFirst1970 = new DateTime(1970, 1, 1);
@@ -357,6 +358,24 @@ namespace XBLMS.Core.Utils
             if (ts.Hours == 0 && ts.Minutes == 0)
             {
                 str = "00:00:" + String.Format("{0:00}", ts.Seconds);
+            }
+            return str;
+        }
+        public static string SecondToHmsCN(long duration)
+        {
+            TimeSpan ts = new TimeSpan(0, 0, Convert.ToInt32(duration));
+            string str = "";
+            if (ts.Hours > 0)
+            {
+                str = String.Format("{0:00}", ts.Hours) + "时" + String.Format("{0:00}", ts.Minutes) + "分" + String.Format("{0:00}", ts.Seconds) + "秒";
+            }
+            if (ts.Hours == 0 && ts.Minutes > 0)
+            {
+                str = "00时" + String.Format("{0:00}", ts.Minutes) + "分" + String.Format("{0:00}", ts.Seconds) + "秒";
+            }
+            if (ts.Hours == 0 && ts.Minutes == 0)
+            {
+                str = "00时00分" + String.Format("{0:00}", ts.Seconds) + "秒";
             }
             return str;
         }

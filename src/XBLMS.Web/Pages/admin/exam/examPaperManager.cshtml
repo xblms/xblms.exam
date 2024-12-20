@@ -373,8 +373,11 @@
                             </el-form-item>
                             <el-form-item>
                                 <el-button :size="euiSize" icon="el-icon-search" type="primary" v-on:click="btnScoreSearchClick">查 询</el-button>
-                                <el-button :size="euiSize" plain type="primary" icon="el-icon-download" v-on:click="btnScoreExportClick">
-                                    导 出
+                                <el-button :size="euiSize" plain type="primary" icon="el-icon-download" v-on:click="btnScoreExportClick" v-if="scoreTotal>0">
+                                    导出Excel
+                                </el-button>
+                                <el-button :size="euiSize" plain type="primary" icon="el-icon-download" v-on:click="btnExportWordZipClick" v-if="scoreTotal>0">
+                                    打包Word
                                 </el-button>
                             </el-form-item>
                         </el-form>
@@ -420,6 +423,7 @@
                                         <el-dropdown-menu slot="dropdown">
                                             <el-dropdown-item icon="el-icon-view" v-on:click.native="btnPaperSocreView(scope.row.id)">查看答卷</el-dropdown-item>
                                             <el-dropdown-item icon="el-icon-view" v-on:click.native="btnMarkView(scope.row.id)" v-if="scope.row.markTeacherId>0">查看阅卷</el-dropdown-item>
+                                            <el-dropdown-item icon="el-icon-view" v-on:click.native="btnExportWordClick(scope.row.id)" divided>导出Word</el-dropdown-item>
                                         </el-dropdown-menu>
                                     </el-dropdown>
                                 </template>

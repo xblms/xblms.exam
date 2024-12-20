@@ -5,20 +5,28 @@ var data = utils.init({
   paperId: utils.getQueryInt('paperId'),
   withAnswer: true,
   type: utils.getQueryString('type'),
+  dateFrom: utils.getQueryString('dateFrom'),
+  dateTo: utils.getQueryString('dateTo'),
+  keywords: utils.getQueryString('keywords'),
   url: null
 });
 
 var methods = {
   apiGet: function () {
     var $this = this;
-
+    if (this.type === 'PaperScoreOnlyOne' || this.type === 'PaperScoreRar') {
+      $url = $url + "/score";
+    }
     utils.loading(this, true, '正在导出，请稍等...');
     $api.get($url, {
       params: {
         id: this.id,
         paperId: this.paperId,
         withAnswer: this.withAnswer,
-        type: this.type
+        type: this.type,
+        dateFrom: this.dateFrom,
+        dateTo: this.dateTo,
+        keywords: this.keywords
       }
     }).then(function (response) {
       var res = response.data;
