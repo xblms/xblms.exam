@@ -89,7 +89,14 @@ namespace XBLMS.Utils
             }
             return str;
         }
-
+        public static string SubString(string text, int length)
+        {
+            if (!string.IsNullOrEmpty(text) && text.Length > length)
+            {
+                return string.Concat(text.AsSpan(0, length), "...");
+            }
+            return text;
+        }
         public static string Remove(string text, int startIndex)
         {
             if (string.IsNullOrEmpty(text)) return string.Empty;
@@ -276,7 +283,7 @@ namespace XBLMS.Utils
         public static string StripBlank(string inputString)
         {
             if (string.IsNullOrEmpty(inputString)) return string.Empty;
-            
+
             var retVal = inputString.Replace(" ", string.Empty);
             retVal = retVal.Replace("　", string.Empty);
             retVal = retVal.Replace("&nbsp;", string.Empty);
@@ -286,7 +293,7 @@ namespace XBLMS.Utils
         public static string StripTags(string inputString)
         {
             if (string.IsNullOrEmpty(inputString)) return string.Empty;
-            
+
             var retVal = RegexUtils.Replace("<script[^>]*>.*?<\\/script>", inputString, string.Empty);
             retVal = RegexUtils.Replace("<style[^>]*>.*?<\\/style>", retVal, string.Empty);
             retVal = RegexUtils.Replace("<[\\/]?[^>]*>|<[\\S]+", retVal, string.Empty);
@@ -914,7 +921,7 @@ namespace XBLMS.Utils
             if (string.IsNullOrEmpty(val)) return string.Empty;
             if (int.TryParse(val, out _))
             {
-              return $"{val}px";
+                return $"{val}px";
             }
             return val;
         }

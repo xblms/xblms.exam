@@ -59,6 +59,8 @@ namespace XBLMS.Core.Services
                 {
                     entityStr = TranslateUtils.JsonSerialize(entity);
                 }
+                statTypeStr = StringUtils.SubString(statTypeStr, 300);
+                objectName = StringUtils.SubString(objectName, 300);
                 await _databaseManager.StatLogRepository.InsertAsync(statType, statTypeStr, ipAddress, admin.Id, objectId, objectName, entityStr);
             }
         }
