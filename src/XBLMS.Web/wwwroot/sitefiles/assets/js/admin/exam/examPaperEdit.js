@@ -143,26 +143,21 @@ var methods = {
     this.submitSubmitType = 'Submit';
     this.submitSubmitIsClear = false;
 
-    if (this.form.userGroupIds && this.form.userGroupIds.length > 0) {
-      var $this = this;
-      this.$refs.form.validate(function (valid) {
-        if (valid) {
-          var valido = $this.submitValid();
-          if (!valido) return;
+    var $this = this;
+    this.$refs.form.validate(function (valid) {
+      if (valid) {
+        var valido = $this.submitValid();
+        if (!valido) return;
 
-          if ($this.id > 0 && $this.form.submitType === 'Submit') {
-            $this.submitDialogVisible = true;
-            $this.submitSubmitIsClear = true;
-          }
-          else {
-            $this.apiSubmit();
-          }
+        if ($this.id > 0 && $this.form.submitType === 'Submit') {
+          $this.submitDialogVisible = true;
+          $this.submitSubmitIsClear = true;
         }
-      });
-    }
-    else {
-      utils.error('请选择至少一个用户组', { layer: true });
-    }
+        else {
+          $this.apiSubmit();
+        }
+      }
+    });
  
   },
   btnSubmit: function () {

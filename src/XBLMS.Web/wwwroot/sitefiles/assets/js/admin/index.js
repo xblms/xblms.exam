@@ -33,6 +33,7 @@ var data = utils.init({
   topFrameDrawer: false,
   topFrameTitle: null,
   topFrameSrc: '',
+  topFrameWidth: 88,
 
   isSafeMode: false
 });

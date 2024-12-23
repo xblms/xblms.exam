@@ -161,28 +161,10 @@ var methods = {
       utils.loading($this, false);
     });
   },
-  btnViewClick: function (row) {
-    if (row.tmRandomType === 'RandomExaming') {
-      utils.error("考前随机试卷不是预生成试卷，无法预览")
-    }
-    else if (row.submitType === 'Save') {
-      utils.error("试卷未发布，无法预览")
-    }
-    else {
-      var $this = this;
-      top.utils.openLayer({
-        title: false,
-        closebtn: 0,
-        url: utils.getCommonUrl('examPaperLayerView', { id: row.id }),
-        width: "98%",
-        height: "98%"
-      });
-    }
 
-  },
   btnEditClick: function (id) {
 
-    if (this.treeSelectId > 0 || id>0) {
+    if (this.treeSelectId > 0 || id > 0) {
       var $this = this;
       top.utils.openLayer({
         title: false,
@@ -213,19 +195,21 @@ var methods = {
       }
     });
   },
-  btnManagerClick: function (id) {
-
-    top.utils.openLayer({
-      title: false,
-      closebtn: 0,
-      url: utils.getExamUrl('examPaperManager', { id: id }),
-      width: "98%",
-      height: "98%"
-    });
-
+  btnViewClick: function (row) {
+    utils.openTopLeft(row.title + '-预览', utils.getCommonUrl("examPaperLayerView", { id: row.id }));
   },
-
-
+  btnManagerAnalysisClick: function (row) {
+    utils.openTopLeft(row.title + '-综合统计', utils.getExamUrl("examPaperManagerAnalysis", { id: row.id }));
+  },
+  btnManagerUserClick: function (row) {
+    utils.openTopLeft(row.title + '-考生管理', utils.getExamUrl("examPaperManagerUser", { id: row.id }));
+  },
+  btnManagerMarkClick: function (row) {
+    utils.openTopLeft(row.title + '-阅卷管理', utils.getExamUrl("examPaperManagerMark", { id: row.id }));
+  },
+  btnManagerScoreClick: function (row) {
+    utils.openTopLeft(row.title + '-考试成绩', utils.getExamUrl("examPaperManagerScore", { id: row.id }));
+  },
   //tree
   apiGetTree: function () {
     var $this = this;

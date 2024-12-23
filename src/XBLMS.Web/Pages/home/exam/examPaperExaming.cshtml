@@ -94,7 +94,7 @@
                                         </div>
                                     </div>
                                     <div v-else-if="tm.baseTx==='Jiandati'">
-                                        <el-input :key="tm.id" type="textarea" resize="none" v-model.trim="tm.answerInfo.answer" :autosize="{ minRows: 3}" maxlength="333" style="width:100%;"
+                                        <el-input :key="tm.id" type="textarea" resize="none" v-model="tm.answerInfo.answer" :autosize="{ minRows: 3}" maxlength="333" style="width:100%;"
                                                   show-word-limit v-on:change="answerChange"></el-input>
                                     </div>
                                     <div v-else>

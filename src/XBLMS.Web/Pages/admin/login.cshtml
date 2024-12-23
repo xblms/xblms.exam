@@ -41,9 +41,8 @@
         </div>
         <div>
             <form v-on:submit="btnSubmitClick" class="form-horizontal" method="post">
-
                 <template v-if="pageAlert">
-                    <div class="alert fs-5 p-2" :class="{ 'alert-warning': pageAlert.type === 'warning', 'alert-success': pageAlert.type === 'success', 'alert-danger': pageAlert.type === 'danger' }">
+                    <div class="alert fs-5 py-2 px-3" :class="{ 'alert-warning': pageAlert.type === 'warning', 'alert-success': pageAlert.type === 'success', 'alert-danger': pageAlert.type === 'danger' }">
                         <span v-html="pageAlert.html"></span>
                     </div>
                 </template>
@@ -107,7 +106,7 @@
                 <div class="form-group row">
                     <div class="col-12">
                         <div class="p-2 bg-light rounded-pill">
-                            <el-button plain round type="primary" v-on:click="btnSubmitClick" class="w-100" icon="el-icon-s-promotion">登 录</el-button>
+                            <el-button plain type="primary" v-on:click="btnSubmitClick" class="w-100 py-3 rounded-pill" icon="el-icon-s-promotion">登 录</el-button>
                         </div>
                     </div>
                 </div>

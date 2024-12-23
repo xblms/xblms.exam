@@ -52,7 +52,7 @@ namespace XBLMS.Web.Controllers.Admin
                             adminName = otherAdmin.DisplayName;
                         }
                     }
-             
+
                     item.Set("AdminName", adminName);
 
                     item.Set("Title", item.StatTypeStr);
@@ -60,7 +60,7 @@ namespace XBLMS.Web.Controllers.Admin
                     item.Set("Date", DateUtils.ParseThisMoment(item.CreatedDate.Value, DateTime.Now));
 
                     var name = item.ObjectName;
-              
+
 
                     var isView = false;
                     var isEdit = false;
@@ -126,10 +126,14 @@ namespace XBLMS.Web.Controllers.Admin
                     if (item.StatType == StatType.ExamAdd || item.StatType == StatType.ExamUpdate)
                     {
                         isExam = true;
-                        if (await _databaseManager.ExamPaperRepository.ExistsAsync(item.ObjectId))
+                        var examPaper = await _databaseManager.ExamPaperRepository.GetAsync(item.ObjectId);
+                        if (examPaper != null && examPaper.TmRandomType != ExamPaperTmRandomType.RandomExaming)
                         {
-                            isView = true;
                             isEdit = true;
+                            if(examPaper.TmRandomType != ExamPaperTmRandomType.RandomExaming)
+                            {
+                                isView = true;
+                            }
                         }
                         else
                         {

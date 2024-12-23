@@ -112,13 +112,7 @@ var methods = {
       });
     }
     else if (log.isExam) {
-      top.utils.openLayer({
-        title: false,
-        closebtn: 0,
-        url: utils.getExamUrl('examPaperManager', { id: log.objectId }),
-        width: "98%",
-        height: "98%"
-      });
+      utils.openTopLeft(log.objectName + '-预览', utils.getCommonUrl("examPaperLayerView", { id: log.objectId }));
     }
     else if (log.isExamQ) {
       top.utils.openLayer({
@@ -130,21 +124,10 @@ var methods = {
       });
     }
     else if (log.isExamAss) {
-      top.utils.openLayer({
-        title: log.name,
-        url: utils.getExamUrl('examAssessmentUsers', { id: log.objectId }),
-        width: "98%",
-        height: "98%"
-      });
+      utils.openTopLeft(log.objectName + '-测评结果', utils.getExamUrl("examAssessmentUsers", { id: log.objectId }));
     }
     else if (log.isExamPk) {
-      top.utils.openLayer({
-        title: false,
-        closebtn: 0,
-        url: utils.getExamUrl('examPkRooms', { id: log.objectId }),
-        width: "99%",
-        height: "99%"
-      });
+      utils.openTopLeft(log.objectName + '-赛程', utils.getExamUrl("examPkRooms", { id: log.objectId }));
     }
     else if (log.isExamCer) {
       top.utils.openLayer({

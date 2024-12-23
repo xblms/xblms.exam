@@ -43,8 +43,8 @@
                     </el-button>
                     <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item icon="el-icon-edit" v-on:click.native="btnEditClick(scope.row.id)">修改</el-dropdown-item>
-                        <el-dropdown-item icon="el-icon-user" v-on:click.native="btnPkUsersClick(scope.row.id)">排名</el-dropdown-item>
-                        <el-dropdown-item icon="el-icon-date" v-on:click.native="btnPkRoomsClick(scope.row.id)">赛程</el-dropdown-item>
+                        <el-dropdown-item icon="el-icon-user" v-on:click.native="btnPkUsersClick(scope.row)">排名</el-dropdown-item>
+                        <el-dropdown-item icon="el-icon-date" v-on:click.native="btnPkRoomsClick(scope.row)">赛程</el-dropdown-item>
                         <el-dropdown-item icon="el-icon-delete" style="color:red;" v-on:click.native="btnDeleteClick(scope.row.id)" divided>删除</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>

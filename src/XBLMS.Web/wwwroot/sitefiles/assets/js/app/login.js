@@ -26,7 +26,7 @@ var methods = {
     if (this.status === 401) {
       this.pageAlert = {
         type: 'error',
-        title: '账号登录已过期或失效，请重新登录'
+        title: '登录已过期或失效，请重新登录'
       };
     }
 

@@ -67,12 +67,12 @@
                     <el-button type="primary" icon="el-icon-search" v-on:click="btnSearchClick">查询</el-button>
                     <template v-if="formInline.range==0">
                         <el-button :size="euiSize" plain type="primary" icon="el-icon-plus" v-on:click="btnRangeClick('select')">
-                            安 排
+                            批量安排
                         </el-button>
                     </template>
                     <template v-else>
                         <el-button :size="euiSize" plain type="warning" icon="el-icon-minus" v-on:click="btnRangeClick('select')">
-                            移 出
+                            批量移出
                         </el-button>
                         <el-button :size="euiSize" plain type="warning" icon="el-icon-minus" v-on:click="btnRangeClick('all')">
                             全部移出
@@ -83,7 +83,7 @@
             <el-table :data="items" :size="euiSize" ref="userTable" v-on:selection-change="handleSelectionChange"
                       style="width: 100%" :height="$(window).innerHeight()-265">
                 <el-table-column type="selection" align="left"
-                                 width="45">
+                                 width="28">
                 </el-table-column>
                 <el-table-column label="#"
                                  type="index"
@@ -112,12 +112,12 @@
                         <template slot-scope="scope">
                         <el-button-group>
                             <template v-if="formInline.range==0">
-                                <el-button :size="euiSize" icon="el-icon-plus" type="primary" v-on:click="btnRangeClick('only',scope.row.id)">
+                                <el-button plain :size="euiSize" icon="el-icon-plus" type="primary" v-on:click="btnRangeClick('only',scope.row.id)">
                                     安 排
                                 </el-button>
                             </template>
                             <template v-else>
-                                <el-button :size="euiSize" icon="el-icon-minus" type="warning" v-on:click="btnRangeClick('only',scope.row.id)">
+                                <el-button plain :size="euiSize" icon="el-icon-minus" type="warning" v-on:click="btnRangeClick('only',scope.row.id)">
                                     移 出
                                 </el-button>
                             </template>

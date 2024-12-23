@@ -81,25 +81,11 @@ var methods = {
       }
     });
   },
-  btnPkUsersClick: function (id) {
-    var $this = this;
-    top.utils.openLayer({
-      title: false,
-      closebtn: 0,
-      url: utils.getExamUrl('examPkUsers', { id: id }),
-      width: "99%",
-      height: "99%"
-    });
+  btnPkUsersClick: function (row) {
+    utils.openTopLeft(row.name + '-排名', utils.getExamUrl("examPkUsers", { id: row.id }));
   },
-  btnPkRoomsClick: function (id) {
-    var $this = this;
-    top.utils.openLayer({
-      title: false,
-      closebtn: 0,
-      url: utils.getExamUrl('examPkRooms', { id: id }),
-      width: "99%",
-      height: "99%"
-    });
+  btnPkRoomsClick: function (row) {
+    utils.openTopLeft(row.name + '-赛程', utils.getExamUrl("examPkRooms", { id: row.id }));
   }
 };
 

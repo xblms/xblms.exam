@@ -264,3 +264,20 @@ npm run copy-linux-arm64
 ```
 
 > 进入文件夹 `./publish/xblms-linux-arm64` 获取部署文件
+
+## 问题与建议
+
+如发现问题或对产品有任何建议，请提交至 [Gitee Issues](https://gitee.com/xblms/xblmes/issues)。
+
+
+## License
+
+[GNU Affero General Public License v3.0](LICENSE)
+
+Copyright (C) 2024 XBLMS.EXAM
+
+## 打赏
+
+开源无盈利，生活不容易，多少是心意，感谢支持与鼓励！
+
+<img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/ds.png"/>

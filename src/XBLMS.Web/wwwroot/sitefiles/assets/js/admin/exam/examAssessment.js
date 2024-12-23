@@ -142,14 +142,7 @@ var methods = {
     });
   },
   btnViewUserClick: function (row) {
-    var $this = this;
-    top.utils.openLayer({
-      title: row.title + '-用户列表',
-      url: utils.getExamUrl('examAssessmentUsers', { id: row.id }),
-      width: "98%",
-      height: "98%"
-    });
-
+    utils.openTopLeft(row.title + '-测评结果', utils.getExamUrl("examAssessmentUsers", { id: row.id }));
   },
   btnViewConfigClick: function (row) {
     var $this = this;

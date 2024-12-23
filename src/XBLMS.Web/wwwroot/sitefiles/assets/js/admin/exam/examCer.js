@@ -130,16 +130,7 @@ var methods = {
     });
   },
   btnCountClick: function (row) {
-    var $this = this;
-    top.utils.openLayer({
-      title: row.name + '-获证人员列表',
-      url: utils.getExamUrl('examCerUsers', { id: row.id }),
-      width: "88%",
-      height: "98%",
-      end: function () {
-        $this.apiGet();
-      }
-    });
+    utils.openTopLeft(row.name + '-获证人员列表', utils.getExamUrl("examCerUsers", { id: row.id }));
   }
 };
 

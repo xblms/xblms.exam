@@ -132,25 +132,10 @@ var methods = {
     });
   },
   btnViewClick: function (row) {
-    var $this = this;
-    top.utils.openLayer({
-      title: false,
-      closebtn: 0,
-      url: utils.getExamUrl('examQuestionnaireAnalysis', { id: row.id }),
-      width: "98%",
-      height: "98%"
-    });
-
+    utils.openTopLeft(row.title + '-结果统计', utils.getExamUrl("examQuestionnaireAnalysis", { id: row.id }));
   },
   btnViewUserClick: function (row) {
-    var $this = this;
-    top.utils.openLayer({
-      title: row.title + '-用户列表',
-      url: utils.getExamUrl('examQuestionnaireUsers', { id: row.id }),
-      width: "88%",
-      height: "98%"
-    });
-
+    utils.openTopLeft(row.title + '-用户列表', utils.getExamUrl("examQuestionnaireUsers", { id: row.id }));
   },
   btnEditClick: function (id) {
 

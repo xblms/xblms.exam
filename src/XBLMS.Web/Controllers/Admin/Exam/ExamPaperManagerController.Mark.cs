@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using XBLMS.Core.Utils;
 using XBLMS.Dto;
@@ -29,8 +30,23 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
                 }
             }
+            var markers = new List<GetSelectMarkInfo>();
+            var adminList = await _administratorRepository.GetListAsync();
+            if (adminList != null && adminList.Count > 0)
+            {
+                foreach (var admin in adminList)
+                {
+                    markers.Add(new GetSelectMarkInfo
+                    {
+                        Id = admin.Id,
+                        DisplayName = admin.DisplayName,
+                        UserName = admin.UserName
+                    });
+                }
+            }
             return new GetScoreResult
             {
+                MarkerList = markers,
                 Total = total,
                 List = list
             };

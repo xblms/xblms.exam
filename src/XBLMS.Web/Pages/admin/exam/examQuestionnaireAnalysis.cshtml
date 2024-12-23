@@ -2,90 +2,46 @@
 @{ Layout = "_Layout"; }
 @section Styles{
     <link href="/sitefiles/assets/lib/geeks/css/theme.min.css" rel="stylesheet" type="text/css" />
-    <style>
-        .el-progress-bar__outer{
-            background-color:#f1f1f1 !important;
-        }
-    </style>
 }
-<el-card>
-    <div slot="header" class="d-flex justify-content-between  align-items-center">
-        <span class="fw-bold fs-4">{{ paper.title }}（共：{{ paper.tmTotal }}项，调查人次：{{ paper.answerTotal }}）</span>
+<div class="px-3">
+    <div class="d-flex justify-content-between  align-items-center mb-3">
+        <span>共：{{ paper.tmTotal }}项，调查人次：{{ paper.answerTotal }}</span>
         <div>
-            <el-button :size="euiSize" icon="el-icon-download" v-on:click="btnExportWordClick" type="success">导出 Word</el-button>
-            <el-button plain icon="el-icon-close" :size="euiSize" v-on:click="utils.closeLayerSelf">关 闭</el-button>
+            <el-button :size="euiSize" icon="el-icon-download" v-on:click="btnExportWordClick" plain>导出 Word</el-button>
         </div>
     </div>
     <el-row>
         <el-col>
-            <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-130) + 'px' }" ref="answerScrollbar">
-                <div class="pe-3">
-                    <div class="mb-3" v-for="(tm,tmIndex) in list">
-                        <el-card>
-                            <div :id="'tm_'+tm.id">
-                                <span class="mb-3 d-flex justify-content-start  align-items-start">
-                                    <span>{{ tmIndex+1 }}、</span>
-                                    <span v-if="tm.tx==='Danxuanti'">
-                                        （单选）
-                                    </span>
-                                    <span v-else-if="tm.tx==='Duoxuanti'">
-                                        （多选）
-                                    </span>
-                                    <span v-else>
-                                        （简答）
-                                    </span>
-                                    <span v-html="tm.title"></span>
-                                </span>
-                                <div class="list-group">
-                                    <div v-if="tm.tx==='Danxuanti'">
-                                        <div class="d-flex justify-content-start align-items-center">
-                                            <div v-if="paper.answerTotal>0">
-                                                <apexchart type="pie" :options="{labels:tm.optionsValues,legend:{show:false},colors:pieChartColors}" :series="tm.optionsAnswer" height="200"></apexchart>
-                                            </div>
-                                            <div class="w-100">
-                                                <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.options">
-                                                    <div class="d-flex justify-content-start align-items-start">
-                                                        <div style="width:150px;" v-if="paper.answerTotal>0">
-                                                            <el-progress :stroke-width="18" :percentage="utils.formatPercentFloat(tm.optionsAnswer[optionIndex],tm.tmAnswerTotal)" :show-text="false" color="#67c23a"></el-progress>
-                                                        </div>
-                                                        <div class="mx-2">
-                                                            {{optionsABC[optionIndex]}}.
-                                                        </div>
-                                                        <div>
-                                                            <span v-html="option"></span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+            <div class="mb-3" v-for="(tm,tmIndex) in list">
+                <el-card>
+                    <div :id="'tm_'+tm.id">
+                        <span class="mb-3 d-flex justify-content-start  align-items-start">
+                            <span>{{ tmIndex+1 }}、</span>
+                            <span v-if="tm.tx==='Danxuanti'">
+                                （单选）
+                            </span>
+                            <span v-else-if="tm.tx==='Duoxuanti'">
+                                （多选）
+                            </span>
+                            <span v-else>
+                                （简答）
+                            </span>
+                            <span v-html="tm.title"></span>
+                        </span>
+                        <div class="list-group">
+                            <div v-if="tm.tx==='Danxuanti'">
+                                <div class="d-flex justify-content-start align-items-center">
+                                    <div v-if="paper.answerTotal>0">
+                                        <apexchart type="pie" :options="{labels:tm.optionsValues,legend:{show:false},colors:pieChartColors}" :series="tm.optionsAnswer" height="200"></apexchart>
                                     </div>
-                                    <div v-if="tm.tx==='Duoxuanti'">
-                                        <div class="d-flex justify-content-start align-items-center">
-                                            <div v-if="paper.answerTotal>0">
-                                                <apexchart type="pie" :options="{labels:tm.optionsValues,legend:{show:false},colors:pieChartColors}" :series="tm.optionsAnswer" height="200"></apexchart>
-                                            </div>
-                                            <div class="w-100">
-                                                <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.options">
-                                                    <div class="d-flex justify-content-start align-items-start">
-                                                        <div style="width:150px;" v-if="paper.answerTotal>0">
-                                                            <el-progress :stroke-width="18" :percentage="utils.formatPercentFloat(tm.optionsAnswer[optionIndex],tm.tmAnswerTotal)" :show-text="false" color="#67c23a"></el-progress>
-                                                        </div>
-                                                        <div class="mx-2">
-                                                            {{optionsABC[optionIndex]}}.
-                                                        </div>
-                                                        <div>
-                                                            <span v-html="option"></span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div v-if="tm.tx==='Jiandati'">
-                                        <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.optionsAnswer">
+                                    <div class="w-100">
+                                        <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.options">
                                             <div class="d-flex justify-content-start align-items-start">
-                                                <div class="me-1">
-                                                    <i class="el-icon-user me-2"></i>
+                                                <div style="width:150px;" v-if="paper.answerTotal>0">
+                                                    <el-progress :stroke-width="18" :percentage="utils.formatPercentFloat(tm.optionsAnswer[optionIndex],tm.tmAnswerTotal)" :show-text="false" color="#67c23a"></el-progress>
+                                                </div>
+                                                <div class="mx-2">
+                                                    {{optionsABC[optionIndex]}}.
                                                 </div>
                                                 <div>
                                                     <span v-html="option"></span>
@@ -95,13 +51,47 @@
                                     </div>
                                 </div>
                             </div>
-                        </el-card>
+                            <div v-if="tm.tx==='Duoxuanti'">
+                                <div class="d-flex justify-content-start align-items-center">
+                                    <div v-if="paper.answerTotal>0">
+                                        <apexchart type="pie" :options="{labels:tm.optionsValues,legend:{show:false},colors:pieChartColors}" :series="tm.optionsAnswer" height="200"></apexchart>
+                                    </div>
+                                    <div class="w-100">
+                                        <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.options">
+                                            <div class="d-flex justify-content-start align-items-start">
+                                                <div style="width:150px;" v-if="paper.answerTotal>0">
+                                                    <el-progress :stroke-width="18" :percentage="utils.formatPercentFloat(tm.optionsAnswer[optionIndex],tm.tmAnswerTotal)" :show-text="false" color="#67c23a"></el-progress>
+                                                </div>
+                                                <div class="mx-2">
+                                                    {{optionsABC[optionIndex]}}.
+                                                </div>
+                                                <div>
+                                                    <span v-html="option"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-if="tm.tx==='Jiandati'">
+                                <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.optionsAnswer">
+                                    <div class="d-flex justify-content-start align-items-start">
+                                        <div class="me-1">
+                                            <i class="el-icon-user me-2"></i>
+                                        </div>
+                                        <div>
+                                            <span v-html="option"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </el-scrollbar>
+                </el-card>
+            </div>
         </el-col>
     </el-row>
-</el-card>
+</div>
 @section Scripts{
     <script src="/sitefiles/assets/lib/apexcharts/apexcharts.js" type="text/javascript"></script>
     <script src="/sitefiles/assets/lib/apexcharts/vue-apexcharts.js" type="text/javascript"></script>

@@ -724,6 +724,15 @@ var utils = {
     var index = parent.layer.getFrameIndex(window.name);
     parent.layer.close(index);
   },
+  openTopLeft: function (title, src, width) {
+    top.$vue.topFrameTitle = title;
+    top.$vue.topFrameSrc = src;
+    top.$vue.topFrameWidth = width || 88;
+    top.$vue.topFrameDrawer = true;
+  },
+  closeTopLeft: function () {
+    top.$vue.topFrameDrawer = false;
+  },
   openLayerPhoto: function (config) {
     layer.photos({
       photos: {

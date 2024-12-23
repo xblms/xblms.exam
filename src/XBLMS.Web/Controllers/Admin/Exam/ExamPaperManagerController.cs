@@ -116,6 +116,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         {
             public int Total { get; set; }
             public List<ExamPaperStart> List { get; set; }
+            public List<GetSelectMarkInfo> MarkerList { get; set; }
         }
 
 

@@ -128,9 +128,7 @@ var methods = {
     });
   },
   btnChatClick: function () {
-    top.$vue.topFrameSrc = utils.getExamUrl("examTmAnalysisChat", { id: this.pId });
-    top.$vue.topFrameTitle = "题库统计-错误分布图表";
-    top.$vue.topFrameDrawer = true;
+    utils.openTopLeft("题库统计-错误分布图表", utils.getExamUrl("examTmAnalysisChat", { id: this.pId }))
   },
   btnNewGroupClick: function () {
     var nodes = this.$refs.tmTable.selection;
