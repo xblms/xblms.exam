@@ -22,57 +22,59 @@
 @await Html.PartialAsync("_PartialWatermark")
 <template v-if="paper">
     <div class="text-center py-2 pb-3">
-        <div>{{ paper.title }}</div>
+        <h2>{{ paper.title }}</h2>
     </div>
-    <el-card v-for="(tm,tmIndex) in tmList" class="mb-3 z-1" :ref="'tm_'+tm.id" :id="'tm_'+tm.id">
-        <div slot="header">
-            <div class="d-flex justify-content-start align-items-start fw-bold">
-                <div>{{ tmIndex+1 }}、</div>
-                <div>{{ tm.title }}（<span v-if="tm.tx==='Duoxuanti'">多选</span><span v-else-if="tm.tx==='Danxuanti'">单选</span><span v-else></span>）</div>
+    <div class="container">
+        <el-card v-for="(tm,tmIndex) in tmList" class="mb-3 z-1" :ref="'tm_'+tm.id" :id="'tm_'+tm.id">
+            <div slot="header">
+                <div class="d-flex justify-content-start align-items-start fw-bold">
+                    <div>{{ tmIndex+1 }}、</div>
+                    <div>{{ tm.title }}（<span v-if="tm.tx==='Duoxuanti'">多选</span><span v-else-if="tm.tx==='Danxuanti'">单选</span><span v-else></span>）</div>
+                </div>
+                <div class="mt-2" v-if="!tm.answerStatus">
+                    <span class="text-warning fs-6"><i class="el-icon-info me-2"></i>请完善该项内容</span>
+                </div>
             </div>
-            <div class="mt-2" v-if="!tm.answerStatus">
-                <span class="text-warning fs-6"><i class="el-icon-info me-2"></i>请完善该项内容</span>
-            </div>
-        </div>
-        <div>
             <div>
-                <div class="list-group">
-                    <div v-if="tm.tx==='Danxuanti'">
-                        <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.optionsRandom">
-                            <div>
-                                <el-radio :label="option.key" v-model="tm.answer" v-on:change="answerChange(tm)" size="medium">
-                                    <span v-html="option.value"></span>
-                                </el-radio>
-                            </div>
-                        </div>
-                    </div>
-                    <div v-else-if="tm.tx==='Duoxuanti'">
-                        <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.optionsRandom">
-                            <div>
+                <div>
+                    <div class="list-group">
+                        <div v-if="tm.tx==='Danxuanti'">
+                            <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.optionsRandom">
                                 <div>
-                                    <el-checkbox :true-label="option.key" false-label="" v-model="tm.optionsValues[optionsABC.indexOf(option.key)]" v-on:change="answerChange(tm)" size="medium">
+                                    <el-radio :label="option.key" v-model="tm.answer" v-on:change="answerChange(tm)" size="medium">
                                         <span v-html="option.value"></span>
-                                    </el-checkbox>
+                                    </el-radio>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div v-else>
+                        <div v-else-if="tm.tx==='Duoxuanti'">
+                            <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.optionsRandom">
+                                <div>
+                                    <div>
+                                        <el-checkbox :true-label="option.key" false-label="" v-model="tm.optionsValues[optionsABC.indexOf(option.key)]" v-on:change="answerChange(tm)" size="medium">
+                                            <span v-html="option.value"></span>
+                                        </el-checkbox>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div v-else>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </el-card>
+        </el-card>
+    </div>
     <div class="py-8"></div>
     <div style="position:fixed;left:0;bottom:0;width:100%;" class="z-2 d-flex justify-content-between align-items-center pb-4 p-3 bg-white  animate__animated animate__fadeInUp">
         <div class="w-50">
             <el-progress status="success" :stroke-width="18" :percentage="utils.formatPercentFloat(answerTotal,tmTotal)"></el-progress>
         </div>
         <div>
-            <el-button v-on:click="utils.closeLayerSelf" v-if="!paper.published"><i class="el-icon-close me-2"></i>退 出</el-button>
             <el-button type="primary" class="bg-light-gradient-top" v-on:click="btnPaperSubmit">
                 <i class="el-icon-upload me-2"></i>提 交
             </el-button>
+            <el-button v-on:click="utils.closeLayerSelf" v-if="!paper.published"><i class="el-icon-close me-2"></i>退 出</el-button>
         </div>
     </div>
 </template>

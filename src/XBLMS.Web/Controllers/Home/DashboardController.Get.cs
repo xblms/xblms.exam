@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DocumentFormat.OpenXml.Office2010.ExcelAc;
+using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using XBLMS.Core.Utils;
 using XBLMS.Models;
@@ -22,14 +24,15 @@ namespace XBLMS.Web.Controllers.Home
             var resultPaper = new ExamPaper();
             var resultMoni = new ExamPaper();
 
-            var paperIds = await _examPaperUserRepository.GetPaperIdsByUser(user.Id, request.IsApp);
-            var (paperTotal, paperList) = await _examPaperRepository.GetListByUserAsync(paperIds, "", 1, 1);
-            var (moniPaperTotal, moniPaperList) = await _examPaperRepository.GetListByUserAsync(paperIds, "", 1, 1, true);
+            var (paperTotal, paperList) = await _examPaperUserRepository.GetListAsync(user.Id, false, request.IsApp, "", "", 1, 1);
+            var (moniPaperTotal, moniPaperList) = await _examPaperUserRepository.GetListAsync(user.Id, true, request.IsApp, "", "", 1, 1);
 
             if (paperTotal > 0)
             {
-                resultPaper = paperList[0];
-                await _examManager.GetPaperInfo(resultPaper, user);
+                var paperUser = paperList[0];
+                var paper = await _examPaperRepository.GetAsync(paperUser.ExamPaperId);
+                await _examManager.GetPaperInfo(paper, user);
+                resultPaper = paper;
             }
             else
             {
@@ -37,8 +40,10 @@ namespace XBLMS.Web.Controllers.Home
             }
             if (moniPaperTotal > 0)
             {
-                resultMoni = moniPaperList[0];
-                await _examManager.GetPaperInfo(resultMoni, user);
+                var paperUser = moniPaperList[0];
+                var paper = await _examPaperRepository.GetAsync(paperUser.ExamPaperId);
+                await _examManager.GetPaperInfo(paper, user);
+                resultMoni = paper;
             }
             else
             {
@@ -46,10 +51,10 @@ namespace XBLMS.Web.Controllers.Home
             }
 
 
-
+            var taskTotal = 0;
             var taskPaperTotal = 0;
-
-            var taskPaperIds = paperIds;
+            var taskPaperList = new List<ExamPaper>();
+            var taskPaperIds = await _examPaperUserRepository.GetPaperIdsByUser(user.Id);
             if (taskPaperIds != null && taskPaperIds.Count > 0)
             {
                 foreach (var paperId in taskPaperIds)
@@ -65,18 +70,45 @@ namespace XBLMS.Web.Controllers.Home
                         else
                         {
                             taskPaperTotal++;
+                            taskTotal++;
+                            await _examManager.GetPaperInfo(paper, user);
+                            taskPaperList.Add(paper);
                         }
                     }
                 }
 
             }
-            var qPaperTotal = await _examQuestionnaireUserRepository.GetTaskCountAsync(user.Id);
-            var assesstantTask = await _examAssessmentUserRepository.GetTaskCountAsync(user.Id);
-
-            var topCer = new ExamCerUser();
-            var (cerTotal, cerList) = await _examCerUserRepository.GetListAsync(user.Id, 1, 1);
+            var taskQList = new List<ExamQuestionnaire>();
+            var (qPaperTotal, qPaperList) = await _examQuestionnaireUserRepository.GetTaskAsync(user.Id);
             if (total > 0)
             {
+                foreach (var item in qPaperList)
+                {
+                    var paper = await _examQuestionnaireRepository.GetAsync(item.ExamPaperId);
+                    await _examManager.GetQuestionnaireInfo(paper, user);
+                    taskQList.Add(paper);
+                    taskTotal++;
+                }
+            }
+
+            var taskAssList = new List<ExamAssessment>();
+            var (assesstantTaskTotal, assesstantTaskList) = await _examAssessmentUserRepository.GetTaskAsync(user.Id);
+            if (assesstantTaskTotal > 0)
+            {
+                foreach (var item in assesstantTaskList)
+                {
+                    var assInfo = await _examAssessmentRepository.GetAsync(item.ExamAssId);
+                    _examManager.GetExamAssessmentInfo(assInfo, item, user);
+                    taskTotal++;
+                    taskAssList.Add(assInfo);
+                }
+            }
+
+            var topCer = new ExamCerUser();
+            var (cerTotal, cerList) = await _examCerUserRepository.GetListAsync(user.Id, 1, 8);
+            if (total > 0)
+            {
+                var cerIndex = 0;
                 foreach (var item in cerList)
                 {
                     var cerInfo = await _examCerRepository.GetAsync(item.CerId);
@@ -108,12 +140,30 @@ namespace XBLMS.Web.Controllers.Home
                     {
                         item.Set("PaperScore", "成绩异常");
                     }
-                    topCer = item;
+                    if (cerIndex == 0)
+                    {
+                        topCer = item;
+                    }
+                    cerIndex++;
                 }
             }
 
 
             var dateStr = $"{DateTime.Now.ToString(DateUtils.FormatStringDateOnlyCN)} {DateTime.Now.ToString("dddd", new System.Globalization.CultureInfo("zh-CN"))}";
+
+
+            var (todayExamTotal, todayExamList) = await _examPaperUserRepository.GetListAsync(user.Id, false, request.IsApp, "today", "", 1, 1);
+            var todayExam = new ExamPaper();
+            if (total > 0)
+            {
+                foreach (var item in todayExamList)
+                {
+                    var paper = await _examPaperRepository.GetAsync(item.ExamPaperId);
+                    await _examManager.GetPaperInfo(paper, user);
+                    todayExam = paper;
+                }
+            }
+
 
             return new GetResult
             {
@@ -138,10 +188,19 @@ namespace XBLMS.Web.Controllers.Home
 
                 TaskPaperTotal = taskPaperTotal,
                 TaskQTotal = qPaperTotal,
-                TaskAssTotal = assesstantTask,
+                TaskAssTotal = assesstantTaskTotal,
 
                 TopCer = topCer,
                 DateStr = dateStr,
+
+                CerList = cerList,
+                TodayExam = todayExam,
+                TaskPaperList = taskPaperList,
+                TaskQList = taskQList,
+                TaskAssList = taskAssList,
+                TaskTotal = taskTotal,
+
+                Version = _settingsManager.Version
             };
         }
     }

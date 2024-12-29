@@ -64,42 +64,11 @@ namespace XBLMS.Web.Controllers.Home
                 });
             }
 
-            var paperTmoniTotal = 0;
-            var paperTotal = 0;
-
-            var paperIds = await _examPaperUserRepository.GetPaperIdsByUser(user.Id, false);
-            if (paperIds != null && paperIds.Count > 0)
-            {
-                foreach (var paperId in paperIds)
-                {
-                    var paper = await _examPaperRepository.GetAsync(paperId);
-                    var myExamTimes = await _examPaperStartRepository.CountAsync(paperId, user.Id);
-                    if (myExamTimes <= 0)
-                    {
-                        if (paper.Moni)
-                        {
-                            paperTmoniTotal++;
-                        }
-                        else
-                        {
-                            paperTotal++;
-                        }
-                    }
-                }
-
-            }
-
-
-            var qPaperTotal = await _examQuestionnaireUserRepository.GetTaskCountAsync(user.Id);
-            var assesstantTask = await _examAssessmentUserRepository.GetTaskCountAsync(user.Id);
-
             return new GetResult
             {
                 User = user,
                 Menus = menus,
-                PaperTotal = paperTotal,
-                QPaperTotal = qPaperTotal,
-                AssTotal = assesstantTask
+                Version = _settingsManager.Version
             };
         }
     }

@@ -148,7 +148,7 @@ var $vue = new Vue({
   data: data,
   methods: methods,
   created: function () {
-    document.title = "竞赛中心";
+    top.document.title = "竞赛中心";
     this.apiGet();
     this.apiGetRoom();
   },

@@ -131,7 +131,7 @@ namespace XBLMS.Core.Repositories
             return (total, submitTotal);
         }
 
-        public async Task<int> GetTaskCountAsync(int userId)
+        public async Task<(int total,List<ExamAssessmentUser> list)> GetTaskAsync(int userId)
         {
             var query = Q.
                 WhereNullOrFalse(nameof(ExamAssessmentUser.Locked)).
@@ -140,7 +140,9 @@ namespace XBLMS.Core.Repositories
                 Where(nameof(ExamAssessmentUser.ExamEndDateTime), ">", DateTime.Now).
                 Where(nameof(ExamAssessmentUser.UserId), userId);
 
-            return await _repository.CountAsync(query);
+            var total= await _repository.CountAsync(query);
+            var list = await _repository.GetAllAsync(query);
+            return (total, list);
         }
     }
 }

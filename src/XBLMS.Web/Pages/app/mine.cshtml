@@ -75,8 +75,13 @@
         </div>
     </div>
 </div>
+<div class="my-8 text-center">
+    <img :src="DEFAULT_LOGO_URL" height="38" class="mb-3" />
+    <div class="text-center">
+        <small>© {{ DOCUMENTTITLE }} <span class="text-warning">v{{ version }}</span></small>
+    </div>
+</div>
 <div class="py-8"></div>
-@await Html.PartialAsync("_PartialAppMenu")
 @section Scripts{
     <script src="/sitefiles/assets/js/app/mine.js" type="text/javascript"></script>
 }

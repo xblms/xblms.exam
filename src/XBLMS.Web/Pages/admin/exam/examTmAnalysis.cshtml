@@ -96,11 +96,9 @@
                 </el-link>
             </template>
         </el-table-column>
-        <el-table-column width="45" align="right">
+        <el-table-column width="100" align="right">
             <template slot-scope="scope">
-                <el-tooltip class="item" effect="dark" placement="top" content="编辑">
-                    <el-link type="primary" icon="el-icon-edit" :underline="false" v-on:click="btnEditClick(scope.row.tmId)"></el-link>
-                </el-tooltip>
+                <el-link type="primary" icon="el-icon-edit" :underline="false" v-on:click="btnEditClick(scope.row.tmId)">编辑</el-link>
             </template>
         </el-table-column>
         @await Html.PartialAsync("_PartialTableEmpty")

@@ -1,12 +1,12 @@
 ﻿@page
 @{ Layout = "_Layout"; }
 
-<el-row :gutter="6">
+<el-row :gutter="0">
     <el-col :span="6">
-        <el-card>
+        <el-card style="border-radius:0;">
             <el-form :size="euiSize">
                 <el-form-item label="">
-                    <el-input placeholder="输入关键字进行过滤"
+                    <el-input placeholder="关键字过滤组织架构"
                               v-model="filterText" prefix-icon="el-icon-search" clearable>
                     </el-input>
                 </el-form-item>
@@ -25,7 +25,7 @@
         </el-card>
     </el-col>
     <el-col :span="18">
-        <el-card>
+        <el-card shadow="never" style="border-radius:0;">
             <el-form :size="euiSize" v-on:submit.native.prevent :inline="true" :model="formInline">
                 <el-form-item label="管理权限">
                     <el-select v-model="formInline.role" placeholder="管理权限">
@@ -75,7 +75,7 @@
             </el-form>
             <el-table ref="administratorsTable"
                       :size="euiSize"
-                      :height="$(window).height()-206"
+                      :height="$(window).height()-208"
                       v-on:selection-change="handleSelectionChange"
                       :data="administrators">
                 <el-table-column type="selection" align="left"

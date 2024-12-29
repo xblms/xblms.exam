@@ -1,0 +1,14 @@
+﻿* {
+ /*   border-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    border-end-end-radius: 0 !important;
+    border-end-start-radius: 0 !important;
+    border-start-end-radius: 0 !important;
+    border-start-start-radius: 0 !important;
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;*/
+}
+.shadowLeft {
+    box-shadow: -10px 0 5px -2px rgba(0, 0, 0, 0.4);
+}

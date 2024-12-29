@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
+using System.Collections.Generic;
 using XBLMS.Configuration;
 using XBLMS.Models;
 using XBLMS.Repositories;
@@ -15,6 +16,7 @@ namespace XBLMS.Web.Controllers.Home
     {
         private const string Route = "dashboard";
 
+        private readonly ISettingsManager _settingsManager;
         private readonly IConfigRepository _configRepository;
         private readonly IAuthManager _authManager;
         private readonly IOrganManager _organManager;
@@ -28,8 +30,10 @@ namespace XBLMS.Web.Controllers.Home
         private readonly IExamCerUserRepository _examCerUserRepository;
 
         private readonly IExamAssessmentUserRepository _examAssessmentUserRepository;
+        private readonly IExamAssessmentRepository _examAssessmentRepository;
 
         public DashboardController(IConfigRepository configRepository,
+            ISettingsManager settingsManager,
             IOrganManager organManager,
             IAuthManager authManager,
             IExamManager examManager,
@@ -40,8 +44,10 @@ namespace XBLMS.Web.Controllers.Home
             IExamQuestionnaireUserRepository examQuestionnaireUserRepository,
             IExamCerRepository examCerRepository,
             IExamCerUserRepository examCerUserRepository,
-            IExamAssessmentUserRepository examAssessmentUserRepository)
+            IExamAssessmentUserRepository examAssessmentUserRepository,
+            IExamAssessmentRepository examAssessmentRepository)
         {
+            _settingsManager = settingsManager;
             _configRepository = configRepository;
             _authManager = authManager;
             _organManager = organManager;
@@ -54,6 +60,7 @@ namespace XBLMS.Web.Controllers.Home
             _examCerRepository = examCerRepository;
             _examCerUserRepository = examCerUserRepository;
             _examAssessmentUserRepository = examAssessmentUserRepository;
+            _examAssessmentRepository = examAssessmentRepository;
         }
 
         public class GetRequest
@@ -89,6 +96,14 @@ namespace XBLMS.Web.Controllers.Home
             public ExamCerUser TopCer { get; set; }
 
             public string DateStr { get; set; }
+            public List<ExamCerUser> CerList { get; set; }
+
+            public ExamPaper TodayExam { get; set; }
+            public List<ExamPaper> TaskPaperList { get; set; }
+            public List<ExamQuestionnaire> TaskQList { get; set; }
+            public List<ExamAssessment> TaskAssList { get; set; }
+            public int TaskTotal { get; set; }
+            public string Version { get; set; }
 
         }
 

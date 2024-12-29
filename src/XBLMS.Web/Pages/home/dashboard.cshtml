@@ -6,289 +6,340 @@
         .el-descriptions-item__label.is-bordered-label {
             width: 180px;
         }
+
+        body {
+            padding: 0;
+            margin: 0;
+            background-color: #ffffff;
+        }
+
+        html {
+            padding: 0;
+            margin: 0;
+            background-color: #ffffff;
+        }
     </style>
 }
-
-<el-card>
-    <el-row :gutter="5">
-        <el-col :span="7" style="text-align:center;">
-            <div class="card rounded-3 card-bordered card-hover border-muted border-1">
-                <div class="d-flex flex-column gap-3">
-                    <div class="bg-cover rounded-0 p-8 z-1 rounded-top-3" :style="{'background-image':'url('+(user.avatarbgUrl || DEFAULT_AVATAR_BG_URL)+')'}">
-                        <div class="py-8"></div>
-                        <div class="py-5"></div>
+<el-card class="rounded-0">
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex flex-row align-items-center">
+            <img :src="DEFAULT_LOGO_URL" class="me-3 avatar-md" />
+            <h2 class="h1 fw-bold m-0 p-0">首 页</h2>
+        </div>
+        <div>
+            <el-dropdown :show-timeout="0" placement="left">
+                <img :src="user.avatarUrl || DEFAULT_AVATAR_URL" class="rounded-circle avatar-lg shadow-lg" />
+                <el-dropdown-menu slot="dropdown">
+                    <div class="d-flex justify-content-between align-items-center px-3">
+                        <button class="btn btn-sm btn-outline-white border-0" v-on:click="btnUserMenuClick('profile')"><i class="el-icon-edit me-2"></i>编辑信息</button>
+                        <button class="btn btn-sm btn-outline-white border-0" v-on:click="btnUserMenuClick('password')"><i class="el-icon-key me-2"></i>修改密码</button>
+                        <button class="btn btn-sm btn-outline-warning border-0" v-on:click="btnUserMenuClick('logout')"><i class="el-icon-switch-button me-2"></i>安全退出</button>
                     </div>
-                    <div class="mt-n8 z-2">
-                        <img :src="user.avatarUrl || DEFAULT_AVATAR_URL" class="img-fluid rounded-pill smooth-shadow-lg avatar-xxl bg-light p-2">
+                </el-dropdown-menu>
+            </el-dropdown>
+        </div>
+    </div>
+</el-card>
+<div>
+    <div class="container mt-8">
+        <div class="bg-cover rounded-5 position-relative shadow-lg bg-white mb-3 p-3" :style="{'background-image':'url('+(user.avatarbgUrl || DEFAULT_AVATAR_BG_URL)+')'}">
+            <div class="align-items-center" :style="{height:(($(window).height()/4))+'px'}">
+            </div>
+            <div class="d-flex align-items-center justify-content-between p-3 rounded-none">
+                <div class="d-flex align-items-end justify-content-between bg-black bg-opacity-50 p-1">
+                    <div class="h2 px-3 py-1 text-white" style="background-color: rgba(0, 0, 0, 0.1);">欢迎回来：）{{user.displayName}}</div>
+                </div>
+            </div>
+            <div class="position-absolute top-0 end-0 p-5">
+                <h2 class="rounded-3 text-white px-3 py-1" style="background-color: rgba(0, 0, 0, 0.1);"><i class="bi bi-calendar4-event me-3"></i>{{ dateStr }}</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-7">
+                <div class="ps-8" v-if="todayExam && todayExam.id>0">
+                    <div class="text-uppercase text-warning fw-semibold p-4 mt-3">
+                        <i class="bi bi-flag-fill me-2"></i>今日考试安排
                     </div>
-                    <div class="d-flex flex-column gap-4 p-3 pb-4">
-                        <div class="d-flex flex-column gap-2">
-                            <div class="fs-3">
-                                <i class="el-icon-s-custom me-2"></i>{{ user.displayName }}
+                    <a class="card bg-primary border-primary" href="javascript:;" v-on:click="btnViewPaperClick(todayExam.id)">
+                        <div class="card-body d-flex justify-content-between align-items-center">
+                            <div class="d-flex flex-column gap-8">
+                                <h4 class="card-title text-white mb-0">{{ todayExam.title }}</h4>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex flex-column gap-1">
+                                        <h1 class="display-4 text-white mb-0">{{ todayExam.examStartDateTimeStr }} 开考</h1>
+                                        <p class="mb-0 text-white" v-if="todayExam.myExamTimes>0">（已参与）</p>
+                                        <p class="mb-0 text-white" v-else>请及时参加</p>
+                                    </div>
+                                </div>
                             </div>
                             <div>
-                                欢迎回来
+                                <i class="bi bi-flag-fill fs-1 text-warning"></i>
                             </div>
                         </div>
+                    </a>
+                </div>
+                <div class="text-center" v-else>
+                    <div class="text-uppercase text-warning fw-semibold pt-5 mt-5">
+                        <i class="bi bi-flag-fill me-2"></i>今日考试安排
+                    </div>
+                    <el-empty image="/sitefiles/assets/images/nodata.svg" image-size="138" description="无安排"></el-empty>
+                </div>
+            </div>
+            <div class="col-5">
+                <div class="text-end">
+                    <apexchart class="pt-3" type="radialBar" :options="passChartOptions" :series="passSeries" height="399"></apexchart>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<el-card class="rounded-0">
+    <div class="row g-5 py-5">
+        <div class="col-xl-4 col-lg-4 col-md-4 col-4">
+            <a class="card border-5 border-top-0 border-bottom-0 card-lift rounded-0" href="javascript:;" v-on:click="btnMoreMenuClick('examPaper')">
+                <div class="d-flex justify-content-between align-items-center card-body">
+                    <div class="ms-3">
+                        <h4 class="mb-1">
+                            <span>累计考试<span class="mx-2 text-success">{{ examTotal }}</span>场</span>
+                        </h4>
+                        <p class="mb-0">
+                            <small class="fw-medium"><span>及格率<span class="ms-2 text-success">{{ examPercent }}<span class="fw-light ms-1">%</span></span></span></small>
+                        </p>
+                    </div>
+                    <div>
+                        <el-progress type="dashboard" :percentage="examPercent" color="#5cb87a" :width="88" :stroke-width="6"></el-progress>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-xl-4 col-lg-4 col-md-4 col-4">
+            <a class="card border-5 border-top-0 border-bottom-0 card-lift rounded-0" href="javascript:;" v-on:click="btnMoreMenuClick('examPaperMoni')">
+                <div class="d-flex justify-content-between align-items-center card-body">
+                    <div class="ms-3">
+                        <h4 class="mb-1">
+                            <span>累计模拟自测<span class="mx-2 text-success">{{ examMoniTotal }}</span>场</span>
+                        </h4>
+                        <p class="mb-0 fs-6">
+                            <small class="fw-medium"><span>及格率<span class="ms-2 text-success">{{ examMoniPercent }}<span class="fw-light ms-1">%</span></span></span></small>
+                        </p>
+                    </div>
+                    <div>
+                        <el-progress type="dashboard" :percentage="examMoniPercent" color="#5cb87a" :width="88" :stroke-width="6"></el-progress>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-xl-4 col-lg-4 col-md-4 col-4">
+            <a class="card border-5 border-top-0 border-bottom-0 card-lift rounded-0" href="javascript:;" v-on:click="btnMoreMenuClick('examPractice')">
+                <div class="d-flex justify-content-between align-items-center card-body">
+                    <div class="ms-3">
+                        <h4 class="mb-1">
+                            <span>累计刷题<span class="mx-2 text-success">{{ practiceAnswerTmTotal }}</span>道</span>
+                        </h4>
+                        <p class="mb-0 fs-6">
+                            <small class="fw-medium"><span>正确率<span class="ms-2 text-success">{{ practiceAnswerPercent }}<span class="fw-light ms-1">%</span></span></span></small>
+                        </p>
+                    </div>
+                    <div>
+                        <el-progress type="dashboard" :percentage="practiceAnswerPercent" color="#5cb87a" :width="88" :stroke-width="6"></el-progress>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</el-card>
+<div>
+    <div class="container mt-8">
+        <div class="card p-5 rounded-5 bg-warning shadow-lg mt-3">
+            <div class="card-body">
+                <div class="task-list">
+                    <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <el-button icon="el-icon-edit" circle v-on:click="btnUserMenuClick('profile')"></el-button>
-                            <el-button icon="el-icon-key" circle v-on:click="btnUserMenuClick('password')"></el-button>
-                            <el-button icon="el-icon-switch-button" type="warning" circle v-on:click="btnUserMenuClick('logout')"></el-button>
+                            <h2 class="mb-0 text-white fw-bold"><i class="bi bi-flag-fill me-2"></i>{{ taskTotal }} 个待办</h2>
+                        </div>
+                    </div>
+                    <div class="task-kanban mt-5" v-if="taskTotal>0">
+                        <div class="row">
+                            <div class="col-3" v-for="taskExam in taskPaperList" v-if="taskPaperList && taskPaperList.length>0">
+                                <a class="card mb-3" href="javascript:;" v-on:click="btnViewPaperClick(taskExam.id)">
+                                    <div class="card-body p-3 d-flex flex-column gap-4 card-lift">
+                                        <div>
+                                            <span class="h5">{{ taskExam.title }}</span>
+                                            <br />
+                                            <el-tag effect="dark" size="mini">考 试</el-tag>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="d-flex align-items-center">
+                                                <div>
+                                                    <span class="fs-6">
+                                                        {{ taskExam.examStartDateTimeStr }} 开考
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <span class="me-2 align-middle">
+                                                    <span class="fw-semibold fs-6">{{ taskExam.userExamTimes }}</span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-3" v-for="taskQ in taskQList" v-if="taskQList && taskQList.length>0">
+                                <a class="card mb-3" href="javascript:;" v-on:click="btnViewQClick(taskQ.id)">
+                                    <div class="card-body p-3 d-flex flex-column gap-4 card-lift">
+                                        <div>
+                                            <span class="h5">{{ taskQ.title }}</span>
+                                            <br />
+                                            <span class="badge bg-warning">问卷调查</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="d-flex align-items-center">
+                                                <div>
+                                                    <span class="fs-6">
+                                                        {{ taskQ.examEndDateTimeStr }} 后过期
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-3" v-for="taskAss in taskAssList" v-if="taskAssList && taskAssList.length>0">
+                                <a class="card mb-3" href="javascript:;" v-on:click="btnViewAssClick(taskAss.id)">
+                                    <div class="card-body p-3 d-flex flex-column gap-4 card-lift">
+                                        <div>
+                                            <span class="h5">{{ taskAss.title }}</span>
+                                            <br />
+                                            <span class="badge bg-warning">测 评</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="d-flex align-items-center">
+                                                <div>
+                                                    <span class="fs-6">
+                                                        {{ taskAss.examEndDateTimeStr }} 后过期
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </el-col>
-        <el-col :span="17">
-            <el-scrollbar class="scrollbar" :style="{ height: ($(window).height()-63) + 'px' }">
-                <div class="px-3 pb-5">
-                    <div class="mb-3">
-                        <div class="row g-3">
-                            <div class="col-xl-6 col-lg-6 col-md-6 col-6">
-                                <apexchart type="radialBar" :options="passChartOptions" :series="passSeries" height="399"></apexchart>
+        </div>
+        <div class="my-8">
+            <div v-if="cerList && cerList.length>0">
+                <div class="text-center">
+                    <h2 class="fw-bold">
+                        <i class="bi bi-journal-bookmark-fill text-warning me-2"></i>获得证书
+                    </h2>
+                </div>
+                <div class="mt-5">
+                    <el-carousel :interval="3000" type="card" height="200px">
+                        <el-carousel-item v-for="cer in cerList" :key="cer.id">
+                            <a href="javascript:;" v-on:click="btnViewCer(cer)"><img :src="cer.cerImg" class="img-fluid w-100"></a>
+                            <div class="mt-1 text-center"><small>{{ cer.name }}</small></div>
+                        </el-carousel-item>
+                    </el-carousel>
+                </div>
+            </div>
+        </div>
+        <div class="mb-8">
+            <div class="bg-gray-300 p-5 rounded-5">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="row text-center">
+                                <div class="col-12">
+                                    <h2 class="fw-bold mt-3">
+                                        刷题练习
+                                    </h2>
+                                    <p class="mb-0 fs-4">共 {{ practiceAllTmTotal }} 道题可以练习</p>
+                                </div>
                             </div>
-                            <div class="col-xl-6 col-lg-6 col-md-6 col-6">
-                                <div class="card card-hover-with-icon border-top border-5 border-light p-3 rounded-3 shadow-lg" style="cursor:default;">
-                                    <div class="card card-hover shadow-lg">
-                                        <div class="d-flex justify-content-between align-items-center p-3">
-                                            <div>
-                                                <el-progress type="dashboard" :percentage="examPercent" color="#5cb87a" :width="60" :stroke-width="4"></el-progress>
-                                            </div>
-                                            <div class="ms-3">
-                                                <h4 class="mb-1">
-                                                    <span>累计考试<span class="mx-2 text-success fs-4">{{ examTotal }}</span>场</span>
-                                                </h4>
-                                                <p class="mb-0 fs-6">
-                                                    <span>及格率<span class="ms-2 text-success fs-4">{{ examPercent }}<span class="fs-6 fw-light ms-1">%</span></span></span>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="card card-hover shadow-lg mt-3">
-                                        <div class="d-flex justify-content-between align-items-center p-3">
-                                            <div>
-                                                <el-progress type="dashboard" :percentage="examMoniPercent" color="#5cb87a" :width="60" :stroke-width="4"></el-progress>
-                                            </div>
-                                            <div class="ms-3">
-                                                <h4 class="mb-1">
-                                                    <span>累计模拟自测<span class="mx-2 text-success fs-4">{{ examMoniTotal }}</span>场</span>
-                                                </h4>
-                                                <p class="mb-0 fs-6">
-                                                    <span>及格率<span class="ms-2 text-success fs-4">{{ examMoniPercent }}<span class="fs-6 fw-light ms-1">%</span></span></span>
-                                                </p>
+                        </div>
+                        <div class="col-12 mt-5">
+                            <div class="row g-5">
+                                <div class="col-4">
+                                    <div class="card rounded-3">
+                                        <div class="card-body">
+                                            <div class="row g-8 align-items-center">
+                                                <div class="col-4 text-center">
+                                                    <el-progress type="dashboard" :percentage="practiceAllPercent" color="#5cb87a" :width="88" :stroke-width="4"></el-progress>
+                                                </div>
+                                                <div class="col-8">
+                                                    <div class="p-2 bg-light w-100 rounded-3">
+                                                        <el-button type="success" plain class="w-100 p-3 rounded-3" v-on:click="btnCreatePracticeClick('All')">
+                                                            <div>
+                                                                <i class="bi bi-fast-forward-circle-fill me-2"></i>快速开始
+                                                            </div>
+                                                            <div class="fs-6 fw-light mt-2">共 {{ practiceAllTmTotal }} 道题</div>
+                                                        </el-button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="card card-hover shadow-lg mt-3">
-                                        <div class="d-flex justify-content-between align-items-center p-3">
-                                            <div>
-                                                <el-progress type="dashboard" :percentage="practiceAnswerPercent" color="#5cb87a" :width="60" :stroke-width="4"></el-progress>
+                                </div>
+                                <div class="col-4">
+                                    <div class="card rounded-3">
+                                        <div class="card-body">
+                                            <div class="row g-8 align-items-center">
+                                                <div class="col-4 text-center">
+                                                    <el-progress type="dashboard" :percentage="practiceCollectPercent" color="#5cb87a" :width="88" :stroke-width="4"></el-progress>
+                                                </div>
+                                                <div class="col-8">
+                                                    <div class="p-2 bg-light w-100 rounded-3">
+                                                        <el-button type="primary" plain class="p-3 w-100 rounded-3" v-on:click="btnCreatePracticeClick('Collect')">
+                                                            <div>
+                                                                <i class="bi bi-person-hearts me-2"></i>收藏练习
+                                                            </div>
+                                                            <div class="fs-6 fw-light mt-2">共 {{ practiceCollectTmTotal }} 道题</div>
+                                                        </el-button>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="ms-3">
-                                                <h4 class="mb-1">
-                                                    <span>累计刷题<span class="mx-2 text-success fs-4">{{ practiceAnswerTmTotal }}</span>道</span>
-                                                </h4>
-                                                <p class="mb-0 fs-6">
-                                                    <span>正确率<span class="ms-2 text-success fs-4">{{ practiceAnswerPercent }}<span class="fs-6 fw-light ms-1">%</span></span></span>
-                                                </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="card rounded-3">
+                                        <div class="card-body">
+                                            <div class="row g-8 align-items-center">
+                                                <div class="col-4 text-center">
+                                                    <el-progress type="dashboard" :percentage="practiceWrongPercent" color="#5cb87a" :width="88" :stroke-width="4"></el-progress>
+                                                </div>
+                                                <div class="col-8">
+                                                    <div class="p-2 bg-light w-100 rounded-3">
+                                                        <el-button type="warning" plain class="p-3 w-100 rounded-3" v-on:click="btnCreatePracticeClick('Wrong')">
+                                                            <div>
+                                                                <i class="bi bi-backspace-reverse me-2"></i>错题练习
+                                                            </div>
+                                                            <div class="fs-6 fw-light mt-2">共 {{ practiceWrongTmTotal }} 道题</div>
+                                                        </el-button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="card card-hover-with-icon border-top border-5 border-light p-3 mb-3" style="cursor:default;">
-                        <el-card shadow="hover">
-                            <div slot="header" class="d-flex justify-content-between align-items-center">
-                                <span class="fw-bold"><i class="el-icon-platform-eleme me-2 text-warning bg-light p-2 card-icon rounded-circle"></i>最近一场考试安排</span>
-                                <el-link :underline="false" v-on:click="btnMoreMenuClick('examPaper')">更多<i class="el-icon-more ms-2"></i></el-link>
-                            </div>
-                            <div class="row align-items-center g-3" v-if="examPaper">
-                                <div class="col">
-                                    <div class="mb-2">
-                                        <el-link :underline="false" v-on:click="btnViewPaperClick(examPaper.id)">
-                                            <span class="fw-bold">{{ examPaper.title }}</span>
-                                        </el-link>
-                                    </div>
-                                    <ul class="list-inline fw-light">
-                                        <li class="list-inline-item fs-5">
-                                            总分：{{ examPaper.totalScore }}
-                                        </li>
-                                        <li class="list-inline-item fs-5">
-                                            及格分：{{ examPaper.passScore }}
-                                        </li>
-                                        <li class="list-inline-item fs-5">
-                                            剩余考试次数：
-                                            <span class="fs-3 text-success fw-bold" v-if="(examPaper.userExamTimes-examPaper.myExamTimes)>0">
-                                                {{ examPaper.userExamTimes-examPaper.myExamTimes }}
-                                            </span>
-                                            <span class="fs-3 text-danger fw-bold" v-else>
-                                                0
-                                            </span>
-                                            /{{ examPaper.userExamTimes }}
-                                        </li>
-                                    </ul>
-                                    <ul class="list-inline fw-light">
-                                        <li class="list-inline-item fs-5">
-                                            <i class="el-icon-date me-2"></i>开考时间：{{ examPaper.examStartDateTimeStr }}
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="col-auto">
-                                    <div class="bg-light p-2 rounded-pill">
-                                        <el-button type="primary" plain icon="el-icon-s-order" class="rounded-pill" v-on:click="btnViewPaperClick(examPaper.id)">详 细</el-button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div v-else>
-                                <el-empty image="/sitefiles/assets/images/nodata.svg" image-size="88" description="暂无考试安排"></el-empty>
-                            </div>
-                        </el-card>
-                    </div>
-                    <div class="card card-hover-with-icon border-top border-5 border-light p-3 mb-3" style="cursor:default;">
-                        <el-card shadow="hover">
-                            <div slot="header" class="d-flex justify-content-between align-items-center">
-                                <span class="fw-bold">
-                                    <i class="el-icon-s-order me-2 text-warning bg-light p-2 card-icon rounded-circle"></i>刷题练习
-                                </span>
-                                <el-link :underline="false" v-on:click="btnMoreMenuClick('examPractice')">更多<i class="el-icon-more ms-2"></i></el-link>
-                            </div>
-                            <div>
-                                <div class="row text-center">
-                                    <div class="col p-3">
-                                        <div class="mb-3">
-                                            <el-progress type="dashboard" :percentage="practiceAllPercent" color="#5cb87a" :width="88" :stroke-width="4"></el-progress>
-                                            <div class="fs-6">正确率</div>
-                                        </div>
-                                        <div class="mb-3 p-2 bg-light w-100 rounded-pill">
-                                            <el-button type="warning" plain class="py-4 w-100 rounded-pill" v-on:click="btnCreatePracticeClick('All')"><i class="bi bi-fast-forward-circle-fill me-2"></i>快速开始</el-button>
-                                        </div>
-                                        <div class="fs-6 fw-light">共<span class="fs-4 fw-bold mx-2">{{ practiceAllTmTotal }}</span>道题</div>
-                                    </div>
-                                    <div class="col p-3">
-                                        <div class="mb-3">
-                                            <el-progress type="dashboard" :percentage="practiceCollectPercent" color="#5cb87a" :width="88" :stroke-width="4"></el-progress>
-                                            <div class="fs-6">正确率</div>
-                                        </div>
-                                        <div class="mb-3 p-2 bg-light w-100 rounded-pill">
-                                            <el-button type="primary" plain class="py-4 w-100 rounded-pill" v-on:click="btnCreatePracticeClick('Collect')"><i class="bi bi-person-hearts me-2"></i>收藏练习</el-button>
-                                        </div>
-                                        <div class="fs-6 fw-light">共<span class="fs-4 fw-bold mx-2">{{ practiceCollectTmTotal }}</span>道题</div>
-                                    </div>
-                                    <div class="col p-3">
-                                        <div class="mb-3">
-                                            <el-progress type="dashboard" :percentage="practiceWrongPercent" color="#5cb87a" :width="88" :stroke-width="4"></el-progress>
-                                            <div class="fs-6">正确率</div>
-                                        </div>
-                                        <div class="mb-3 p-2 bg-light w-100 rounded-pill">
-                                            <el-button type="success" plain class="py-4 w-100 rounded-pill" v-on:click="btnCreatePracticeClick('Wrong')"><i class="bi bi-backspace-reverse me-2"></i>错题练习</el-button>
-                                        </div>
-                                        <div class="fs-6 fw-light">共<span class="fs-4 fw-bold mx-2">{{ practiceWrongTmTotal }}</span>道题</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </el-card>
-                    </div>
-                    <div class="card card-hover-with-icon border-top border-5 border-light p-3 mb-3" style="cursor:default;">
-                        <el-card shadow="hover">
-                            <div slot="header" class="d-flex justify-content-between align-items-center">
-                                <span class="fw-bold"><i class="el-icon-eleme me-2 text-warning bg-light p-2 card-icon rounded-circle"></i>最新一场模拟自测</span>
-                                <el-link :underline="false" v-on:click="btnMoreMenuClick('examPaperMoni')">更多<i class="el-icon-more ms-2"></i></el-link>
-                            </div>
-                            <div class="row align-items-center g-3" v-if="examMoni">
-                                <div class="col">
-                                    <div class="mb-2">
-                                        <el-link :underline="false" v-on:click="btnViewPaperClick(examMoni.id)">
-                                            <span class="fw-bold">{{ examMoni.title }}</span>
-                                        </el-link>
-                                    </div>
-                                    <ul class="list-inline fw-light">
-                                        <li class="list-inline-item fs-5">
-                                            总分：{{ examMoni.totalScore }}
-                                        </li>
-                                        <li class="list-inline-item fs-5">
-                                            及格分：{{ examMoni.passScore }}
-                                        </li>
-                                        <li class="list-inline-item fs-5">
-                                            剩余考试次数：
-                                            <span class="fs-3 text-success fw-bold" v-if="(examMoni.userExamTimes-examMoni.myExamTimes)>0">
-                                                {{ examMoni.userExamTimes-examMoni.myExamTimes }}
-                                            </span>
-                                            <span class="fs-3 text-danger fw-bold" v-else>
-                                                0
-                                            </span>
-                                            /{{ examMoni.userExamTimes }}
-                                        </li>
-                                    </ul>
-                                    <ul class="list-inline fw-light">
-                                        <li class="list-inline-item fs-5">
-                                           <i class="el-icon-date me-2"></i>有效期：{{ examMoni.examStartDateTimeStr }}-{{ examMoni.examEndDateTimeStr }}
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="col-auto">
-                                    <div class="bg-light p-2 rounded-pill">
-                                        <el-button type="primary" plain icon="el-icon-s-order" class="rounded-pill" v-on:click="btnViewPaperClick(examMoni.id)">详 细</el-button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div v-else>
-                                <el-empty image="/sitefiles/assets/images/nodata.svg" image-size="88" description="暂时没有开放的模拟练习"></el-empty>
-                            </div>
-                        </el-card>
-                    </div>
-                    <div class="mb-3">
-                        <div class="card card-hover-with-icon border-top border-3">
-                            <div class="card-body">
-                                <h5 class="card-title d-flex justify-content-between align-items-center">
-                                    <span><i class="bi bi-award-fill me-2 card-icon text-warning p-2"></i>最新获得证书</span>
-                                    <el-link :underline="false" v-on:click="btnMoreMenuClick('examPaperCer')">更多<i class="el-icon-more ms-2"></i></el-link>
-                                </h5>
-                                <div class="mt-4">
-                                    <div class="card card-hover" v-if="topCer && topCer.id>0" v-on:click="btnViewCer(topCer)" style="cursor:pointer;">
-                                        <div class="row g-0">
-                                            <img :src="topCer.cerImg" class="w-100">
-                                        </div>
-                                    </div>
-                                    <div v-else>
-                                        <el-empty image="/sitefiles/assets/images/nodata.svg" image-size="88" description="还没有获得过证书"></el-empty>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="col-12 mt-5 text-center">
+                            <button class="btn btn-outline-primary border-0" v-on:click="btnMoreMenuClick('examPractice')">更多练习<i class="bi bi-three-dots-vertical ms-2"></i></button>
                         </div>
-                    </div>
-                        <div class="card card-hover-with-icon border-top border-5 border-light p-3" style="cursor:default;">
-                        <el-card shadow="hover">
-                            <div class="mb-2 d-flex justify-content-start align-items-center">
-                                <el-avatar icon="el-icon-user-solid" :src="user.avatarUrl || DEFAULT_AVATAR_URL"></el-avatar>
-                                <div class="ms-2">
-                                    <span>个人信息</span>
-                                </div>
-                            </div>
-                            <div>
-                                <el-descriptions title="" border column="1">
-                                    <el-descriptions-item label="账 号">{{ user.userName }}</el-descriptions-item>
-                                    <el-descriptions-item label="姓 名">{{ user.displayName }}</el-descriptions-item>
-                                    <el-descriptions-item label="组 织">{{ user.organNames }}</el-descriptions-item>
-                                    <el-descriptions-item label="手 机">{{ user.mobile }}</el-descriptions-item>
-                                    <el-descriptions-item label="邮 箱">{{ user.email }}</el-descriptions-item>
-                                    <el-descriptions-item label="上次登录时间">{{ user.lastActivityDate }}</el-descriptions-item>
-                                    <el-descriptions-item label="登录次数">{{ user.countOfLogin }}</el-descriptions-item>
-                                </el-descriptions>
-                            </div>
-                        </el-card>
-                        </div>
-               
-                    <div class="my-5 text-center fs-5">
-                        <small>没有了</small>
                     </div>
                 </div>
-            </el-scrollbar>
-        </el-col>
-    </el-row>
+            </div>
+        </div>
+    </div>
+</div>
+<el-card class="rounded-0 py-3 text-center">
+    <small>© {{ DOCUMENTTITLE }} <span class="text-warning">v{{ version }}</span></small>
 </el-card>
-
 @section Scripts{
 <script src="/sitefiles/assets/lib/apexcharts/apexcharts.js" type="text/javascript"></script>
 <script src="/sitefiles/assets/lib/apexcharts/vue-apexcharts.js" type="text/javascript"></script>

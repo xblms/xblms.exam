@@ -20,6 +20,6 @@ namespace XBLMS.Repositories
         Task UpdateExamDateTimeAsync(int assId, DateTime beginDateTime, DateTime endDateTime);
 
         Task<(int total, int submitTotal)> GetCountAsync(int assId);
-        Task<int> GetTaskCountAsync(int userId);
+        Task<(int total, List<ExamAssessmentUser> list)> GetTaskAsync(int userId);
     }
 }

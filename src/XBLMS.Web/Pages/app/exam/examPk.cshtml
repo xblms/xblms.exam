@@ -103,13 +103,14 @@
     </div>
 </div>
 <div class="py-8"></div>
-<div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 animate__animated animate__fadeInUp">
+<div class="py-8"></div>
+<div style="position:fixed;left:0;bottom:68px;width:100%;" class="text-center mb-5 animate__animated animate__fadeInUp">
     <el-button-group class="rounded-0">
         <el-button class="rounded-0" icon="el-icon-trophy" type="primary" v-on:click="btnSwichClick">
             <span v-if="currentPk==0">全部赛事</span>
             <span v-else>我的赛事</span>
         </el-button>
-        <el-button class="rounded-0" v-on:click="location.href=utils.getIndexUrl()" icon="el-icon-back">返 回</el-button>
+        <el-button class="rounded-0" v-on:click="location.href=utils.getRootUrl('dashboard')" icon="el-icon-back">返 回</el-button>
     </el-button-group>
 </div>
 @section Scripts{

@@ -18,6 +18,6 @@ namespace XBLMS.Repositories
         Task UpdateLockedAsync(int paperId, bool locked);
         Task UpdateKeyWordsAsync(int paperId, string keyWords);
         Task UpdateExamDateTimeAsync(int paperId, DateTime beginDateTime, DateTime endDateTime);
-        Task<int> GetTaskCountAsync(int userId);
+        Task<(int total, List<ExamQuestionnaireUser> list)> GetTaskAsync(int userId);
     }
 }

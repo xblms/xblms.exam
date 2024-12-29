@@ -1,15 +1,18 @@
 ﻿@page
 @{ Layout = "_Layout"; }
 
-<el-row :gutter="6">
+<el-row :gutter="0">
     <el-col :span="6">
         @await Html.PartialAsync("_PartialTree")
     </el-col>
     <el-col :span="18">
-        <el-card>
+        <el-card shadow="never" style="border-radius:0;">
             <el-form :inline="true" :size="euiSize">
+                <el-form-item label="题目">
+                    <el-input v-model="formInline.keyword" placeholder="关键字" prefix-icon="el-icon-search" clearable></el-input>
+                </el-form-item>
                 <el-form-item label="">
-                    <el-select v-model="formInline.txId" placeholder="请选择题型" v-on:change="btnSearchClick" clearable>
+                    <el-select v-model="formInline.txId" placeholder="按题型" v-on:change="btnSearchClick" clearable>
                         <el-option v-for="tx in txList"
                                    :key="tx.id"
                                    :label="tx.name"
@@ -17,9 +20,8 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
-
                 <el-form-item label="">
-                    <el-select v-model="formInline.nandu" placeholder="请选择难度" v-on:change="btnSearchClick" clearable>
+                    <el-select style="width:100px;" v-model="formInline.nandu" placeholder="按难度" v-on:change="btnSearchClick" clearable>
                         <el-option v-for="nd in 5"
                                    :key="nd"
                                    :value="nd">
@@ -27,24 +29,19 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
-
                 <el-form-item label="">
-                    <el-select v-model="formInline.isStop" placeholder="请选择状态" v-on:change="btnSearchClick" clearable>
+                    <el-select style="width:100px;" v-model="formInline.isStop" placeholder="按状态" v-on:change="btnSearchClick" clearable>
                         <el-option label="启用" value="false"></el-option>
                         <el-option label="停用" value="true"></el-option>
                     </el-select>
                 </el-form-item>
 
                 <el-form-item label="">
-                    <el-select v-model="formInline.order" placeholder="排序" v-on:change="btnSearchClick" clearable>
+                    <el-select style="width:100px;" v-model="formInline.order" placeholder="排序" v-on:change="btnSearchClick" clearable>
                         <el-option label="难度" value="nandu"></el-option>
                         <el-option label="分数" value="score"></el-option>
                         <el-option label="题型" value="tx"></el-option>
                     </el-select>
-                </el-form-item>
-
-                <el-form-item label="">
-                    <el-input v-model="formInline.keyword" placeholder="关键字" prefix-icon="el-icon-search" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="">
                     <el-select v-model="formInline.tmGroupId" placeholder="题目组" v-on:change="btnSearchClick" clearable>
@@ -74,7 +71,7 @@
                 </el-form-item>
             </el-form>
             <el-table ref="tmTable" :data="tmList" :size="euiSize"
-                      style="width: 100%" :height="$(window).height()-210">
+                      style="width: 100%" :height="$(window).height()-211">
                 <el-table-column type="selection" align="left"
                                  width="28">
                 </el-table-column>

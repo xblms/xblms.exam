@@ -85,15 +85,16 @@ var methods = {
   },
   btnPaperSubmit: function () {
     var $this = this;
-    top.utils.alertWarning({
-      title: '确定提交吗？',
-      callback: function () {
-        let check = $this.checkAnswer();
-        if (check) {
+    let check = $this.checkAnswer();
+    if (check) {
+      top.utils.alertWarning({
+        title: '确定提交吗？',
+        callback: function () {
           $this.apiSubmitPaper();
         }
-      }
-    });
+      });
+    }
+
   },
   tmDidScroll: function (id) {
     var eid = '#tm_' + id;

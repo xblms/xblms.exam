@@ -1,6 +1,6 @@
-<el-card>
-    <div slot="header" class="clearfix">
-        <span>{{ treeName }}</span>
+<el-card style="border-radius:0;">
+    <div slot="header" class="clearfix" style="padding-top:8px;">
+        <span style="font-size:14px;">{{ treeName }}</span>
         <el-tooltip placement="top" manual v-model="treeTopAddPopover">
             <div slot="content" style="width:400px;">
                 <el-card>
@@ -28,7 +28,7 @@
     </div>
     <el-form :size="euiSize">
         <el-form-item label="">
-            <el-input clearable placeholder="分类关键字查询" v-model="treeFilterText" prefix-icon="el-icon-search" clearable>
+            <el-input clearable placeholder="分类关键字查询" v-model="treeFilterText" prefix-icon="el-icon-search">
                 <template slot="append">
                     <el-tooltip content="右侧列表查询是否包含下级" placement="top">
                         <el-checkbox v-model="formInline.treeIsChildren"></el-checkbox>
@@ -37,7 +37,7 @@
             </el-input>
         </el-form-item>
     </el-form>
-    <el-scrollbar class="scrollbar" :style="{height: $(window).height()-175 + 'px'}">
+    <el-scrollbar class="scrollbar" :style="{height: $(window).height()-183 + 'px'}">
         <el-tree class="filter-tree"
                  :data="treeItems" :expand-on-click-node="false"
                  v-on:node-click="treeNodeClick"

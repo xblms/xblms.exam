@@ -16,14 +16,12 @@
 <div>
     <div class="py-5 text-center animate__animated animate__fadeInDown">
         <div class="py-3">
-            <img src="/sitefiles/assets/images/logo.png" height="66" />
+            <img :src="DEFAULT_LOGO_URL" height="66" />
         </div>
     </div>
     <el-card class="box-card rounded-0 mx-3">
-        <div slot="header">
-            <div class="text-center fw-bold">
-                请登录
-            </div>
+        <div class="h1 fw-bold mb-3">
+            登录
         </div>
         <el-alert class="rounded-0 fs-6" v-if="pageAlert" style="margin-bottom: 10px;" :closable="false" :type="pageAlert.type" v-html="pageAlert.title"></el-alert>
         <el-form size="medium" v-on:submit.native.prevent ref="formAccount" :model="form" label-width="0" status-icon>

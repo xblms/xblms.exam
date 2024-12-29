@@ -1,6 +1,68 @@
 @page
 @{ Layout = "_LayoutApp"; }
+@section Styles{
+    <style>
+        html {
+            overflow-x: hidden !important;
+            padding: 0;
+            margin: 0;
+        }
 
+        body {
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+}
+<div style="height:100%;" :style="{height: ($(window).height()) + 'px'}" class="bg-white">
+    <iframe id="homeRightIframe" ref="homeRightIframe" :src="rightUrl" style="width: 100%;height:100%; border: none;" :style="{height: ($(window).height()-10) + 'px'}"></iframe>
+</div>
+<template>
+    <div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center py-3 px-4 bg-white w-100 border-top border-1 border-light">
+        <div class="d-flex align-items-center justify-content-between text-dark">
+            <a class="text-center text-dark lh-1" href="javascript:;" v-on:click="btnAppMenuClick('index')">
+                <div>
+                    <i class="fs-2" :class="appMenuActive==='index'?'bi bi-house-fill fw-bold':'bi bi-house'"></i>
+                </div>
+                <div class="fs-6 mt-1">
+                    首页
+                </div>
+            </a>
+            <a class="text-center text-dark lh-1" href="javascript:;" v-on:click="btnAppMenuClick('exam')">
+                <div>
+                    <i class="fs-2" :class="appMenuActive==='exam'?'bi bi-clipboard-check-fill fw-bold':'bi bi-clipboard-check'"></i>
+                </div>
+                <div class="fs-6 mt-1">
+                    考试
+                </div>
+            </a>
+            <a class="text-center text-dark lh-1" href="javascript:;" v-on:click="btnAppMenuClick('moni')">
+                <div>
+                    <i class="fs-2" :class="appMenuActive==='moni'?'bi bi-clipboard-fill fw-bold':'bi bi-clipboard'"></i>
+                </div>
+                <div class="fs-6 mt-1">
+                    模拟
+                </div>
+            </a>
+            <a class="text-center text-dark lh-1" href="javascript:;" v-on:click="btnAppMenuClick('shuati')">
+                <div>
+                    <i class="fs-2" :class="appMenuActive==='shuati'?'bi bi-clipboard-heart-fill fw-bold':'bi bi-clipboard-heart'"></i>
+                </div>
+                <div class="fs-6 mt-1">
+                    刷题
+                </div>
+            </a>
+            <a class="text-center text-dark lh-1" href="javascript:;" v-on:click="btnAppMenuClick('mine')">
+                <div>
+                    <i class="fs-2" :class="appMenuActive==='mine'?'bi bi-emoji-smile-fill fw-bold':'bi bi-emoji-neutral'"></i>
+                </div>
+                <div class="fs-6 mt-1">
+                    我的
+                </div>
+            </a>
+        </div>
+    </div>
+</template>
 @section Scripts{
     <script src="/sitefiles/assets/js/app/index.js" type="text/javascript"></script>
 }

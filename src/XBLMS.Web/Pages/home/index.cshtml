@@ -2,7 +2,6 @@
 @{ Layout = "_LayoutHome"; }
 @section Styles{
     <link href="/sitefiles/assets/css/menu.css" rel="stylesheet" type="text/css" />
-    <link href="/sitefiles/assets/lib/animate/animate.min.css" rel="stylesheet" type="text/css" />
     <style>
         .el-tabs--border-card > .el-tabs__header .el-tabs__item.is-active {
             color: #6600ff;
@@ -75,159 +74,90 @@
         
         </style>
 }
-<div class="position-relative">
-    <div class="position-absolute top-0 end-0 z-3 d-flex justify-content-between  align-items-center pt-1 me-1">
-        <div>
-            <el-tooltip placement="left-end">
-                <div slot="content">
-                    <div class="p-1">
-                        <el-card>
-                            <div slot="header">
-                                <span>待完成</span>
-                            </div>
-                            <div>
-                                <ul class="list-group lh-2g">
-                                    <li style="cursor:pointer;" class="list-group-item d-flex justify-content-between align-items-center" v-if="paperTotal>0" v-on:click="btnTopMenuClick('examPaper')">
-                                        <span class="me-5">
-                                            <i class="text-warning bi bi-star-half me-2"></i>待参加考试
-                                        </span>
-                                        <span class="badge bg-primary ms-5">{{ paperTotal }}</span>
-                                    </li>
-                                    <li style="cursor:pointer;" class="list-group-item d-flex justify-content-between align-items-center" v-if="qPaperTotal>0" v-on:click="btnTopMenuClick('examQuestionnaire')">
-                                        <span class="me-5">
-                                            <i class="text-warning bi bi-star-half me-2"></i>待填写问卷
-                                        </span>
-                                        <span class="badge bg-primary ms-5">{{ qPaperTotal }}</span>
-                                    </li>
-                                    <li style="cursor:pointer;" class="list-group-item d-flex justify-content-between align-items-center" v-if="assTotal>0" v-on:click="btnTopMenuClick('examAssessment')">
-                                        <span class="me-5">
-                                            <i class="text-warning bi bi-star-half me-2"></i>待填写测评
-                                        </span>
-                                        <span class="badge bg-primary ms-5">{{ assTotal }}</span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </el-card>
-                    </div>
-                </div>
-                <button type="button" class="btn btn-outline-warning btn-sm me-2 rounded-pill border-0 position-relative" v-if="taskTotal>0">
-                    <span class="position-absolute top-0 end-0 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
-                    <span class="mx-1">{{ taskTotal }}</span> 个待办任务<i class="el-icon-arrow-down el-icon--right"></i>
-                </button>
-            </el-tooltip>
-        </div>
-        <div class="me-2">
-            <el-dropdown :show-timeout="0" v-on:command="btnUserMenuClick">
-                <button type="button" class="btn btn-outline-primary btn-sm rounded-pill border-0">{{ user.displayName }}<i class="el-icon-arrow-down el-icon--right"></i></button>
-                <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item command="profile"><i class="el-icon-edit-outline me-2"></i>修改资料</el-dropdown-item>
-                    <el-dropdown-item command="password"><i class="el-icon-key me-2"></i>更改密码</el-dropdown-item>
-                    <el-dropdown-item command="logout"><i class="el-icon-switch-button me-2"></i>退出系统</el-dropdown-item>
-                </el-dropdown-menu>
-            </el-dropdown>
-        </div>
-        <div class="me-1 mt-0">
-            <el-avatar icon="el-icon-user-solid" :src="user.avatarUrl || DEFAULT_AVATAR_URL"></el-avatar>
-        </div>
-    </div>
-    <div id="sidebar" :style="{width: leftWidth + 'px'}" >
-        <div class="title">
-            <span>
-                <span v-if="!isCollapse">
-                    <el-link v-if="!isMobileMenu" :underline="false" v-on:click="isCollapse = true;">
-                        <i class="el-icon-s-fold" style="font-size: 16px;"></i><span style="font-size: 16px;margin-left:8px;">用户中心</span>
-                    </el-link>
-                </span>
-                <span v-else>
-                    <el-link v-if="!isMobileMenu" :underline="false" v-on:click="isCollapse = false;">
-                        <i class="el-icon-s-unfold" style="font-size: 16px;"></i>
-                    </el-link>
-                </span>
+<div id="sidebar" :style="{width: leftWidth + 'px'}">
+    <div class="title">
+        <span>
+            <span v-if="!isCollapse">
+                <el-link v-if="!isMobileMenu" :underline="false" v-on:click="isCollapse = true;">
+                    <i class="el-icon-s-fold" style="font-size: 16px;"></i><span style="font-size: 16px;margin-left:8px;">用户中心</span>
+                </el-link>
             </span>
-        </div>
-        <el-container style="padding-top: 0; padding-bottom: 0; overflow:hidden;">
-            <el-main style="padding: 0; margin: 0;">
-                <el-scrollbar class="scrollbar" :style="{height: ($(window).height() - 150) + 'px'}">
-                    <el-menu v-if="menus"
-                             :default-openeds="defaultOpeneds"
-                             :unique-opened="true"
-                             :collapse="isCollapse"
-                             :default-active="defaultActiveIndex"
-                             :collapse-transition="false"
-                             v-on:select="btnSideMenuClick">
+            <span v-else>
+                <el-link v-if="!isMobileMenu" :underline="false" v-on:click="isCollapse = false;">
+                    <i class="el-icon-s-unfold" style="font-size: 16px;"></i>
+                </el-link>
+            </span>
+        </span>
+    </div>
+    <el-container style="padding-top: 0; padding-bottom: 0; overflow:hidden;">
+        <el-main style="padding: 0; margin: 0;">
+            <el-scrollbar class="scrollbar" :style="{height: ($(window).height() - 150) + 'px'}">
+                <el-menu v-if="menus"
+                         :default-openeds="defaultOpeneds"
+                         :unique-opened="true"
+                         :collapse="isCollapse"
+                         :default-active="defaultActiveIndex"
+                         :collapse-transition="false"
+                         v-on:select="btnSideMenuClick">
 
-                        <template v-for="level1 in menus">
-                            <template v-if="level1.children && level1.children.length > 0">
+                    <template v-for="level1 in menus">
+                        <template v-if="level1.children && level1.children.length > 0">
 
-                                <el-submenu :index="level1.id">
-                                    <template slot="title">
-                                        <i v-if="level1.iconClass" :class="level1.iconClass"></i>
-                                        <span>{{ level1.text }}</span>
-                                    </template>
+                            <el-submenu :index="level1.id">
+                                <template slot="title">
+                                    <i v-if="level1.iconClass" :class="level1.iconClass"></i>
+                                    <span>{{ level1.text }}</span>
+                                </template>
 
-                                    <template v-for="level2 in level1.children">
+                                <template v-for="level2 in level1.children">
 
-                                        <template v-if="level2.children && level2.children.length > 0">
+                                    <template v-if="level2.children && level2.children.length > 0">
 
-                                            <el-submenu :index="level2.id">
-                                                <template slot="title">
-                                                    <i v-if="level2.iconClass" :class="level2.iconClass"></i>
-                                                    <span>{{ level2.text }}</span>
-                                                </template>
-
-                                                <template v-for="level3 in level2.children">
-                                                    <el-menu-item :class="{'is-active': level3.id === defaultActive }" :index="getIndex(level1, level2, level3)">
-                                                        <i v-if="level3.iconClass" :class="level3.iconClass"></i>
-                                                        <span>{{ level3.text }}</span>
-                                                    </el-menu-item>
-                                                </template>
-
-                                            </el-submenu>
-
-                                        </template>
-                                        <template v-else>
-                                            <el-menu-item :class="{'is-active': level2.id === defaultActive }" :index="getIndex(level1, level2)">
+                                        <el-submenu :index="level2.id">
+                                            <template slot="title">
                                                 <i v-if="level2.iconClass" :class="level2.iconClass"></i>
                                                 <span>{{ level2.text }}</span>
-                                            </el-menu-item>
-                                        </template>
-                                    </template>
-                                </el-submenu>
-                            </template>
-                            <template v-else>
-                                <el-menu-item :class="{'is-active': level1.id === defaultActive }" :index="getIndex(level1)">
-                                    <i :class="level1.iconClass"></i>
-                                    <span>{{ level1.text }}</span>
-                                </el-menu-item>
-                            </template>
-                        </template>
-                    </el-menu>
-                </el-scrollbar>
-                <div v-if="!isCollapse" class="mt-3 text-center animate__animated animate__bounce">
-                    <img src="/sitefiles/assets/images/logo.png" height="38" class="logoStyle" />
-                    <div class="mt-2 fs-6 text-gray-300">
-                        {{ DOCUMENTTITLE }}
-                    </div>
-                </div>
-            </el-main>
-        </el-container>
-    </div>
-    <div v-if="tabs && tabs.length > 0" id="tabs" :style="{width: (winWidth - leftWidth) + 'px', marginLeft: leftWidth + 'px',marginTop:8+'px'}">
-        <el-tabs v-on:contextmenu.prevent.native="openContextMenu($event)" v-model="tabName" type="border-card">
-            <el-tab-pane :key="item.name"
-                         v-for="(item, index) in tabs"
-                         :label="item.title"
-                         :name="item.name">
-                <span slot="label"><span v-html="item.title"></span></span>
-                <iframe class="animate__animated animate__fadeInRight" :id="'frm-' + item.name" :src="item.url" style="width: 100%; height: 100%; border: none" :style="{height: (winHeight - 40) + 'px'}"></iframe>
-            </el-tab-pane>
-        </el-tabs>
-    </div>
+                                            </template>
 
-    <ul v-show="contextMenuVisible" :style="{left: contextLeft + 'px', top: contextTop + 'px'}" class="el-dropdown-menu" style="z-index: 2001; position: absolute; display: none;">
-        <li v-on:click="btnContextClick('reload')" class="el-dropdown-menu__item">刷新</li>
-        <li v-on:click="btnContextClick('all')" class="el-dropdown-menu__item">关闭其他</li>
-    </ul>
+                                            <template v-for="level3 in level2.children">
+                                                <el-menu-item :class="{'is-active': level3.id === defaultActive }" :index="getIndex(level1, level2, level3)">
+                                                    <i v-if="level3.iconClass" :class="level3.iconClass"></i>
+                                                    <span>{{ level3.text }}</span>
+                                                </el-menu-item>
+                                            </template>
+
+                                        </el-submenu>
+
+                                    </template>
+                                    <template v-else>
+                                        <el-menu-item :class="{'is-active': level2.id === defaultActive }" :index="getIndex(level1, level2)">
+                                            <i v-if="level2.iconClass" :class="level2.iconClass"></i>
+                                            <span>{{ level2.text }}</span>
+                                        </el-menu-item>
+                                    </template>
+                                </template>
+                            </el-submenu>
+                        </template>
+                        <template v-else>
+                            <el-menu-item :class="{'is-active': level1.id === defaultActive }" :index="getIndex(level1)">
+                                <i :class="level1.iconClass"></i>
+                                <span>{{ level1.text }}</span>
+                            </el-menu-item>
+                        </template>
+                    </template>
+                </el-menu>
+            </el-scrollbar>
+            <div v-if="!isCollapse" class="mt-3 text-center animate__animated animate__bounce">
+                <img :src="DEFAULT_LOGO_URL" height="38" class="logoStyle" />
+                <div class="mt-2 fs-6 text-gray-300">
+                    {{ DOCUMENTTITLE }}
+                </div>
+            </div>
+        </el-main>
+    </el-container>
+</div>
+<div class="rounded-0 border-5 border-primary" v-if="tabs && tabs.length > 0" id="tabs" :style="{width: (winWidth - leftWidth) + 'px', marginLeft: leftWidth + 'px'}">
+    <iframe class="rounded-0" :id="'frm-' + tabs[0].name" :src="tabs[0].url" style="width: 100%; height: 100%; border: none" :style="{height: (winHeight) + 'px'}"></iframe>
 </div>
 
 @section Scripts{

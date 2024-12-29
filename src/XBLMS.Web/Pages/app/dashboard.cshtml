@@ -15,9 +15,13 @@
         }
     </style>
 }
-<div class="bg-gradient-mix-shade py-8 px-3 text-white text-center rounded-0">
+<div class="bg-cover py-8 px-3 text-white text-center rounded-0" :style="{'background-image':'url('+(user.avatarbgUrl || DEFAULT_AVATAR_BG_URL)+')'}">
     <div class="py-2"></div>
-    <div class="pb-1"><span class="fs-6"><i class="bi bi-calendar-event me-2"></i>{{ dateStr }}</span></div>
+    <div class="pb-1">
+        <span class="text-white bg-black bg-opacity-10 px-2 py-1">
+            <span class="fs-6 text-white px-3 py-1" style="background-color: rgba(0, 0, 0, 0.1);"><i class="bi bi-calendar-event me-2"></i>{{ dateStr }}</span>
+        </span>
+    </div>
 </div>
 <div class="p-3 animate__animated animate__zoomIn">
     <div class="mt-n8">
@@ -29,14 +33,44 @@
         </div>
     </div>
 </div>
-<div class="p-3">
-    <div class="card rounded-0 mb-3 shadow-lg" v-on:click="top.$vue.btnAppMenuClick('exam')">
-        <div class="card-body text-center">
-            <div class="mb-2">
-              <i class="bi bi-journal-medicalme-2 text-warning"></i>
-                累计考试<span class="text-primary fw-bold mx-2 fs-3">{{ examTotal }}</span>场
+<div class="text-uppercase text-warning fw-semibold mt-5 mb-2 text-center">
+    <i class="bi bi-flag-fill me-2"></i>今日考试
+</div>
+<div class="card bg-primary m-3 shadow-lg" v-if="todayExam && todayExam.id>0" v-on:click="btnViewPaperClick(todayExam.id)">
+    <div class="card-body text-center text-white">
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="mb-1">
+                    {{ todayExam.title }}
+                </div>
+                <div>
+                    <span class="mb-0" v-if="todayExam.myExamTimes>0">
+                        <i class="bi bi-person-check-fill me-2"></i>已参与
+                    </span>
+                    <span class="mb-0" v-else>请及时参加</span>
+                </div>
             </div>
-            <div class="mt-3">
+        </div>
+        <div>
+            <span class="fs-3 text-warning fw-bold">{{ todayExam.examStartDateTimeStr }} </span><span class="fs-3">开考</span>
+        </div>
+    </div>
+</div>
+<div class="card m-3 shadow-lg" v-else>
+    <div class="card-body">
+        <div class="text-center">
+            <small><i class="bi bi-clipboard me-2"></i>无安排</small>
+        </div>
+    </div>
+</div>
+<div class="p-3">
+    <div class="rounded-0 mb-3" v-on:click="top.$vue.btnAppMenuClick('exam')">
+        <div class="text-center">
+            <div class="m-0">
+              <i class="bi bi-journal-medicalme-2 text-warning"></i>
+                累计考试<span class="text-primary fw-bold mx-2">{{ examTotal }}</span>场次
+            </div>
+            <div class="m-0">
                 <apexchart height="380" type="radialBar" :options="passChartOptions" :series="passSeries"></apexchart>
             </div>
         </div>
@@ -44,7 +78,7 @@
     <div class="mb-3">
         <div class="row g-3">
             <div class="col-xl-6 col-lg-6 col-md-6 col-6">
-                <div class="card rounded-0 border-start-0 border-top-0 border-end-0 border-5 border-success card-hover-with-icon shadow-lg" v-on:click="btnExamMoniMoreMenuClick">
+                <div class="card rounded-0 border-start-0 border-bottom-0 border-end-0 border-5 border-primary card-hover-with-icon shadow-lg" v-on:click="btnMoreMenuClick('moni')">
                     <div class="card-body d-flex align-items-center justify-content-between py-3">
                         <div>
                             <i class="bi bi-journals text-warning fs-3"></i>
@@ -59,7 +93,7 @@
                 </div>
             </div>
             <div class="col-xl-6 col-lg-6 col-md-6 col-6">
-                <div class="card rounded-0 border-start-0 border-end-0 border-top-0 border-5 border-success card-hover-with-icon shadow-lg" v-on:click="btnShuatiMoreMenuClick">
+                <div class="card rounded-0 border-start-0 border-end-0 border-bottom-0 border-5 border-primary card-hover-with-icon shadow-lg" v-on:click="btnMoreMenuClick('shuati')">
                     <div class="card-body d-flex align-items-center justify-content-between py-3">
                         <div>
                             <i class="bi bi-journal-check text-success fs-3"></i>
@@ -75,10 +109,90 @@
             </div>
         </div>
     </div>
+    <div class="card bg-warning shadow-lg mt-5 mb-2">
+        <div class="card-body">
+            <div class="task-list">
+                <div class="text-center mb-3">
+                    <div>
+                        <h2 class="mb-0 text-white fw-bold"><i class="bi bi-flag-fill me-2"></i>{{ taskTotal }} 个待办</h2>
+                    </div>
+                </div>
+                <div class="task-kanban mt-3" v-if="taskTotal>0">
+                    <div class="row">
+                        <div class="col-12" v-for="taskExam in taskPaperList" v-if="taskPaperList && taskPaperList.length>0">
+                            <a class="card mb-3 rounded-0" href="javascript:;" v-on:click="btnViewPaperClick(taskExam.id)">
+                                <div class="card-body p-3 d-flex flex-column gap-4 card-lift">
+                                    <div>
+                                        <span class="h5">{{ taskExam.title }}</span>
+                                        <br />
+                                        <el-tag effect="dark" size="mini">考 试</el-tag>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="d-flex align-items-center">
+                                            <div>
+                                                <span class="fs-6">
+                                                    {{ taskExam.examStartDateTimeStr }} 开考
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <span class="me-2 align-middle">
+                                                <span class="fw-semibold fs-6">{{ taskExam.userExamTimes }}</span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-12" v-for="taskQ in taskQList" v-if="taskQList && taskQList.length>0">
+                            <a class="card mb-3 rounded-0" href="javascript:;" v-on:click="btnViewQClick(taskQ.id)">
+                                <div class="card-body p-3 d-flex flex-column gap-4 card-lift">
+                                    <div>
+                                        <span class="h5">{{ taskQ.title }}</span>
+                                        <br />
+                                        <span class="badge bg-warning">问卷调查</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="d-flex align-items-center">
+                                            <div>
+                                                <span class="fs-6">
+                                                    {{ taskQ.examEndDateTimeStr }} 后过期
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-12" v-for="taskAss in taskAssList" v-if="taskAssList && taskAssList.length>0">
+                            <a class="card mb-3 rounded-0" href="javascript:;" v-on:click="btnViewAssClick(taskAss.id)">
+                                <div class="card-body p-3 d-flex flex-column gap-4 card-lift">
+                                    <div>
+                                        <span class="h5">{{ taskAss.title }}</span>
+                                        <br />
+                                        <span class="badge bg-warning">测 评</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="d-flex align-items-center">
+                                            <div>
+                                                <span class="fs-6">
+                                                    {{ taskAss.examEndDateTimeStr }} 后过期
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="p-3 pb-2 mt-4">
         <h5 class="border-start border-5 border-primary ps-2 d-flex justify-content-between align-items-center">
             <span>最新考试安排</span>
-            <el-link :underline="false" v-on:click="btnExamMoreMenuClick">更多<i class="el-icon-more ms-2"></i></el-link>
+            <el-link :underline="false" v-on:click="btnMoreMenuClick('exam')">更多<i class="el-icon-more ms-2"></i></el-link>
         </h5>
     </div>
     <div class="card rounded-0 mb-3 shadow-lg" v-if="examPaper" v-on:click="btnViewPaperClick(examPaper.id)">
@@ -126,7 +240,7 @@
             <div class="text-center py-5 text-light">
                 <i class="bi bi-trophy-fill fs-2 text-warning"></i>
                 <div class="mt-3">
-                    <span class="text-light bg-dark px-3 py-2 fs-6 rounded-0">答题竞赛</span>
+                    <span class="text-light px-3 py-1 fs-6 rounded-0" style="background-color: rgba(0, 0, 0, 0.2);">答题竞赛</span>
                 </div>
             </div>
         </div>
@@ -134,7 +248,7 @@
     <div class="p-3 pb-2 mt-4">
         <h5 class="border-start border-5 border-primary ps-2 d-flex justify-content-between align-items-center">
             <span>刷题练习</span>
-            <el-link :underline="false" v-on:click="btnShuatiMoreMenuClick">更多<i class="el-icon-more ms-2"></i></el-link>
+            <el-link :underline="false" v-on:click="btnMoreMenuClick('shuati')">更多<i class="el-icon-more ms-2"></i></el-link>
         </h5>
     </div>
     <div class="card rounded-0 mb-3 shadow-lg">
@@ -179,7 +293,7 @@
     <div class="p-3 pb-2 mt-4">
         <h5 class="border-start border-5 border-primary ps-2 d-flex justify-content-between align-items-center">
             <span>最新模拟测试</span>
-            <el-link :underline="false" v-on:click="btnExamMoniMoreMenuClick">更多<i class="el-icon-more ms-2"></i></el-link>
+            <el-link :underline="false" v-on:click="btnMoreMenuClick('moni')">更多<i class="el-icon-more ms-2"></i></el-link>
         </h5>
     </div>
     <div class="card rounded-0 mb-3 shadow-lg" v-if="examMoni" v-on:click="btnViewPaperClick(examMoni.id)">
@@ -242,51 +356,14 @@
         </div>
     </div>
     <div class="my-8 text-center">
-        <small>没有了</small>
+        <img :src="DEFAULT_LOGO_URL" height="38" class="mb-3" />
+        <div class="text-center">
+            <small>© {{ DOCUMENTTITLE }} <span class="text-warning">v{{ version }}</span></small>
+        </div>
     </div>
 </div>
 
 <div class="py-8"></div>
-@await Html.PartialAsync("_PartialAppMenu")
-<div style="position:fixed;right:0;top:80%;" class="animate__animated animate__fadeInRightBig" v-if="taskTotal>0">
-    <button type="button" class="btn btn-dark rounded-start-pill" v-on:click="taskDialogVisible=true">
-        <i class="el-icon-star-off text-warning"></i><span class="mx-2 text-light">{{ taskTotal }}</span>
-    </button>
-</div>
-<template>
-    <el-drawer :title="taskTotal+' 个待办'"
-               size="50%"
-               :visible.sync="taskDialogVisible"
-               direction="btt">
-        <div class="text-center p-2">
-            <div class="card rounded-0">
-                <div class="card-body">
-                    <div class="mb-3" v-if="taskPaperTotal>0">
-                        <div class="d-flex justify-content-between align-items-center" v-on:click="btnExamMoreMenuClick">
-                            <span><i class="bi bi-star-half me-2 text-warning"></i>剩余<span class="text-danger mx-2">{{ taskPaperTotal }}</span>份试卷未参考</span>
-                            <span><i class="el-icon-arrow-right"></i></span>
-                        </div>
-                    </div>
-                    <div class="mb-3" v-if="taskQTotal>0">
-                        <div class="d-flex justify-content-between align-items-center" v-on:click="btnAppMenuClick('wenjuan')">
-                            <span><i class="bi bi-star-half me-2 text-warning"></i>剩余<span class="text-danger mx-2">{{ taskQTotal }}</span>份问卷未填写</span>
-                            <span><i class="el-icon-arrow-right"></i></span>
-                        </div>
-                    </div>
-                    <div class="mb-3" v-if="taskAssTotal>0">
-                        <div class="d-flex justify-content-between align-items-center" v-on:click="btnAssMoreMenuClick">
-                            <span><i class="bi bi-star-half me-2 text-warning"></i>剩余<span class="text-danger mx-2">{{ taskAssTotal }}</span>份测评未填写</span>
-                            <span><i class="el-icon-arrow-right"></i></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="mt-3">
-                <el-button class="rounded-0" icon="el-icon-close" v-on:click="taskDialogVisible=false">关 闭</el-button>
-            </div>
-        </div>
-    </el-drawer>
-</template>
 @section Scripts{
     <script src="/sitefiles/assets/lib/apexcharts/apexcharts.js" type="text/javascript"></script>
     <script src="/sitefiles/assets/lib/apexcharts/vue-apexcharts.js" type="text/javascript"></script>

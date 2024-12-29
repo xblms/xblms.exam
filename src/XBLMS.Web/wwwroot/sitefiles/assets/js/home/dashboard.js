@@ -7,7 +7,7 @@ var data = utils.init({
   passSeries: [0],
   passChartOptions: {
     chart: {
-      title:'testament',
+      title: 'testament',
       type: 'radialBar',
       toolbar: {
         show: false
@@ -52,14 +52,14 @@ var data = utils.init({
             offsetY: -20,
             show: true,
             color: '#ff6a00',
-            fontSize: '16px'
+            fontSize: '18px'
           },
           value: {
             formatter: function (val) {
               return parseInt(val) + '%';
             },
             color: '#000',
-            fontSize: '36px',
+            fontSize: '28px',
             show: true,
           }
         }
@@ -93,8 +93,15 @@ var data = utils.init({
   examMoni: null,
 
   topCer: null,
+  dateStr: null,
 
-
+  cerList: null,
+  todayExam: null,
+  taskPaperList: null,
+  taskQList: null,
+  taskAssList: null,
+  taskTotal: 0,
+  version: 'v8.0'
 });
 
 var methods = {
@@ -129,6 +136,16 @@ var methods = {
       $this.examMoni = res.examMoni;
 
       $this.topCer = res.topCer;
+      $this.dateStr = res.dateStr;
+
+      $this.cerList = res.cerList;
+      $this.todayExam = res.todayExam;
+      $this.taskPaperList = res.taskPaperList;
+      $this.taskQList = res.taskQList;
+      $this.taskAssList = res.taskAssList;
+      $this.taskTotal = res.taskTotal;
+
+      $this.version = res.version;
 
       setTimeout(function () {
         $this.passSeries = [100];
@@ -136,7 +153,7 @@ var methods = {
 
       setTimeout(function () {
         $this.passSeries = [res.allPercent];
-      },2000);
+      }, 2000);
 
     }).catch(function (error) {
       utils.error(error);
@@ -205,6 +222,32 @@ var methods = {
       url: utils.getExamUrl('examPracticing', { id: id }),
       width: "68%",
       height: "88%",
+      end: function () {
+        $this.apiGet();
+      }
+    });
+  },
+  btnViewAssClick: function (id) {
+    var $this = this;
+    top.utils.openLayer({
+      title: false,
+      closebtn: 0,
+      url: utils.getExamUrl('examAssessmenting', { id: id }),
+      width: "100%",
+      height: "100%",
+      end: function () {
+        $this.apiGet();
+      }
+    });
+  },
+  btnViewQClick: function (id) {
+    var $this = this;
+    top.utils.openLayer({
+      title: false,
+      closebtn: 0,
+      url: utils.getExamUrl('examQuestionnairing', { id: id }),
+      width: "100%",
+      height: "100%",
       end: function () {
         $this.apiGet();
       }

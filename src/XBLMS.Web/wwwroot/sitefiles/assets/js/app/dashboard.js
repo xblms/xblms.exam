@@ -90,7 +90,6 @@ var data = utils.init({
   examPaper: null,
   examMoni: null,
 
-  taskTotal: 0,
   taskPaperTotal: 0,
   taskQTotal: 0,
   taskDialogVisible: false,
@@ -99,7 +98,12 @@ var data = utils.init({
   topCer: null,
   dateStr: '',
 
-  appMenuActive: "index"
+  taskPaperList: null,
+  taskQList: null,
+  taskAssList: null,
+  taskTotal: 0,
+  todayExam: null,
+  version: null
 
 });
 
@@ -139,8 +143,15 @@ var methods = {
       $this.taskPaperTotal = res.taskPaperTotal;
       $this.taskQTotal = res.taskQTotal;
       $this.taskAssTotal = res.taskAssTotal;
-      $this.taskTotal = $this.taskPaperTotal + $this.taskQTotal + $this.taskAssTotal;
 
+      $this.taskPaperList = res.taskPaperList;
+      $this.taskQList = res.taskQList;
+      $this.taskAssList = res.taskAssList;
+      $this.taskTotal = res.taskTotal;
+
+      $this.todayExam = res.todayExam;
+
+      $this.version = res.version;
       setTimeout(function () {
         $this.passSeries = [100];
       }, 1000);
@@ -155,15 +166,6 @@ var methods = {
       utils.loading($this, false);
     });
   },
-  btnExamMoreMenuClick: function () {
-    location.href = utils.getExamUrl("examPaper");
-  },
-  btnExamMoniMoreMenuClick: function () {
-    location.href = utils.getExamUrl("examPaperMoni");
-  },
-  btnShuatiMoreMenuClick: function () {
-    location.href = utils.getExamUrl("examPractice");
-  },
   btnPkMoreMenuClick: function () {
     location.href = utils.getExamUrl("examPk");
   },
@@ -171,7 +173,7 @@ var methods = {
     location.href = utils.getExamUrl("examAssessment");
   },
   btnMoreMenuClick: function (command) {
-    top.$vue.btnTopMenuClick(command);
+    top.$vue.btnAppMenuClick(command);
   },
   btnCreatePracticeClick: function (practiceType) {
     if (practiceType === 'All') {
@@ -179,7 +181,7 @@ var methods = {
         this.apiCreatePractice(practiceType);
       }
       else {
-        utils.error("没有题目可以练习");
+        utils.notifyError("没有题目可以练习");
       }
     }
     if (practiceType === 'Collect') {
@@ -187,7 +189,7 @@ var methods = {
         this.apiCreatePractice(practiceType);
       }
       else {
-        utils.error("没有题目可以练习");
+        utils.notifyError("没有题目可以练习");
       }
     }
     if (practiceType === 'Wrong') {
@@ -195,7 +197,7 @@ var methods = {
         this.apiCreatePractice(practiceType);
       }
       else {
-        utils.error("没有题目可以练习");
+        utils.notifyError("没有题目可以练习");
       }
     }
   },
@@ -233,6 +235,32 @@ var methods = {
       }
     });
   },
+  btnViewAssClick: function (id) {
+    var $this = this;
+    top.utils.openLayer({
+      title: false,
+      closebtn: 0,
+      url: utils.getExamUrl('examAssessmenting', { id: id }),
+      width: "100%",
+      height: "100%",
+      end: function () {
+        $this.apiGet();
+      }
+    });
+  },
+  btnViewQClick: function (id) {
+    var $this = this;
+    top.utils.openLayer({
+      title: false,
+      closebtn: 0,
+      url: utils.getExamUrl('examQuestionnairing', { id: id }),
+      width: "100%",
+      height: "100%",
+      end: function () {
+        $this.apiGet();
+      }
+    });
+  },
   btnViewPaperClick: function (id) {
     var $this = this;
     top.utils.openLayer({
@@ -246,26 +274,15 @@ var methods = {
       }
     });
   },
-  btnAppMenuClick: function (common) {
-    if (common === 'index') {
-      location.href = utils.getIndexUrl();
-    }
-    if (common === 'exam') {
-      location.href = utils.getExamUrl("examPaper");
-    }
-    if (common === 'wenjuan') {
-      location.href = utils.getExamUrl("examQuestionnaire");
-    }
-    if (common === 'mine') {
-      location.href = utils.getRootUrl('mine');
-    }
-  },
   btnViewCer: function (row) {
     top.utils.openLayerPhoto({
       title: row.name,
       id: row.id,
       src: row.cerImg + '?r=' + Math.random()
     })
+  },
+  setDocumentTitle: function () {
+    top.document.title = "首页";
   }
 };
 Vue.component("apexchart", {
@@ -276,7 +293,7 @@ var $vue = new Vue({
   data: data,
   methods: methods,
   created: function () {
-    document.title = "首页";
+    this.setDocumentTitle();
     this.apiGet();
   },
 });

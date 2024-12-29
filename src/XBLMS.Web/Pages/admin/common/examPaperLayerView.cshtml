@@ -15,7 +15,7 @@
 }
 <div class="px-2">
     <el-row :gutter="18">
-        <el-col :span="4">
+        <el-col :span="6">
             <el-card>
                 <div slot="header" class="clearfix">
                     <span>题目导航</span>
@@ -36,7 +36,7 @@
                 </div>
             </el-card>
         </el-col>
-        <el-col :span="16">
+        <el-col :span="14">
             <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-18) + 'px' }" ref="answerScrollbar">
                 <div class="px-5">
                     <div class="text-center mb-1"><h2>{{ paper.title }}</h2></div>
@@ -50,10 +50,10 @@
                                 <span>{{ tx.txIndex }}、{{tx.txName}}(共{{tx.tmTotal}}题，共{{tx.scoreTotal}}分)</span>
                             </div>
                             <div>
-                                <div class="mb-3" v-for="(tm,tmIndex) in tx.tmList">
+                                <el-card class="mb-3" v-for="(tm,tmIndex) in tx.tmList">
                                     <div :id="'tm_'+tm.id">
                                         <div class="mb-3 d-flex justify-content-start  align-items-start">
-                                            <div>{{ tm.tmIndex }}、</div>
+                                            <div>{{ tm.tmIndex }}.</div>
                                             <div v-if="tm.baseTx==='Tiankongti'">
                                                 <span v-if="tm.titleList && tm.titleList.length>0">
                                                     <span v-for="tmContent in tm.titleList">
@@ -124,7 +124,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </el-card>
                             </div>
                         </div>
                     </div>
@@ -132,21 +132,19 @@
             </el-scrollbar>
         </el-col>
         <el-col :span="4">
-            <el-card>
-                <el-select v-model="curRandomId" v-on:change="selectChangeRandomConfig" class="w-100 mb-3" v-if="randomIds && randomIds.length>1">
-                    <el-option v-for="(item,configIndex) in randomIds"
-                               :key="item"
-                               :value="item" :label="'第'+ (configIndex+1) +'套'">
-                    </el-option>
-                </el-select>
-                <div>
-                    <el-button icon="el-icon-download" v-on:click="btnExportWordClick" class="w-100 py-5 mb-3">导出Word</el-button>
-                </div>
-                <div>
-                    <el-button icon="el-icon-download" v-on:click="btnExportWordZipClick" class="w-100 py-5 mb-3" v-if="randomIds && randomIds.length>1">Word打包</el-button>
-                </div>
-            </el-card>
-            <div class="mt-3">
+            <el-select v-model="curRandomId" v-on:change="selectChangeRandomConfig" class="w-100 mb-3" v-if="randomIds && randomIds.length>1">
+                <el-option v-for="(item,configIndex) in randomIds"
+                           :key="item"
+                           :value="item" :label="'第'+ (configIndex+1) +'套'">
+                </el-option>
+            </el-select>
+            <div>
+                <el-button icon="el-icon-download" v-on:click="btnExportWordClick" class="w-100 py-5 mb-3">导出Word</el-button>
+            </div>
+            <div>
+                <el-button icon="el-icon-download" v-on:click="btnExportWordZipClick" class="w-100 py-5 mb-3" v-if="randomIds && randomIds.length>1">Word打包</el-button>
+            </div>
+            <div>
                 <el-button v-on:click="utils.closeTopLeft" icon="el-icon-close" class="w-100 py-5">退出预览</el-button>
             </div>
         </el-col>

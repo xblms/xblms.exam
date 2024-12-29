@@ -1,9 +1,8 @@
 var $url = '/index';
 
-
 var data = utils.init({
   user: null,
-  appMenuActive: "mine"
+  version: null
 });
 
 var methods = {
@@ -14,26 +13,13 @@ var methods = {
       var res = response.data;
       if (res.user) {
         $this.user = res.user;
+        $this.version = res.version;
       }
     }).catch(function (error) {
       utils.error(error);
     }).then(function () {
       utils.loading($this, false);
     });
-  },
-  btnAppMenuClick: function (common) {
-    if (common === 'index') {
-      location.href = utils.getIndexUrl();
-    }
-    if (common === 'exam') {
-      location.href = utils.getExamUrl("examPaper");
-    }
-    if (common === 'wenjuan') {
-      location.href = utils.getExamUrl("examQuestionnaire");
-    }
-    if (common === 'mine') {
-      location.href = utils.getRootUrl('mine');
-    }
   },
   btnTab: function (common) {
 
@@ -78,7 +64,7 @@ var methods = {
     }
   },
   setDocumentTitle: function () {
-    document.title = "用户中心";
+    top.document.title = "我的";
   }
 };
 
