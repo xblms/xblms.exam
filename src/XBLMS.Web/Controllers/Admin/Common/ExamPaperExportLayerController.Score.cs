@@ -81,15 +81,15 @@ namespace XBLMS.Web.Controllers.Admin.Common
 
             wordContent.Append("<table style='width:100%;border-collapse:collapse;'>");
             wordContent.Append("<tr>");
-            wordContent.Append($"<td style='padding:8px;text-align:center;font-weight:bold;'>题号</td>");
+            wordContent.Append($"<td style='padding:8px;text-align:center;font-weight:bold;border:1px solid #000000;'>题号</td>");
             for (var i = 0; i < configs.Count; i++)
             {
-                wordContent.Append($"<td style='padding:8px;text-align:center;font-weight:bold;'>{StringUtils.ParseNumberToChinese(i + 1)}</td>");
+                wordContent.Append($"<td style='padding:8px;text-align:center;font-weight:bold;border:1px solid #000000;'>{StringUtils.ParseNumberToChinese(i + 1)}</td>");
             }
-            wordContent.Append($"<td style='padding:8px;text-align:center;font-weight:bold;'>总分</td>");
+            wordContent.Append($"<td style='padding:8px;text-align:center;font-weight:bold;border:1px solid #000000;'>总分</td>");
             wordContent.Append("</tr>");
             wordContent.Append("<tr>");
-            wordContent.Append($"<td style='padding:8px;text-align:center;font-weight:bold;'>得分</td>");
+            wordContent.Append($"<td style='padding:8px;text-align:center;font-weight:bold;border:1px solid #000000;'>得分</td>");
             for (var i = 0; i < configs.Count; i++)
             {
                 decimal txTotalScore = 0;
@@ -102,9 +102,9 @@ namespace XBLMS.Web.Controllers.Admin.Common
                         txTotalScore += answer.Score;
                     }
                 }
-                wordContent.Append($"<td style='padding:8px;text-align:center;'>{txTotalScore}</td>");
+                wordContent.Append($"<td style='padding:8px;text-align:center;border:1px solid #000000;'>{txTotalScore}</td>");
             }
-            wordContent.Append($"<td style='padding:8px;text-align:center;'>{start.Score}</td>");
+            wordContent.Append($"<td style='padding:8px;text-align:center;border:1px solid #000000;'>{start.Score}</td>");
             wordContent.Append("</tr>");
             wordContent.Append("</table>");
 
@@ -171,15 +171,15 @@ namespace XBLMS.Web.Controllers.Admin.Common
 
                 wordContent.Append("<table style='width:100%;border-collapse:collapse;'>");
                 wordContent.Append("<tr>");
-                wordContent.Append($"<td style='padding:8px;text-align:center;font-weight:bold;'>题号</td>");
+                wordContent.Append($"<td style='padding:8px;text-align:center;font-weight:bold;border:1px solid #000000;'>题号</td>");
                 for (var i = 0; i < configs.Count; i++)
                 {
-                    wordContent.Append($"<td style='padding:8px;text-align:center;font-weight:bold;'>{StringUtils.ParseNumberToChinese(i + 1)}</td>");
+                    wordContent.Append($"<td style='padding:8px;text-align:center;font-weight:bold;border:1px solid #000000;'>{StringUtils.ParseNumberToChinese(i + 1)}</td>");
                 }
-                wordContent.Append($"<td style='padding:8px;text-align:center;font-weight:bold;'>总分</td>");
+                wordContent.Append($"<td style='padding:8px;text-align:center;font-weight:bold;border:1px solid #000000;'>总分</td>");
                 wordContent.Append("</tr>");
                 wordContent.Append("<tr>");
-                wordContent.Append($"<td style='padding:8px;text-align:center;font-weight:bold;'>得分</td>");
+                wordContent.Append($"<td style='padding:8px;text-align:center;font-weight:bold;border:1px solid #000000;'>得分</td>");
                 for (var i = 0; i < configs.Count; i++)
                 {
                     decimal txTotalScore = 0;
@@ -192,9 +192,9 @@ namespace XBLMS.Web.Controllers.Admin.Common
                             txTotalScore += answer.Score;
                         }
                     }
-                    wordContent.Append($"<td style='padding:8px;text-align:center;'>{txTotalScore}</td>");
+                    wordContent.Append($"<td style='padding:8px;text-align:center;border:1px solid #000000;'>{txTotalScore}</td>");
                 }
-                wordContent.Append($"<td style='padding:8px;text-align:center;'>{start.Score}</td>");
+                wordContent.Append($"<td style='padding:8px;text-align:center;border:1px solid #000000;'>{start.Score}</td>");
                 wordContent.Append("</tr>");
                 wordContent.Append("</table>");
 
