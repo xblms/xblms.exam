@@ -20,7 +20,7 @@ var blockAuthen = function (password) {
       if (res.success) {
         sessionStorage.setItem(BLOCK_HOME_SESSION_ID, res.sessionId);
 
-        location.href = "/home/"
+        location.href = $rootUrl + "/";
       } else {
         Swal.fire({
           title: "访问密码不正确！",

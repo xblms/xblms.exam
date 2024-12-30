@@ -18,7 +18,7 @@
                 <el-table-column show-overflow-tooltip prop="title" label="题目">
                     <template slot-scope="scope">
                         <el-link type="primary" :underline="false" v-on:click="btnTmView(scope.row.id)">
-                            <span v-html="scope.row.title" style="color:red;" v-if="scope.row.isStop"></span>
+                            <span v-html="scope.row.title" style="color:red;" v-if="scope.row.locked"></span>
                             <span v-html="scope.row.title" v-else></span>
                         </el-link>
                     </template>
@@ -48,7 +48,7 @@
                 <el-table-column show-overflow-tooltip prop="title" label="题目">
                     <template slot-scope="scope">
                         <el-link type="primary" :underline="false" v-on:click="btnTmView(scope.row.id)">
-                            <span v-html="scope.row.title" style="color:red;" v-if="scope.row.isStop"></span>
+                            <span v-html="scope.row.title" style="color:red;" v-if="scope.row.locked"></span>
                             <span v-html="scope.row.title" v-else></span>
                         </el-link>
                     </template>
