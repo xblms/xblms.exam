@@ -127,7 +127,7 @@ namespace XBLMS.Web.Controllers.Admin
                     {
                         isExam = true;
                         var examPaper = await _databaseManager.ExamPaperRepository.GetAsync(item.ObjectId);
-                        if (examPaper != null && examPaper.TmRandomType != ExamPaperTmRandomType.RandomExaming)
+                        if (examPaper != null)
                         {
                             isEdit = true;
                             if(examPaper.TmRandomType != ExamPaperTmRandomType.RandomExaming)
