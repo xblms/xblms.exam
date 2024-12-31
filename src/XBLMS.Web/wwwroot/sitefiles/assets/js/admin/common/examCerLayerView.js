@@ -23,22 +23,6 @@ var methods = {
     }).then(function () {
       utils.loading($this, false);
     });
-  },
-  btnViewCer: function () {
-    top.utils.openLayerPhoto({
-      title: this.cer.name,
-      id: this.cer.id,
-      src: this.cer.backgroundImg.replace('/cer/', '/cer/preview_cer_') + '?r=' + Math.random()
-    })
-  },
-  btnCountClick: function () {
-    var $this = this;
-    top.utils.openLayer({
-      title: this.cer.name + '-获证人员列表',
-      url: utils.getExamUrl('examCerUsers', { id: this.cer.id }),
-      width: "88%",
-      height: "98%"
-    });
   }
 };
 

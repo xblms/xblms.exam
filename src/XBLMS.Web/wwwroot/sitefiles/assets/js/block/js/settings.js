@@ -29,13 +29,12 @@ var methods = {
       ruleId: item.id
     }).then(function (response) {
       var res = response.data;
-
-      $this.rules = res.rules;
-      utils.success('拦截规则删除成功');
+      utils.success('操作成功');
     }).catch(function (error) {
       utils.error(error);
     }).then(function () {
       utils.loading($this, false);
+      $this.apiGet();
     });
   },
   btnEdit: function (id) {

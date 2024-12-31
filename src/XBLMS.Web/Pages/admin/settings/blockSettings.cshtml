@@ -9,28 +9,41 @@
         </el-button>
     </div>
     <el-table :data="rules" :size="euiSize" :height="($(window).height() - 135)">
+        <el-table-column label="#" type="index" width="60">
+        </el-table-column>
         <el-table-column prop="ruleName" label="规则名称"></el-table-column>
-        <el-table-column prop="areaType" label="拦截区域" width="200">
+        <el-table-column label="拦截端" width="200">
+            <template slot-scope="scope">
+                <span v-if="scope.row.blockType===1">用户端</span>
+                <span v-else>管理端</span>
+            </template>
+        </el-table-column>
+        <el-table-column label="拦截区域" width="200">
             <template slot-scope="scope">
                 <span v-if="scope.row.areaType==='None'">不拦截区域</span>
-                <span v-else-if="scope.row.areaType==='None'">拦截指定区域</span>
+                <span v-else-if="scope.row.areaType==='Includes'">拦截指定区域</span>
                 <span v-else>拦截指定区域外其他区域</span>
             </template>
         </el-table-column>
-        <el-table-column prop="blockMethod" label="拦截方式" width="200">
+        <el-table-column label="拦截方式" width="200">
             <template slot-scope="scope">
-                <span v-if="scope.row.areaType==='RedirectUrl'">跳转至指定网址</span>
-                <span v-else-if="scope.row.areaType==='Warning'">显示拦截信息</span>
+                <span v-if="scope.row.blockMethod==='RedirectUrl'">跳转至指定网址</span>
+                <span v-else-if="scope.row.blockMethod==='Warning'">显示拦截信息</span>
                 <span v-else>输入密码验证</span>
             </template>
         </el-table-column>
         <el-table-column prop="createdDate" label="添加日期" width="160"></el-table-column>
-        <el-table-column label="" width="180" align="right">
+        <el-table-column width="100" align="right">
             <template slot-scope="scope">
-                <el-button-group>
-                    <el-button icon="el-icon-edit" :size="euiSize" v-on:click.stop="btnEdit(scope.row.id)">修改</el-button>
-                    <el-button icon="el-icon-delete" :size="euiSize" type="danger" v-on:click.stop="btnDeleteClick(scope.row)">删除</el-button>
-                </el-button-group>
+                <el-dropdown :show-timeout="0" placement="left">
+                    <el-button icon="el-icon-arrow-left" size="mini" v-on:click.stop="return false">
+                        操作
+                    </el-button>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item icon="el-icon-edit" v-on:click.native="btnEdit(scope.row.id)">修改</el-dropdown-item>
+                        <el-dropdown-item icon="el-icon-delete" v-on:click.native="btnDeleteClick(scope.row)" style="color:red;" divided>删除</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
             </template>
         </el-table-column>
         @await Html.PartialAsync("_PartialTableEmpty")

@@ -36,7 +36,7 @@
 <div class="text-uppercase text-warning fw-semibold mt-5 mb-2 text-center">
     <i class="bi bi-flag-fill me-2"></i>今日考试
 </div>
-<div class="card bg-primary my-3 shadow-lg mx-8 rounded-0" v-if="todayExam && todayExam.id>0" v-on:click="btnViewPaperClick(todayExam.id)">
+<div class="card bg-primary my-3 shadow-lg mx-8 rounded-5" v-if="todayExam && todayExam.id>0" v-on:click="btnViewPaperClick(todayExam.id)">
     <div class="card-body text-center text-white">
         <div class="row mb-3">
             <div class="col-12">
@@ -115,7 +115,7 @@
 <div class="card bg-warning rounded-0">
     <div class="card-body">
         <div class="task-list">
-            <div class="text-center mb-5">
+            <div class="text-center mb-3">
                 <div>
                     <h2 class="mb-0 text-white fw-bold"><i class="bi bi-flag-fill me-2"></i>{{ taskTotal }} 个待办</h2>
                 </div>
