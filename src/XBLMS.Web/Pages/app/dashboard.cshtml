@@ -16,7 +16,7 @@
     </style>
 }
 <div class="bg-cover py-8 px-3 text-white text-center rounded-0" :style="{'background-image':'url('+(user.avatarbgUrl || DEFAULT_AVATAR_BG_URL)+')'}">
-    <div class="py-2"></div>
+    <div class="py-5"></div>
     <div class="pb-1">
         <span class="text-white bg-black bg-opacity-10 px-2 py-1">
             <span class="fs-6 text-white px-3 py-1" style="background-color: rgba(0, 0, 0, 0.1);"><i class="bi bi-calendar-event me-2"></i>{{ dateStr }}</span>
@@ -27,9 +27,9 @@
     <div class="mt-n8">
         <div class="bg-white p-2 rounded-pill d-flex justify-content-between align-items-center smooth-shadow-lg">
             <span class="d-flex justify-content-start align-items-center">
-                <i class="bi bi-person-fill me-2 fs-2 ms-3"></i><span>欢迎：{{ user.displayName }}</span>
+                <i class="bi bi-person-fill me-2 fs-2 ms-4"></i><span>欢迎：{{ user.displayName }}</span>
             </span>
-            <img :src="user.avatarUrl || DEFAULT_AVATAR_URL" class="img-fluid avatar-lg rounded-circle bg-light p-1">
+            <img :src="user.avatarUrl || DEFAULT_AVATAR_URL" class="img-fluid avatar-xl rounded-circle bg-light p-1">
         </div>
     </div>
 </div>
@@ -58,7 +58,7 @@
         </div>
     </div>
 </div>
-<div class="card my-3 shadow-lg mx-8 rounded-0" v-else>
+<div class="card my-3 mx-8 rounded-0 border-0" v-else>
     <div class="card-body">
         <div class="text-center">
             <small><i class="bi bi-clipboard me-2"></i>无安排</small>

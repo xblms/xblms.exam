@@ -126,7 +126,7 @@ var $vue = new Vue({
   data: data,
   methods: methods,
   created: function () {
-    document.title = DOCUMENTTITLE_HOME + '-登录';
+    document.title = DOCUMENTTITLECN;
     this.apiGet();
   }
 });

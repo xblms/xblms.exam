@@ -20,18 +20,21 @@
 
         .wrapper-page {
             max-width: 399px;
+            margin:58px auto;
         }
     </style>
 }
 
 <div class="wrapper-page">
-    <el-card>
+    <div class="mb-5 text-center">
+        <div class="h1 fw-bold">{{ DOCUMENTTITLECN }}</div>
+    </div>
+    <el-card style="box-shadow:0 0 16px 2px rgba(102,0,255,0.25);">
         <div slot="header" class="clearfix">
             <el-row style="display:flex;align-items:center;justify-content:space-between;">
                 <el-col :span="16">
-                    <span>{{ loginTitle }}</span>
-                    <div>
-                        请登录
+                    <div class="fw-bold">
+                        管理后台-请登录
                     </div>
                 </el-col>
                 <el-col :span="6" style="text-align:right;">

@@ -1123,6 +1123,7 @@ var DEFAULT_AVATAR_BG_URL = '/sitefiles/assets/images/default_avatar_bg.jpg';
 var DEFAULT_LOGO_URL = "/sitefiles/assets/images/logo.png";
 
 var DOCUMENTTITLE = 'XBLMS.EXAM';
+var DOCUMENTTITLECN = '在线考试系统';
 var DOCUMENTTITLE_ADMIN = DOCUMENTTITLE + '-后台管理';
 var DOCUMENTTITLE_HOME = DOCUMENTTITLE + '-用户中心';
 var DOCUMENTTITLE_DATABASEUPDATE = DOCUMENTTITLE + '-数据库升级';
