@@ -46,6 +46,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
         {
             var start = await _examPaperStartRepository.GetAsync(request.Id);
             var user = await _userRepository.GetByUserIdAsync(start.UserId);
+            await _organManager.GetUser(user);
 
             var randomId = start.ExamPaperRandomId;
 
@@ -74,7 +75,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
             wordContent.AppendFormat($"<div style='text-align:center;'>（共{paper.TmCount}题，总分{paper.TotalScore}，及格分{paper.PassScore}{timing}）</div>");
 
 
-            wordContent.AppendFormat($"<div style='text-align:center;'>考生：{user.DisplayName}</div>");
+            wordContent.AppendFormat($"<div style='text-align:center;'>考生：{user.DisplayName}（{user.UserName}，{user.Get("OrganNames")}）</div>");
             wordContent.AppendFormat($"<div style='text-align:center;'>成绩：{start.Score}，用时：{DateUtils.SecondToHmsCN(start.ExamTimeSeconds)}</div>");
             wordContent.Append($"<p></p>");
 
@@ -139,6 +140,8 @@ namespace XBLMS.Web.Controllers.Admin.Common
             foreach (var start in list)
             {
                 var user = await _userRepository.GetByUserIdAsync(start.UserId);
+                await _organManager.GetUser(user);
+
                 var fileName = $"{paper.Title}({user.DisplayName}-答卷-{start.EndDateTime.Value.ToString(DateUtils.FormatStringDateTimeWithOutSpace)})";
 
                 var htmlPath = _pathManager.GetTemporaryFilesPath("1.html");
@@ -164,7 +167,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
                 wordContent.AppendFormat($"<div style='text-align:center;'>（共{paper.TmCount}题，总分{paper.TotalScore}，及格分{paper.PassScore}{timing}）</div>");
 
 
-                wordContent.AppendFormat($"<div style='text-align:center;'>考生：{user.DisplayName}</div>");
+                wordContent.AppendFormat($"<div style='text-align:center;'>考生：{user.DisplayName}（{user.UserName}，{user.Get("OrganNames")}）</div>");
                 wordContent.AppendFormat($"<div style='text-align:center;'>成绩：{start.Score}，用时：{DateUtils.SecondToHmsCN(start.ExamTimeSeconds)}</div>");
 
                 wordContent.Append($"<p></p>");

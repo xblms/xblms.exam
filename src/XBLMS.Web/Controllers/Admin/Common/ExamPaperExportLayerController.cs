@@ -26,6 +26,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
         private readonly IAuthManager _authManager;
         private readonly IPathManager _pathManager;
         private readonly IExamManager _examManager;
+        private readonly IOrganManager _organManager;
         private readonly IExamPaperRepository _examPaperRepository;
         private readonly IExamPaperRandomRepository _examPaperRandomRepository;
         private readonly IExamPaperRandomTmRepository _examPaperRandomTmRepository;
@@ -35,12 +36,25 @@ namespace XBLMS.Web.Controllers.Admin.Common
         private readonly IUserRepository _userRepository;
         private readonly IExamPaperAnswerRepository _examPaperAnswerRepository;
 
-        public ExamPaperExportLayerController(IAuthManager authManager, IPathManager pathManager, IExamTmRepository examTmRepository, IExamManager examManager, IExamPaperRepository examPaperRepository, IExamPaperRandomRepository examPaperRandomRepository, IExamPaperRandomTmRepository examPaperRandomTmRepository, IExamPaperRandomConfigRepository examPaperRandomConfigRepository, IExamTxRepository examTxRepository, IExamPaperStartRepository examPaperStartRepository, IUserRepository userRepository, IExamPaperAnswerRepository examPaperAnswerRepository)
+        public ExamPaperExportLayerController(IAuthManager authManager,
+            IPathManager pathManager,
+            IExamTmRepository examTmRepository,
+            IExamManager examManager,
+            IOrganManager organManager,
+            IExamPaperRepository examPaperRepository,
+            IExamPaperRandomRepository examPaperRandomRepository,
+            IExamPaperRandomTmRepository examPaperRandomTmRepository,
+            IExamPaperRandomConfigRepository examPaperRandomConfigRepository,
+            IExamTxRepository examTxRepository,
+            IExamPaperStartRepository examPaperStartRepository,
+            IUserRepository userRepository,
+            IExamPaperAnswerRepository examPaperAnswerRepository)
         {
             _authManager = authManager;
             _pathManager = pathManager;
             _examTmRepository = examTmRepository;
             _examManager = examManager;
+            _organManager = organManager;
             _examPaperRepository = examPaperRepository;
             _examPaperRandomRepository = examPaperRandomRepository;
             _examPaperRandomTmRepository = examPaperRandomTmRepository;
