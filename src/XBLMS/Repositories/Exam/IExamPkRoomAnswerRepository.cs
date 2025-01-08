@@ -5,6 +5,7 @@ namespace XBLMS.Repositories
 {
     public interface IExamPkRoomAnswerRepository : IRepository
     {
+        Task DeleteByUserId(int userId);
         Task DeleteByRoomIdAsync(int roomId);
     }
 }

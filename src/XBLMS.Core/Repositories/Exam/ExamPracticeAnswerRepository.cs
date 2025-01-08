@@ -30,6 +30,10 @@ namespace XBLMS.Core.Repositories
         {
             await _repository.DeleteAsync(Q.Where(nameof(ExamPracticeAnswer.TmId), tmId));
         }
+        public async Task DeleteByUserId(int userId)
+        {
+            await _repository.DeleteAsync(Q.Where(nameof(ExamPracticeAnswer.UserId), userId));
+        }
         public async Task<(int rightCount, int wrongCount)> CountAsync(int tmId)
         {
             var rightCount = await _repository.CountAsync(Q.

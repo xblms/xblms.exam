@@ -11,5 +11,6 @@ namespace XBLMS.Repositories
         Task<ExamPracticeWrong> GetAsync(int userId);
         Task<int> InsertAsync(ExamPracticeWrong item);
         Task UpdateAsync(ExamPracticeWrong item);
+        Task DeleteByUserId(int userId);
     }
 }

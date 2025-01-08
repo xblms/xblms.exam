@@ -39,5 +39,9 @@ namespace XBLMS.Core.Repositories
         {
             await _repository.UpdateAsync(item);
         }
+        public async Task DeleteByUserId(int userId)
+        {
+            await _repository.DeleteAsync(Q.Where(nameof(ExamPracticeWrong.UserId), userId));
+        }
     }
 }

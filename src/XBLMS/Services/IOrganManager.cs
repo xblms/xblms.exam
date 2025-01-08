@@ -42,5 +42,6 @@ namespace XBLMS.Services
         Task<List<string>> GetDutyGuidsAsync(List<int> ids);
 
         Task<int> GetGroupCount(int groupId);
+        Task DeleteUser(int userId);
     }
 }

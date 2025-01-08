@@ -1,6 +1,7 @@
 ﻿var $url = '/settings/users';
 var $urlOtherData = $url + '/actions/otherData';
 var $urlDelete = $url + '/actions/delete';
+var $urlDeletes = $url + '/actions/deletes';
 var $urlExport = $url + '/actions/export';
 var $urlUpload = $apiUrl + '/settings/users/actions/import';
 
@@ -27,7 +28,8 @@ var data = utils.init({
     label: 'name'
   },
   filterText: '',
-  curOrganId: ''
+  curOrganId: '',
+  multipleSelection: []
 });
 
 var methods = {
@@ -158,13 +160,52 @@ var methods = {
 
     top.utils.alertDelete({
       title: '删除用户',
-      text: '此操作将删除用户 ' + item.userName + '，确定吗？',
+      text: '此操作将删除用户 ' + item.userName + ' 及其关联的所有数据，确定吗？',
       callback: function () {
         $this.apiDelete(item);
       }
     });
   },
+  btnDeletesClick: function () {
+    var selectedUsers = this.multipleSelection;
+    var ids = [];
+    if (selectedUsers.length > 0) {
+      selectedUsers.forEach(user => {
+        ids.push(user.id);
+      })
 
+      var $this = this;
+
+      top.utils.alertDelete({
+        title: '删除用户',
+        text: '此操作将删除选中的用户及其关联的所有数据，确定吗？',
+        callback: function () {
+
+          utils.loading($this, true);
+          $api.post($urlDeletes, {
+            ids: ids
+          }).then(function (response) {
+            var res = response.data;
+            $this.apiGet();
+
+          }).catch(function (error) {
+            utils.error(error);
+          }).then(function () {
+            utils.loading($this, false);
+          });
+        }
+      });
+
+
+
+    }
+    else {
+      utils.error("请选择需要删除的用户");
+    }
+  },
+  handleSelectionChange(val) {
+    this.multipleSelection = val;
+  },
   apiLock: function (item) {
     var $this = this;
 

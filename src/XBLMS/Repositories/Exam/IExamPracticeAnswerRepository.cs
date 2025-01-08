@@ -8,6 +8,7 @@ namespace XBLMS.Repositories
     {
         Task<int> InsertAsync(ExamPracticeAnswer item);
         Task DeleteByTmIdAsync(int tmId);
+        Task DeleteByUserId(int userId);
         Task<(int rightCount, int wrongCount)> CountAsync(int tmId);
     }
 }

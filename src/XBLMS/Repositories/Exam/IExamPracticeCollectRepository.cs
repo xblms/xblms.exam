@@ -9,10 +9,9 @@ namespace XBLMS.Repositories
     {
         Task<List<ExamPracticeCollect>> GetListAsync();
         Task<ExamPracticeCollect> GetAsync(int userId);
-
         Task<int> InsertAsync(ExamPracticeCollect item);
-
         Task UpdateAsync(ExamPracticeCollect item);
+        Task DeleteByUserId(int userId);
 
     }
 }

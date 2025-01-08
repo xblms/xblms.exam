@@ -12,6 +12,7 @@ namespace XBLMS.Repositories
         Task<ExamPaperUser> GetAsync(int id);
         Task<ExamPaperUser> GetAsync(int paperId, int userId);
         Task ClearByPaperAsync(int paperId);
+        Task DeleteByUserId(int userId);
         Task DeleteAsync(int id);
         Task<int> InsertAsync(ExamPaperUser item);
         Task<bool> ExistsAsync(int paperId, int userId);

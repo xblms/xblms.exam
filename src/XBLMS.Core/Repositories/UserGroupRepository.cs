@@ -6,6 +6,7 @@ using XBLMS.Enums;
 using XBLMS.Models;
 using XBLMS.Repositories;
 using XBLMS.Services;
+using XBLMS.Utils;
 
 namespace XBLMS.Core.Repositories
 {
@@ -47,12 +48,28 @@ namespace XBLMS.Core.Repositories
         {
             await _repository.DeleteAsync(groupId, Q.CachingRemove(CacheKey));
         }
+        public async Task DeleteByUserId(int userId)
+        {
+            var allGroup = await GetListAsync();
+            foreach (var group in allGroup)
+            {
+                if (group.GroupType == UsersGroupType.Fixed)
+                {
+                    if (ListUtils.Contains(group.UserIds, userId))
+                    {
+                        ListUtils.Remove(group.UserIds, userId);
+                        await UpdateAsync(group);
+                    }
+                }
+            }
+
+        }
         public async Task ResetAsync()
         {
             await _repository.InsertAsync(new UserGroup
             {
-                GroupName="全部用户",
-                GroupType=UsersGroupType.All
+                GroupName = "全部用户",
+                GroupType = UsersGroupType.All
             }, Q.CachingRemove(CacheKey));
         }
 

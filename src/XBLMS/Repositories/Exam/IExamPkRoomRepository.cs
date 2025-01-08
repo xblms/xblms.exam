@@ -11,6 +11,7 @@ namespace XBLMS.Repositories
         Task<int> InsertAsync(ExamPkRoom examPkRoom);
         Task UpdateAsync(ExamPkRoom examPkRoom);
         Task RandomPositonAsync(int pkId, int userId);
+        Task DeleteByUserId(int userId);
         Task DeleteAsync(int id);
         Task<(int total, List<ExamPkRoom> list)> GetListAsync(int pkId);
         Task<(int total, List<ExamPkRoom> list)> GetUserListAsync(int userId, int pageIndex, int pageSize);

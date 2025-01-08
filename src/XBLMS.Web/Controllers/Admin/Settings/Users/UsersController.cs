@@ -18,6 +18,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
         private const string Route = "settings/users";
         private const string RouteOtherData = "settings/users/actions/otherData";
         private const string RouteDelete = "settings/users/actions/delete";
+        private const string RouteDeletes = "settings/users/actions/deletes";
         private const string RouteImportCheck = "settings/users/actions/importCheck";
         private const string RouteImport = "settings/users/actions/import";
         private const string RouteExport = "settings/users/actions/export";
@@ -80,6 +81,11 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
         {
             public int Success { set; get; }
             public int Failure { set; get; }
+        }
+
+        public class GetDeletesRequest
+        {
+            public List<int> Ids { get; set; }
         }
     }
 }

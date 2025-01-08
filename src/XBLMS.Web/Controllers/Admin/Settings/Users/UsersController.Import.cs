@@ -43,6 +43,10 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
             var sheet = ExcelUtils.Read(filePath);
             if (sheet != null)
             {
+                var mobileList = new List<string>();
+                var emailList = new List<string>();
+                var userNameList = new List<string>();
+
                 for (var i = 1; i < sheet.Rows.Count; i++) //行
                 {
                     if (i == 1) continue;
@@ -102,6 +106,25 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
                     var displayName = row[5].ToString().Trim();
                     var mobile = row[6].ToString().Trim();
                     var email = row[7].ToString().Trim();
+                    if (userNameList.Contains(userName))
+                    {
+                        msgList.Add(new KeyValuePair<int, string>(i, "用户名已存在"));
+                        failure++;
+                        continue;
+                    }
+                    if (!string.IsNullOrEmpty(mobile) &&  mobileList.Contains(mobile))
+                    {
+                        msgList.Add(new KeyValuePair<int, string>(i, "手机号码已存在"));
+                        failure++;
+                        continue;
+                    }
+                    if (!string.IsNullOrEmpty(email) && emailList.Contains(email))
+                    {
+                        msgList.Add(new KeyValuePair<int, string>(i, "电子邮箱已存在"));
+                        failure++;
+                        continue;
+                    }
+
 
                     var (validSuccess, validMsg) = await _userRepository.ValidateAsync(userName, email, mobile, password);
                     if (!validSuccess)
@@ -117,6 +140,10 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
                         failure++;
                         continue;
                     }
+
+                    userNameList.Add(userName);
+                    mobileList.Add(mobile);
+                    emailList.Add(email);
 
                     success++;
 
@@ -197,11 +224,15 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
                         CreatorId = adminId
                     }, password, true, string.Empty);
 
-                    await _authManager.AddAdminLogAsync("新增用户账号-导入", $"{userName}");
-                    await _authManager.AddStatLogAsync(StatType.UserAdd, "新增用户账号", user.Id, user.DisplayName);
-                    await _authManager.AddStatCount(StatType.UserAdd);
+                    if (user != null)
+                    {
+                        await _authManager.AddAdminLogAsync("新增用户账号-导入", $"{userName}");
+                        await _authManager.AddStatLogAsync(StatType.UserAdd, "新增用户账号", user.Id, user.DisplayName);
+                        await _authManager.AddStatCount(StatType.UserAdd);
+                        success++;
+                    }
 
-                    success++;
+                    
                 }
             }
             FileUtils.DeleteFileIfExists(filePath);

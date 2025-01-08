@@ -75,13 +75,18 @@
                             <el-dropdown-item icon="el-icon-upload" v-on:click.native="btnImportClick">excel导入</el-dropdown-item>
                             <el-dropdown-item icon="el-icon-download" v-on:click.native="btnExportClick">excel导出</el-dropdown-item>
                             <el-dropdown-item icon="el-icon-upload" v-on:click.native="btnAvatarCerUploadClick">上传证件照</el-dropdown-item>
+                            <el-dropdown-item icon="el-icon-delete" style="color:red;" v-on:click.native="btnDeletesClick" divided>批量删除</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
                 </el-form-item>
             </el-form>
 
             <el-table :data="items" :size="euiSize"
+                      v-on:selection-change="handleSelectionChange"
                       style="width: 100%" :height="$(window).height()-206">
+                <el-table-column type="selection" align="left"
+                                 width="28">
+                </el-table-column>
                 <el-table-column label="#"
                                  type="index"
                                  width="60"
