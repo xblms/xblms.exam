@@ -146,7 +146,7 @@ var methods = {
       id: item.id
     }).then(function (response) {
       var res = response.data;
-
+      utils.success("操作成功");
       $this.items.splice($this.items.indexOf(item), 1);
     }).catch(function (error) {
       utils.error(error);
@@ -186,6 +186,7 @@ var methods = {
             ids: ids
           }).then(function (response) {
             var res = response.data;
+            utils.success("操作成功");
             $this.apiGet();
 
           }).catch(function (error) {
@@ -195,9 +196,6 @@ var methods = {
           });
         }
       });
-
-
-
     }
     else {
       utils.error("请选择需要删除的用户");
@@ -214,7 +212,7 @@ var methods = {
       id: item.id
     }).then(function (response) {
       var res = response.data;
-
+      utils.success("操作成功");
       item.locked = true;
     }).catch(function (error) {
       utils.error(error);
@@ -244,7 +242,7 @@ var methods = {
       id: item.id
     }).then(function (response) {
       var res = response.data;
-
+      utils.success("操作成功");
       item.locked = false;
     }).catch(function (error) {
       utils.error(error);
