@@ -20,34 +20,16 @@ namespace XBLMS.Web.Controllers.Home
         private readonly IAuthManager _authManager;
         private readonly IConfigRepository _configRepository;
         private readonly IUserMenuRepository _userMenuRepository;
-        private readonly IExamPaperRepository _examPaperRepository;
-        private readonly IExamPaperUserRepository _examPaperUserRepository;
-        private readonly IExamPaperStartRepository _examPaperStartRepository;
-        private readonly IExamQuestionnaireUserRepository _examQuestionnaireUserRepository;
-        private readonly IExamQuestionnaireRepository _examQuestionnaireRepository;
-        private readonly IExamAssessmentUserRepository _examAssessmentUserRepository;
 
         public IndexController(IAuthManager authManager,
             ISettingsManager settingsManager,
             IConfigRepository configRepository,
-            IUserMenuRepository userMenuRepository,
-            IExamPaperRepository examPaperRepository,
-            IExamPaperUserRepository examPaperUserRepository,
-            IExamPaperStartRepository examPaperStartRepository,
-            IExamQuestionnaireUserRepository examQuestionnaireUserRepository,
-            IExamQuestionnaireRepository examQuestionnaireRepository,
-            IExamAssessmentUserRepository examAssessmentUserRepository)
+            IUserMenuRepository userMenuRepository)
         {
             _settingsManager = settingsManager;
             _authManager = authManager;
             _configRepository = configRepository;
             _userMenuRepository = userMenuRepository;
-            _examPaperRepository = examPaperRepository;
-            _examPaperUserRepository = examPaperUserRepository;
-            _examPaperStartRepository = examPaperStartRepository;
-            _examQuestionnaireUserRepository = examQuestionnaireUserRepository;
-            _examQuestionnaireRepository = examQuestionnaireRepository;
-            _examAssessmentUserRepository = examAssessmentUserRepository;
         }
 
         public class GetResult

@@ -272,6 +272,9 @@ var methods = {
       id: row.id,
       src: row.cerImg + '?r=' + Math.random()
     })
+  },
+  btnEventClick: function () {
+    utils.openTopLeft("考试日程", utils.getRootUrl("event"));
   }
 };
 Vue.component("apexchart", {

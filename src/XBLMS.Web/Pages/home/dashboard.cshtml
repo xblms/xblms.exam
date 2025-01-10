@@ -27,6 +27,7 @@
             <h2 class="h1 fw-bold m-0 p-0">首 页</h2>
         </div>
         <div>
+            <button type="button" class="btn btn-outline-dark-warning border-0 me-3" v-on:click="btnEventClick"><i class="bi bi-calendar3 me-2"></i>日 程</button>
             <el-dropdown :show-timeout="0" placement="left">
                 <img :src="user.avatarUrl || DEFAULT_AVATAR_URL" class="rounded-circle avatar-lg shadow-lg" />
                 <el-dropdown-menu slot="dropdown">
@@ -41,7 +42,7 @@
     </div>
 </el-card>
 <div>
-    <div class="container mt-5">
+    <div class="container mt-8">
         <div class="bg-cover rounded-5 position-relative shadow-lg bg-white mb-3 p-3" :style="{'background-image':'url('+(user.avatarbgUrl || DEFAULT_AVATAR_BG_URL)+')'}">
             <div class="align-items-center" :style="{height:(($(window).height()/4))+'px'}">
             </div>
@@ -235,15 +236,14 @@
                 </div>
             </div>
         </div>
-        <div class="my-8"></div>
         <div class="my-8" v-if="cerList && cerList.length>0">
             <div class="my-8">
-                <div class="text-center">
+                <div class="text-center mt-8">
                     <h2 class="fw-bold">
                         <i class="bi bi-journal-bookmark-fill text-warning me-2"></i>获得证书
                     </h2>
                 </div>
-                <div class="mt-5">
+                <div class="mt-5 mb-8">
                     <el-carousel :interval="3000" type="card" height="200px">
                         <el-carousel-item v-for="cer in cerList" :key="cer.id">
                             <a href="javascript:;" v-on:click="btnViewCer(cer)"><img :src="cer.cerImg" class="img-fluid w-100"></a>
@@ -253,7 +253,6 @@
                 </div>
             </div>
         </div>
-        <div class="my-8"></div>
         <div class="my-8">
             <div class="bg-light p-5 rounded-5">
                 <div class="container">

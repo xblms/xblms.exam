@@ -50,6 +50,18 @@ var methods = {
         }
       });
     }
+    if (common === 'event') {
+      top.utils.openLayer({
+        title: false,
+        closebtn: 0,
+        url: utils.getRootUrl('event'),
+        width: "100%",
+        height: "100%",
+        end: function () {
+          $this.setDocumentTitle();
+        }
+      });
+    }
     if (common === 'logout') {
       location.href = utils.getRootUrl("logout");
     }

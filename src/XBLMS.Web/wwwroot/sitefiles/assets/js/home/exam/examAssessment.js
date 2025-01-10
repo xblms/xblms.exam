@@ -82,7 +82,6 @@ var methods = {
         height: "100%",
         end: function () {
           $this.apiGetItem(paper.id);
-          top.$vue.apiGetTask();
         }
       });
     }

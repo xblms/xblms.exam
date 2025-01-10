@@ -25,10 +25,11 @@ var data = utils.init({
   contextTabName: null,
   contextLeft: 0,
   contextTop: 0,
-  paperTotal: 0,
-  qPaperTotal: 0,
-  assTotal:0,
-  taskTotal:0
+
+  topFrameDrawer: false,
+  topFrameTitle: null,
+  topFrameSrc: '',
+  topFrameWidth: 88,
 });
 
 var methods = {
@@ -38,11 +39,6 @@ var methods = {
     $api.get($url).then(function (response) {
       var res = response.data;
       if (res.user) {
-
-        $this.paperTotal = res.paperTotal;
-        $this.qPaperTotal = res.qPaperTotal;
-        $this.assTotal = res.assTotal;
-        $this.taskTotal = $this.paperTotal + $this.qPaperTotal + $this.assTotal;
 
         $this.user = res.user;
         $this.menus = res.menus;
@@ -58,26 +54,12 @@ var methods = {
       utils.error(error);
     });
   },
-  apiGetTask: function () {
-    var $this = this;
-
-    $api.get($url).then(function (response) {
-      var res = response.data;
-      $this.paperTotal = res.paperTotal;
-      $this.qPaperTotal = res.qPaperTotal;
-      $this.assTotal = res.assTotal;
-      $this.taskTotal = $this.paperTotal + $this.qPaperTotal + $this.assTotal;
-    }).catch(function (error) {
-      utils.error(error);
-    });
-  },
   ready: function () {
     window.onresize = this.winResize;
     window.onresize();
 
     utils.loading(this, false);
   },
-
 
   getLevelMenus: function (menus) {
 
@@ -193,11 +175,6 @@ var methods = {
       var newText = '<i class="' + menu.iconClass + '"><span class="me-2"></span>' + menu.text;
       utils.addTab(newText, menu.link);
     }
-  },
-
-  btnMobileMenuClick: function () {
-    this.isCollapse = false;
-    this.isMobileMenu = !this.isMobileMenu;
   },
 
   btnUserMenuClick: function (command) {

@@ -223,10 +223,6 @@ var methods = {
     }
   },
 
-  btnMobileMenuClick: function () {
-    this.isCollapse = false;
-    this.isMobileMenu = !this.isMobileMenu;
-  },
   btnUserMenuClick: function (command) {
     var $this = this;
     if (command === 'view') {
