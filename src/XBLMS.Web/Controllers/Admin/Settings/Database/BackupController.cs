@@ -26,15 +26,20 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Database
         private const string RouteBackupRecoverlog = "settings/database/backup/recoverlog";
         private const string RouteBackupRecoverlogDel = "settings/database/backup/recoverlogdel";
 
+        private const string RouteBackupDownload = "settings/database/backup/download";
+        private const string RouteBackupUpload = "settings/database/backup/upload";
 
+
+        private readonly IPathManager _pathManager;
         private readonly IDatabaseManager _databaseManager;
         private readonly IAuthManager _authManager;
         private readonly ISettingsManager _settingsManager;
         private readonly IDbBackupRepository _dbBackupRepository;
         private readonly IDbRecoverRepository _dbRecoverRepository;
-        public BackupController(IDatabaseManager databaseManager, IAuthManager authManager, ISettingsManager settingsManager, IConfigRepository configRepository,
+        public BackupController(IPathManager pathManager, IDatabaseManager databaseManager, IAuthManager authManager, ISettingsManager settingsManager, IConfigRepository configRepository,
              IDbBackupRepository dbBackupRepository, IDbRecoverRepository dbRecoverRepository)
         {
+            _pathManager = pathManager;
             _databaseManager = databaseManager;
             _authManager = authManager;
             _settingsManager = settingsManager;
@@ -71,6 +76,19 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Database
         {
             public string SecurityKey { get; set; }
             public int Id { get; set; }
+        }
+        public class GetDownloadRequest
+        {
+            public string SecurityKey { get; set; }
+            public int Id { get; set; }
+        }
+        public class GetUploadFormRequest
+        {
+            public string SecurityKey { get; set; }
+            public string Name { get; set; }
+            public int Chunk { get; set; }
+            public long MaxChunk { get; set; }
+            public string Guid { get; set; }
         }
 
         private async Task<string> Backup()

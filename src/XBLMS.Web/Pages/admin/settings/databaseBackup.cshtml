@@ -16,6 +16,11 @@
                         手动执行一次备份
                     </el-button>
                 </el-form-item>
+                <el-form-item>
+                    <el-button plain icon="el-icon-connection" v-on:click="btnUpload">
+                        上传备份
+                    </el-button>
+                </el-form-item>
             </el-form>
             <el-divider></el-divider>
             <el-table ref="jobTable" :size="euiSize" :height="($(window).height() - 225)"
@@ -52,8 +57,9 @@
                                 操作
                             </el-button>
                             <el-dropdown-menu slot="dropdown">
-                                <el-dropdown-item icon="el-icon-printer" v-on:click.native="handleCommand('recover',scope.row)">还原此备份</el-dropdown-item>
-                                <el-dropdown-item icon="el-icon-delete" v-on:click.native="handleCommand('delete',scope.row)" style="color:red;">删除备份</el-dropdown-item>
+                                <el-dropdown-item icon="el-icon-printer" v-on:click.native="handleCommand('recover',scope.row)">还原备份</el-dropdown-item>
+                                <el-dropdown-item icon="el-icon-download" v-on:click.native="handleCommand('download',scope.row)">下载备份</el-dropdown-item>
+                                <el-dropdown-item icon="el-icon-delete" v-on:click.native="handleCommand('delete',scope.row)" style="color:red;" divided>删除备份</el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
                     </template>
