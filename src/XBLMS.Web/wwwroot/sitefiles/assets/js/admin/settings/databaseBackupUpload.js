@@ -5,6 +5,7 @@ var data = utils.init({
     securityKey: '',
     fileList:null
   },
+  fileList:[],
   uploadBackupUrl: null,
   showFileList: true
 });
@@ -18,12 +19,16 @@ var methods = {
       }
     });
   },
-  handleRemove(file, fileList) {
-  },
-  handlePreview(file) {
+  handleChange(file, fileList) {
+    if (fileList && fileList.length > 0) {
+      this.form.fileList = fileList;
+    }
+    else {
+      this.form.fileList = null;
+    }
   },
   handleExceed(files, fileList) {
-    utils.error('请清空文件后再上传', { layer: true });
+    utils.error('仅支持单个文件上传', { layer: true });
   },
   beforeUpload(file) {
     if (!/\.(zip)$/.test(file.name)) {
@@ -34,10 +39,6 @@ var methods = {
       this.showFileList = true;
       return true;
     }
-  
-  },
-  beforeRemove(file, fileList) {
-    return true;
   },
   customUpload(file) {
     this.fileUpload($url + '/upload', file, 0, utils.uuid());
@@ -84,6 +85,8 @@ var methods = {
     }).catch(function (error) {
       utils.error(error, { layer: true });
       $this.$refs.upload.clearFiles();
+      $this.form.fileList = null;
+      $this.form.securityKey = "";
       utils.loading($this, false);
     }).then(function () {
       utils.loading($this, false);

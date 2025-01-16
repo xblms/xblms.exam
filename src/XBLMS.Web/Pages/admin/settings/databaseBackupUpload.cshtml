@@ -13,23 +13,22 @@
                     <el-input v-model="form.securityKey"></el-input>
                     <small>请进入系统根目录，打开 xblms.json 获取 SecurityKey的值</small>
                 </el-form-item>
-                <el-form-item>
+                <el-form-item label="备份文件" prop="fileList" :rules="[{ required: true, message: '请选择备份文件' }]">
                     <el-upload class="upload-demo"
                                ref="upload"
                                :auto-upload="false"
                                :limit="1"
-                               action="void"
+                               drag
+                                action="void"
+                               :on-change="handleChange"
                                :http-request="customUpload"
-                               :on-preview="handlePreview"
-                               :on-remove="handleRemove"
                                :before-upload="beforeUpload"
-                               :before-remove="beforeRemove"
                                :show-file-list="showFileList"
-                               :file-list="form.fileList"
+                               :file-list="fileList"
                                :on-exceed="handleExceed">
-                        <el-button plain icon="el-icon-upload" size="mini" type="primary">
-                            选择备份文件
-                        </el-button>
+                        <i class="el-icon-upload"></i>
+                        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                        <div class="el-upload__tip" slot="tip">只能上传*.zip文件</div>
                     </el-upload>
                 </el-form-item>
             </el-form>

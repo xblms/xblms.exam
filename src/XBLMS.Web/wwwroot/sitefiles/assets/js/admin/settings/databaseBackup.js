@@ -126,8 +126,8 @@ var methods = {
       title: false,
       closebtn: 0,
       url: utils.getSettingsUrl('databaseBackupUpload'),
-      width: "38%",
-      height: "58%",
+      width: "58%",
+      height: "88%",
       end: function () {
         $this.apiGet();
       }
