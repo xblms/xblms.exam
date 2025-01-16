@@ -2,6 +2,7 @@
 using SqlKata;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -111,31 +112,7 @@ namespace XBLMS.Core.Repositories
             return (true, string.Empty);
         }
 
-        private async Task<(User user, string errorMessage)> UpdateValidateAsync(User user)
-        {
-            if (user == null || user.Id <= 0)
-            {
-                return (null, "用户不存在");
-            }
 
-            var entity = await GetByUserIdAsync(user.Id);
-            user.UserName = entity.UserName;
-            user.Password = entity.Password;
-            user.PasswordFormat = entity.PasswordFormat;
-            user.PasswordSalt = entity.PasswordSalt;
-
-            if (entity.Mobile != user.Mobile && !string.IsNullOrEmpty(user.Mobile) && await IsMobileExistsAsync(user.Mobile))
-            {
-                return (null, "手机号码已存在");
-            }
-
-            if (entity.Email != user.Email && !string.IsNullOrEmpty(user.Email) && await IsEmailExistsAsync(user.Email))
-            {
-                return (null, "邮箱地址已存在");
-            }
-
-            return (entity, string.Empty);
-        }
 
         public async Task<(User user, string errorMessage)> InsertAsync(User user, string password, bool isChecked, string ipAddress)
         {
@@ -182,14 +159,51 @@ namespace XBLMS.Core.Repositories
 
         public async Task<(bool success, string errorMessage)> UpdateAsync(User user)
         {
-            var (entity, errorMessage) = await UpdateValidateAsync(user);
-            if (entity == null)
+            var entity = await GetByUserIdAsync(user.Id);
+            var cacheKeys = GetCacheKeysToRemove(entity);
+
+
+            var valid = await UpdateValidateAsync(entity, user.Email, user.Mobile);
+            if (!valid.IsValid) return valid;
+
+            await _repository.UpdateAsync(Q
+                       .Set(nameof(user.LastActivityDate), user.LastActivityDate)
+                       .Set(nameof(user.CountOfLogin), user.CountOfLogin)
+                       .Set(nameof(user.CountOfFailedLogin), user.CountOfFailedLogin)
+                       .Set(nameof(user.Locked), user.Locked)
+                       .Set(nameof(user.DisplayName), user.DisplayName)
+                       .Set(nameof(user.Mobile), user.Mobile)
+                       .Set(nameof(user.Email), user.Email)
+                       .Set(nameof(user.AvatarUrl), user.AvatarUrl)
+                       .Set(nameof(user.AvatarbgUrl), user.AvatarbgUrl)
+                       .Set(nameof(user.AvatarCerUrl), user.AvatarCerUrl)
+                       .Set(nameof(user.CompanyId), user.CompanyId)
+                       .Set(nameof(user.DepartmentId), user.DepartmentId)
+                       .Set(nameof(user.DutyId), user.DutyId)
+                       .Where(nameof(user.Id), user.Id)
+                       .CachingRemove(cacheKeys)
+                   );
+
+            return (true, string.Empty);
+        }
+        private async Task<(bool IsValid, string ErrorMessage)> UpdateValidateAsync(User user, string email, string mobile)
+        {
+            if (user.Mobile != null && user.Mobile != mobile)
             {
-                return (false, errorMessage);
+                if (!string.IsNullOrEmpty(user.Mobile) && await IsMobileExistsAsync(user.Mobile))
+                {
+                    return (false, "手机号码已被注册，请更换手机号码");
+                }
             }
 
-            user.Set("ConfirmPassword", string.Empty);
-            await _repository.UpdateAsync(user, Q.CachingRemove(GetCacheKeysToRemove(entity)));
+            if (user.Email != null && user.Email != email)
+            {
+                if (!string.IsNullOrEmpty(user.Email) && await IsEmailExistsAsync(user.Email))
+                {
+                    return (false, "电子邮件地址已被注册，请更换邮箱");
+                }
+            }
+
             return (true, string.Empty);
         }
 
