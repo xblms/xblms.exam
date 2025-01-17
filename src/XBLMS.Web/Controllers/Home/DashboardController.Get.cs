@@ -60,23 +60,21 @@ namespace XBLMS.Web.Controllers.Home
                 foreach (var paperId in taskPaperIds)
                 {
                     var paper = await _examPaperRepository.GetAsync(paperId);
-                    var myExamTimes = await _examPaperStartRepository.CountAsync(paperId, user.Id);
-                    if (myExamTimes <= 0 && (paper.ExamBeginDateTime.Value < DateTime.Now && paper.ExamEndDateTime.Value > DateTime.Now))
+                    if (paper != null)
                     {
-                        if (paper.Moni)
+                        var myExamTimes = await _examPaperStartRepository.CountAsync(paperId, user.Id);
+                        if (myExamTimes <= 0 && (paper.ExamBeginDateTime.Value < DateTime.Now && paper.ExamEndDateTime.Value > DateTime.Now))
                         {
-
-                        }
-                        else
-                        {
-                            taskPaperTotal++;
-                            taskTotal++;
-                            await _examManager.GetPaperInfo(paper, user);
-                            taskPaperList.Add(paper);
+                            if (!paper.Moni)
+                            {
+                                taskPaperTotal++;
+                                taskTotal++;
+                                await _examManager.GetPaperInfo(paper, user);
+                                taskPaperList.Add(paper);
+                            }
                         }
                     }
                 }
-
             }
             var taskQList = new List<ExamQuestionnaire>();
             var (qPaperTotal, qPaperList) = await _examQuestionnaireUserRepository.GetTaskAsync(user.Id);

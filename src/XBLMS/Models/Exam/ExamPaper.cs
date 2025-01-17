@@ -62,7 +62,7 @@ namespace XBLMS.Models
         [DataColumn]
         public int RandomCount { get; set; } = 1;
         /// <summary>
-        /// 快速随机还是精准随机
+        /// 题目分数计算类型
         /// </summary>
         [DataColumn]
         public ExamPaperTmScoreType TmScoreType { get; set; } = ExamPaperTmScoreType.ScoreTypeRate;

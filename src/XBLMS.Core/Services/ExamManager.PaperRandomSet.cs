@@ -200,17 +200,27 @@ namespace XBLMS.Core.Services
                 var randomTmList = new List<ExamPaperRandomTm>();
                 var tmCount = 0;
                 decimal tmTotalScore = 0;
+
+                var examConfig = await _examPaperRandomConfigRepository.GetListAsync(paper.Id);
                 foreach (var tm in tmList)
                 {
-
                     var tmScore = tm.Score;
 
                     if (paper.TmScoreType == ExamPaperTmScoreType.ScoreTypeTx)
                     {
+                        var configTx = examConfig.Single(config => config.TxId == tm.TxId);
                         var tx = await _examTxRepository.GetAsync(tm.TxId);
-                        if (tx != null)
+                        if (configTx != null)
+                        {
+                            tmScore = configTx.TxScore;
+                        }
+                        else if (tx != null)
                         {
                             tmScore = tx.Score;
+                        }
+                        else
+                        {
+                            tmScore = tm.Score;
                         }
                     }
 
