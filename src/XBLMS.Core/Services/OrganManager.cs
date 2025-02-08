@@ -58,5 +58,12 @@ namespace XBLMS.Core.Services
             await _databaseManager.ExamAssessmentUserRepository.DeleteByUserId(userId);
         }
 
+        public async Task DeleteAdministrator(int adminId)
+        {
+            await _administratorRepository.DeleteAsync(adminId);
+
+            await _databaseManager.AdministratorsInRolesRepository.DeleteUserAsync(adminId);
+        }
+
     }
 }

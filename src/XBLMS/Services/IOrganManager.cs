@@ -43,5 +43,6 @@ namespace XBLMS.Services
 
         Task<int> GetGroupCount(int groupId);
         Task DeleteUser(int userId);
+        Task DeleteAdministrator(int adminId);
     }
 }

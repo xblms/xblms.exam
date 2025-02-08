@@ -20,8 +20,8 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
             if (request.Id == _authManager.AdminId) { return this.Error("不能删除自己"); }
 
             var adminInfo = await _administratorRepository.GetByUserIdAsync(request.Id);
-            await _administratorRepository.DeleteAsync(adminInfo.Id);
-
+            await _organManager.DeleteAdministrator(adminInfo.Id);
+       
             await _authManager.AddAdminLogAsync("删除管理员", $"{adminInfo.UserName}");
             await _authManager.AddStatLogAsync(StatType.AdminDelete, "删除管理员", adminInfo.Id, adminInfo.UserName, adminInfo);
             await _authManager.AddStatCount(StatType.AdminDelete);
