@@ -201,7 +201,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
                                                             hasAnswer = true;
                                                         }
                                                     }
-                                                    if (!hasAnswer)
+                                                    if (!hasAnswer || answers.Count > options.Count || (answers.Count > 1 && tx.ExamTxBase != ExamTxBase.Duoxuanti))
                                                     {
                                                         checkOptions = false;
                                                         errorTotal++;
@@ -270,7 +270,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
                             }
                             errorTms.Add(errorTm);
                         }
-                   
+
                     }
                 }
             }

@@ -153,15 +153,31 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                                     }
                                     catch { }
                                 }
-                                if (options.Count < answer.Length)
+                                if(txInfo.ExamTxBase == ExamTxBase.Duoxuanti)
                                 {
-                                    cacheInfo.TmCurrent++;
-                                    errorMessageList.Add($"【行{rowIndexName}:候选项和答案不匹配】");
+                                    if (options.Count < answer.Length)
+                                    {
+                                        cacheInfo.TmCurrent++;
+                                        errorMessageList.Add($"【行{rowIndexName}:候选项和答案不匹配】");
 
-                                    _cacheManager.AddOrUpdateAbsolute(cacheKey, cacheInfo, 1);
-                                    failure++;
-                                    continue;
+                                        _cacheManager.AddOrUpdateAbsolute(cacheKey, cacheInfo, 1);
+                                        failure++;
+                                        continue;
+                                    }
                                 }
+                                else
+                                {
+                                    if (answer.Length > 1)
+                                    {
+                                        cacheInfo.TmCurrent++;
+                                        errorMessageList.Add($"【行{rowIndexName}:候选项和答案不匹配】");
+
+                                        _cacheManager.AddOrUpdateAbsolute(cacheKey, cacheInfo, 1);
+                                        failure++;
+                                        continue;
+                                    }
+                                }
+                             
                             }
                             if (txInfo.ExamTxBase == ExamTxBase.Tiankongti)
                             {
