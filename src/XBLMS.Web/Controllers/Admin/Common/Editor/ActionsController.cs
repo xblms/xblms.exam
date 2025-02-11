@@ -80,6 +80,11 @@ namespace XBLMS.Web.Controllers.Admin.Common.Editor
             public string FileManagerUrlPrefix { get; set; }
             public int FileManagerListSize { get; set; }
             public List<string> FileManagerAllowFiles { get; set; }
+            public ConfigFormulaConfig FormulaConfig { get; set; }
+        }
+        public class ConfigFormulaConfig
+        {
+            public string ImageUrlTemplate { get; set; } = "https://r.latexeasy.com/image.svg?{}";
         }
 
         public class ListFileRequest

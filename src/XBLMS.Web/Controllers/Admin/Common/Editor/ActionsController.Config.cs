@@ -44,7 +44,9 @@ namespace XBLMS.Web.Controllers.Admin.Common.Editor
                 FileManagerActionName = "listFile",
                 FileManagerListSize = 20,
                 FileManagerUrlPrefix = "",
-                FileManagerAllowFiles = ListUtils.GetStringList($"{Constants.DefaultImageUploadExtensions},{Constants.DefaultVideoUploadExtensions},{Constants.DefaultFileUploadExtensions}")
+                FileManagerAllowFiles = ListUtils.GetStringList($"{Constants.DefaultImageUploadExtensions},{Constants.DefaultVideoUploadExtensions},{Constants.DefaultFileUploadExtensions}"),
+                FormulaConfig = new ConfigFormulaConfig()
+
             };
         }
     }

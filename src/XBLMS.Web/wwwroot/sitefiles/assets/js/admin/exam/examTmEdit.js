@@ -164,6 +164,16 @@ var methods = {
       height: "78%"
     });
   },
+  btnOpenEditPlusClick: function (ref, ptype) {
+    var $this = this;
+    top.utils.openLayer({
+      title: false,
+      closebtn: 0,
+      url: utils.getCommonUrl('editorPlusOpenLayer', { pf: window.name, ptype: ptype, ref: ref }),
+      width: "100%",
+      height: "100%"
+    });
+  },
   setOptionsValue: function (index,value) {
     this.$set(this.options, index, value);
   }

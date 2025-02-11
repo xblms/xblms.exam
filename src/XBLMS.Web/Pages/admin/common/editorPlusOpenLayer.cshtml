@@ -1,0 +1,25 @@
+﻿@page
+@{ Layout = "_Layout"; }
+
+<el-card>
+    <div slot="header" class="clearfix">
+        <span>ueditorPlus</span>
+        <el-button style="float: right;padding:3px 0;" type="text" v-on:click="utils.closeLayerSelf"><i class="el-icon-close"></i></el-button>
+    </div>
+    <textarea :id="attributeName"
+              :name="attributeName"
+              v-html="editContent"
+              style="width: 100%;">
+    </textarea>
+</el-card>
+<el-row align="center" style="margin-top:18px;">
+    <el-col :span="24" align="center">
+        <el-button icon="el-icon-check" :size="euiSize" type="primary" v-on:click="btnSaveClick">确 定</el-button>
+        <el-button icon="el-icon-close" :size="euiSize" v-on:click="utils.closeLayerSelf">关 闭</el-button>
+    </el-col>
+</el-row>
+@section Scripts{
+<script src="/sitefiles/assets/lib/ueditorPlus/ueditor.config.js" type="text/javascript"></script>
+<script src="/sitefiles/assets/lib/ueditorPlus/ueditor.all.js" type="text/javascript"></script>
+<script src="/sitefiles/assets/js/admin/common/editorPlusOpenLayer.js" type="text/javascript"></script>
+}
