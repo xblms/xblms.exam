@@ -45,7 +45,9 @@
                         </el-form-item>
                         <el-form-item label="解析" prop="jiexi">
                             <el-input ref="jiexi" type="textarea" :autosize="{ minRows: 3}" v-model="form.jiexi"></el-input>
-                            <el-link type="primary" icon="el-icon-document" v-on:click="btnOpenEditClick('jiexi','form')">富文本编辑</el-link>
+                            <el-link type="primary" icon="el-icon-document" v-on:click="btnOpenEditClick('jiexi','form')">ueditor</el-link>
+                            <el-divider direction="vertical"></el-divider>
+                            <el-link type="primary" icon="el-icon-document" v-on:click="btnOpenEditPlusClick('jiexi','form')">ueditorPlus</el-link>
                         </el-form-item>
                         <el-form-item label="状态" prop="locked">
                             <el-select v-model="form.locked">

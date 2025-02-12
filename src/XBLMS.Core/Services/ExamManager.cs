@@ -163,11 +163,11 @@ namespace XBLMS.Core.Services
             }
             else
             {
-                tm.Set("TxName","题型不存在");
+                tm.Set("TxName", "题型不存在");
                 tm.Set("TxTaxis", "题型不存在");
                 tm.Set("BaseTx", "题型不存在");
             }
-     
+
             var treeName = await _examTmTreeRepository.GetPathNamesAsync(tm.TreeId);
             tm.Set("TreeName", treeName);
 
@@ -184,7 +184,7 @@ namespace XBLMS.Core.Services
         public async Task GetTmInfoByPaper(ExamTm tm)
         {
             await GetBaseTmInfo(tm);
-
+            tm.Title = tm.Get("TitleHtml").ToString();
             var tx = await _examTxRepository.GetAsync(tm.TxId);
 
             var tmTitleList = new List<KeyValuePair<int, string>>();
