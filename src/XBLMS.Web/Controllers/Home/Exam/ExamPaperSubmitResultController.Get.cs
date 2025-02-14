@@ -28,9 +28,14 @@ namespace XBLMS.Web.Controllers.Home.Exam
             }
             else
             {
+                var queue = 0;
                 var taskStarids = _createManager.GetTaskStartIds();
-                var queue = taskStarids.Count - taskStarids.IndexOf(request.Id);
-                if (queue < 0) queue = 0;
+
+                if (taskStarids.Count > 0)
+                {
+                    queue = taskStarids.Count - taskStarids.IndexOf(request.Id);
+                }
+
                 return new GetResult
                 {
                     Queue = queue

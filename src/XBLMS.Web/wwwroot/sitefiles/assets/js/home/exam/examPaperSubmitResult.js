@@ -9,15 +9,18 @@ var data = utils.init({
     score: 0,
     isShowScore: false,
     title: '',
-    isMark:true
-  }
+    isMark: true
+  },
+  taskLoad: false
 });
 
 var methods = {
   apiGet: function () {
     var $this = this;
 
-    utils.loading(this, true);
+    if (!this.taskLoad) {
+      utils.loading(this, true);
+    }
 
     $api.get($url, { params: { id: $this.id } }).then(function (response) {
       var res = response.data;
@@ -31,9 +34,10 @@ var methods = {
       $this.item.isMark = res.isMark;
 
       if (!$this.item.success) {
+        $this.taskLoad = true;
         setTimeout(function () {
           $this.apiGet();
-        }, 1000);
+        }, 3000);
       }
 
     }).catch(function (error) {

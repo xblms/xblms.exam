@@ -3,7 +3,7 @@
 
 <el-card class="rounded-0">
     <div slot="header" class="text-center">
-        <div>
+        <div class="h1">
             {{ item.title }}
         </div>
     </div>
@@ -32,7 +32,7 @@
                     </template>
                     <template slot="subTitle">
                         成绩
-                        <div class="p-3 fs-1">
+                        <div class="p-3 h1">
                             {{ item.score }}
                         </div>
                     </template>
@@ -46,7 +46,7 @@
                     </template>
                     <template slot="subTitle">
                         成绩
-                        <div class="p-3 fs-1">
+                        <div class="p-3 h1">
                             {{ item.score }}
                         </div>
                     </template>
@@ -80,7 +80,7 @@
 </el-card>
 <div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 animate__animated animate__fadeInUp">
     <el-button-group class="rounded-0">
-        <el-button class="rounded-0" v-on:click="utils.closeLayerSelf" icon="el-icon-back">返 回</el-button>
+        <el-button class="rounded-0" v-on:click="utils.closeLayerSelf" icon="el-icon-back">安全退出</el-button>
     </el-button-group>
 </div>
 @section Scripts{

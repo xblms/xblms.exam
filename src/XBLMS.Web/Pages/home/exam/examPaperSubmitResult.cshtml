@@ -3,9 +3,10 @@
 
 <el-card>
     <div slot="header" class="clearfix text-center">
-        <span class="fw-bold"><i class="el-icon-s-order me-2"></i><span v-if="item.success">{{ item.title }}：</span>考试正常结束</span>
+        <span class="h1" v-if="item">{{ item.title }}</span>
+        <span v-else><i class="el-icon-loading"></i></span>
     </div>
-    <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-120) + 'px' }">
+    <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-150) + 'px' }">
         <div v-if="item.success">
             <div v-if="!item.isMark">
                 <el-result>
@@ -34,7 +35,7 @@
                         </template>
                         <template slot="subTitle">
                             成绩
-                            <div class="p-3 fs-1">
+                            <div class="p-3 h1">
                                 {{ item.score }}
                             </div>
                         </template>
@@ -51,7 +52,7 @@
                         </template>
                         <template slot="subTitle">
                             成绩
-                            <div class="p-3 fs-1">
+                            <div class="p-3 h1">
                                 {{ item.score }}
                             </div>
                         </template>
