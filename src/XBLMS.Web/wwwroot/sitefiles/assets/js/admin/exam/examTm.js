@@ -19,10 +19,11 @@ var data = utils.init({
     order: '',
     orderType: '',
     pageIndex: 1,
-    pageSize: PER_PAGE
+    pageSize: 100
   },
   tmList: null,
   tmTotal: 0,
+  pageSizes: [PER_PAGE, 100, 500, 1000],
   txList: null,
   orderTypeList: null,
   tmGroups:null,
@@ -69,6 +70,12 @@ var methods = {
   },
   handleCurrentChange: function (val) {
     this.formInline.pageIndex = val;
+    this.apiGet();
+  },
+  handleSizeChange: function (val) {
+    this.formInline.pageIndex = 1;
+    this.formInline.pageSize = val;
+
     this.apiGet();
   },
   btnSearchClick: function () {
