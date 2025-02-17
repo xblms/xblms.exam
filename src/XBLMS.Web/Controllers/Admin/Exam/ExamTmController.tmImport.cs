@@ -120,7 +120,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
                         var jiexi = row[4].ToString().Trim();
                         var title = row[5].ToString().Trim();
-                        var answer = row[6].ToString().Trim().ToUpper();
+                        var answer = row[6].ToString().Trim();
                         var options = new List<string>();
 
 
@@ -142,6 +142,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                             }
                             if (txInfo.ExamTxBase != ExamTxBase.Tiankongti && txInfo.ExamTxBase != ExamTxBase.Jiandati)
                             {
+                                answer = answer.ToUpper();
                                 for (int optionindex = 7; optionindex < 17; optionindex++)
                                 {
                                     try

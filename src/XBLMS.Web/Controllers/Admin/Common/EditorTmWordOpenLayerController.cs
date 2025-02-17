@@ -113,7 +113,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
                                     {
                                         var htmlTitle = "";
                                         var htmlTx = StringUtils.Trim(tmRemarkList[0]);
-                                        var htmlAnswer = tmRemarkList[1].Trim().ToUpper();
+                                        var htmlAnswer = tmRemarkList[1].Trim();
                                         var htmlScore = tmRemarkList[2].Trim();
                                         var htmlNd = tmRemarkList[3].Trim();
                                         var htmlZsd = tmRemarkList[4].Trim();
@@ -146,6 +146,8 @@ namespace XBLMS.Web.Controllers.Admin.Common
                                             }
                                             else
                                             {
+                                                htmlAnswer = htmlAnswer.ToUpper();
+
                                                 var tmRowHtmlList = ListUtils.GetStringList(tmContentHtml, "</p><p>");
                                                 ListUtils.RemoveIgnoreCase(tmRowHtmlList, "");
 
