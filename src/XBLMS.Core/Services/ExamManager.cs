@@ -47,6 +47,9 @@ namespace XBLMS.Core.Services
         private readonly IExamAssessmentConfigRepository _examAssessmentConfigRepository;
         private readonly IExamAssessmentConfigSetRepository _examAssessmentConfigSetRepository;
 
+        private readonly IKnowlegesTreeRepository _knowlegesTreeRepository;
+        private readonly IKnowlegesRepository _knowlegesRepository;
+
         private readonly IOrganManager _organManager;
 
 
@@ -82,7 +85,9 @@ namespace XBLMS.Core.Services
             IExamAssessmentTmRepository examAssessmentTmRepository,
             IExamAssessmentAnswerRepository examAssessmentAnswerRepository,
             IExamAssessmentConfigRepository examAssessmentConfigRepository,
-            IExamAssessmentConfigSetRepository examAssessmentConfigSetRepository)
+            IExamAssessmentConfigSetRepository examAssessmentConfigSetRepository,
+            IKnowlegesTreeRepository knowlegesTreeRepository,
+            IKnowlegesRepository knowlegesRepository)
         {
             _settingsManager = settingsManager;
             _organManager = organManager;
@@ -117,6 +122,8 @@ namespace XBLMS.Core.Services
             _examAssessmentAnswerRepository = examAssessmentAnswerRepository;
             _examAssessmentConfigRepository = examAssessmentConfigRepository;
             _examAssessmentConfigSetRepository = examAssessmentConfigSetRepository;
+            _knowlegesTreeRepository = knowlegesTreeRepository;
+            _knowlegesRepository = knowlegesRepository;
         }
 
 

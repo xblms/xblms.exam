@@ -68,6 +68,9 @@ namespace XBLMS.Services
         IExamAssessmentConfigRepository ExamAssessmentConfigRepository { get; }
         IExamAssessmentConfigSetRepository ExamAssessmentConfigSetRepository { get; }
 
+        IKnowlegesRepository KnowlegesRepository { get; }
+        IKnowlegesTreeRepository KnowlegesTreeRepository { get; }
+
         List<IRepository> GetAllRepositories();
 
         Database GetDatabase(string connectionString = null);

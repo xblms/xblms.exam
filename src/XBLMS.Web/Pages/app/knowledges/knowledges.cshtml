@@ -1,0 +1,89 @@
+@page
+@{ Layout = "_LayoutApp"; }
+@section Styles{
+    <style>
+        .el-button+.el-button, .el-checkbox.is-bordered+.el-checkbox.is-bordered{
+            margin-left:0;
+        }
+        html {
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+}
+<el-card class="rounded-0" shadow="never">
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="mb-3 fw-bold">分类查询</div>
+        <div>
+            <el-form :inline="true" :model="form">
+                <el-form-item label="">
+                    <el-checkbox v-model="form.like" v-on:change="btnSearchClick">
+                        已点赞
+                    </el-checkbox>
+                </el-form-item>
+                <el-form-item label="">
+                    <el-checkbox v-model="form.collect" v-on:change="btnSearchClick">
+                        已收藏
+                    </el-checkbox>
+                </el-form-item>
+            </el-form>
+        </div>
+    </div>
+    <div v-for="treeSearch in treeSearchList">
+        <el-divider v-if="treeSearch.deep>0"></el-divider>
+        <template v-for="treeSearchItem in treeSearch.list">
+            <el-button class="me-1 mb-1" type="primary" size="mini" v-if="treeSearchItem.id===treeSearch.selectId" v-on:click="btnTreeNodeClick(treeSearch,treeSearchItem)">{{ treeSearchItem.name }}</el-button>
+            <el-button class="me-1 mb-1" size="mini" v-else v-on:click="btnTreeNodeClick(treeSearch,treeSearchItem)">{{ treeSearchItem.name }}</el-button>
+        </template>
+    </div>
+</el-card>
+<div class="p-3" v-if="total>0">
+    <div class="row g-3">
+        <div class="col-xl-6 col-lg-6 col-md-6 col-6">
+            <div class="rounded-0 card-lift card-hover mb-3" v-on:click="btnViewClick(know)" style="cursor:pointer;" v-for="know in list1">
+                <div>
+                    <img :src="know.coverImgUrl" class="img-fluid card-img shadow-lg">
+                </div>
+                <div class="p-1">
+                    <small><span class="me-2"><i class="bi bi-star-fill"></i> {{ know.likes }}</span><span><i class="bi bi-heart-fill"></i> {{ know.collects }}</span></small>
+                    <div>
+                        <a href="javascript:;" class="text-inherit">{{ know.name }}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6 col-lg-6 col-md-6 col-6">
+            <div class="rounded-0  card-lift card-hover mb-3" v-on:click="btnViewClick(know)" style="cursor:pointer;" v-for="know in list2">
+                <div>
+                    <img :src="know.coverImgUrl" class="img-fluid card-img shadow-lg">
+                </div>
+                <div class="p-1">
+                    <small><span class="me-2"><i class="bi bi-star-fill"></i> {{ know.likes }}</span><span><i class="bi bi-heart-fill"></i> {{ know.collects }}</span></small>
+                    <div>
+                        <a href="javascript:;" class="text-inherit">{{ know.name }}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="my-5 text-center">
+        <el-button class="border-0" icon="el-icon-refresh-right" v-if="total>pushTotal" v-on:click="btnLoadMoreClick" :loading="loadMoreLoading">加载剩余的 {{total-pushTotal}} 条</el-button>
+        <small v-else>没有更多了</small>
+    </div>
+</div>
+<div class="pt-10" v-else>
+    <el-empty :image-size="55" image="/sitefiles/assets/images/nodata.svg"></el-empty>
+</div>
+<div class="py-8"></div>
+<div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 animate__animated animate__fadeInUp">
+    <el-button-group class="rounded-0">
+        <el-button class="rounded-0" type="primary" v-on:click="utils.closeLayerSelf" icon="el-icon-back">返 回</el-button>
+    </el-button-group>
+</div>
+@section Scripts{
+    <script src="/sitefiles/assets/js/app/knowledges/knowledges.js" type="text/javascript"></script>
+}

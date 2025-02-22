@@ -111,5 +111,11 @@ namespace XBLMS.Enums
         ExamQUpdate,
         [DataEnum(DisplayName = "问卷调查删除")]
         ExamQDelete,
+        [DataEnum(DisplayName = "知识库新增")]
+        KnowledgesAdd,
+        [DataEnum(DisplayName = "知识库修改")]
+        KnowledgesUpdate,
+        [DataEnum(DisplayName = "知识库删除")]
+        KnowledgesDelete,
     }
 }

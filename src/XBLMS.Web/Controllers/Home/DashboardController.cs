@@ -32,6 +32,8 @@ namespace XBLMS.Web.Controllers.Home
         private readonly IExamAssessmentUserRepository _examAssessmentUserRepository;
         private readonly IExamAssessmentRepository _examAssessmentRepository;
 
+        private readonly IKnowlegesRepository _knowlegesRepository;
+
         public DashboardController(IConfigRepository configRepository,
             ISettingsManager settingsManager,
             IOrganManager organManager,
@@ -45,7 +47,8 @@ namespace XBLMS.Web.Controllers.Home
             IExamCerRepository examCerRepository,
             IExamCerUserRepository examCerUserRepository,
             IExamAssessmentUserRepository examAssessmentUserRepository,
-            IExamAssessmentRepository examAssessmentRepository)
+            IExamAssessmentRepository examAssessmentRepository,
+            IKnowlegesRepository knowlegesRepository)
         {
             _settingsManager = settingsManager;
             _configRepository = configRepository;
@@ -61,6 +64,7 @@ namespace XBLMS.Web.Controllers.Home
             _examCerUserRepository = examCerUserRepository;
             _examAssessmentUserRepository = examAssessmentUserRepository;
             _examAssessmentRepository = examAssessmentRepository;
+            _knowlegesRepository = knowlegesRepository;
         }
 
         public class GetRequest
@@ -97,6 +101,8 @@ namespace XBLMS.Web.Controllers.Home
 
             public string DateStr { get; set; }
             public List<ExamCerUser> CerList { get; set; }
+
+            public List<Models.Knowledges> KnowList { get; set; }
 
             public ExamPaper TodayExam { get; set; }
             public List<ExamPaper> TaskPaperList { get; set; }

@@ -161,8 +161,14 @@ namespace XBLMS.Web.Controllers.Home
                     todayExam = paper;
                 }
             }
-
-
+            var knowList = await _knowlegesRepository.GetNewListAsync();
+            if(knowList!=null && knowList.Count > 0)
+            {
+                foreach (var item in knowList)
+                {
+                    item.Url = "";
+                }
+            }
             return new GetResult
             {
                 User = user,
@@ -192,6 +198,7 @@ namespace XBLMS.Web.Controllers.Home
                 DateStr = dateStr,
 
                 CerList = cerList,
+                KnowList = knowList,
                 TodayExam = todayExam,
                 TaskPaperList = taskPaperList,
                 TaskQList = taskQList,

@@ -31,7 +31,7 @@
                                     <el-link class="fs-6" size="mini" icon="el-icon-download" v-on:click="window.open(log.url)">重新下载</el-link>
                                 </div>
                                 <div v-else>
-                                    <div v-if="log.isAdmin || log.isUser || log.isTm || log.isDeleteTm || log.isExam || log.isExamQ || log.isExamAss || log.isExamPk || log.isExamCer">
+                                    <div v-if="log.isAdmin || log.isUser || log.isTm || log.isDeleteTm || log.isExam || log.isExamQ || log.isExamAss || log.isExamPk || log.isExamCer || log.isKnowledge">
                                         <el-link class="fs-6" icon="el-icon-view" size="mini" v-on:click="btnViewClick(log)" v-if="log.isView">预览</el-link>
                                         <el-link class="fs-6" icon="el-icon-edit" size="mini" v-on:click="btnEditClick(log)" v-if="log.isEdit">编辑</el-link>
                                     </div>

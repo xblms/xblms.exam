@@ -219,6 +219,10 @@ var utils = {
     return utils.getPageUrl("exam", name, query);
   },
 
+  getKnowledgesUrl: function (name, query) {
+    return utils.getPageUrl("knowledges", name, query);
+  },
+
   getSettingsUrl: function (name, query) {
     return utils.getPageUrl("settings", name, query);
   },

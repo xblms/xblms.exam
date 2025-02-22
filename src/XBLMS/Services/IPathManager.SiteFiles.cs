@@ -2,6 +2,7 @@
 {
     partial interface IPathManager
     {
+        string GetKnowledgesUploadFilesPath(params string[] paths);
         string GetCerUploadFilesPath(params string[] paths);
         string GetTemporaryFilesUrl(params string[] paths);
         

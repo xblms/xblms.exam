@@ -1,0 +1,158 @@
+﻿@page
+@{ Layout = "_Layout"; }
+
+<el-card>
+    <div slot="header" class="clearfix">
+        <el-row>
+            <el-col :span="12">
+                <span>新增知识库</span>
+            </el-col>
+            <el-col :span="12" style="text-align:right;">
+                <el-button style="float: right;" :size="euiSize" plain type="primary" icon="el-icon-upload" v-on:click="btnUploadClick">
+                    上传文档
+                </el-button>
+            </el-col>
+        </el-row>
+    </div>
+    <el-table ref="tableKnowledges"
+              :data="knowledgesList"
+              :row-key="Math.random()"
+              border
+              style="width: 100%" :height="$(window).innerHeight()-200"
+              empty-text="请上传文档后编辑"
+              size="small">
+        <el-table-column type="index" label="#"
+                         width="50">
+        </el-table-column>
+        <el-table-column label="名称">
+            <template slot-scope="scope">
+                <el-input size="mini" v-model="scope.row.name"></el-input>
+            </template>
+        </el-table-column>
+        <el-table-column label="访问路径" prop="url" width="300" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column label="状态" width="100">
+            <template slot-scope="scope">
+                <el-checkbox v-model="scope.row.locked">下架</el-checkbox>
+            </template>
+        </el-table-column>
+        <el-table-column width="200">
+            <template slot-scope="scope">
+                <el-button icon="el-icon-view" size="mini" v-on:click="btnTableViewClick(scope.row)">预览</el-button>
+                <el-button type="danger" icon="el-icon-delete" size="mini" v-on:click="btnTableRemoveClick(scope.row)">移除</el-button>
+            </template>
+        </el-table-column>
+    </el-table>
+</el-card>
+<el-card style="text-align:center;">
+    <el-button icon="el-icon-check" :size="euiSize" type="primary" v-on:click="btnSubmitClick">确 定</el-button>
+    <el-button icon="el-icon-close" :size="euiSize" v-on:click="utils.closeLayerSelf">取 消</el-button>
+</el-card>
+<template>
+    <el-drawer title="上传文件" size="100%" direction="ttb"
+               :visible.sync="drawerUpload" :with-header="false">
+        <el-card style="margin:13px;">
+            <div slot="header" class="clearfix">
+                <span>上传文件</span>
+            </div>
+            <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-190) + 'px' }">
+                <el-tabs v-model="activeName" tab-position="left">
+                <el-tab-pane label="选择文件" name="select">
+                    <el-upload ref="uploadFiles"
+                               :action="$urlUpload"
+                               :headers="{Authorization: 'Bearer ' + $token}"
+                               :before-upload="uploadBefore"
+                               :on-change="uploadChange"
+                               :on-progress="uploadProgress"
+                               :on-success="uploadSuccess"
+                               :on-error="uploadError"
+                               :on-exceed="uploadExceed"
+                               :multiple="true" :destroy-on-close="true"
+                               :auto-upload="false" :show-file-list="false"
+                               drag>
+                        <i class="el-icon-upload"></i>
+                        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                        <div class="el-upload__tip" slot="tip">仅支持 Office 文件。</div>
+                    </el-upload>
+                </el-tab-pane>
+                <el-tab-pane name="upload">
+                    <span slot="label">
+                        <span v-if="fileList.length>0">文件上传<span style="color:green;margin-left:3px;">（{{fileList.length}}）</span></span>
+                        <span v-else>文件上传</span>
+                    </span>
+                    <el-button plain icon="el-icon-upload" size="small" type="primary" :loading="uploadBtnLoad" v-on:click="uploadFiles" v-if="fileList.length>0">开始上传</el-button>
+                    <el-divider></el-divider>
+                    <el-table :data="fileList"
+                              style="width: 100%" size="mini">
+                        <el-table-column prop="name" label="文件">
+                        </el-table-column>
+                        <el-table-column prop="size" label="大小" width="100">
+                            <template slot-scope="scope">
+                                <span>{{ utils.formatFileSize(scope.row.size) }}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="status" label="状态" width="110">
+                            <template slot-scope="scope">
+                                <el-tag size="mini" v-if="scope.row.status==='ready'" effect="dark" type="info">准备上传</el-tag>
+                                <el-tag size="mini" v-else-if="scope.row.status==='success'" effect="dark" type="success">上传成功</el-tag>
+                                <el-tag size="mini" v-else-if="scope.row.status==='fail'" effect="dark" type="danger">上传失败</el-tag>
+                                <span v-else><i class="el-icon-loading"></i></span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="percentage" label="进度" width="218" align="right">
+                            <template slot-scope="scope">
+                                <el-progress status="success" :percentage="scope.row.percentage" :stroke-width="18"></el-progress>
+                            </template>
+                        </el-table-column>
+                        <el-table-column width="110">
+                            <template slot-scope="scope">
+                                <el-button size="mini" v-on:click="btnFileAbort(scope.row)">取消上传</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </el-tab-pane>
+                <el-tab-pane label="上传成功" name="success">
+                    <span slot="label">
+                        <span v-if="fileListYes.length>0">上传成功<span style="color:green;margin-left:3px;">（{{fileListYes.length}}）</span></span>
+                        <span v-else>上传成功</span>
+                    </span>
+                    <el-table :data="fileListYes"
+                              style="width: 100%" size="mini">
+                        <el-table-column prop="name" label="文件">
+                        </el-table-column>
+                        <el-table-column prop="size" label="大小" width="100" align="right">
+                            <template slot-scope="scope">
+                                <span>{{ utils.formatFileSize(scope.row.size) }}</span>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </el-tab-pane>
+                <el-tab-pane :label="'上传错误（'+fileListNo.length+'）'" name="error">
+                    <span slot="label">
+                        <span v-if="fileListNo.length>0">上传错误<span style="color:red;margin-left:3px;">（{{fileListNo.length}}）</span></span>
+                        <span v-else>上传错误</span>
+                    </span>
+                    <el-table :data="fileListNo"
+                              style="width: 100%" size="mini">
+                        <el-table-column prop="name" label="文件"  width="380">
+                        </el-table-column>
+                        <el-table-column prop="msg" align="right">
+                            <template slot-scope="scope">
+                                <el-tag size="mini" effect="dark" type="danger">{{scope.row.msg}}</el-tag>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </el-tab-pane>
+            </el-tabs>
+            </el-scrollbar>
+        </el-card>
+        <el-row align="center" style="margin-top:18px;">
+            <el-col :span="24" align="center">
+                <el-button icon="el-icon-check" :loading="uploadBtnLoad" :size="euiSize" type="primary" v-on:click="drawerUpload=false">确 定</el-button>
+                <el-button icon="el-icon-close" :size="euiSize" v-on:click="drawerUpload=false">取 消</el-button>
+            </el-col>
+        </el-row>
+    </el-drawer>
+</template>
+@section Scripts{
+<script src="/sitefiles/assets/js/admin/knowledges/knowledgesUpload.js" type="text/javascript"></script> }

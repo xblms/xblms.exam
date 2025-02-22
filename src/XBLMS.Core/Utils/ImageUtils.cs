@@ -12,6 +12,15 @@ namespace XBLMS.Core.Utils
 {
     public static class ImageUtils
     {
+        public static void Crop(string imagePath, int x, int y, int width, int height)
+        {
+            using (var image = Image.Load(imagePath))
+            {
+                Rectangle cropArea = new Rectangle(x, y, width, height);
+                image.Mutate(x => x.Crop(cropArea));
+                image.Save(imagePath);
+            }
+        }
         public static void AddTextWaterMark(string imagePath, string text, string fontName, int fontSize, int waterMarkPositionx, int waterMarkPositiony, int waterMarkOpacity, int minWidth, int minHeight)
         {
             try
@@ -231,7 +240,7 @@ namespace XBLMS.Core.Utils
                 return processingContext.DrawImage(wmImg, new Point(Convert.ToInt32(pointF.X), Convert.ToInt32(pointF.Y)), opacity);
             }
         }
- 
+
         private static PointF GetWaterMarkPointF(Size image, int waterMarkPosition, float waterMarkWidth, float waterMarkHeight, bool textMark)
         {
             float x;

@@ -29,6 +29,14 @@ namespace XBLMS.Core.Services
             var path = PathUtils.Combine(_settingsManager.WebRootPath, DirectoryUtils.SiteFiles.DirectoryName, PathUtils.Combine(paths));
             return path;
         }
+
+        public string GetKnowledgesUploadFilesPath(params string[] paths)
+        {
+            var path = GetSiteFilesPath(DirectoryUtils.SiteFiles.Upload, DirectoryUtils.SiteFiles.Knowledges, PageUtils.Combine(paths));
+            DirectoryUtils.CreateDirectoryIfNotExists(path);
+            return path;
+        }
+
         public string GetCerUploadFilesPath(params string[] paths)
         {
             var path = GetSiteFilesPath(DirectoryUtils.SiteFiles.Upload, DirectoryUtils.SiteFiles.Cer, PageUtils.Combine(paths));

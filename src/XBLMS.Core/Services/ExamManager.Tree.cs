@@ -91,7 +91,7 @@ namespace XBLMS.Core.Services
                     if (isTotal)
                     {
                         var treeIds = await _examPaperTreeRepository.GetIdsAsync(item.Id);
-                        
+
                         total = await _examPaperRepository.GetCountAsync(treeIds);
                         count = await _examPaperRepository.GetCountAsync(new List<int>() { item.Id });
                     }
@@ -138,6 +138,75 @@ namespace XBLMS.Core.Services
                         SelfTotal = count,
                         Total = total,
                         Children = await GetExamPaperCascadesAsync(all, item.Id, isTotal)
+                    };
+                    list.Add(cascade);
+                }
+            }
+            return list;
+        }
+
+
+
+        public async Task<List<Cascade<int>>> GetKnowlegesTreeCascadesAsync(bool isTotal = false)
+        {
+            var list = new List<Cascade<int>>();
+            var trees = await _knowlegesTreeRepository.GetListAsync();
+            var items = trees.Where(p => p.ParentId == 0).ToList();
+
+            if (items != null && items.Any())
+            {
+                foreach (var item in items)
+                {
+                    var total = 0;
+                    var count = 0;
+                    if (isTotal)
+                    {
+                        total = await _knowlegesRepository.CountAsync(item.Id);
+                        count = await _knowlegesRepository.CountAsync(item.Id, false);
+                    }
+
+
+                    var cascade = new Cascade<int>
+                    {
+                        Id = item.Id,
+                        Popover = false,
+                        Label = item.Name,
+                        Value = item.Id,
+                        Total = total,
+                        SelfTotal = count,
+                        Children = await GetKnowlegesTreeCascadesAsync(trees, item.Id, isTotal)
+                    };
+                    list.Add(cascade);
+                }
+            }
+            return list;
+        }
+        private async Task<List<Cascade<int>>> GetKnowlegesTreeCascadesAsync(List<KnowledgesTree> all, int parentId, bool isTotal = false)
+        {
+            var list = new List<Cascade<int>>();
+            var items = all.Where(p => p.ParentId == parentId).ToList();
+
+            if (items != null && items.Count > 0)
+            {
+                foreach (var item in items)
+                {
+                    var total = 0;
+                    var count = 0;
+                    if (isTotal)
+                    {
+                        total = await _knowlegesRepository.CountAsync(item.Id);
+                        count = await _knowlegesRepository.CountAsync(item.Id, false);
+                    }
+
+                    var cascade = new Cascade<int>
+                    {
+                        Id = item.Id,
+                        Popover = false,
+                        Label = item.Name,
+                        Value = item.Id,
+                        SelfTotal = count,
+                        Total = total,
+                        Children = await GetKnowlegesTreeCascadesAsync(all, item.Id, isTotal)
                     };
                     list.Add(cascade);
                 }

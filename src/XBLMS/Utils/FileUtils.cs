@@ -274,7 +274,57 @@ namespace XBLMS.Utils
         {
             return StringUtils.EqualsIgnoreCase(".txt", typeStr);
         }
-
+        public static bool IsOffice(string fileExtName)
+        {
+            var retVal = false;
+            if (!string.IsNullOrEmpty(fileExtName))
+            {
+                fileExtName = StringUtils.TrimAndToLower(fileExtName);
+                if (!fileExtName.StartsWith("."))
+                {
+                    fileExtName = "." + fileExtName;
+                }
+                if (fileExtName == ".doc" || fileExtName == ".docx" || fileExtName == ".xls" || fileExtName == ".xlsx" || fileExtName == ".ppt" || fileExtName == ".pptx" || fileExtName == ".pdf")
+                {
+                    retVal = true;
+                }
+            }
+            return retVal;
+        }
+        public static bool IsPPT(string fileExtName)
+        {
+            var retVal = false;
+            if (!string.IsNullOrEmpty(fileExtName))
+            {
+                fileExtName = StringUtils.TrimAndToLower(fileExtName);
+                if (!fileExtName.StartsWith("."))
+                {
+                    fileExtName = "." + fileExtName;
+                }
+                if (fileExtName == ".ppt" || fileExtName == ".pptx")
+                {
+                    retVal = true;
+                }
+            }
+            return retVal;
+        }
+        public static bool IsExcel(string fileExtName)
+        {
+            var retVal = false;
+            if (!string.IsNullOrEmpty(fileExtName))
+            {
+                fileExtName = StringUtils.TrimAndToLower(fileExtName);
+                if (!fileExtName.StartsWith("."))
+                {
+                    fileExtName = "." + fileExtName;
+                }
+                if (fileExtName == ".xls" || fileExtName == ".xlsx")
+                {
+                    retVal = true;
+                }
+            }
+            return retVal;
+        }
         public static bool IsWord(string fileExtName)
         {
             var retVal = false;
@@ -285,7 +335,24 @@ namespace XBLMS.Utils
                 {
                     fileExtName = "." + fileExtName;
                 }
-                if (fileExtName == ".doc" || fileExtName == ".docx" || fileExtName == ".wps")
+                if (fileExtName == ".doc" || fileExtName == ".docx")
+                {
+                    retVal = true;
+                }
+            }
+            return retVal;
+        }
+        public static bool IsPDF(string fileExtName)
+        {
+            var retVal = false;
+            if (!string.IsNullOrEmpty(fileExtName))
+            {
+                fileExtName = StringUtils.TrimAndToLower(fileExtName);
+                if (!fileExtName.StartsWith("."))
+                {
+                    fileExtName = "." + fileExtName;
+                }
+                if (fileExtName == ".pdf")
                 {
                     retVal = true;
                 }

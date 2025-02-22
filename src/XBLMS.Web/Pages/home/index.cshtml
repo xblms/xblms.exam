@@ -164,6 +164,7 @@
                :size="topFrameWidth+'%'"
                :visible.sync="topFrameDrawer"
                direction="ltr">
+               <div slot="title" class="text-center">{{topFrameTitle}}</div>
         <iframe :src="topFrameSrc" style="width: 100%; height: 100%; border: none" :style="{height: (winHeight - 100) + 'px'}"></iframe>
     </el-drawer>
 </template>

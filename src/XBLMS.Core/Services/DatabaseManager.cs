@@ -76,6 +76,9 @@ namespace XBLMS.Core.Services
         public IExamAssessmentConfigRepository ExamAssessmentConfigRepository { get; }
         public IExamAssessmentConfigSetRepository ExamAssessmentConfigSetRepository { get; }
 
+        public IKnowlegesRepository KnowlegesRepository { get; }
+        public IKnowlegesTreeRepository KnowlegesTreeRepository { get; }
+
 
         public DatabaseManager(
             ISettingsManager settingsManager,
@@ -132,7 +135,9 @@ namespace XBLMS.Core.Services
             IExamAssessmentTmRepository examAssessmentTmRepository,
             IExamAssessmentAnswerRepository examAssessmentAnswerRepository,
             IExamAssessmentConfigRepository examAssessmentConfigRepository,
-            IExamAssessmentConfigSetRepository examAssessmentConfigSetRepository)
+            IExamAssessmentConfigSetRepository examAssessmentConfigSetRepository,
+            IKnowlegesRepository knowlegesRepository,
+            IKnowlegesTreeRepository knowlegesTreeRepository)
         {
             _settingsManager = settingsManager;
             AdministratorRepository = administratorRepository;
@@ -143,7 +148,7 @@ namespace XBLMS.Core.Services
             LogRepository = logRepository;
             RoleRepository = roleRepository;
             StatRepository = statRepository;
-            StatLogRepository= statLogRepository;
+            StatLogRepository = statLogRepository;
             UserGroupRepository = userGroupRepository;
             UserMenuRepository = userMenuRepository;
             UserRepository = userRepository;
@@ -189,6 +194,8 @@ namespace XBLMS.Core.Services
             ExamAssessmentAnswerRepository = examAssessmentAnswerRepository;
             ExamAssessmentConfigRepository = examAssessmentConfigRepository;
             ExamAssessmentConfigSetRepository = examAssessmentConfigSetRepository;
+            KnowlegesRepository = knowlegesRepository;
+            KnowlegesTreeRepository = knowlegesTreeRepository;
         }
 
         public List<IRepository> GetAllRepositories()
@@ -248,7 +255,9 @@ namespace XBLMS.Core.Services
                 ExamAssessmentTmRepository,
                 ExamAssessmentAnswerRepository,
                 ExamAssessmentConfigRepository,
-                ExamAssessmentConfigSetRepository
+                ExamAssessmentConfigSetRepository,
+                KnowlegesRepository,
+                KnowlegesTreeRepository
             };
 
             return list;

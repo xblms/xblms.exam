@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -259,8 +260,15 @@ namespace XBLMS.Web
 
             });
 
+            var provider = new FileExtensionContentTypeProvider();
+            provider.Mappings[".properties"] = "application/octet-stream";
 
-            app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                ContentTypeProvider = provider
+            });
+
+            //app.UseStaticFiles();
 
             var supportedCultures = new[]
             {

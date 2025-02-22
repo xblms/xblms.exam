@@ -125,11 +125,20 @@ namespace XBLMS.Core.Repositories
 
             parentId = await InsertAsync(new UserMenu
             {
+                Name = "knowleges",
+                Text = "知识库",
+                Link = "/home/knowledges/knowledges/",
+                IconClass = "el-icon-hot-water",
+                Taxis = 8
+            });
+
+            parentId = await InsertAsync(new UserMenu
+            {
                 Name = "examPaperScore",
                 Text = "考试成绩",
                 Link = "/home/exam/examPaperScore/",
                 IconClass = "el-icon-notebook-2",
-                Taxis = 8
+                Taxis = 9
             });
             parentId = await InsertAsync(new UserMenu
             {
@@ -137,7 +146,7 @@ namespace XBLMS.Core.Repositories
                 Text = "获得证书",
                 Link = "/home/exam/examPaperCer/",
                 IconClass = "el-icon-medal",
-                Taxis = 9
+                Taxis = 10
             });
 
             parentId = await InsertAsync(new UserMenu
@@ -146,7 +155,7 @@ namespace XBLMS.Core.Repositories
                 Text = "退出系统",
                 IconClass = "el-icon-switch-button",
                 Link = "/home/logout/",
-                Taxis = 10
+                Taxis = 11
             });
 
         }

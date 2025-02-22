@@ -1,0 +1,44 @@
+@page
+@{ Layout = "_LayoutHome"; }
+@section Styles{
+    <style>
+        body{
+            padding: 0;
+            margin: 0;
+            background-color: #ffffff;
+        }
+        html{
+            padding: 0;
+            margin: 0;
+            background-color: #ffffff;
+        }
+    </style>
+}
+<div class="container position-relative">
+    <iframe :src="'/sitefiles/assets/lib/PDFJS/web/Viewer.html?file='+url" :style="{height: ($(window).height() - 15) + 'px'}" style="width:100%;height:100%;"></iframe>
+    <div class="position-absolute top-50 start-100 translate-middle ms-5 mb-5">
+        <div class="mb-3 text-center">
+            <el-tooltip class="item" effect="dark" content="点赞" placement="left">
+                <el-button circle class="p-2 border-0 bg-white" v-if="isLike" v-on:click="btnLikeClick"><i class="bi bi-star-fill fs-2 text-success"></i></el-button>
+                <el-button circle class="p-2 border-0 bg-white" v-else v-on:click="btnLikeClick"><i class="bi bi-star fs-2"></i></el-button>
+            </el-tooltip>
+            <small>{{ likes }}</small>
+        </div>
+        <div class="mb-3 text-center">
+            <el-tooltip class="item" effect="dark" content="收藏" placement="left">
+                <el-button circle class="p-2 border-0 bg-white" v-if="isCollect" v-on:click="btnCollectClick"><i class="bi bi-heart-fill fs-2 text-success"></i></el-button>
+                <el-button circle class="p-2 border-0 bg-white" v-else v-on:click="btnCollectClick"><i class="bi bi-heart fs-2"></i></el-button>
+            </el-tooltip>
+            <small>{{ collects }}</small>
+        </div>
+        <div class="mb-2 text-center">
+            <el-tooltip class="item" effect="dark" content="退出预览" placement="left">
+                <el-button circle class="p-0 border-0 bg-white" v-on:click="top.$vue.topFrameDrawer=false"><i class="bi bi-sign-turn-slight-left fs-1"></i></el-button>
+            </el-tooltip>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="/sitefiles/assets/js/home/knowledges/knowledgesView.js" type="text/javascript"></script>
+}

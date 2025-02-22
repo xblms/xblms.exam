@@ -94,7 +94,7 @@ var data = utils.init({
   taskQTotal: 0,
   taskDialogVisible: false,
   taskAssTotal: 0,
-
+  knowList:null,
   topCer: null,
   dateStr: '',
 
@@ -150,6 +150,7 @@ var methods = {
       $this.taskTotal = res.taskTotal;
 
       $this.todayExam = res.todayExam;
+      $this.knowList = res.knowList;
 
       $this.version = res.version;
       setTimeout(function () {
@@ -232,6 +233,32 @@ var methods = {
       height: "100%",
       end: function () {
         $this.apiGet();
+      }
+    });
+  },
+  goKnowledges: function (id) {
+    var $this = this;
+    top.utils.openLayer({
+      title: false,
+      closebtn: 0,
+      url: utils.getKnowledgesUrl('knowledges'),
+      width: "100%",
+      height: "100%",
+      end: function () {
+        $this.setDocumentTitle();
+      }
+    });
+  },
+  btnViewKnowClick: function (row) {
+    var $this = this;
+    top.utils.openLayer({
+      title: false,
+      closebtn: 0,
+      url: utils.getKnowledgesUrl("knowledgesView", { id: row.id }),
+      width: "100%",
+      height: "100%",
+      end: function () {
+        $this.setDocumentTitle();
       }
     });
   },

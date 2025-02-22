@@ -121,6 +121,16 @@
         ]
       },
       {
+        "id": "knowledges",
+        "order": 7,
+        "text": "知识库",
+        "link": "/admin/knowledges/knowledges/",
+        "iconClass": "el-icon-trophy",
+        "Permissions": [ "Select", "Add", "Update", "Delete" ],
+        "children": [
+        ]
+      },
+      {
         "id": "account",
         "order": 8,
         "text": "企业管理",

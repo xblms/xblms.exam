@@ -92,6 +92,8 @@ var data = utils.init({
   examPaper: null,
   examMoni: null,
 
+  knowList:null,
+
   topCer: null,
   dateStr: null,
 
@@ -139,6 +141,7 @@ var methods = {
       $this.dateStr = res.dateStr;
 
       $this.cerList = res.cerList;
+      $this.knowList = res.knowList;
       $this.todayExam = res.todayExam;
       $this.taskPaperList = res.taskPaperList;
       $this.taskQList = res.taskQList;
@@ -226,6 +229,9 @@ var methods = {
         $this.apiGet();
       }
     });
+  },
+  btnViewKnowClick: function (row) {
+    utils.openTopLeft(row.name, utils.getKnowledgesUrl("knowledgesView", { id: row.id }));
   },
   btnViewAssClick: function (id) {
     var $this = this;

@@ -1,0 +1,154 @@
+@page
+@{ Layout = "_LayoutHome"; }
+@section Styles{
+    <style>
+        .el-form-item {
+            margin-bottom: 0px;
+        }
+
+        .el-button + .el-button, .el-checkbox.is-bordered + .el-checkbox.is-bordered {
+            margin-left: 0;
+        }
+        body{
+            padding: 0;
+            margin: 0;
+            background-color: #ffffff;
+        }
+
+        html{
+            padding: 0;
+            margin: 0;
+            background-color: #ffffff;
+        }
+    </style>
+}
+<el-card class="rounded-0">
+    <div class="d-flex align-items-center">
+        <div class="flex-grow-1">
+            <h2 class="h1 fw-bold"><nobr>知识库</nobr></h2>
+            <small>共 {{total}} 个文档</small>
+        </div>
+        <div>
+            <el-form :inline="true" :model="form">
+                <el-form-item label="">
+                    <el-input clearable prefix-icon="el-icon-search" v-model="form.keywords" placeholder="关键字"></el-input>
+                </el-form-item>
+                <el-form-item label="点赞">
+                    <el-checkbox v-model="form.like">
+                    </el-checkbox>
+                </el-form-item>
+                <el-form-item label="收藏">
+                    <el-checkbox v-model="form.collect">
+                    </el-checkbox>
+                </el-form-item>
+            </el-form>
+        </div>
+        <div>
+            <el-button type="primary" icon="el-icon-search" v-on:click="btnSearchClick">查 询</el-button>
+            <el-button icon="el-icon-search" v-on:click="treeSearchShow=!treeSearchShow">更多查询</el-button>
+        </div>
+    </div>
+</el-card>
+<el-card class="rounded-0" shadow="never" v-if="treeSearchShow">
+    <div class="mb-3 fw-bold">分类查询</div>
+    <div v-for="treeSearch in treeSearchList">
+        <el-divider v-if="treeSearch.deep>0"></el-divider>
+        <template v-for="treeSearchItem in treeSearch.list">
+            <el-button class="me-1 mb-1" type="primary" size="mini" v-if="treeSearchItem.id===treeSearch.selectId" v-on:click="btnTreeNodeClick(treeSearch,treeSearchItem)">{{ treeSearchItem.name }}</el-button>
+            <el-button class="me-1 mb-1" size="mini" v-else v-on:click="btnTreeNodeClick(treeSearch,treeSearchItem)">{{ treeSearchItem.name }}</el-button>
+        </template>
+    </div>
+</el-card>
+<div class="p-3" v-if="total>0">
+    <div class="row g-3">
+        <div class="col-xl-2 col-lg-2 col-md-2 col-2">
+            <div class="card rounded-0 card-lift card-hover border bg-white p-2 mb-3" v-on:click="btnViewClick(know)" style="cursor:pointer;" v-for="know in list1">
+                <div class="position-relative">
+                    <img :src="know.coverImgUrl" class="img-fluid card-img">
+                    <div class="position-absolute top-0 end-0 m-2">
+                        <div><span class="me-2"><i class="bi bi-star-fill"></i> {{ know.likes }}</span><span><i class="bi bi-heart-fill"></i> {{ know.collects }}</span></div>
+                    </div>
+                </div>
+                <div class="p-1">
+                    <a href="javascript:;" class="text-inherit">{{ know.name }}</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-2 col-lg-2 col-md-2 col-2">
+            <div class="card rounded-0  card-lift card-hover border bg-white p-2 mb-3" v-on:click="btnViewClick(know)" style="cursor:pointer;" v-for="know in list2">
+                <div class="position-relative">
+                    <img :src="know.coverImgUrl" class="img-fluid card-img">
+                    <div class="position-absolute top-0 end-0 m-2">
+                        <div><span class="me-2"><i class="bi bi-star-fill"></i> {{ know.likes }}</span><span><i class="bi bi-heart-fill"></i> {{ know.collects }}</span></div>
+                    </div>
+                </div>
+                <div class="p-1">
+                    <a href="javascript:;" class="text-inherit">{{ know.name }}</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-2 col-lg-2 col-md-2 col-2">
+            <div class="card rounded-0  card-lift card-hover border bg-white p-2 mb-3" v-on:click="btnViewClick(know)" style="cursor:pointer;" v-for="know in list3">
+                <div class="position-relative">
+                    <img :src="know.coverImgUrl" class="img-fluid card-img">
+                    <div class="position-absolute top-0 end-0 m-2">
+                        <div><span class="me-2"><i class="bi bi-star-fill"></i> {{ know.likes }}</span><span><i class="bi bi-heart-fill"></i> {{ know.collects }}</span></div>
+                    </div>
+                </div>
+                <div class="p-1">
+                    <a href="javascript:;" class="text-inherit">{{ know.name }}</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-2 col-lg-2 col-md-2 col-2">
+            <div class="card rounded-0  card-lift card-hover border bg-white p-2 mb-3" v-on:click="btnViewClick(know)" style="cursor:pointer;" v-for="know in list4">
+                <div class="position-relative">
+                    <img :src="know.coverImgUrl" class="img-fluid card-img">
+                    <div class="position-absolute top-0 end-0 m-2">
+                        <div><span class="me-2"><i class="bi bi-star-fill"></i> {{ know.likes }}</span><span><i class="bi bi-heart-fill"></i> {{ know.collects }}</span></div>
+                    </div>
+                </div>
+                <div class="p-1">
+                    <a href="javascript:;" class="text-inherit">{{ know.name }}</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-2 col-lg-2 col-md-2 col-2">
+            <div class="card rounded-0  card-lift card-hover border bg-white p-2 mb-3" v-on:click="btnViewClick(know)" style="cursor:pointer;" v-for="know in list5">
+                <div class="position-relative">
+                    <img :src="know.coverImgUrl" class="img-fluid card-img">
+                    <div class="position-absolute top-0 end-0 m-2">
+                        <div><span class="me-2"><i class="bi bi-star-fill"></i> {{ know.likes }}</span><span><i class="bi bi-heart-fill"></i> {{ know.collects }}</span></div>
+                    </div>
+                </div>
+                <div class="p-1">
+                    <a href="javascript:;" class="text-inherit">{{ know.name }}</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-2 col-lg-2 col-md-2 col-2">
+            <div class="card rounded-0  card-lift card-hover border bg-white p-2 mb-3" v-on:click="btnViewClick(know)" style="cursor:pointer;" v-for="know in list6">
+                <div class="position-relative">
+                    <img :src="know.coverImgUrl" class="img-fluid card-img">
+                    <div class="position-absolute top-0 end-0 m-2">
+                        <div><span class="me-2"><i class="bi bi-star-fill"></i> {{ know.likes }}</span><span><i class="bi bi-heart-fill"></i> {{ know.collects }}</span></div>
+                    </div>
+                </div>
+                <div class="p-1">
+                    <a href="javascript:;" class="text-inherit">{{ know.name }}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="my-5 text-center">
+        <el-button class="border-0" icon="el-icon-refresh-right" v-if="total>pushTotal" v-on:click="btnLoadMoreClick" :loading="loadMoreLoading">加载剩余的 {{total-pushTotal}} 条</el-button>
+        <small v-else>没有更多了</small>
+    </div>
+</div>
+<div class="pt-10" v-else>
+    <el-empty image="/sitefiles/assets/images/nodata.svg"></el-empty>
+</div>
+
+@section Scripts{
+    <script src="/sitefiles/assets/js/home/knowledges/knowledges.js" type="text/javascript"></script>
+}

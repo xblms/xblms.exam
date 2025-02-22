@@ -126,6 +126,15 @@ var methods = {
     else if (log.isExamCer) {
       utils.openTopLeft(log.objectName + '-预览', utils.getCommonUrl("examCerLayerView", { id: log.objectId }));
     }
+    else if (log.isKnowledge) {
+      top.utils.openLayer({
+        title: false,
+        closebtn: 0,
+        url: utils.getKnowledgesUrl("knowledgesView", { url: log.src }),
+        width: "88%",
+        height: "99%"
+      });
+    }
   },
   btnEditClick: function (log) {
     var $this = this;

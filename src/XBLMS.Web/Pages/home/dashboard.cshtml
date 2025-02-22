@@ -240,8 +240,9 @@
             <div class="my-8">
                 <div class="text-center mt-8">
                     <h2 class="fw-bold">
-                        <i class="bi bi-journal-bookmark-fill text-warning me-2"></i>获得证书
+                        获得证书
                     </h2>
+                    <h1><i class="el-icon-medal text-warning me-2"></i></h1>
                 </div>
                 <div class="mt-5 mb-8">
                     <el-carousel :interval="3000" type="card" height="200px">
@@ -263,6 +264,7 @@
                                     <h2 class="fw-bold mt-3">
                                         刷题练习
                                     </h2>
+                                    <h1><i class="el-icon-s-order text-warning me-2"></i></h1>
                                     <p class="mb-0 fs-4">共 {{ practiceAllTmTotal }} 道题可以练习</p>
                                 </div>
                             </div>
@@ -338,6 +340,36 @@
                             <button class="btn btn-outline-primary border-0" v-on:click="btnMoreMenuClick('examPractice')">更多练习<i class="bi bi-three-dots-vertical ms-2"></i></button>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+        <div class="my-8" v-if="knowList && knowList.length>0">
+            <div class="my-8">
+                <div class="text-center mt-8">
+                    <h2 class="fw-bold">
+                        新上知识库
+                    </h2>
+                    <h1><i class="el-icon-hot-water text-warning me-2"></i></h1>
+                </div>
+                <div class="mt-5">
+                    <div class="row g-5">
+                        <div class="col-xl-3 col-lg-3 col-md-3 col-3" v-for="know in knowList">
+                            <div class="card card-lift card-hover border bg-white p-2 mb-3" v-on:click="btnViewKnowClick(know)" style="cursor:pointer;">
+                                <div class="position-relative">
+                                    <img :src="know.coverImgUrl" class="img-fluid card-img">
+                                    <div class="position-absolute top-0 end-0 m-2">
+                                        <div><span class="me-2"><i class="bi bi-star-fill"></i> {{ know.likes }}</span><span><i class="bi bi-heart-fill"></i> {{ know.collects }}</span></div>
+                                    </div>
+                                </div>
+                                <div class="p-1">
+                                    <a href="javascript:;" class="text-inherit">{{ know.name }}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-3 mb-8">
+                    <button class="btn btn-outline-primary border-0" v-on:click="btnMoreMenuClick('knowleges')">更多<i class="bi bi-three-dots-vertical ms-2"></i></button>
                 </div>
             </div>
         </div>

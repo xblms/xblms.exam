@@ -130,7 +130,7 @@ namespace XBLMS.Web.Controllers.Admin
                         if (examPaper != null)
                         {
                             isEdit = true;
-                            if(examPaper.TmRandomType != ExamPaperTmRandomType.RandomExaming)
+                            if (examPaper.TmRandomType != ExamPaperTmRandomType.RandomExaming)
                             {
                                 isView = true;
                             }
@@ -206,6 +206,23 @@ namespace XBLMS.Web.Controllers.Admin
                     }
                     item.Set("IsExamCer", isExamCer);
 
+                    var isKnowledge = false;
+                    if (item.StatType == StatType.KnowledgesAdd || item.StatType == StatType.KnowledgesUpdate)
+                    {
+                        isKnowledge = true;
+                        if (await _databaseManager.KnowlegesRepository.ExistsAsync(item.ObjectId))
+                        {
+                            var knowledge = await _databaseManager.KnowlegesRepository.GetAsync(item.ObjectId);
+                            item.Set("Src", knowledge.Url);
+                            isView = true;
+                        }
+                        else
+                        {
+                            name = $"{name}(已删除)";
+                        }
+                    }
+                    item.Set("IsKnowledge", isKnowledge);
+
                     item.Set("Name", name);
                     item.Set("IsView", isView);
                     item.Set("IsEdit", isEdit);
@@ -273,37 +290,38 @@ namespace XBLMS.Web.Controllers.Admin
             t3 = await _statRepository.SumAsync(StatType.ExamTmDelete);
             t2 = t1 + t3;
 
-            var dataList = new List<GetDataInfo>();
-            dataList.Add(new GetDataInfo
+            var (k1, k2, k3, k4, k5) = await _databaseManager.KnowlegesRepository.GetDataCount();
+            k3 = await _statRepository.SumAsync(StatType.KnowledgesDelete);
+            k2 = k1 + k3;
+
+            var dataList = new List<GetDataInfo>
             {
-                Name = "全部",
-                Data = [o1, admin1, user1, t1, cer1, e1, m1, q1, s1, p1]
-            });
-            dataList.Add(new GetDataInfo
-            {
-                Name = "新增",
-                Data = [o2, admin2, user2, t2, cer2, e2, m2, q2, s2, p2]
-            });
-            dataList.Add(new GetDataInfo
-            {
-                Name = "删除",
-                Data = [o3, admin3, user3, t3, cer3, e3, m3, q3, s3, p3]
-            });
-            dataList.Add(new GetDataInfo
-            {
-                Name = "停用",
-                Data = new List<int> { o4, admin4, user4, t4, cer4, e4, m4, q4, s4, p4 }
-            });
-            dataList.Add(new GetDataInfo
-            {
-                Name = "启用",
-                Data = [o5, admin5, user5, t5, cer5, e5, m5, q5, s5, p5]
-            });
+                new() {
+                    Name = "全部",
+                    Data = [o1, admin1, user1, t1, cer1, e1, m1, q1, s1, p1,k1]
+                },
+                new() {
+                    Name = "新增",
+                    Data = [o2, admin2, user2, t2, cer2, e2, m2, q2, s2, p2,k2]
+                },
+                new() {
+                    Name = "删除",
+                    Data = [o3, admin3, user3, t3, cer3, e3, m3, q3, s3, p3,k3]
+                },
+                new() {
+                    Name = "停用",
+                    Data = new List<int> { o4, admin4, user4, t4, cer4, e4, m4, q4, s4, p4,k4 }
+                },
+                new() {
+                    Name = "启用",
+                    Data = [o5, admin5, user5, t5, cer5, e5, m5, q5, s5, p5,k5]
+                }
+            };
 
             return new GetDataResult
             {
                 DataList = dataList,
-                DataTitleList = new List<string> { "组织", "管理员账号", "用户账号", "题目", "证书", "考试", "模拟", "问卷调查", "测评", "竞赛" }
+                DataTitleList = new List<string> { "组织", "管理员账号", "用户账号", "题目", "证书", "考试", "模拟", "问卷调查", "测评", "竞赛", "知识库" }
             };
         }
     }
