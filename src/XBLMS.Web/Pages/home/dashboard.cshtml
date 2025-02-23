@@ -102,7 +102,7 @@
 <el-card class="rounded-0">
     <div class="row g-5 py-5">
         <div class="col-xl-4 col-lg-4 col-md-4 col-4">
-            <a class="card border-5 border-top-0 border-bottom-0 card-lift rounded-0" href="javascript:;" v-on:click="btnMoreMenuClick('examPaper')">
+            <a class="card card-lift rounded-0" href="javascript:;" v-on:click="btnMoreMenuClick('examPaper')">
                 <div class="d-flex justify-content-between align-items-center card-body">
                     <div class="ms-3">
                         <h4 class="mb-1">
@@ -113,13 +113,13 @@
                         </p>
                     </div>
                     <div>
-                        <el-progress type="dashboard" :percentage="examPercent" color="#5cb87a" :width="88" :stroke-width="6"></el-progress>
+                        <el-progress type="circle" :percentage="examPercent" color="#5cb87a" :width="99" :stroke-width="8"></el-progress>
                     </div>
                 </div>
             </a>
         </div>
         <div class="col-xl-4 col-lg-4 col-md-4 col-4">
-            <a class="card border-5 border-top-0 border-bottom-0 card-lift rounded-0" href="javascript:;" v-on:click="btnMoreMenuClick('examPaperMoni')">
+            <a class="card card-lift rounded-0" href="javascript:;" v-on:click="btnMoreMenuClick('examPaperMoni')">
                 <div class="d-flex justify-content-between align-items-center card-body">
                     <div class="ms-3">
                         <h4 class="mb-1">
@@ -130,13 +130,13 @@
                         </p>
                     </div>
                     <div>
-                        <el-progress type="dashboard" :percentage="examMoniPercent" color="#5cb87a" :width="88" :stroke-width="6"></el-progress>
+                        <el-progress type="circle" :percentage="examMoniPercent" color="#5cb87a" :width="99" :stroke-width="8"></el-progress>
                     </div>
                 </div>
             </a>
         </div>
         <div class="col-xl-4 col-lg-4 col-md-4 col-4">
-            <a class="card border-5 border-top-0 border-bottom-0 card-lift rounded-0" href="javascript:;" v-on:click="btnMoreMenuClick('examPractice')">
+            <a class="card card-lift rounded-0" href="javascript:;" v-on:click="btnMoreMenuClick('examPractice')">
                 <div class="d-flex justify-content-between align-items-center card-body">
                     <div class="ms-3">
                         <h4 class="mb-1">
@@ -147,7 +147,7 @@
                         </p>
                     </div>
                     <div>
-                        <el-progress type="dashboard" :percentage="practiceAnswerPercent" color="#5cb87a" :width="88" :stroke-width="6"></el-progress>
+                        <el-progress type="circle" :percentage="practiceAnswerPercent" color="#5cb87a" :width="99" :stroke-width="8"></el-progress>
                     </div>
                 </div>
             </a>
@@ -270,38 +270,17 @@
                             </div>
                         </div>
                         <div class="col-12 mt-5">
-                            <div class="row g-5">
+                            <div class="row g-5 d-flex justify-content-between align-items-center">
                                 <div class="col-4">
                                     <div class="card rounded-3">
                                         <div class="card-body">
-                                            <div class="row g-8 align-items-center">
-                                                <div class="col-4 text-center">
-                                                    <el-progress type="dashboard" :percentage="practiceAllPercent" color="#5cb87a" :width="88" :stroke-width="4"></el-progress>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <el-progress type="circle" :percentage="practiceCollectPercent" color="#5cb87a" :width="88" :stroke-width="8"></el-progress>
                                                 </div>
-                                                <div class="col-8">
+                                                <div>
                                                     <div class="p-2 bg-light w-100 rounded-3">
-                                                        <el-button type="success" plain class="w-100 p-3 rounded-3" v-on:click="btnCreatePracticeClick('All')">
-                                                            <div>
-                                                                <i class="bi bi-fast-forward-circle-fill me-2"></i>快速开始
-                                                            </div>
-                                                            <div class="fs-6 fw-light mt-2">共 {{ practiceAllTmTotal }} 道题</div>
-                                                        </el-button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="card rounded-3">
-                                        <div class="card-body">
-                                            <div class="row g-8 align-items-center">
-                                                <div class="col-4 text-center">
-                                                    <el-progress type="dashboard" :percentage="practiceCollectPercent" color="#5cb87a" :width="88" :stroke-width="4"></el-progress>
-                                                </div>
-                                                <div class="col-8">
-                                                    <div class="p-2 bg-light w-100 rounded-3">
-                                                        <el-button type="primary" plain class="p-3 w-100 rounded-3" v-on:click="btnCreatePracticeClick('Collect')">
+                                                        <el-button type="primary" plain class="p-4 w-100 rounded-3" v-on:click="btnCreatePracticeClick('Collect')">
                                                             <div>
                                                                 <i class="bi bi-person-hearts me-2"></i>收藏练习
                                                             </div>
@@ -314,21 +293,43 @@
                                     </div>
                                 </div>
                                 <div class="col-4">
+                                    <div class="card rounded-5">
+                                        <div class="card-body">
+                                            <div class="text-center mb-3">
+                                                <el-progress type="dashboard" :percentage="practiceAllPercent" color="#5cb87a" :width="118" :stroke-width="12"></el-progress>
+                                                <div class="mt-n2">
+                                                    <small>刷题正确率</small>
+                                                </div>
+                                            </div>
+                                            <div class="p-2 bg-light w-100 rounded-pill">
+                                                <el-button type="success" plain class="w-100 p-4 rounded-pill" v-on:click="btnCreatePracticeClick('All')">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <div class="fw-light fs-6">共 {{ practiceAllTmTotal }} 道题</div>
+                                                        <div>
+                                                            <i class="bi bi-fast-forward-circle-fill me-2"></i>快速开始
+                                                        </div>
+                                                    </div>
+                                                </el-button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
                                     <div class="card rounded-3">
                                         <div class="card-body">
-                                            <div class="row g-8 align-items-center">
-                                                <div class="col-4 text-center">
-                                                    <el-progress type="dashboard" :percentage="practiceWrongPercent" color="#5cb87a" :width="88" :stroke-width="4"></el-progress>
-                                                </div>
-                                                <div class="col-8">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
                                                     <div class="p-2 bg-light w-100 rounded-3">
-                                                        <el-button type="warning" plain class="p-3 w-100 rounded-3" v-on:click="btnCreatePracticeClick('Wrong')">
+                                                        <el-button type="warning" plain class="p-4 w-100 rounded-3" v-on:click="btnCreatePracticeClick('Wrong')">
                                                             <div>
                                                                 <i class="bi bi-backspace-reverse me-2"></i>错题练习
                                                             </div>
                                                             <div class="fs-6 fw-light mt-2">共 {{ practiceWrongTmTotal }} 道题</div>
                                                         </el-button>
                                                     </div>
+                                                </div>
+                                                <div>
+                                                    <el-progress type="circle" :percentage="practiceWrongPercent" color="#5cb87a" :width="88" :stroke-width="8"></el-progress>
                                                 </div>
                                             </div>
                                         </div>
@@ -355,10 +356,12 @@
                     <div class="row g-5">
                         <div class="col-xl-3 col-lg-3 col-md-3 col-3" v-for="know in knowList">
                             <div class="card card-lift card-hover border bg-white p-2 mb-3" v-on:click="btnViewKnowClick(know)" style="cursor:pointer;">
-                                <div class="position-relative">
-                                    <img :src="know.coverImgUrl" class="img-fluid card-img">
-                                    <div class="position-absolute top-0 end-0 m-2">
-                                        <div><span class="me-2"><i class="bi bi-star-fill"></i> {{ know.likes }}</span><span><i class="bi bi-heart-fill"></i> {{ know.collects }}</span></div>
+                                <div class="card position-relative">
+                                    <div class="card-body">
+                                        <img :src="know.coverImgUrl" class="img-fluid card-img">
+                                    </div>
+                                    <div class="position-absolute top-0 end-0 me-3">
+                                        <small><span class="me-2"><i class="bi bi-star-fill"></i> {{ know.likes }}</span><span><i class="bi bi-heart-fill"></i> {{ know.collects }}</span></small>
                                     </div>
                                 </div>
                                 <div class="p-1">

@@ -36,32 +36,36 @@
 <div class="text-uppercase text-warning fw-semibold mt-5 mb-2 text-center">
     <i class="bi bi-flag-fill me-2"></i>今日考试
 </div>
-<div class="card bg-primary my-3 shadow-lg mx-8 rounded-5" v-if="todayExam && todayExam.id>0" v-on:click="btnViewPaperClick(todayExam.id)">
-    <div class="card-body text-center text-white">
-        <div class="row mb-3">
-            <div class="col-12">
-                <div>
-                    <span class="text-light">{{ todayExam.title }}</span>
-                </div>
-                <div class="mt-2" v-if="todayExam.myExamTimes>0">
-                    <span>
-                        <i class="bi bi-person-check-fill me-2"></i>已参与
-                    </span>
+<div class="mx-2" v-if="todayExam && todayExam.id>0">
+    <div class="card bg-primary my-3 shadow-lg mx-8 rounded-5" v-on:click="btnViewPaperClick(todayExam.id)">
+        <div class="card-body text-center text-white">
+            <div class="row mb-3">
+                <div class="col-12">
+                    <div>
+                        <span class="text-light">{{ todayExam.title }}</span>
+                    </div>
+                    <div class="mt-2" v-if="todayExam.myExamTimes>0">
+                        <span>
+                            <i class="bi bi-person-check-fill me-2"></i>已参与
+                        </span>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div>
-            <span class="fs-3 text-warning fw-bold">{{ todayExam.examStartDateTimeStr }} </span>
-        </div>
-        <div>
-            <span class="fs-3">开考</span>
+            <div>
+                <span class="fs-3 text-warning fw-bold">{{ todayExam.examStartDateTimeStr }} </span>
+            </div>
+            <div>
+                <span class="fs-3">开考</span>
+            </div>
         </div>
     </div>
 </div>
-<div class="card my-3 mx-8 rounded-pill border-0 shadow-lg" v-else>
-    <div class="card-body">
-        <div class="text-center">
-            <small><i class="bi bi-clipboard me-2"></i>无安排</small>
+<div class="mx-8" v-else>
+    <div class="card my-3 mx-8 rounded-pill border-0 shadow-lg">
+        <div class="card-body py-3">
+            <div class="text-center">
+                <small><i class="bi bi-clipboard me-2"></i>无安排</small>
+            </div>
         </div>
     </div>
 </div>
@@ -204,7 +208,7 @@
             <div class="mb-3">
                 {{ examPaper.title }}
             </div>
-            <div class="row align-items-center g-3 mb-3 fs-6">
+            <div class="row align-items-center g-3">
                 <div class="col">
                     <div>
                         <div class="fw-light">
@@ -224,7 +228,7 @@
                 </div>
                 <div class="col-auto">
                     <div class="bg-light p-2 rounded-circle">
-                        <el-button type="primary" circle icon="el-icon-s-order" class="p-3"></el-button>
+                        <el-button type="primary" circle icon="el-icon-s-order fs-1" class="p-3"></el-button>
                     </div>
                 </div>
             </div>
@@ -244,7 +248,7 @@
             <div class="text-center py-5 text-light">
                 <i class="bi bi-trophy-fill fs-2 text-warning"></i>
                 <div class="mt-3">
-                    <span class="text-light px-3 py-1 h2 rounded-0" style="background-color: rgba(0, 0, 0, 0.2);">答题竞赛</span>
+                    <span class="text-light px-3 py-1 rounded-0" style="background-color: rgba(0, 0, 0, 0.2);">答题竞赛</span>
                 </div>
             </div>
         </div>
@@ -257,38 +261,74 @@
     </div>
     <div class="card rounded-0 mb-3 shadow-lg">
         <div class="card-body">
-            <div class="py-3">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div>
-                        <el-progress type="dashboard" :percentage="practiceCollectPercent" color="#5cb87a" :width="88" :stroke-width="8"></el-progress>
-                    </div>
-                    <div class="text-center">
-                        <div class="mb-1 p-2 bg-light w-100 rounded-0">
-                            <el-button type="success" class="py-3 w-100 rounded-0" v-on:click="btnCreatePracticeClick('Collect')"><i class="bi bi-person-hearts me-2"></i>收藏练习</el-button>
-                        </div>
-                        <div class="fw-light">共<span class="fw-bold mx-2">{{ practiceCollectTmTotal }}</span>道题</div>
-                    </div>
-                </div>
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div>
-                        <el-progress type="dashboard" :percentage="practiceWrongPercent" color="#5cb87a" :width="88" :stroke-width="8"></el-progress>
-                    </div>
-                    <div class="text-center">
-                        <div class="mb-1 p-2 bg-light w-100 rounded-0">
-                            <el-button type="danger" class="py-3 w-100 rounded-0" v-on:click="btnCreatePracticeClick('Wrong')"><i class="bi bi-backspace-reverse me-2"></i>错题练习</el-button>
-                        </div>
-                        <div class="fw-light">共<span class="fw-bold mx-2">{{ practiceWrongTmTotal }}</span>道题</div>
-                    </div>
-                </div>
+            <div>
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <el-progress type="dashboard" :percentage="practiceAllPercent" color="#5cb87a" :width="88" :stroke-width="8"></el-progress>
+                        <el-progress type="circle" :percentage="practiceAllPercent" color="#5cb87a" :width="88" :stroke-width="8"></el-progress>
                     </div>
                     <div class="text-center">
-                        <div class="mb-1 p-2 bg-light w-100 rounded-0">
-                            <el-button type="primary" class="py-3 w-100 rounded-0" v-on:click="btnCreatePracticeClick('All')"><i class="bi bi-fast-forward-circle-fill me-2"></i>快速开始</el-button>
+                        <div class="mb-1 p-2 bg-light w-100 rounded-end-pill">
+                            <el-button type="primary" class="py-3 w-100 rounded-end-pill" v-on:click="btnCreatePracticeClick('All')">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="text-start">
+                                        <div class="mb-2">
+                                            快速开始
+                                        </div>
+                                        <small><span class="me-2">{{ practiceAllTmTotal }}</span>道题</small>
+                                    </div>
+                                    <div>
+                                        <i class="bi bi-fast-forward-circle-fill fs-1 ms-3"></i>
+                                    </div>
+                                </div>
+                            </el-button>
                         </div>
-                        <div class="fw-light">共<span class="fw-bold mx-2">{{ practiceAllTmTotal }}</span>道题</div>
+                    </div>
+                </div>
+                <hr />
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <el-progress type="circle" :percentage="practiceWrongPercent" color="#5cb87a" :width="88" :stroke-width="8"></el-progress>
+                    </div>
+                    <div class="text-center">
+                        <div class="mb-1 p-2 bg-light w-100 rounded-end-pill">
+                            <el-button type="danger" class="py-3 w-100 rounded-end-pill" v-on:click="btnCreatePracticeClick('Wrong')">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="text-start">
+                                        <div class="mb-2">
+                                            错题练习
+                                        </div>
+                                        <small><span class="me-2">{{ practiceWrongTmTotal }}</span>道题</small>
+                                    </div>
+                                    <div>
+                                        <i class="bi bi-backspace-reverse fs-1 ms-3"></i>
+                                    </div>
+                                </div>
+                            </el-button>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <el-progress type="circle" :percentage="practiceCollectPercent" color="#5cb87a" :width="88" :stroke-width="8"></el-progress>
+                    </div>
+                    <div class="text-center">
+                        <div class="mb-1 p-2 bg-light w-100 rounded-end-pill">
+                            <el-button type="success" class="py-3 w-100 rounded-end-pill" v-on:click="btnCreatePracticeClick('Collect')">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="text-start">
+                                        <div class="mb-2">
+                                            收藏练习
+                                        </div>
+                                        <small><span class="me-2">{{ practiceCollectTmTotal }}</span>道题</small>
+                                    </div>
+                                    <div>
+                                        <i class="bi bi-person-hearts fs-1 ms-3"></i>
+                                    </div>
+                                </div>
+                            </el-button>
+                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -305,7 +345,7 @@
             <div class="mb-3">
                 {{ examMoni.title }}
             </div>
-            <div class="row align-items-center g-3 fs-6">
+            <div class="row align-items-center g-3">
                 <div class="col">
                     <div>
                         <div class="fw-light">
@@ -325,10 +365,11 @@
                 </div>
                 <div class="col-auto">
                     <div class="bg-light p-2 rounded-circle">
-                        <el-button type="primary" circle icon="el-icon-s-order" class="p-3"></el-button>
+                        <el-button type="primary" circle icon="el-icon-s-order fs-1" class="p-3"></el-button>
                     </div>
                 </div>
             </div>
+            <div><i class="bi bi-calendar2 me-2 text-warning"></i>{{ examMoni.examStartDateTimeStr }}</div>
         </div>
     </div>
     <div class="card rounded-0 mb-3 shadow-lg" v-else>
@@ -368,20 +409,18 @@
         </h5>
     </div>
 </div>
-<div class="rounded-0 mb-3" v-if="knowList && knowList.length>0">
-    <div class="p-3">
-        <div>
-            <div class="d-flex flex-row overflow-x-auto">
-                <div class="me-3 mb-3" v-for="know in knowList" style="min-width:120px;">
-                    <div class="" v-on:click="btnViewKnowClick(know)" style="cursor:pointer;">
+<div class="card rounded-0 mb-3" v-if="knowList && knowList.length>0">
+    <div class="card-body">
+        <div class="d-flex flex-row overflow-x-auto">
+            <div class="me-3 mb-3" v-for="know in knowList" style="min-width:120px;">
+                <div v-on:click="btnViewKnowClick(know)" style="cursor:pointer;">
+                    <div>
+                        <img :src="know.coverImgUrl" class="img-fluid card-img shadow-lg">
+                    </div>
+                    <div class="p-1">
+                        <small><span class="me-2"><i class="bi bi-star-fill"></i> {{ know.likes }}</span><span><i class="bi bi-heart-fill"></i> {{ know.collects }}</span></small>
                         <div>
-                            <img :src="know.coverImgUrl" class="img-fluid card-img shadow-lg">
-                        </div>
-                        <div class="p-1">
-                            <small><span class="me-2"><i class="bi bi-star-fill"></i> {{ know.likes }}</span><span><i class="bi bi-heart-fill"></i> {{ know.collects }}</span></small>
-                            <div>
-                                <a href="javascript:;" class="text-inherit">{{ know.name }}</a>
-                            </div>
+                            <a href="javascript:;" class="text-dark">{{ know.name }}</a>
                         </div>
                     </div>
                 </div>
