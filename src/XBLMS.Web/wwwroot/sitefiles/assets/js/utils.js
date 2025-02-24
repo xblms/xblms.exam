@@ -132,12 +132,9 @@ var utils = {
     }
     return 0.00
   },
-  formatFloat: function (count, total) {
+  formatAvg: function (count, total) {
     if (count > 0 && total > 0) {
-      if (count >= total) {
-        return 100;
-      }
-      return (Math.round(count / total));
+      return ((count / total).toFixed(2));
     }
     return 0.00
   },
