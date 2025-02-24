@@ -26,8 +26,28 @@ namespace XBLMS.Web.Controllers.Home.Exam
             if (StringUtils.Equals(tm.Answer, request.Answer))
             {
                 result.IsRight = true;
-                result.Answer = "";
-                result.Jiexi = "";
+                result.Answer = string.Empty;
+                result.Jiexi = string.Empty;
+            }
+            else
+            {
+                var wrong = await _examPracticeWrongRepository.GetAsync(user.Id);
+                if (wrong != null)
+                {
+                    if (!wrong.TmIds.Contains(request.Id))
+                    {
+                        wrong.TmIds.Add(request.Id);
+                        await _examPracticeWrongRepository.UpdateAsync(wrong);
+                    }
+                }
+                else
+                {
+                    await _examPracticeWrongRepository.InsertAsync(new ExamPracticeWrong
+                    {
+                        UserId = user.Id,
+                        TmIds = new List<int> { request.Id }
+                    });
+                }
             }
 
             await _examPracticeAnswerRepository.InsertAsync(new ExamPracticeAnswer
@@ -38,23 +58,6 @@ namespace XBLMS.Web.Controllers.Home.Exam
                 IsRight = result.IsRight
             });
 
-            var wrong = await _examPracticeWrongRepository.GetAsync(user.Id);
-            if (wrong != null)
-            {
-                if (!wrong.TmIds.Contains(request.Id))
-                {
-                    wrong.TmIds.Add(request.Id);
-                    await _examPracticeWrongRepository.UpdateAsync(wrong);
-                }
-            }
-            else
-            {
-                await _examPracticeWrongRepository.InsertAsync(new ExamPracticeWrong
-                {
-                    UserId = user.Id,
-                    TmIds = new List<int> { request.Id }
-                });
-            }
 
             await _examPracticeRepository.IncrementAnswerCountAsync(request.PracticeId);
             if (result.IsRight)
