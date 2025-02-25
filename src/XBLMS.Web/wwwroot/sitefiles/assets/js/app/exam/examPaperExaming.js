@@ -150,13 +150,26 @@ var methods = {
   },
   btnPaperSubmit: function () {
     var $this = this;
-    top.utils.alertWarning({
-      title: '交卷提醒',
-      text: '立即交卷，确定吗？',
-      callback: function () {
-        $this.btnSubmitPaperClick();
-      }
-    });
+
+    if (this.answerTotal < this.paper.tmTotal) {
+      utils.alertWarning({
+        title: '温馨提示',
+        text: '还剩（' + (this.paper.tmTotal - this.answerTotal) + '）道题没有答完，确定交卷么？',
+        callback: function () {
+          $this.btnSubmitPaperClick();
+        }
+      });
+    }
+    else {
+      utils.alertWarning({
+        title: '交卷提醒',
+        text: '立即交卷，确定吗？',
+        callback: function () {
+          $this.btnSubmitPaperClick();
+        }
+      });
+    }
+
   },
   timingFinish: function () {
     this.btnSubmitPaperClick();
