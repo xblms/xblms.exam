@@ -1,6 +1,7 @@
 using Datory;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using XBLMS.Core.Utils;
 using XBLMS.Models;
@@ -49,43 +50,6 @@ namespace XBLMS.Core.Repositories
             return await _repository.ExistsAsync(Q.Where(nameof(ExamPaperUser.ExamPaperId), paperId).Where(nameof(ExamPaperUser.UserId), userId));
         }
 
-        public async Task<List<int>> GetPaperIdsByUser(int userId, string date)
-        {
-            var query = Q.
-                Select(nameof(ExamPaperUser.ExamPaperId)).
-                Where(nameof(ExamPaperUser.UserId), userId);
-
-            if (!string.IsNullOrWhiteSpace(date))
-            {
-                var dateFrom = DateTime.Now;
-                var dateTo = DateTime.Now;
-
-                if (date == "three")
-                {
-                    dateTo = dateTo.AddDays(2);
-                }
-                if (date == "week")
-                {
-                    dateTo = dateTo.AddDays(6);
-                }
-                if (date == "month")
-                {
-                    dateTo = dateTo.AddMonths(1);
-                }
-                if (date == "year")
-                {
-                    dateTo = dateTo.AddYears(1);
-                }
-                var dateFromStr = dateFrom.ToString("yyyy-MM-dd 00:00:00");
-                var dateToStr = dateTo.ToString("yyyy-MM-dd 23:59:59");
-
-                query.Where(nameof(ExamPaperUser.ExamBeginDateTime), ">=", dateFromStr);
-                query.Where(nameof(ExamPaperUser.ExamBeginDateTime), "<=", dateToStr);
-            }
-
-            return await _repository.GetAllAsync<int>(query);
-        }
-
         public async Task<ExamPaperUser> GetAsync(int paperId, int userId)
         {
             return await _repository.GetAsync(Q.
@@ -102,27 +66,12 @@ namespace XBLMS.Core.Repositories
             var query = Q.
                 Select(nameof(ExamPaperUser.ExamPaperId)).
                 WhereNullOrFalse(nameof(ExamPaperUser.Locked)).
-                Where(nameof(ExamPaperUser.ExamEndDateTime), ">", DateTime.Now).
-                Where(nameof(ExamPaperUser.UserId), userId);
+                Where(nameof(ExamPaperUser.ExamEndDateTime), ">",DateUtils.ToString(DateTime.Now)).
+                Where(nameof(ExamPaperUser.UserId), userId).
+                OrderByDesc(nameof(ExamPaperUser.Id));
 
             return await _repository.GetAllAsync<int>(query);
         }
-        public async Task<List<int>> GetPaperIdsByUser(int userId,bool isApp)
-        {
-            var query = Q.
-                Select(nameof(ExamPaperUser.ExamPaperId)).
-                WhereNullOrFalse(nameof(ExamPaperUser.Locked)).
-                Where(nameof(ExamPaperUser.ExamEndDateTime), ">", DateTime.Now).
-                Where(nameof(ExamPaperUser.UserId), userId);
-
-            if (isApp)
-            {
-                query.WhereNullOrFalse(nameof(ExamPaperUser.LockedApp));
-            }
-
-            return await _repository.GetAllAsync<int>(query);
-        }
-
 
         public async Task<(int total, List<ExamPaperUser> list)> GetListAsync(int paperId, string keyWords, int pageIndex, int pageSize)
         {
@@ -140,7 +89,8 @@ namespace XBLMS.Core.Repositories
 
             return (total, list);
         }
-        public async Task<(int total, List<ExamPaperUser> list)> GetListAsync(int userId,bool isMoni,bool isApp, string date, string keyWords, int pageIndex, int pageSize)
+
+        public async Task<(int total, List<ExamPaperUser> list)> GetListAsync(int userId, bool isMoni, bool isApp, string date, string keyWords, int pageIndex, int pageSize)
         {
             var query = Q.
                 WhereNullOrFalse(nameof(ExamPaperUser.Locked)).
@@ -181,8 +131,8 @@ namespace XBLMS.Core.Repositories
                 var dateFromStr = dateFrom.ToString("yyyy-MM-dd 00:00:00");
                 var dateToStr = dateTo.ToString("yyyy-MM-dd 23:59:59");
 
-                query.Where(nameof(ExamPaperUser.ExamBeginDateTime), ">=", dateFromStr);
-                query.Where(nameof(ExamPaperUser.ExamBeginDateTime), "<=", dateToStr);
+                query.Where(nameof(ExamPaperUser.ExamBeginDateTime), ">=", DateUtils.ToString(dateFromStr));
+                query.Where(nameof(ExamPaperUser.ExamBeginDateTime), "<=", DateUtils.ToString(dateToStr));
             }
             if (!string.IsNullOrEmpty(keyWords))
             {
@@ -194,9 +144,6 @@ namespace XBLMS.Core.Repositories
 
             return (count, list);
         }
-
-
-
 
         public async Task IncrementAsync(int id)
         {

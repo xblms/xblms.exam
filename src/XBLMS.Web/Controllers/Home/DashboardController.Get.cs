@@ -54,6 +54,7 @@ namespace XBLMS.Web.Controllers.Home
             var taskTotal = 0;
             var taskPaperTotal = 0;
             var taskPaperList = new List<ExamPaper>();
+            var todayExam = new ExamPaper();
             var taskPaperIds = await _examPaperUserRepository.GetPaperIdsByUser(user.Id);
             if (taskPaperIds != null && taskPaperIds.Count > 0)
             {
@@ -71,6 +72,11 @@ namespace XBLMS.Web.Controllers.Home
                                 taskTotal++;
                                 await _examManager.GetPaperInfo(paper, user);
                                 taskPaperList.Add(paper);
+
+                                if (paper.ExamBeginDateTime.Value.Date == DateTime.Now.Date && todayExam.Id == 0)
+                                {
+                                    todayExam = paper;
+                                }
                             }
                         }
                     }
@@ -146,21 +152,8 @@ namespace XBLMS.Web.Controllers.Home
                 }
             }
 
-
             var dateStr = $"{DateTime.Now.ToString(DateUtils.FormatStringDateOnlyCN)} {DateTime.Now.ToString("dddd", new System.Globalization.CultureInfo("zh-CN"))}";
 
-
-            var (todayExamTotal, todayExamList) = await _examPaperUserRepository.GetListAsync(user.Id, false, request.IsApp, "today", "", 1, 1);
-            var todayExam = new ExamPaper();
-            if (total > 0)
-            {
-                foreach (var item in todayExamList)
-                {
-                    var paper = await _examPaperRepository.GetAsync(item.ExamPaperId);
-                    await _examManager.GetPaperInfo(paper, user);
-                    todayExam = paper;
-                }
-            }
             var knowList = await _knowlegesRepository.GetNewListAsync();
             if(knowList!=null && knowList.Count > 0)
             {
