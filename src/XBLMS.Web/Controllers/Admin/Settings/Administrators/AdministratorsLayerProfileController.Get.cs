@@ -22,12 +22,16 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
                 auths.Add(new Select<string>(AuthorityType.AdminSelf));
             }
 
+            var isSelf = false;
+
             if (!string.IsNullOrEmpty(request.UserName))
             {
                 var administrator = await _administratorRepository.GetByUserNameAsync(request.UserName);
                 var company = await _organManager.GetCompanyAsync(administrator.CompanyId);
                 var department = await _organManager.GetDepartmentAsync(administrator.DepartmentId);
                 var duty = await _organManager.GetDutyAsync(administrator.DutyId);
+
+                isSelf = administrator.Id == admin.Id;
 
                 var organId = "";
                 if (company != null) { organId = company.Guid; }
@@ -45,14 +49,16 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
                     Auth = administrator.Auth.GetValue(),
                     OrganId = organId,
                     Auths = auths,
-                    Organs = organs
+                    Organs = organs,
+                    IsSelf= isSelf,
                 };
             }
 
             return new GetResult()
             {
                 Auths = auths,
-                Organs = organs
+                Organs = organs,
+                IsSelf = isSelf
             };
 
         }

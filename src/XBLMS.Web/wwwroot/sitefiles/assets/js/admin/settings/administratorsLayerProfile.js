@@ -19,7 +19,8 @@ var data = utils.init({
     email: null,
     auth: '',
     organId: ''
-  }
+  },
+  isSelf:false
 });
 
 var methods = {
@@ -34,6 +35,7 @@ var methods = {
       var res = response.data;
       $this.roles = res.auths;
       $this.organs = res.organs;
+      $this.isSelf = res.isSelf;
 
       if ($this.userName) {
         $this.userId = res.userId;

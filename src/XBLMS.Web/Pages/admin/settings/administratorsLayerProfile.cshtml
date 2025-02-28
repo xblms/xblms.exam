@@ -60,26 +60,28 @@
                         <i v-else class="el-icon-plus"></i>
                     </el-upload>
                 </el-form-item>
-                <el-divider></el-divider>
-                <el-form-item label="管理权限" prop="auth" :rules="[{ required: true, message: '请选择管理权限' }]">
-                    <el-select :disabled="userId===1" v-model="form.auth" placeholder="请选择管理权限">
-                        <el-option label="请选择管理权限" value=""></el-option>
-                        <el-option v-for="role in roles"
-                                   :key="role.value"
-                                   :label="role.label"
-                                   :value="role.value">
-                        </el-option>
-                    </el-select>
-                    <el-tooltip class="item" effect="dark" content="Right Center 提示文字" placement="right">
-                        <div slot="content">
-                            超级管理员：管理所有资源<br />
-                            普通管理员：管理权限内所有资源，需要分配角色
-                        </div>
-                        <span class="tips">
-                            <i class="el-icon-info" style="margin-right:3px;"></i>权限说明
-                        </span>
-                    </el-tooltip>
-                </el-form-item>
+                <template v-if="!isSelf && userId!==1">
+                    <el-divider></el-divider>
+                    <el-form-item label="管理权限" prop="auth" :rules="[{ required: true, message: '请选择管理权限' }]">
+                        <el-select v-model="form.auth" placeholder="请选择管理权限">
+                            <el-option label="请选择管理权限" value=""></el-option>
+                            <el-option v-for="role in roles"
+                                       :key="role.value"
+                                       :label="role.label"
+                                       :value="role.value">
+                            </el-option>
+                        </el-select>
+                        <el-tooltip class="item" effect="dark" content="Right Center 提示文字" placement="right">
+                            <div slot="content">
+                                超级管理员：管理所有资源<br />
+                                普通管理员：管理权限内所有资源，需要分配角色
+                            </div>
+                            <span class="tips">
+                                <i class="el-icon-info" style="margin-right:3px;"></i>权限说明
+                            </span>
+                        </el-tooltip>
+                    </el-form-item>
+                </template>
             </el-form>
         </div>
     </el-scrollbar>

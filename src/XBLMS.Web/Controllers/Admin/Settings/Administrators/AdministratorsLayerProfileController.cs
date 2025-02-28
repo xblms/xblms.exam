@@ -53,6 +53,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
             public List<OrganTree> Organs { get; set; }
             public List<OrganTree> AuthOrgans { get; set; }
             public bool AuthIsWithChildren { get; set; }
+            public bool IsSelf { get; set; }
         }
 
         public class SubmitRequest
