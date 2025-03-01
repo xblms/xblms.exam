@@ -125,7 +125,7 @@
         "order": 7,
         "text": "知识库",
         "link": "/admin/knowledges/knowledges/",
-        "iconClass": "el-icon-trophy",
+        "iconClass": "el-icon-hot-water",
         "Permissions": [ "Select", "Add", "Update", "Delete" ],
         "children": [
         ]

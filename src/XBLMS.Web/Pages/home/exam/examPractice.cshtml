@@ -26,18 +26,18 @@
             <small>共 {{total}} 道题可供练习</small>
         </div>
         <div>
-            <el-button type="primary" plain v-on:click="btnCreateClick('All')">
-                <i class="bi bi-fast-forward-circle-fill me-3"></i>快速开始（{{total}}）
+            <el-button class="py-3 border-0" plain v-on:click="btnLogClick">
+                <i class="bi bi-person-lines-fill me-3"></i>刷题记录
             </el-button>
-            <el-button type="success" plain v-on:click="btnCreateClick('Collect')">
+            <el-button class="py-3" type="success" plain v-on:click="btnCreateClick('Collect')">
                 <i class="bi bi-person-hearts me-3"></i>收藏练习（{{collectTotal}}）
             </el-button>
-            <el-button type="warning" plain v-on:click="btnCreateClick('Wrong')">
+            <el-button class="py-3" type="warning" plain v-on:click="btnCreateClick('Wrong')">
                 <i class="bi bi-backspace-reverse me-3"></i>错题练习（{{wrongTotal}}）
             </el-button>
-            <el-button plain v-on:click="btnLogClick" class="ms-5">
-                <i class="bi bi-person-lines-fill me-3"></i>刷题记录
-             </el-button>
+            <el-button class="py-3 px-4" type="primary" plain v-on:click="btnCreateClick('All')">
+                <i class="bi bi-fast-forward-circle-fill me-3"></i>快速开始（{{total}}）
+            </el-button>
         </div>
     </div>
 </el-card>
@@ -53,19 +53,21 @@
             <el-card shadow="hover" class="rounded-0 border-start-0 border-end-0">
                 <div class="row align-items-center g-3 ms-6">
                     <div class="col">
-                        <div class="text-gray-400">
-                            <span>包含知识点</span>
+                        <div>
+                            <span class="small">包含知识点</span>
                         </div>
                         <div class="mt-1">
                             <el-tag type="success" size="mini" class="mt-1 me-1" v-for="zsd in item.zsds">{{ zsd }}</el-tag>
                         </div>
-                        <div class="mt-3">
-                            <span class="px-3 py-1 bg-light card-icon">共：<span class="text-success me-2">{{ item.tmTotal }}</span>道题</span>
-                        </div>
                     </div>
                     <div class="col-auto">
-                        <div class="bg-light p-1">
-                            <el-button type="primary" plain icon="el-icon-s-order" class="py-5" v-on:click="btnCreateClick('Group',item.id,item.tmTotal)">开始练习</el-button>
+                        <div class="bg-light p-2 rounded-pill">
+                            <el-button type="primary" plain icon="el-icon-s-order" class="py-3 rounded-pill px-5" v-on:click="btnCreateClick('Group',item.id,item.tmTotal)">
+                                开始练习
+                            </el-button>
+                        </div>
+                        <div class="pt-1 text-center">
+                            <span class="small"><span class="text-success me-1">{{ item.tmTotal }}</span>道题</span>
                         </div>
                     </div>
                 </div>
