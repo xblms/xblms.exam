@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using XBLMS.Configuration;
 using XBLMS.Core.Utils.Office;
 using XBLMS.Utils;
-using static XBLMS.Web.Controllers.Admin.Common.Editor.ActionsController;
 
 namespace XBLMS.Web.Controllers.Admin.Knowledges
 {
@@ -57,6 +56,7 @@ namespace XBLMS.Web.Controllers.Admin.Knowledges
             }
             catch (Exception ex)
             {
+                await _logRepository.AddErrorLogAsync(ex, "上传知识库错误");
                 return new GetUploadResult { Success = false, Msg = ex.Message };
             }
 

@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using System.Collections.Generic;
 using XBLMS.Configuration;
-using XBLMS.Core.Services;
 using XBLMS.Repositories;
 using XBLMS.Services;
 
@@ -27,14 +26,16 @@ namespace XBLMS.Web.Controllers.Admin.Knowledges
         private readonly ISettingsManager _settingsManager;
         private readonly IKnowlegesRepository _knowlegesRepository;
         private readonly IKnowlegesTreeRepository _knowlegesTreeRepository;
+        private readonly IErrorLogRepository _logRepository;
 
-        public KnowledgesController(IPathManager pathManager, IAuthManager authManager, ISettingsManager settingsManager, IKnowlegesRepository knowlegesRepository, IKnowlegesTreeRepository knowlegesTreeRepository)
+        public KnowledgesController(IPathManager pathManager, IAuthManager authManager, ISettingsManager settingsManager, IKnowlegesRepository knowlegesRepository, IKnowlegesTreeRepository knowlegesTreeRepository, IErrorLogRepository logRepository)
         {
             _authManager = authManager;
             _pathManager = pathManager;
             _settingsManager = settingsManager;
             _knowlegesRepository = knowlegesRepository;
             _knowlegesTreeRepository = knowlegesTreeRepository;
+            _logRepository = logRepository;
         }
 
         public class GetRequest
