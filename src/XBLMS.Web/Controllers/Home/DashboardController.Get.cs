@@ -64,15 +64,17 @@ namespace XBLMS.Web.Controllers.Home
                     if (paper != null)
                     {
                         var myExamTimes = await _examPaperStartRepository.CountAsync(paperId, user.Id);
-                        if (myExamTimes <= 0 && (paper.ExamBeginDateTime.Value < DateTime.Now && paper.ExamEndDateTime.Value > DateTime.Now))
+                        if ((paper.ExamBeginDateTime.Value < DateTime.Now && paper.ExamEndDateTime.Value > DateTime.Now))
                         {
                             if (!paper.Moni)
                             {
-                                taskPaperTotal++;
-                                taskTotal++;
                                 await _examManager.GetPaperInfo(paper, user);
-                                taskPaperList.Add(paper);
-
+                                if (myExamTimes <= 0)
+                                {
+                                    taskPaperTotal++;
+                                    taskTotal++;
+                                    taskPaperList.Add(paper);
+                                }
                                 if (paper.ExamBeginDateTime.Value.Date == DateTime.Now.Date && todayExam.Id == 0)
                                 {
                                     todayExam = paper;

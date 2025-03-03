@@ -130,7 +130,7 @@ namespace XBLMS.Web.Controllers.Admin
                         if (examPaper != null)
                         {
                             isEdit = true;
-                            if (examPaper.TmRandomType != ExamPaperTmRandomType.RandomExaming)
+                            if (examPaper.TmRandomType != ExamPaperTmRandomType.RandomExaming && examPaper.SubmitType==SubmitType.Submit)
                             {
                                 isView = true;
                             }

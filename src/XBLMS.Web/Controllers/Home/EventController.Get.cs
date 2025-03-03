@@ -16,7 +16,7 @@ namespace XBLMS.Web.Controllers.Home
 
             var listEvent = new List<GetResultEvent>();
 
-            var (total, list) = await _examPaperUserRepository.GetListAsync(user.Id, false, request.IsApp, "", string.Empty, 1, int.MaxValue);
+            var (total, list) = await _examPaperUserRepository.GetListAsync(user.Id, false, request.IsApp, string.Empty, string.Empty, 1, int.MaxValue);
 
             if (total > 0)
             {
