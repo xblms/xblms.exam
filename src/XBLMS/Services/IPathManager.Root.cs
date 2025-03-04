@@ -42,8 +42,6 @@ namespace XBLMS.Services
 
         string GetHomeUploadUrl(params string[] paths);
 
-        string DefaultAvatarUrl { get; }
-
         string GetUserUploadPath(int userId, string relatedPath);
 
         string GetUserUploadFileName(string filePath);
@@ -51,6 +49,12 @@ namespace XBLMS.Services
         string GetUserUploadUrl(int userId, string relatedUrl);
 
         string GetUserAvatarUrl(User user);
+
+        string DefaultAvatarUrl { get; }
+        string DefaultBookCoverUrl { get; }
+
+        string GetCoverUploadPath(params string[] paths);
+        string GetCoverUploadUrl(params string[] paths);
 
     }
 }

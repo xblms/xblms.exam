@@ -88,6 +88,7 @@ namespace XBLMS.Core.Services
         }
 
         public string DefaultAvatarUrl => GetSiteFilesUrl("assets/images/default_avatar.png");
+        public string DefaultBookCoverUrl => GetSiteFilesUrl("assets/images/default_book.jpg");
 
         public string GetUserUploadFileName(string filePath)
         {
@@ -211,5 +212,14 @@ namespace XBLMS.Core.Services
             return GetHomeUploadPath(userId.ToString(), relatedPath);
         }
 
+        public string GetCoverUploadPath(params string[] paths)
+        {
+            var path = GetSiteFilesPath(DirectoryUtils.SiteFiles.Upload, DirectoryUtils.SiteFiles.Cover, PathUtils.Combine(paths));
+            return path;
+        }
+        public string GetCoverUploadUrl(params string[] paths)
+        {
+            return GetSiteFilesUrl(DirectoryUtils.SiteFiles.Upload, DirectoryUtils.SiteFiles.Cover, PathUtils.Combine(paths));
+        }
     }
 }

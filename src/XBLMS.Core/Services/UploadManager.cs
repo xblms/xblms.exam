@@ -63,5 +63,25 @@ namespace XBLMS.Core.Services
 
             return (true, "", returnUrl);
         }
+        public async Task<(bool success, string msg, string path)> UploadCover(IFormFile file)
+        {
+            if (file == null) return (false, Constants.ErrorUpload, "");
+
+            var fileName = _pathManager.GetUploadFileName(file.FileName);
+
+            var returnUrl = "";
+
+            var filePath = _pathManager.GetCoverUploadPath(fileName);
+            if (!FileUtils.IsImage(PathUtils.GetExtension(fileName)))
+            {
+                return (false, Constants.ErrorImageExtensionAllowed, "");
+            }
+
+            await _pathManager.UploadAsync(file, filePath);
+            returnUrl = _pathManager.GetCoverUploadUrl(fileName);
+
+
+            return (true, "", returnUrl);
+        }
     }
 }

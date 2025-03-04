@@ -7,6 +7,7 @@ namespace XBLMS.Services
     public interface IUploadManager
     {
         Task<(bool success, string msg, string path)> UploadAvatar(IFormFile file, UploadManageType uploadType, string userName);
+        Task<(bool success, string msg, string path)> UploadCover(IFormFile file);
     }
 
 }

@@ -30,6 +30,8 @@ namespace XBLMS.Utils
             public const string Upload = "upload";
             public const string Avatar = "avatar";
             public const string Editor = "editor";
+
+            public const string Cover = "cover";
         }
 
         public static void CreateDirectoryIfNotExists(string path)

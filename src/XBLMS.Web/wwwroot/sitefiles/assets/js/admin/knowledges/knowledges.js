@@ -173,6 +173,19 @@ var methods = {
     });
   },
 
+  btnEditClick: function (id) {
+    var $this = this;
+    top.utils.openLayer({
+      title: false,
+      closebtn: 0,
+      url: utils.getKnowledgesUrl('knowledgesEdit', { id: id }),
+      width: "38%",
+      height: "68%",
+      end: function () {
+        $this.apiGet();
+      }
+    });
+  },
 
   //tree
   apiGetTree: function () {

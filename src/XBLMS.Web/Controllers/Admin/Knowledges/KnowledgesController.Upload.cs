@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Threading.Tasks;
 using XBLMS.Configuration;
 using XBLMS.Core.Utils.Office;
@@ -18,47 +17,47 @@ namespace XBLMS.Web.Controllers.Admin.Knowledges
             {
                 return new GetUploadResult { Success = false, Msg = Constants.ErrorSafe };
             }
+            var fileName = PathUtils.GetFileName(file.FileName);
+
+            var fileType = PathUtils.GetExtension(fileName);
+
+            if (!FileUtils.IsPDF(fileType))
+            {
+                return new GetUploadResult { Success = false, Msg = Constants.ErrorUpload };
+            }
+
+
+            var realFileName = PathUtils.GetFileNameWithoutExtension(fileName);
+
+
+            var path = _pathManager.GetKnowledgesUploadFilesPath();
+            var filePath = PathUtils.Combine(path, fileName);
+
+            await _pathManager.UploadAsync(file, filePath);
+
+            var url = _pathManager.GetRootUrlByPath(filePath);
+
+            var firstImgPath = PathUtils.Combine(path, $"{StringUtils.GetShortGuid()}.jpg");
+            var firstImgUrl = string.Empty;
 
             try
             {
-                var fileName = PathUtils.GetFileName(file.FileName);
-
-                var fileType = PathUtils.GetExtension(fileName);
-
-                if (!FileUtils.IsPDF(fileType))
-                {
-                    return new GetUploadResult { Success = false, Msg = Constants.ErrorUpload };
-                }
-
-
-                var realFileName = PathUtils.GetFileNameWithoutExtension(fileName);
-
-
-                var path = _pathManager.GetKnowledgesUploadFilesPath();
-                var filePath = PathUtils.Combine(path, fileName);
-
-                await _pathManager.UploadAsync(file, filePath);
-
-                var url = _pathManager.GetRootUrlByPath(filePath);
-
-                var firstImgPath = PathUtils.Combine(path, $"{StringUtils.GetShortGuid()}.jpg");
                 PdfManager.GetFirstImg(filePath, firstImgPath);
-
-                var firstImgUrl = _pathManager.GetRootUrlByPath(firstImgPath);
-
-                return new GetUploadResult
-                {
-                    Success = true,
-                    FileName = realFileName,
-                    FilePath = url,
-                    CoverImagePath = firstImgUrl
-                };
+                firstImgUrl = _pathManager.GetRootUrlByPath(firstImgPath);
             }
-            catch (Exception ex)
+            catch
             {
-                await _logRepository.AddErrorLogAsync(ex, "上传知识库错误");
-                return new GetUploadResult { Success = false, Msg = ex.Message };
+                firstImgUrl = _pathManager.DefaultBookCoverUrl;
             }
+     
+            return new GetUploadResult
+            {
+                Success = true,
+                FileName = realFileName,
+                FilePath = url,
+                CoverImagePath = firstImgUrl
+            };
+       
 
         }
     }
