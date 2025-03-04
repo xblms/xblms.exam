@@ -14,6 +14,7 @@ namespace XBLMS.Repositories
         Task<int> InsertAsync(ExamPaperRandom item);
         Task<bool> UpdateAsync(ExamPaperRandom item);
         Task<int> DeleteByPaperAsync(int paperId);
+        Task DeleteAsync(int id);
 
     }
 }

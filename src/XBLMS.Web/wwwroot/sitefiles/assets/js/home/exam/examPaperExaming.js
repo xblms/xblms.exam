@@ -17,31 +17,60 @@ var data = utils.init({
   surplusSecond: 0,
   curTimingSecond: 1,
   isLoad: false,
-  isScreen: false
+  isScreen: false,
+  loadCounts: utils.getQueryInt('loadCounts'),
 });
 
 var methods = {
   apiGet: function () {
     var $this = this;
 
-    utils.loading(this, true, "正在加载试卷...");
-
-    $api.get($url, { params: { id: $this.id } }).then(function (response) {
-      var res = response.data;
-
-      $this.watermark = res.watermark;
-      $this.paper = res.item;
-      $this.list = res.txList;
-
-      $this.startId = $this.paper.startId;
-
-      $this.loadFullScree();
-
-    }).catch(function (error) {
-      utils.error(error, { layer: true });
-    }).then(function () {
+    if (this.loadCounts >= 5) {
       utils.loading($this, false);
-    });
+      utils.alertExamWarning({
+        title: '温馨提示',
+        text: "多次尝试加载试卷，结果还是一无所获。非常抱歉，请退出后重新进入考试。",
+        button: '好的',
+        callback: function () {
+          $this.startId = utils.getQueryInt('loadStartId');
+          $this.apiSubmitPaper();
+          utils.closeLayerSelf();
+        }
+      });
+    }
+    else {
+      if (this.loadCounts > 0) {
+        utils.loading(this, true, "(" + this.loadCounts + ")正在加载试卷...");
+      }
+      else {
+        utils.loading(this, true, "正在加载试卷...");
+      }
+
+      $api.get($url, { params: { id: $this.id, loadCounts: this.loadCounts } }).then(function (response) {
+        var res = response.data;
+
+        $this.startId = res.item.startId;
+
+        if (res.item.tmTotal > 0) {
+          $this.watermark = res.watermark;
+          $this.paper = res.item;
+          $this.list = res.txList;
+
+          $this.startId = $this.paper.startId;
+
+          $this.loadFullScree();
+        }
+        else {
+          location.href = utils.getExamUrl('examPaperExaming', { id: $this.id, loadCounts: $this.loadCounts + 1, loadStartId: $this.startId })
+        }
+
+      }).catch(function (error) {
+        utils.error(error, { layer: true });
+      }).then(function () {
+        utils.loading($this, false);
+      });
+    }
+
   },
   loadFullScree: function () {
     var $this = this;

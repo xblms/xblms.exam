@@ -9,10 +9,12 @@ namespace XBLMS.Repositories
     {
         Task<ExamPaperStart> GetAsync(int id);
         Task<int> CountAsync(int paperId, int userId);
+        Task<List<ExamPaperStart>> GetNoSubmitListAsync(int paperId, int userId);
         Task<ExamPaperStart> GetNoSubmitAsync(int paperId, int userId);
         Task<int> GetNoSubmitIdAsync(int paperId, int userId);
         Task<int> InsertAsync(ExamPaperStart item);
         Task DeleteByUserId(int userId);
+        Task DeleteAsync(int id);
         Task ClearByPaperAsync(int paperId);
         Task ClearByPaperAndUserAsync(int paperId, int userId);
         Task UpdateAsync(ExamPaperStart item);

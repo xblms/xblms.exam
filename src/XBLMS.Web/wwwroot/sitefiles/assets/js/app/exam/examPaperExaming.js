@@ -16,71 +16,100 @@ var data = utils.init({
   tmList: [],
   surplusSecond: 0,
   curTimingSecond: 1,
-  datikaDialogVisible:false
+  datikaDialogVisible: false,
+  loadCounts: utils.getQueryInt('loadCounts'),
 });
 
 var methods = {
   apiGet: function () {
     var $this = this;
 
-    utils.loading(this, true, "正在加载试卷...");
+    if (this.loadCounts >= 5) {
+      utils.loading($this, false);
+      utils.alertExamWarning({
+        title: '温馨提示',
+        text: "多次尝试加载试卷，结果还是一无所获。非常抱歉，请退出后重新进入考试。",
+        button: '好的',
+        callback: function () {
+          $this.startId = utils.getQueryInt('loadStartId');
+          $this.apiSubmitPaper();
+          utils.closeLayerSelf();
+        }
+      });
+    }
+    else {
+      if (this.loadCounts > 0) {
+        utils.loading(this, true, "(" + this.loadCounts + ")正在加载试卷...");
+      }
+      else {
+        utils.loading(this, true, "正在加载试卷...");
+      }
 
-    $api.get($url, { params: { id: $this.id } }).then(function (response) {
-      var res = response.data;
+      $api.get($url, { params: { id: $this.id, loadCounts: this.loadCounts } }).then(function (response) {
+        var res = response.data;
 
-      $this.watermark = res.watermark;
-      $this.paper = res.item;
-      $this.list = res.txList;
+        $this.startId = res.item.startId;
 
-      $this.startId = $this.paper.startId;
+        if (res.item.tmTotal > 0) {
+          $this.watermark = res.watermark;
+          $this.paper = res.item;
+          $this.list = res.txList;
 
-      if ($this.paper.isTiming) {
-        if ($this.paper.useTimeSecond > -1) {
-          $this.surplusSecond = Date.now() + $this.paper.timingMinute * 60 * 1000 - $this.paper.useTimeSecond * 1000;
-          if ($this.surplusSecond > 0) {
-            $this.timingChange();
-          }
-          else {
-            $this.btnSubmitPaperClick();
-          }
+          $this.startId = $this.paper.startId;
+
+          $this.loadUseTime();
+        }
+        else {
+          location.href = utils.getExamUrl('examPaperExaming', { id: $this.id, loadCounts: $this.loadCounts + 1, loadStartId: $this.startId })
+        }
+
+      }).catch(function (error) {
+        utils.error(error, { layer: true });
+      }).then(function () {
+        utils.loading($this, false);
+      });
+    }
+
+  },
+  loadUseTime: function () {
+    var $this = this;
+    if ($this.paper.isTiming) {
+      if ($this.paper.useTimeSecond > -1) {
+        $this.surplusSecond = Date.now() + $this.paper.timingMinute * 60 * 1000 - $this.paper.useTimeSecond * 1000;
+        if ($this.surplusSecond > 0) {
+          $this.timingChange();
+          $this.loadTm();
         }
         else {
           $this.btnSubmitPaperClick();
         }
       }
-
-      if ($this.list && $this.list.length > 0) {
-        $this.list.forEach(item => {
-          var cTmList = item.tmList;
-          if (cTmList && cTmList.length > 0) {
-            cTmList.forEach(ctm => {
-              $this.tmList.push(ctm);
-              if (ctm.answerStatus) {
-                $this.answerTotal++;
-              }
-            })
-          }
-
-        });
-
-        $this.btnGetTm($this.tmList[0].id);
+      else {
+        $this.btnSubmitPaperClick();
       }
+    }
+    else {
+      $this.loadTm();
+    }
 
-    }).catch(function (error) {
-      utils.error(error, { layer: true });
-    }).then(function () {
-      utils.loading($this, false);
-    });
   },
-  btnGetTm(id) {
-    this.tm = null;
+  loadTm: function () {
     var $this = this;
-    $this.$nextTick(() => {
-      setTimeout(function () {
-        var getCurTm = $this.tmList.find(item => item.id === id);
-        $this.tm = getCurTm;
-      }, 200);
-    })
+
+    if ($this.list && $this.list.length > 0) {
+      $this.list.forEach(item => {
+        var cTmList = item.tmList;
+        if (cTmList && cTmList.length > 0) {
+          cTmList.forEach(ctm => {
+            $this.tmList.push(ctm);
+            if (ctm.answerStatus) {
+              $this.answerTotal++;
+            }
+          })
+        }
+
+      });
+    }
   },
   getTmAnswerStatus: function (id) {
     var getCurTm = this.tmList.find(item => item.id === id);
@@ -117,16 +146,6 @@ var methods = {
     this.answerTotal = answerTotals.length;
 
     this.apiSubmitAnswer(tm.answerInfo);
-  },
-  btnDownClick: function () {
-    var curIndex = this.tm.tmIndex;
-    let downTm = this.tmList.find(item => item.tmIndex === (curIndex + 1))
-    this.btnGetTm(downTm.id);
-  },
-  btnUpClick: function () {
-    var curIndex = this.tm.tmIndex;
-    let upTm = this.tmList.find(item => item.tmIndex === (curIndex - 1))
-    this.btnGetTm(upTm.id);
   },
   btnGoTm: function (id) {
     var tmel = document.getElementById("tmid_" + id);

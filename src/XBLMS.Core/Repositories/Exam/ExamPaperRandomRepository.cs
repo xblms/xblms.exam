@@ -60,5 +60,10 @@ namespace XBLMS.Core.Repositories
         {
             return await _repository.DeleteAsync(Q.Where(nameof(ExamPaperRandom.ExamPaperId), paperId));
         }
+        public async Task DeleteAsync(int id)
+        {
+            await _repository.DeleteAsync(id);
+        }
     }
+
 }

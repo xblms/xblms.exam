@@ -33,7 +33,10 @@ namespace XBLMS.Core.Repositories
         {
             return await _repository.InsertAsync(item);
         }
-
+        public async Task<int> DeleteByRandomIdAsync(int examPaperRandomId)
+        {
+            return await _repository.DeleteAsync(Q.Where(nameof(ExamPaperRandomTm.ExamPaperRandomId), examPaperRandomId));
+        }
         public async Task<int> DeleteByPaperAsync(int examPaperId)
         {
             return await _repository.DeleteAsync(Q.Where(nameof(ExamPaperRandomTm.ExamPaperId), examPaperId));

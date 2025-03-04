@@ -15,7 +15,7 @@ namespace XBLMS.Core.Services
                 await _examPaperStartRepository.ClearByPaperAsync(examPaperId);
                 await _examPaperAnswerRepository.ClearByPaperAsync(examPaperId);
                 await _examCerUserRepository.DeleteByPaperId(examPaperId);
-            
+
             }
             else
             {
@@ -29,6 +29,23 @@ namespace XBLMS.Core.Services
                     }
                 }
 
+            }
+        }
+        public async Task ClearRandomUser(int examPaperId, int userId)
+        {
+            var startList = await _examPaperStartRepository.GetNoSubmitListAsync(examPaperId, userId);
+            if (startList != null && startList.Count > 0)
+            {
+                foreach (var start in startList)
+                {
+                    var paper = await _examPaperRepository.GetAsync(examPaperId);
+                    if (paper.TmRandomType == Enums.ExamPaperTmRandomType.RandomExaming)
+                    {
+                        await _examPaperRandomRepository.DeleteAsync(start.ExamPaperRandomId);
+                        await _examPaperRandomTmRepository.DeleteByRandomIdAsync(start.ExamPaperRandomId);
+                    }
+                    await _examPaperStartRepository.DeleteAsync(start.Id);
+                }
             }
         }
     }

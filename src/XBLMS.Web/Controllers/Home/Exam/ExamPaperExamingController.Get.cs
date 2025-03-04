@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using XBLMS.Dto;
 using XBLMS.Enums;
 using XBLMS.Models;
 using XBLMS.Utils;
@@ -13,7 +12,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
     public partial class ExamPaperExamingController
     {
         [HttpGet, Route(Route)]
-        public async Task<ActionResult<GetResult>> GetList([FromQuery] IdRequest request)
+        public async Task<ActionResult<GetResult>> GetList([FromQuery] GetRequest request)
         {
             var user = await _authManager.GetUserAsync();
             if (user == null) return Unauthorized();
@@ -25,6 +24,12 @@ namespace XBLMS.Web.Controllers.Home.Exam
             var randomId = 0;
             var startId = 0;
             var isNewExam = true;
+
+            if (request.LoadCounts > 0)
+            {
+                await _examManager.ClearRandomUser(request.Id, user.Id);
+                await Task.Delay(1000);
+            }
 
             var existCount = 0;
             long useTimeSecond = 0;

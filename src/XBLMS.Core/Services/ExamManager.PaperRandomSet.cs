@@ -124,7 +124,11 @@ namespace XBLMS.Core.Services
                     {
                         if (tmGroup.GroupType == TmGroupType.Fixed && tmGroup.TmIds != null && tmGroup.TmIds.Count > 0)
                         {
-                            tmIds.AddRange(tmGroup.TmIds);
+                            if(tmGroup.TmIds!=null && tmGroup.TmIds.Count > 0)
+                            {
+                                tmIds.AddRange(tmGroup.TmIds);
+                            }
+                       
                         }
                         if (tmGroup.GroupType == TmGroupType.Range)
                         {
@@ -141,6 +145,10 @@ namespace XBLMS.Core.Services
                     }
                 }
 
+            }
+            else
+            {
+                allTm = true;
             }
 
             if (paper.RandomCount > 0)

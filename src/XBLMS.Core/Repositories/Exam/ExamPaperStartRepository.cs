@@ -46,6 +46,10 @@ namespace XBLMS.Core.Repositories
         {
             await _repository.DeleteAsync(Q.Where(nameof(ExamPaperStart.UserId), userId));
         }
+        public async Task DeleteAsync(int id)
+        {
+            await _repository.DeleteAsync(id);
+        }
         public async Task ClearByPaperAndUserAsync(int paperId, int userId)
         {
             await _repository.DeleteAsync(Q.Where(nameof(ExamPaperStart.ExamPaperId), paperId).Where(nameof(ExamPaperStart.UserId), userId));
@@ -57,6 +61,13 @@ namespace XBLMS.Core.Repositories
         public async Task<ExamPaperStart> GetNoSubmitAsync(int paperId, int userId)
         {
             return await _repository.GetAsync(Q.
+                WhereNullOrFalse(nameof(ExamPaperStart.IsSubmit)).
+                Where(nameof(ExamPaperStart.ExamPaperId), paperId).
+                Where(nameof(ExamPaperStart.UserId), userId));
+        }
+        public async Task<List<ExamPaperStart>> GetNoSubmitListAsync(int paperId, int userId)
+        {
+            return await _repository.GetAllAsync(Q.
                 WhereNullOrFalse(nameof(ExamPaperStart.IsSubmit)).
                 Where(nameof(ExamPaperStart.ExamPaperId), paperId).
                 Where(nameof(ExamPaperStart.UserId), userId));

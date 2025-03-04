@@ -61,6 +61,11 @@ namespace XBLMS.Web.Controllers.Home.Exam
             _organManager = organManager;
             _examTxRepository = examTxRepository;
         }
+        public class GetRequest
+        {
+            public int Id { get; set; }
+            public int LoadCounts { get; set; }
+        }
         public class GetResult
         {
             public string Watermark { get; set; }
