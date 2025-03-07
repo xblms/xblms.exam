@@ -68,12 +68,12 @@
                                 <div class="list-group" v-if="tm.baseTx!=='Tiankongti'">
                                     <div v-if="tm.baseTx==='Danxuanti' || tm.baseTx==='Panduanti'">
                                         <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.optionsRandom">
-                                            <div class="d-flex justify-content-start align-items-start">
+                                            <div class="d-flex justify-content-start align-items-center">
                                                 <div class="me-1 position-relative">
-                                                    {{optionsABC[optionIndex]}}.
+                                                    {{optionsABC[optionIndex]}}
                                                 </div>
-                                                <div>
-                                                    <el-radio :label="option.key" v-model="tm.answerInfo.answer" v-on:change="answerChange" size="medium">
+                                                <div class="w-100 pt-1">
+                                                    <el-radio class="border-0 w-100" border :label="option.key" v-model="tm.answerInfo.answer" v-on:change="answerChange" size="medium">
                                                         <span v-html="option.value"></span>
                                                     </el-radio>
                                                 </div>
@@ -82,12 +82,12 @@
                                     </div>
                                     <div v-else-if="tm.baseTx==='Duoxuanti'">
                                         <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.optionsRandom">
-                                            <div class="d-flex justify-content-start align-items-start">
+                                            <div class="d-flex justify-content-start align-items-center">
                                                 <div class="me-1 position-relative">
-                                                    {{optionsABC[optionIndex]}}.
+                                                    {{optionsABC[optionIndex]}}
                                                 </div>
-                                                <div>
-                                                    <el-checkbox :true-label="option.key" false-label="" v-model="tm.answerInfo.optionsValues[optionsABC.indexOf(option.key)]" v-on:change="answerChange" size="medium">
+                                                <div class="w-100 pt-1">
+                                                    <el-checkbox class="border-0 w-100" border :true-label="option.key" false-label="" v-model="tm.answerInfo.optionsValues[optionsABC.indexOf(option.key)]" v-on:change="answerChange" size="medium">
                                                         <span v-html="option.value"></span>
                                                     </el-checkbox>
                                                 </div>
@@ -172,10 +172,10 @@
             <el-progress :text-inside="true" :stroke-width="20" :percentage="utils.formatPercentFloat(answerTotal,paper.tmTotal)" status="success"></el-progress>
         </div>
         <div>
+            <el-button class="btn btn-outline-primary py-3 border-0 bg-transparent" v-if="paper.openExist" v-on:click="utils.closeLayerSelf" icon="el-icon-close">退出考试</el-button>
             <el-button type="primary" class="py-3" v-on:click="btnPaperSubmit">
                 <i class="el-icon-upload me-2"></i>立即交卷
             </el-button>
-            <el-button class="btn btn-outline-primary py-3" v-if="paper.openExist" v-on:click="utils.closeLayerSelf" icon="el-icon-close">退出考试</el-button>
         </div>
     </div>
 </template>

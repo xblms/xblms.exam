@@ -38,7 +38,7 @@
 <template v-if="paper">
     <div class="d-flex justify-content-between align-items-center px-2 py-3 mt-3">
         <div class="text-start">
-            <div class="mb-2">{{ paper.title }}</div>
+            <div class="mb-2 fw-bold">{{ paper.title }}</div>
             <div class="fs-5">共{{ paper.tmTotal }}题，总分{{ paper.totalScore }}分，及格分{{ paper.passScore }}分</div>
         </div>
         <div class="text-end">
@@ -71,12 +71,12 @@
                     <div class="list-group" v-if="tm.baseTx!=='Tiankongti'">
                         <div v-if="tm.baseTx==='Danxuanti' || tm.baseTx==='Panduanti'">
                             <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.optionsRandom">
-                                <div class="d-flex justify-content-start align-items-start">
+                                <div class="d-flex justify-content-start align-items-center">
                                     <div class="me-1 position-relative">
-                                        {{optionsABC[optionIndex]}}.
+                                        {{optionsABC[optionIndex]}}
                                     </div>
-                                    <div>
-                                        <el-radio :label="option.key" v-model="tm.answerInfo.answer" v-on:change="answerChange(tm)" size="medium">
+                                    <div class="w-100">
+                                        <el-radio class="border-0 w-100" border :label="option.key" v-model="tm.answerInfo.answer" v-on:change="answerChange(tm)" size="medium">
                                             <span v-html="option.value"></span>
                                         </el-radio>
                                     </div>
@@ -85,12 +85,12 @@
                         </div>
                         <div v-else-if="tm.baseTx==='Duoxuanti'">
                             <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.optionsRandom">
-                                <div class="d-flex justify-content-start align-items-start">
+                                <div class="d-flex justify-content-start align-items-center">
                                     <div class="me-1 position-relative">
-                                        {{optionsABC[optionIndex]}}.
+                                        {{optionsABC[optionIndex]}}
                                     </div>
-                                    <div>
-                                        <el-checkbox :true-label="option.key" false-label="" v-model="tm.answerInfo.optionsValues[optionsABC.indexOf(option.key)]" v-on:change="answerChange(tm)" size="medium">
+                                    <div class="w-100">
+                                        <el-checkbox class="border-0 w-100" border :true-label="option.key" false-label="" v-model="tm.answerInfo.optionsValues[optionsABC.indexOf(option.key)]" v-on:change="answerChange(tm)" size="medium">
                                             <span v-html="option.value"></span>
                                         </el-checkbox>
                                     </div>

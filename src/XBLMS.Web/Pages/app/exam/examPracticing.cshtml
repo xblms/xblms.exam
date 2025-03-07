@@ -65,12 +65,12 @@
                     <div class="list-group" v-if="tm.baseTx!=='Tiankongti'">
                         <div v-if="tm.baseTx==='Danxuanti' || tm.baseTx==='Panduanti'">
                             <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.optionsRandom">
-                                <div class="d-flex justify-content-start align-items-start">
+                                <div class="d-flex justify-content-start align-items-center">
                                     <div class="me-1 position-relative">
-                                        {{optionsABC[optionIndex]}}.
+                                        {{optionsABC[optionIndex]}}
                                     </div>
-                                    <div>
-                                        <el-radio :label="option.key" v-model="tm.answer" v-on:change="answerChange" size="medium">
+                                    <div class="w-100">
+                                        <el-radio class="border-0 w-100" border :label="option.key" v-model="tm.answer" v-on:change="answerChange" size="medium">
                                             <span v-html="option.value"></span>
                                         </el-radio>
                                     </div>
@@ -79,12 +79,12 @@
                         </div>
                         <div v-else-if="tm.baseTx==='Duoxuanti'">
                             <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.optionsRandom">
-                                <div class="d-flex justify-content-start align-items-start">
+                                  <div class="d-flex justify-content-start align-items-center">
                                     <div class="me-1 position-relative">
-                                        {{optionsABC[optionIndex]}}.
+                                        {{optionsABC[optionIndex]}}
                                     </div>
-                                    <div>
-                                        <el-checkbox size="medium" :true-label="option.key" false-label="" v-model="tm.optionsValues[optionsABC.indexOf(option.key)]" v-on:change="answerChange">
+                                    <div class="w-100">
+                                        <el-checkbox class="border-0 w-100" border size="medium" :true-label="option.key" false-label="" v-model="tm.optionsValues[optionsABC.indexOf(option.key)]" v-on:change="answerChange">
                                             <span v-html="option.value"></span>
                                         </el-checkbox>
                                     </div>
