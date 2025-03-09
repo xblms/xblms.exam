@@ -19,7 +19,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
             {
                 foreach (var mark in request.List)
                 {
-                    var answer = await _examPaperAnswerRepository.GetAsync(mark.Id);
+                    var answer = await _examPaperAnswerRepository.GetAsync(mark.Id, mark.ExamPaperId);
                     answer.Score = mark.Score;
                     totalS += mark.Score;
                     answer.Set("MarkState", mark.Get("MarkState"));
@@ -49,7 +49,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
             {
                 foreach (var mark in request.List)
                 {
-                    var answer = await _examPaperAnswerRepository.GetAsync(mark.Id);
+                    var answer = await _examPaperAnswerRepository.GetAsync(mark.Id, mark.ExamPaperId);
                     answer.Score = mark.Score;
                     answer.Set("MarkState", mark.Get("MarkState"));
                     totalS += mark.Score;

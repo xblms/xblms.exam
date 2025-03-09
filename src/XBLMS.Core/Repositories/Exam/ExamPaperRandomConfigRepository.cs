@@ -7,12 +7,16 @@ using XBLMS.Services;
 
 namespace XBLMS.Core.Repositories
 {
-    public class ExamPaperRandomConfigRepository : IExamPaperRandomConfigRepository
+    public partial class ExamPaperRandomConfigRepository : IExamPaperRandomConfigRepository
     {
+        private readonly ISettingsManager _settingsManager;
+        private readonly IExamPaperRepository _examPaperRepository;
         private readonly Repository<ExamPaperRandomConfig> _repository;
 
-        public ExamPaperRandomConfigRepository(ISettingsManager settingsManager)
+        public ExamPaperRandomConfigRepository(ISettingsManager settingsManager,IExamPaperRepository examPaperRepository)
         {
+            _settingsManager = settingsManager;
+            _examPaperRepository = examPaperRepository;
             _repository = new Repository<ExamPaperRandomConfig>(settingsManager.Database, settingsManager.Redis);
         }
 
@@ -25,18 +29,27 @@ namespace XBLMS.Core.Repositories
 
         public async Task<List<ExamPaperRandomConfig>> GetListAsync(int examPaperId)
         {
-            var infoList = await _repository.GetAllAsync(
+            var tableName = await GetTableNameAsync(examPaperId);
+            var repository = await GetRepositoryAsync(tableName);
+
+            var infoList = await repository.GetAllAsync(
                 Q.Where(nameof(ExamPaperRandomConfig.ExamPaperId), examPaperId).
                 OrderBy(nameof(ExamPaperRandomConfig.TxTaxis)));
             return infoList;
         }
         public async Task<int> InsertAsync(ExamPaperRandomConfig item)
         {
-            return await _repository.InsertAsync(item);
+            var tableName = await GetTableNameAsync(item.ExamPaperId);
+            var repository = await GetRepositoryAsync(tableName);
+
+            return await repository.InsertAsync(item);
         }
         public async Task<int> DeleteByPaperAsync(int examPaperId)
         {
-            return await _repository.DeleteAsync(Q.Where(nameof(ExamPaperRandomConfig.ExamPaperId), examPaperId));
+            var tableName = await GetTableNameAsync(examPaperId);
+            var repository = await GetRepositoryAsync(tableName);
+
+            return await repository.DeleteAsync(Q.Where(nameof(ExamPaperRandomConfig.ExamPaperId), examPaperId));
         }
 
     }

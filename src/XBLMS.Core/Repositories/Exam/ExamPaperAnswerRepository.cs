@@ -2,7 +2,6 @@ using Datory;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using XBLMS.Core.Utils;
 using XBLMS.Enums;
 using XBLMS.Models;
 using XBLMS.Repositories;
@@ -12,13 +11,15 @@ namespace XBLMS.Core.Repositories
 {
     public partial class ExamPaperAnswerRepository : IExamPaperAnswerRepository
     {
+        private readonly ISettingsManager _settingsManager;
+        private readonly IExamPaperRepository _examPaperRepository;
         private readonly Repository<ExamPaperAnswer> _repository;
-        private readonly string _cacheKey;
 
-        public ExamPaperAnswerRepository(ISettingsManager settingsManager)
+        public ExamPaperAnswerRepository(ISettingsManager settingsManager,IExamPaperRepository examPaperRepository)
         {
+            _settingsManager = settingsManager;
+            _examPaperRepository = examPaperRepository;
             _repository = new Repository<ExamPaperAnswer>(settingsManager.Database, settingsManager.Redis);
-            _cacheKey = CacheUtils.GetEntityKey(TableName);
         }
 
         public IDatabase Database => _repository.Database;
@@ -30,42 +31,63 @@ namespace XBLMS.Core.Repositories
 
         public async Task<int> InsertAsync(ExamPaperAnswer item)
         {
-            return await _repository.InsertAsync(item);
+            var tableName = await GetTableNameAsync(item.ExamPaperId);
+            var repository = await GetRepositoryAsync(tableName);
+
+            return await repository.InsertAsync(item);
         }
         public async Task<bool> UpdateAsync(ExamPaperAnswer item)
         {
-            return await _repository.UpdateAsync(item);
+            var tableName = await GetTableNameAsync(item.ExamPaperId);
+            var repository = await GetRepositoryAsync(tableName);
+
+            return await repository.UpdateAsync(item);
         }
-        public async Task ClearByPaperAsync(int paperId)
+        public async Task ClearByPaperAsync(int examPaperId)
         {
-            await _repository.DeleteAsync(Q.Where(nameof(ExamPaperAnswer.ExamPaperId), paperId));
+            var tableName = await GetTableNameAsync(examPaperId);
+            var repository = await GetRepositoryAsync(tableName);
+
+            await repository.DeleteAsync(Q.Where(nameof(ExamPaperAnswer.ExamPaperId), examPaperId));
         }
         public async Task DeleteByUserId(int userId)
         {
             await _repository.DeleteAsync(Q.Where(nameof(ExamPaperAnswer.UserId), userId));
         }
 
-        public async Task ClearByPaperAndUserAsync(int paperId, int userId)
+        public async Task ClearByPaperAndUserAsync(int examPaperId, int userId)
         {
-            await _repository.DeleteAsync(Q.Where(nameof(ExamPaperAnswer.ExamPaperId), paperId).Where(nameof(ExamPaperAnswer.UserId), userId));
+            var tableName = await GetTableNameAsync(examPaperId);
+            var repository = await GetRepositoryAsync(tableName);
+
+            await repository.DeleteAsync(Q.Where(nameof(ExamPaperAnswer.ExamPaperId), examPaperId).Where(nameof(ExamPaperAnswer.UserId), userId));
         }
 
-        public async Task<ExamPaperAnswer> GetAsync(int id)
+        public async Task<ExamPaperAnswer> GetAsync(int id,int examPaperId)
         {
-            return await _repository.GetAsync(Q.Where(nameof(ExamPaperAnswer.Id), id));
+            var tableName = await GetTableNameAsync(examPaperId);
+            var repository = await GetRepositoryAsync(tableName);
+
+            return await repository.GetAsync(Q.Where(nameof(ExamPaperAnswer.Id), id));
         }
-        public async Task<ExamPaperAnswer> GetAsync(int tmId, int startId, int paperId)
+        public async Task<ExamPaperAnswer> GetAsync(int tmId, int startId, int examPaperId)
         {
-            return await _repository.GetAsync(Q.
-                Where(nameof(ExamPaperAnswer.ExamPaperId), paperId).
+            var tableName = await GetTableNameAsync(examPaperId);
+            var repository = await GetRepositoryAsync(tableName);
+
+            return await repository.GetAsync(Q.
+                Where(nameof(ExamPaperAnswer.ExamPaperId), examPaperId).
                 Where(nameof(ExamPaperAnswer.ExamStartId), startId).
                 Where(nameof(ExamPaperAnswer.RandomTmId), tmId));
         }
 
 
-        public async Task<decimal> ScoreSumAsync(int startId)
+        public async Task<decimal> ScoreSumAsync(int startId,int examPaperId)
         {
-            var scoreList = await _repository.GetAllAsync<decimal>(Q.
+            var tableName = await GetTableNameAsync(examPaperId);
+            var repository = await GetRepositoryAsync(tableName);
+
+            var scoreList = await repository.GetAllAsync<decimal>(Q.
                 Select(nameof(ExamPaperAnswer.Score)).
                 Where(nameof(ExamPaperAnswer.ExamStartId), startId));
 
@@ -76,9 +98,12 @@ namespace XBLMS.Core.Repositories
 
             return 0;
         }
-        public async Task<decimal> ObjectiveScoreSumAsync(int startId)
+        public async Task<decimal> ObjectiveScoreSumAsync(int startId,int examPaperId)
         {
-            var scoreList = await _repository.GetAllAsync<decimal>(Q.
+            var tableName = await GetTableNameAsync(examPaperId);
+            var repository = await GetRepositoryAsync(tableName);
+
+            var scoreList = await repository.GetAllAsync<decimal>(Q.
               Select(nameof(ExamPaperAnswer.Score)).
               Where(nameof(ExamPaperAnswer.ExamTmType), ExamTmType.Objective.GetValue()).
               Where(nameof(ExamPaperAnswer.ExamStartId), startId));
@@ -90,9 +115,12 @@ namespace XBLMS.Core.Repositories
 
             return 0;
         }
-        public async Task<decimal> SubjectiveScoreSumAsync(int startId)
+        public async Task<decimal> SubjectiveScoreSumAsync(int startId,int examPaperId)
         {
-            var scoreList = await _repository.GetAllAsync<decimal>(Q.
+            var tableName = await GetTableNameAsync(examPaperId);
+            var repository = await GetRepositoryAsync(tableName);
+
+            var scoreList = await repository.GetAllAsync<decimal>(Q.
              Select(nameof(ExamPaperAnswer.Score)).
              Where(nameof(ExamPaperAnswer.ExamTmType), ExamTmType.Subjective.GetValue()).
              Where(nameof(ExamPaperAnswer.ExamStartId), startId));
@@ -104,24 +132,27 @@ namespace XBLMS.Core.Repositories
 
             return 0;
         }
-        public async Task<(int rightCount, int wrongCount)> CountAsync(int tmId, int paperId)
+        public async Task<(int rightCount, int wrongCount)> CountAsync(int tmId, int examPaperId)
         {
+            var tableName = await GetTableNameAsync(examPaperId);
+            var repository = await GetRepositoryAsync(tableName);
+
             var query = Q.NewQuery();
-            if (paperId > 0)
+            if (examPaperId > 0)
             {
-                query.Where(nameof(ExamPaperAnswer.ExamPaperId), paperId);
+                query.Where(nameof(ExamPaperAnswer.ExamPaperId), examPaperId);
             }
 
-            var rightCount = await _repository.CountAsync(query.
+            var rightCount = await repository.CountAsync(query.
                 Where(nameof(ExamPaperAnswer.RandomTmId), tmId).
                 Where(nameof(ExamPaperAnswer.Score), ">", 0));
 
             query = Q.NewQuery();
-            if (paperId > 0)
+            if (examPaperId > 0)
             {
-                query.Where(nameof(ExamPaperAnswer.ExamPaperId), paperId);
+                query.Where(nameof(ExamPaperAnswer.ExamPaperId), examPaperId);
             }
-            var wrongCount = await _repository.CountAsync(query.
+            var wrongCount = await repository.CountAsync(query.
                 Where(nameof(ExamPaperAnswer.RandomTmId), tmId).
                 WhereNotNullOrEmpty(nameof(ExamPaperAnswer.Answer)).
                 Where(nameof(ExamPaperAnswer.Score), 0));

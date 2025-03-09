@@ -118,5 +118,7 @@ namespace XBLMS.Models
         public bool LockedApp { get; set; } = false;
         [DataColumn]
         public bool FullScreen { get; set; } = false;
+        [DataColumn]
+        public bool SeparateStorage { get; set; }
     }
 }

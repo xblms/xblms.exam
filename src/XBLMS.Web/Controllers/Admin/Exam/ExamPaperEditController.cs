@@ -28,7 +28,10 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         private readonly IExamManager _examManager;
         private readonly IUserGroupRepository _userGroupRepository;
         private readonly IExamTmRepository _examTmRepository;
+        private readonly IExamPaperRandomRepository _examPaperRandomRepository;
         private readonly IExamPaperRandomConfigRepository _examPaperRandomConfigRepository;
+        private readonly IExamPaperRandomTmRepository _examPaperRandomTmRepository;
+        private readonly IExamPaperAnswerRepository _examPaperAnswerRepository;
         private readonly IExamPaperUserRepository _examPaperUserRepository;
         private readonly IExamPaperStartRepository _examPaperStartRepository;
 
@@ -41,7 +44,10 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             IExamManager examManager,
             IUserGroupRepository userGroupRepository,
             IExamTmRepository examTmRepository,
+            IExamPaperRandomRepository examPaperRandomRepository,
             IExamPaperRandomConfigRepository examPaperRandomConfigRepository,
+            IExamPaperRandomTmRepository examPaperRandomTmRepository,
+            IExamPaperAnswerRepository examPaperAnswerRepository, 
             IExamPaperUserRepository examPaperUserRepository,
             IExamPaperStartRepository examPaperStartRepository)
         {
@@ -54,7 +60,10 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             _examManager = examManager;
             _userGroupRepository = userGroupRepository;
             _examTmRepository = examTmRepository;
+            _examPaperRandomRepository = examPaperRandomRepository;
             _examPaperRandomConfigRepository = examPaperRandomConfigRepository;
+            _examPaperRandomTmRepository = examPaperRandomTmRepository;
+            _examPaperAnswerRepository = examPaperAnswerRepository;
             _examPaperUserRepository = examPaperUserRepository;
             _examPaperStartRepository = examPaperStartRepository;
         }

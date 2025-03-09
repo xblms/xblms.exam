@@ -41,8 +41,8 @@ namespace XBLMS.Core.Services
                     var paper = await _examPaperRepository.GetAsync(examPaperId);
                     if (paper.TmRandomType == Enums.ExamPaperTmRandomType.RandomExaming)
                     {
-                        await _examPaperRandomRepository.DeleteAsync(start.ExamPaperRandomId);
-                        await _examPaperRandomTmRepository.DeleteByRandomIdAsync(start.ExamPaperRandomId);
+                        await _examPaperRandomRepository.DeleteAsync(start.ExamPaperRandomId, examPaperId);
+                        await _examPaperRandomTmRepository.DeleteByRandomIdAsync(start.ExamPaperRandomId, examPaperId);
                     }
                     await _examPaperStartRepository.DeleteAsync(start.Id);
                 }

@@ -24,18 +24,22 @@ namespace XBLMS.Core.Repositories
 
         public List<TableColumn> TableColumns => _repository.TableColumns;
 
-
-        public async Task<bool> ExistsAsync(int id)
-        {
-            return await _repository.ExistsAsync(id);
-        }
         public async Task<int> InsertAsync(ExamPaper item)
         {
             return await _repository.InsertAsync(item);
         }
+        public async Task<ExamPaper> GetAsync(int id)
+        {
+            return await _repository.GetAsync(id, Q.CachingGet(GetCacheKey(id)));
+        }
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var result = await _repository.DeleteAsync(id, Q.CachingRemove(GetCacheKey(id)));
+            return result;
+        }
         public async Task<bool> UpdateAsync(ExamPaper item)
         {
-            return await _repository.UpdateAsync(item);
+            return await _repository.UpdateAsync(item, Q.CachingRemove(GetCacheKey(item.Id)));
         }
         public async Task<List<ExamPaper>> GetListAsync(string keyword)
         {
@@ -74,15 +78,7 @@ namespace XBLMS.Core.Repositories
             var list = await _repository.GetAllAsync(query.ForPage(pageIndex, pageSize));
             return (total, list);
         }
-        public async Task<ExamPaper> GetAsync(int id)
-        {
-            return await _repository.GetAsync(id);
-        }
-        public async Task<bool> DeleteAsync(int Id)
-        {
-            var result = await _repository.DeleteAsync(Id);
-            return result;
-        }
+
         public async Task<int> GetCountAsync(List<int> treeIds)
         {
             return await _repository.CountAsync(Q.WhereIn(nameof(ExamPaper.TreeId), treeIds));

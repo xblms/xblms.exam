@@ -106,7 +106,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
             var answerList = new List<KeyValuePair<int, string>>();
             foreach (var config in configs)
             {
-                var tms = await _examPaperRandomTmRepository.GetListAsync(randomId, config.TxId);
+                var tms = await _examPaperRandomTmRepository.GetListAsync(randomId, config.TxId, config.ExamPaperId);
                 var txTotalScore = tms.Sum(t => t.Score);
                 var txTotalTm = tms.Count;
                 wordContent.Append($"<p style='font-weight:bold;'>{StringUtils.ParseNumberToChinese(txIndex)}、{config.TxName}（共{txTotalTm}题，共{txTotalScore}分）</p>");

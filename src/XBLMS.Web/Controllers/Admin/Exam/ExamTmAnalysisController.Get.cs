@@ -63,7 +63,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 foreach (var tmId in tmIds)
                 {
                     var tm = await _examTmRepository.GetAsync(tmId);
-                    var randomIds = await _examPaperRandomTmRepository.GetIdsAsync(tmId);
+                    var randomIds = await _examPaperRandomTmRepository.GetIdsAsync(tmId, analysis.TmAnalysisExamPapaerId);
                     var rightTotal = 0;
                     var wrongTotal = 0;
                     var answerTotal = 0;
@@ -151,7 +151,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 var tmIds = await _examTmRepository.GetIdsWithOutLockedAsync();
                 foreach (var tmId in tmIds)
                 {
-                    var randomIds = await _examPaperRandomTmRepository.GetIdsAsync(tmId);
+                    var randomIds = await _examPaperRandomTmRepository.GetIdsAsync(tmId, analysis.TmAnalysisExamPapaerId);
                     var rightTotal = 0;
                     var wrongTotal = 0;
                     var answerTotal = 0;

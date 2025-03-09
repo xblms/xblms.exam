@@ -31,7 +31,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
             {
                 var tmTotal = 0;
                 decimal scoreTotal = 0;
-                var tms = await _examPaperRandomTmRepository.GetListAsync(randomId, config.TxId);
+                var tms = await _examPaperRandomTmRepository.GetListAsync(randomId, config.TxId, paper.Id);
                 if (tms! != null && tms.Count > 0)
                 {
                     foreach (var tm in tms)

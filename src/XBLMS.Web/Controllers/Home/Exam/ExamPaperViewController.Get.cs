@@ -33,7 +33,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
             var tmIndex = 1;
             foreach (var config in configs)
             {
-                var tms = await _examPaperRandomTmRepository.GetListAsync(randomId, config.TxId);
+                var tms = await _examPaperRandomTmRepository.GetListAsync(randomId, config.TxId, config.ExamPaperId);
                 if (tms != null && tms.Count > 0)
                 {
                     paperTmTotal += tms.Count;

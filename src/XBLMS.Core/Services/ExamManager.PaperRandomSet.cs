@@ -71,7 +71,7 @@ namespace XBLMS.Core.Services
                     {
                         foreach (var tx in txs)
                         {
-                            var tmList = await _examPaperRandomTmRepository.GetListAsync(randomId, tx.Id);
+                            var tmList = await _examPaperRandomTmRepository.GetListAsync(randomId, tx.Id,paper.Id);
                             var tmTotal = 0;
                             decimal scoreTotal = 0;
                             var tmIds = new List<int>();

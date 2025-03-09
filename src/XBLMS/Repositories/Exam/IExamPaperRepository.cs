@@ -7,7 +7,6 @@ namespace XBLMS.Repositories
 {
     public partial interface IExamPaperRepository : IRepository
     {
-        Task<bool> ExistsAsync(int id);
         Task<int> GetCountAsync(List<int> treeIds);
         Task<ExamPaper> GetAsync(int id);
         Task<int> InsertAsync(ExamPaper item);

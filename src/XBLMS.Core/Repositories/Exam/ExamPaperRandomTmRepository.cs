@@ -7,13 +7,18 @@ using XBLMS.Services;
 
 namespace XBLMS.Core.Repositories
 {
-    public class ExamPaperRandomTmRepository : IExamPaperRandomTmRepository
+    public partial class ExamPaperRandomTmRepository : IExamPaperRandomTmRepository
     {
+        private readonly ISettingsManager _settingsManager;
+        private readonly IExamPaperRepository _examPaperRepository;
         private readonly Repository<ExamPaperRandomTm> _repository;
 
-        public ExamPaperRandomTmRepository(ISettingsManager settingsManager)
+        public ExamPaperRandomTmRepository(ISettingsManager settingsManager, IExamPaperRepository examPaperRepository)
         {
+            _settingsManager = settingsManager;
+            _examPaperRepository = examPaperRepository;
             _repository = new Repository<ExamPaperRandomTm>(settingsManager.Database, settingsManager.Redis);
+            
         }
 
         public IDatabase Database => _repository.Database;
@@ -23,35 +28,53 @@ namespace XBLMS.Core.Repositories
         public List<TableColumn> TableColumns => _repository.TableColumns;
 
 
-        public async Task<ExamPaperRandomTm> GetAsync(int Id)
+        public async Task<ExamPaperRandomTm> GetAsync(int Id,int examPaperId)
         {
-            return await _repository.GetAsync(Id);
+            var tableName = await GetTableNameAsync(examPaperId);
+            var repository = await GetRepositoryAsync(tableName);
+
+            return await repository.GetAsync(Id);
         }
 
 
         public async Task<int> InsertAsync(ExamPaperRandomTm item)
         {
-            return await _repository.InsertAsync(item);
+            var tableName = await GetTableNameAsync(item.ExamPaperId);
+            var repository = await GetRepositoryAsync(tableName);
+
+            return await repository.InsertAsync(item);
         }
-        public async Task<int> DeleteByRandomIdAsync(int examPaperRandomId)
+        public async Task<int> DeleteByRandomIdAsync(int examPaperRandomId,int examPaperId)
         {
-            return await _repository.DeleteAsync(Q.Where(nameof(ExamPaperRandomTm.ExamPaperRandomId), examPaperRandomId));
+            var tableName = await GetTableNameAsync(examPaperId);
+            var repository = await GetRepositoryAsync(tableName);
+
+            return await repository.DeleteAsync(Q.Where(nameof(ExamPaperRandomTm.ExamPaperRandomId), examPaperRandomId));
         }
         public async Task<int> DeleteByPaperAsync(int examPaperId)
         {
-            return await _repository.DeleteAsync(Q.Where(nameof(ExamPaperRandomTm.ExamPaperId), examPaperId));
+            var tableName = await GetTableNameAsync(examPaperId);
+            var repository = await GetRepositoryAsync(tableName);
+
+            return await repository.DeleteAsync(Q.Where(nameof(ExamPaperRandomTm.ExamPaperId), examPaperId));
         }
-        public async Task<List<ExamPaperRandomTm>> GetListAsync(int examPaperRandomId, int txId)
+        public async Task<List<ExamPaperRandomTm>> GetListAsync(int examPaperRandomId, int txId,int examPaperId)
         {
-            var infoList = await _repository.GetAllAsync(Q.
+            var tableName = await GetTableNameAsync(examPaperId);
+            var repository = await GetRepositoryAsync(tableName);
+
+            var infoList = await repository.GetAllAsync(Q.
                 Where(nameof(ExamPaperRandomTm.ExamPaperRandomId), examPaperRandomId).
                 Where(nameof(ExamPaperRandomTm.TxId), txId).
                 OrderBy(nameof(ExamPaperRandomTm.Id)));
             return infoList;
         }
-        public async Task<List<int>> GetIdsAsync(int tmId)
+        public async Task<List<int>> GetIdsAsync(int tmId,int examPaperId)
         {
-            var idsList = await _repository.GetAllAsync<int>(Q.
+            var tableName = await GetTableNameAsync(examPaperId);
+            var repository = await GetRepositoryAsync(tableName);
+
+            var idsList = await repository.GetAllAsync<int>(Q.
                 Select(nameof(ExamPaperRandomTm.Id)).
                 Where(nameof(ExamPaperRandomTm.SourceTmId), tmId));
             return idsList;

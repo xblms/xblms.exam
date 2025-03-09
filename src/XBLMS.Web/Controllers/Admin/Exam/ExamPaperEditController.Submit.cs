@@ -96,6 +96,16 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
 
                 paper = await _examPaperRepository.GetAsync(paperId);
+
+                if (paper.SeparateStorage)
+                {
+                    await _examPaperRandomRepository.CreateSeparateStorageAsync(paper.Id);
+                    await _examPaperRandomConfigRepository.CreateSeparateStorageAsync(paper.Id);
+                    await _examPaperAnswerRepository.CreateSeparateStorageAsync(paper.Id);
+                    await _examPaperRandomTmRepository.CreateSeparateStorageAsync(paper.Id);
+                }
+
+
                 await SetRandomConfigs(request.ConfigList, paper);
 
 

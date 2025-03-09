@@ -107,7 +107,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
                     tmType = ExamTmType.Subjective;
                 }
 
-                var tms = await _examPaperRandomTmRepository.GetListAsync(randomId, config.TxId);
+                var tms = await _examPaperRandomTmRepository.GetListAsync(randomId, config.TxId, config.ExamPaperId);
                 if (tms != null && tms.Count > 0)
                 {
                     paperTmTotal += tms.Count;

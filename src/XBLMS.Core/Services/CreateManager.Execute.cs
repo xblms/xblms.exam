@@ -11,7 +11,7 @@ namespace XBLMS.Core.Services
     {
         public async Task ExecuteSubmitAnswerAsync(ExamPaperAnswer examPaperAnswer)
         {
-            var tm = await _databaseManager.ExamPaperRandomTmRepository.GetAsync(examPaperAnswer.RandomTmId);
+            var tm = await _databaseManager.ExamPaperRandomTmRepository.GetAsync(examPaperAnswer.RandomTmId, examPaperAnswer.ExamPaperId);
             if (examPaperAnswer.ExamTmType == ExamTmType.Objective)
             {
                 if (StringUtils.Equals(tm.Answer, examPaperAnswer.Answer))
@@ -116,9 +116,9 @@ namespace XBLMS.Core.Services
             start.IsSubmit = true;
             start.EndDateTime = DateTime.Now;
 
-            var sumScore = await _databaseManager.ExamPaperAnswerRepository.ScoreSumAsync(startId);
-            var objectiveSocre = await _databaseManager.ExamPaperAnswerRepository.ObjectiveScoreSumAsync(startId);
-            var subjectiveScore = await _databaseManager.ExamPaperAnswerRepository.SubjectiveScoreSumAsync(startId);
+            var sumScore = await _databaseManager.ExamPaperAnswerRepository.ScoreSumAsync(startId, paper.Id);
+            var objectiveSocre = await _databaseManager.ExamPaperAnswerRepository.ObjectiveScoreSumAsync(startId, paper.Id);
+            var subjectiveScore = await _databaseManager.ExamPaperAnswerRepository.SubjectiveScoreSumAsync(startId, paper.Id);
 
             start.ObjectiveScore = objectiveSocre;
 

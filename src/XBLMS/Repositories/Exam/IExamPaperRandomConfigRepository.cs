@@ -5,7 +5,7 @@ using XBLMS.Models;
 
 namespace XBLMS.Repositories
 {
-    public  interface IExamPaperRandomConfigRepository : IRepository
+    public partial interface IExamPaperRandomConfigRepository : IRepository
     {
         Task<int> InsertAsync(ExamPaperRandomConfig item);
         Task<List<ExamPaperRandomConfig>> GetListAsync(int examPaperId);

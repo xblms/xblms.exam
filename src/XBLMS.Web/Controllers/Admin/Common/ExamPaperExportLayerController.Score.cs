@@ -27,7 +27,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
             var configs = await _examPaperRandomConfigRepository.GetListAsync(paper.Id);
             if (configs == null || configs.Count == 0) { return NotFound(); }
 
-      
+
             if (request.Type == ExamPaperExportType.PaperScoreOnlyOne)
             {
                 wordurl = await ExportScoreOnlyOne(request, randomIds, paper, configs);
@@ -94,7 +94,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
             for (var i = 0; i < configs.Count; i++)
             {
                 decimal txTotalScore = 0;
-                var tms = await _examPaperRandomTmRepository.GetListAsync(randomId, configs[i].TxId);
+                var tms = await _examPaperRandomTmRepository.GetListAsync(randomId, configs[i].TxId, paper.Id);
                 if (tms != null && tms.Count > 0)
                 {
                     foreach (var item in tms)
@@ -186,7 +186,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
                 for (var i = 0; i < configs.Count; i++)
                 {
                     decimal txTotalScore = 0;
-                    var tms = await _examPaperRandomTmRepository.GetListAsync(start.ExamPaperRandomId, configs[i].TxId);
+                    var tms = await _examPaperRandomTmRepository.GetListAsync(start.ExamPaperRandomId, configs[i].TxId, paper.Id);
                     if (tms != null && tms.Count > 0)
                     {
                         foreach (var item in tms)
