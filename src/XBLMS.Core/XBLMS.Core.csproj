@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <LangVersion>latest</LangVersion>
 	<PackageId>XBLMS.Core</PackageId> 
-    <Version>8.0</Version>
+    <Version>8.1</Version>
     <Authors>xblms</Authors>
     <Company>xblms</Company>
 	<Description></Description>
