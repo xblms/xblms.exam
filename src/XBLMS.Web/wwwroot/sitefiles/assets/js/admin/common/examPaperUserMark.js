@@ -35,6 +35,8 @@ var methods = {
           }
 
         });
+
+        $this.markChange();
       }
 
     }).catch(function (error) {
