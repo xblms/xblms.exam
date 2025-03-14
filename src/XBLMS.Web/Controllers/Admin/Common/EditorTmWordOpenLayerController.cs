@@ -203,7 +203,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
                                                             hasAnswer = true;
                                                         }
                                                     }
-                                                    if (!hasAnswer || answers.Count > options.Count || (answers.Count > 1 && tx.ExamTxBase != ExamTxBase.Duoxuanti))
+                                                    if (!hasAnswer || answers.Count > options.Count || (htmlAnswer.Length > 1 && (tx.ExamTxBase == ExamTxBase.Danxuanti || tx.ExamTxBase == ExamTxBase.Panduanti)))
                                                     {
                                                         checkOptions = false;
                                                         errorTotal++;
