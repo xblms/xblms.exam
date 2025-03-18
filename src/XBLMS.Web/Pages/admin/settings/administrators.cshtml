@@ -20,6 +20,9 @@
                          :props="defaultProps"
                          :filter-node-method="filterNode"
                          ref="tree">
+                    <template slot-scope="{ node,data }">
+                        <span style="width:100%;font-size:12px;padding-top:3px;">{{ node.label }}<span style="color:darkgray;">({{ data.adminCount }}/{{ data.adminAllCount }})</span></span>
+                    </template>
                 </el-tree>
             </el-scrollbar>
         </el-card>

@@ -1,43 +1,42 @@
 <el-card style="border-radius:0;">
-    <div slot="header" class="clearfix" style="padding-top:8px;">
-        <span style="font-size:14px;">{{ treeName }}</span>
-        <el-tooltip placement="top" manual v-model="treeTopAddPopover">
-            <div slot="content" style="width:400px;">
-                <el-card>
-                    <el-form :size="euiSize">
-                        <el-form-item label="">
-                            添加分类
-                        </el-form-item>
-                        <el-form-item label="">
-                            <el-input type="textarea"
-                                      placeholder="分类之间用换行分割，下级分类前添加“-”字符，示例：&#10;一级分类&#10;-二级分类&#10;--三级分类"
-                                      v-model="treeAddForm.names"
-                                      show-word-limit rows="8">
-                            </el-input>
-                            <div class="el-form-item__error" v-if="treeEditValid">请输入分类内容</div>
-                        </el-form-item>
-                        <el-form-item label="" style="text-align:right;">
-                            <el-button icon="el-icon-check" size="mini" type="primary" v-on:click="treeBtnAddSubmitClick(0)">确 定</el-button>
-                            <el-button icon="el-icon-close" plain size="mini" type="primary" v-on:click="treeTopAddPopover=false">取 消</el-button>
-                        </el-form-item>
-                    </el-form>
-                </el-card>
-            </div>
-            <el-button style="float: right; padding: 3px 0" type="text" v-on:click="treeTopAddPopover=!treeTopAddPopover">添加分类</el-button>
-        </el-tooltip>
-    </div>
     <el-form :size="euiSize">
-        <el-form-item label="">
-            <el-input clearable placeholder="分类关键字查询" v-model="treeFilterText" prefix-icon="el-icon-search">
-                <template slot="append">
+        <el-form-item>
+            <el-input clearable :placeholder="treeName" v-model="treeFilterText" prefix-icon="el-icon-search">
+                <template slot="prepend">
                     <el-tooltip content="右侧列表查询是否包含下级" placement="top">
                         <el-checkbox v-model="formInline.treeIsChildren"></el-checkbox>
+                    </el-tooltip>
+                </template>
+                <template slot="append">
+                    <el-tooltip placement="top" manual v-model="treeTopAddPopover">
+                        <div slot="content" style="width:400px;">
+                            <el-card>
+                                <el-form :size="euiSize">
+                                    <el-form-item label="">
+                                        添加分类
+                                    </el-form-item>
+                                    <el-form-item label="">
+                                        <el-input type="textarea"
+                                                  placeholder="分类之间用换行分割，下级分类前添加“-”字符，示例：&#10;一级分类&#10;-二级分类&#10;--三级分类"
+                                                  v-model="treeAddForm.names"
+                                                  show-word-limit rows="8">
+                                        </el-input>
+                                        <div class="el-form-item__error" v-if="treeEditValid">请输入分类内容</div>
+                                    </el-form-item>
+                                    <el-form-item label="" style="text-align:right;">
+                                        <el-button icon="el-icon-check" size="mini" type="primary" v-on:click="treeBtnAddSubmitClick(0)">确 定</el-button>
+                                        <el-button icon="el-icon-close" plain size="mini" type="primary" v-on:click="treeTopAddPopover=false">取 消</el-button>
+                                    </el-form-item>
+                                </el-form>
+                            </el-card>
+                        </div>
+                        <el-button type="primary" plain icon="el-icon-plus" v-on:click="treeTopAddPopover=!treeTopAddPopover">分类</el-button>
                     </el-tooltip>
                 </template>
             </el-input>
         </el-form-item>
     </el-form>
-    <el-scrollbar class="scrollbar" :style="{height: $(window).height()-183 + 'px'}">
+    <el-scrollbar class="scrollbar" :style="{height: $(window).height()-116 + 'px'}">
         <el-tree class="filter-tree"
                  :data="treeItems" :expand-on-click-node="false"
                  v-on:node-click="treeNodeClick"
@@ -99,7 +98,7 @@
                             </div>
                         </el-card>
                     </div>
-                    <span style="width:100%">{{ node.label }}<span style="color:darkgray;font-size:12px;">({{ data.selfTotal }}/{{ data.total }})</span></span>
+                    <span style="width:100%;font-size:12px;padding-top:3px;">{{ node.label }}<span style="color:darkgray;">({{ data.selfTotal }}/{{ data.total }})</span></span>
                 </el-tooltip>
             </template>
         </el-tree>
