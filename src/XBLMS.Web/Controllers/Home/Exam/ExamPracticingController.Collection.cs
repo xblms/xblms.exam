@@ -15,7 +15,8 @@ namespace XBLMS.Web.Controllers.Home.Exam
             if (user == null) return Unauthorized();
 
             var collection = await _examPracticeCollectRepository.GetAsync(user.Id);
-            if (collection == null) {
+            if (collection == null)
+            {
                 await _examPracticeCollectRepository.InsertAsync(new ExamPracticeCollect
                 {
                     TmIds = new List<int> { request.Id },

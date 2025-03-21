@@ -23,58 +23,98 @@
     <div class="d-flex justify-content-between align-items-center">
         <div>
             <h2 class="h1 fw-bold">刷题中心</h2>
-            <small>共 {{total}} 道题可供练习</small>
+            <small><i class="el-icon-info me-2"></i>巩固知识从这里开始</small>
         </div>
         <div>
             <el-button class="py-3 border-0" plain v-on:click="btnLogClick">
                 <i class="bi bi-person-lines-fill me-3"></i>刷题记录
             </el-button>
-            <el-button class="py-3" type="success" plain v-on:click="btnCreateClick('Collect')">
-                <i class="bi bi-person-hearts me-3"></i>收藏练习（{{collectTotal}}）
+            <el-button class="p-5 rounded-0" type="success" plain v-on:click="btnCreateClick('Collect')">
+                <i class="bi bi-person-hearts me-3"></i>收藏练习（{{ collectTotal }}）
             </el-button>
-            <el-button class="py-3" type="warning" plain v-on:click="btnCreateClick('Wrong')">
-                <i class="bi bi-backspace-reverse me-3"></i>错题练习（{{wrongTotal}}）
+            <el-button class="p-5 rounded-0" type="warning" plain v-on:click="btnCreateClick('Wrong')">
+                <i class="bi bi-backspace-reverse me-3"></i>错题练习（{{ wrongTotal }}）
             </el-button>
-            <el-button class="py-3 px-4" type="primary" plain v-on:click="btnCreateClick('All')">
-                <i class="bi bi-fast-forward-circle-fill me-3"></i>快速开始（{{total}}）
+            <el-button class="p-5 rounded-0" type="primary" plain v-on:click="btnCreateClick('Create')">
+                <i class="bi bi-fast-forward-circle-fill me-3"></i>快速开始
             </el-button>
         </div>
     </div>
 </el-card>
-<div class="p-3">
+<div class="p-5">
     <div v-if="total>0">
-        <div class="ms-5 position-relative card-hover-with-icon" v-for="(item,index) in list" style="cursor:default;">
-            <div class="position-absolute top-50 start-0 translate-middle">
-                <div class="position-relative">
-                    <i class="bi bi-pencil-square fs-2"></i>
-                    <span class="position-absolute top-100 start-100 translate-middle fs-6">{{ index+1 }}</span>
+        <div v-for="(item,index) in list">
+            <div class="card card-bordered mb-4 card-hover cursor-pointer" v-on:click="btnCreateClick('Group',item.id,item.tmCount)">
+                <div class="card-body">
+                    <div>
+                        <div class="d-lg-flex">
+                            <div class="mb-3 mb-lg-0">
+                                <span class="bg-light p-3 rounded-circle"><i class="bi bi-pencil-square fs-2"></i></span>
+                            </div>
+                            <div class="w-100 ms-lg-4">
+                                <div class="d-flex justify-content-between mt-1">
+                                    <div>
+                                        <h3 class="mb-1">
+                                            {{ item.title }}
+                                        </h3>
+                                        <div>
+                                            <span class="text-dark fw-medium">
+                                                {{ item.mineTmCount }} / {{ item.tmCount }} 道题
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <el-button type="warning" icon="el-icon-delete" circle v-on:click.stop="btnDeleteClick(item.id)"></el-button>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="mt-4">
+                                        <div class="row g-2">
+                                            <div class="col-12 text-primary">
+                                                <div class="d-flex justify-content-start align-items-start">
+                                                    <div>
+                                                        <nobr><i class="bi bi-arrow-right-circle"></i><span class="ms-1">题型：</span></nobr>
+                                                    </div>
+                                                    <div>
+                                                        <span class="me-1 mb-1" v-for="txName in item.txNames">{{ txName }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 text-warning">
+                                                <div class="d-flex justify-content-start align-items-start">
+                                                    <div>
+                                                        <nobr><i class="bi bi-arrow-right-circle"></i><span class="ms-1">难度：</span></nobr>
+                                                    </div>
+                                                    <div>
+                                                        <span class="me-1 mb-1" v-for="nd in item.nds">{{ nd }}<i class="el-icon-star-on"></i></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 text-success">
+                                                <div class="d-flex justify-content-start align-items-start">
+                                                    <div>
+                                                        <nobr><i class="bi bi-arrow-right-circle"></i><span class="ms-1">知识点：</span></nobr>
+                                                    </div>
+                                                    <div>
+                                                        <span v-if="item.zsds && item.zsds.length>0">
+                                                            <span class="me-1 mb-1" v-for="zsd in item.zsds">{{ zsd }}</span>
+                                                        </span>
+                                                        <span v-else>全部知识点</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <el-card shadow="hover" class="rounded-0 border-start-0 border-end-0">
-                <div class="row align-items-center g-3 ms-6">
-                    <div class="col">
-                        <div>
-                            <span class="small">包含知识点</span>
-                        </div>
-                        <div class="mt-1">
-                            <el-tag type="success" size="mini" class="mt-1 me-1" v-for="zsd in item.zsds">{{ zsd }}</el-tag>
-                        </div>
-                    </div>
-                    <div class="col-auto">
-                        <div class="bg-light p-2 rounded-pill">
-                            <el-button type="primary" plain icon="el-icon-s-order" class="py-3 rounded-pill px-5" v-on:click="btnCreateClick('Group',item.id,item.tmTotal)">
-                                开始练习
-                            </el-button>
-                        </div>
-                        <div class="pt-1 text-center">
-                            <span class="small"><span class="text-success me-1">{{ item.tmTotal }}</span>道题</span>
-                        </div>
-                    </div>
-                </div>
-            </el-card>
         </div>
         <div class="my-5 text-center">
-            <small>没有更多了</small>
+            <el-button icon="el-icon-refresh-right" v-if="list.length>0 && list.length<total" v-on:click="btnLoadMoreClick" :loading="loadMoreLoading">加载更多</el-button>
+            <small v-else>没有更多了</small>
         </div>
     </div>
     <div class="pt-10" v-else>

@@ -17,6 +17,7 @@ namespace XBLMS.Services
         /// <param name="userId"></param>
         /// <returns></returns>
         Task<(int answerTmTotal, double answerPercent, int allTmTotal, double allAnswerPercent, int collectTmTotal, double collectAnswerPercent, int wrongTmTotal, double wrongAnswerPercent)> AnalysisPractice(int userId);
+        Task<(int collectTmTotal, int wrongTmTotal)> AnalysisPracticeTmTotalOnlyCollectAndWrong(int userId);
     }
 
 }

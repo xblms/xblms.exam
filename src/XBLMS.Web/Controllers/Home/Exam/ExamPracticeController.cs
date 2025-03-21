@@ -4,6 +4,7 @@ using NSwag.Annotations;
 using System.Collections.Generic;
 using XBLMS.Configuration;
 using XBLMS.Enums;
+using XBLMS.Models;
 using XBLMS.Repositories;
 using XBLMS.Services;
 
@@ -15,7 +16,13 @@ namespace XBLMS.Web.Controllers.Home.Exam
     public partial class ExamPracticeController : ControllerBase
     {
         private const string Route = "exam/examPractice";
+        private const string RouteTotal = Route + "/total";
         private const string RouteSubmit = Route + "/submit";
+        private const string RouteDelete = Route + "/del";
+
+        private const string RouteReady = Route + "/ready";
+        private const string RouteReadySubmit = RouteReady + "/submit";
+        private const string RouteReadySearch = RouteReady + "/search";
 
         private readonly IConfigRepository _configRepository;
         private readonly IAuthManager _authManager;
@@ -28,6 +35,8 @@ namespace XBLMS.Web.Controllers.Home.Exam
         private readonly IExamPracticeCollectRepository _examPracticeCollectRepository;
         private readonly IExamPracticeWrongRepository _examPracticeWrongRepository;
         private readonly IOrganManager _organManager;
+        private readonly IExamTxRepository _examTxRepository;
+        private readonly IExamPracticeAnswerRepository _examPracticeAnswerRepository;
 
         public ExamPracticeController(IConfigRepository configRepository,
             IAuthManager authManager,
@@ -39,7 +48,9 @@ namespace XBLMS.Web.Controllers.Home.Exam
             IExamPracticeRepository examPracticeRepository,
             IExamPracticeCollectRepository examPracticeCollectRepository,
             IExamPracticeWrongRepository examPracticeWrongRepository,
-            IOrganManager organManager)
+            IOrganManager organManager,
+            IExamTxRepository examTxRepository,
+            IExamPracticeAnswerRepository examPracticeAnswerRepository)
         {
             _configRepository = configRepository;
             _authManager = authManager;
@@ -52,6 +63,8 @@ namespace XBLMS.Web.Controllers.Home.Exam
             _examPracticeCollectRepository = examPracticeCollectRepository;
             _examPracticeWrongRepository = examPracticeWrongRepository;
             _organManager = organManager;
+            _examTxRepository = examTxRepository;
+            _examPracticeAnswerRepository = examPracticeAnswerRepository;
         }
         public class GetSubmitRequest
         {
@@ -72,10 +85,13 @@ namespace XBLMS.Web.Controllers.Home.Exam
             public int PageIndex { get; set; }
             public int PageSize { get; set; }
         }
-        public class GetResult
+        public class GetCreateResult
         {
-            public List<GetResultItem> List { get; set; }
             public int Total { get; set; }
+            public List<ExamPractice> List { get; set; }
+        } 
+        public class GetTotalResult
+        {
             public int CollectTotal { get; set; }
             public int WrongTotal { get; set; }
         }
@@ -84,6 +100,28 @@ namespace XBLMS.Web.Controllers.Home.Exam
             public int Id { get; set; }
             public int TmTotal { get; set; }
             public List<string> Zsds { get; set; }
+        }
+
+        public class GetSubmitReadyRequest
+        {
+            public ExamPractice Item { get; set; }
+        }
+        public class GetReadyRequest
+        {
+            public GetReadySearchResult Search { get; set; }
+            public List<ExamTx> TxList { get; set; }
+            public ExamPractice Item { get; set; }
+        }
+        public class GetReadySearchRequest
+        {
+            public List<int> TxIds { get; set; }
+            public List<int> Nds { get; set; }
+            public List<string> Zsds { get; set; }
+        }
+        public class GetReadySearchResult
+        {
+            public int TmCount { get; set; }
+            public List<int> TmIds { get; set; }
         }
     }
 }

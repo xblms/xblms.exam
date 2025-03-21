@@ -30,8 +30,9 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         private readonly IAdministratorRepository _administratorRepository;
         private readonly IExamTmRepository _examTmRepository;
         private readonly IExamPaperRepository _examPaperRepository;
+        private readonly IUserGroupRepository _userGroupRepository;
 
-        public ExamTmGroupController(IAuthManager authManager, ICacheManager cacheManager, IConfigRepository configRepository, IExamTmGroupRepository examTmGroupRepository, IExamManager examManager, IExamTxRepository examTxRepository, IAdministratorRepository administratorRepository, IExamTmRepository examTmRepository, IExamPaperRepository examPaperRepository)
+        public ExamTmGroupController(IAuthManager authManager, ICacheManager cacheManager, IConfigRepository configRepository, IExamTmGroupRepository examTmGroupRepository, IExamManager examManager, IExamTxRepository examTxRepository, IAdministratorRepository administratorRepository, IExamTmRepository examTmRepository, IExamPaperRepository examPaperRepository, IUserGroupRepository userGroupRepository)
         {
             _authManager = authManager;
             _cacheManager = cacheManager;
@@ -42,6 +43,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             _administratorRepository = administratorRepository;
             _examTmRepository = examTmRepository;
             _examPaperRepository = examPaperRepository;
+            _userGroupRepository = userGroupRepository;
         }
         public class GetRequest
         {
@@ -59,6 +61,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             public List<Cascade<int>> TmTree { get; set; }
             public List<ExamTx> TxList { get; set; }
             public List<Select<string>> GroupTypeSelects { get; set; }
+            public List<UserGroup> UserGroups { get; set; }
         }
 
         public class GetEditRequest

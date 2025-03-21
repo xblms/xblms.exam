@@ -18,6 +18,10 @@ namespace XBLMS.Web.Controllers.Home.Exam
                 {
                     item.TmIds = null;
                     item.Zsds = null;
+                    if (item.ParentId == 0)
+                    {
+                        item.MineTmCount = item.TmCount;
+                    }
                 }
             }
             return new GetResult

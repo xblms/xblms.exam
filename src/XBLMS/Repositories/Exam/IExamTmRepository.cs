@@ -30,6 +30,7 @@ namespace XBLMS.Repositories
         Task<int> GetCountAsync(List<int> treeIds,List<int> txIds,List<int> nandus,List<string> zhishidianKeywords,DateTime? dateFrom,DateTime? dateTo);
         Task<List<int>> GetIdsAsync(List<int> treeIds, List<int> txIds, List<int> nandus, List<string> zhishidianKeywords, DateTime? dateFrom, DateTime? dateTo);
         Task<List<int>> Group_RangeIdsAsync(ExamTmGroup group);
+        Task<List<int>> Group_Practice_GetTmidsAsync(ExamTmGroup group, List<int> txIds, List<int> nds, List<string> zsds);
         Task<List<int>> GetIdsWithOutLockedAsync();
 
         Task<int> GetCountAsync(List<int> tmIds, int txId,int nandu);

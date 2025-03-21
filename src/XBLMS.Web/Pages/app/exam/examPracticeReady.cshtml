@@ -1,0 +1,83 @@
+@page
+@{ Layout = "_LayoutApp"; }
+@section Styles{
+    <style>
+        .el-checkbox{
+            margin-right:5px;
+      
+        }
+
+            .el-button + .el-button, .el-checkbox.is-bordered + .el-checkbox.is-bordered{
+                margin-left: 0;
+            }
+
+        .el-tag {
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .input-new-tag {
+            width: 120px;
+        }
+        .button-new-tag {
+            margin-right: 10px;
+            height: 32px;
+            line-height: 30px;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+    </style>
+}
+<el-card class="rounded-0">
+    <div>
+        <el-form v-on:submit.native.prevent ref="form" :model="form" status-icon label-position="top">
+            <el-form-item label="刷题名称" prop="title" :rules="[{ required: true, message: '请输入名称' }]">
+                <el-input v-model="form.title"></el-input>
+            </el-form-item>
+            <el-form-item label="题型">
+                <el-checkbox-group size="mini" v-model="form.txIds" v-on:change="apiGetSearch">
+                    <el-checkbox :label="tx.id" :key="tx.id" border v-for="tx in txList">{{ tx.name }}</el-checkbox>
+                </el-checkbox-group>
+            </el-form-item>
+            <el-form-item label="难度">
+                <el-checkbox-group v-model="form.nds" v-on:change="apiGetSearch">
+                    <el-checkbox size="mini" v-for="nd in 5" :label="nd" :key="nd" border><span class="text-warning"><span>{{ nd }}</span><i class="el-icon-star-on ms-1 fs-6"></i></span></el-checkbox>
+                </el-checkbox-group>
+            </el-form-item>
+            <el-form-item label="知识点">
+                <el-tag :key="zsd"
+                        v-for="zsd in form.zsds"
+                        closable
+                        :disable-transitions="false"
+                        v-on:close="zsdhandleClose(zsd)">
+                    {{zsd}}
+                </el-tag>
+                <el-input class="input-new-tag" size="mini"
+                          v-if="zsdinputVisible"
+                          v-model="zsdinputValue"
+                          ref="zsdsaveTagInput"
+                          v-on:keyup.enter.native="zsdhandleInputConfirm"
+                          v-on:blur="zsdhandleInputConfirm">
+                </el-input>
+                <el-button size="mini" v-else class="button-new-tag" v-on:click="zsdshowInput">+ 添加</el-button>
+            </el-form-item>
+            <el-form-item label="刷题数量">
+                <el-slider v-model="form.mineTmCount" input-size="mini" :max="form.tmCount>=100?100:form.tmCount"
+                           show-input>
+                </el-slider>
+                <small>共 {{ form.tmCount }} 题</small>
+            </el-form-item>
+        </el-form>
+    </div>
+</el-card>
+<div class="py-8"></div>
+<div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 animate__animated animate__fadeInUp">
+    <el-button-group class="rounded-0">
+        <el-button class="rounded-0" icon="el-icon-check" type="success" v-on:click="btnSubmitClick">开始刷题</el-button>
+        <el-button class="rounded-0" icon="el-icon-close" v-on:click="utils.closeLayerSelf">取 消</el-button>
+    </el-button-group>
+</div>
+
+@section Scripts{
+    <script src="/sitefiles/assets/js/app/exam/examPracticeReady.js" type="text/javascript"></script>
+}

@@ -23,55 +23,9 @@ namespace XBLMS.Web.Controllers.Home.Exam
 
             var tmGroups = await _examTmGroupRepository.GetListWithoutLockedAsync();
 
-            if (request.PracticeType == PracticeType.All)
+            if (request.PracticeType == PracticeType.Group)
             {
-                if (tmGroups != null && tmGroups.Count > 0)
-                {
-                    foreach (var tmGroup in tmGroups)
-                    {
-                        if (tmGroup.OpenUser)
-                        {
-                            var (total, tmList) = await _examTmRepository.GetListAsync(tmGroup, null, 0, 0, "", "", "", false, 0, int.MaxValue);
-                            if (total > 0)
-                            {
-                                foreach (var tmItem in tmList)
-                                {
-                                    if (!zsds.Contains(tmItem.Zhishidian))
-                                    {
-                                        zsds.Add(tmItem.Zhishidian);
-                                    }
-                                    if (!tmIds.Contains(tmItem.Id))
-                                    {
-                                        tmIds.Add(tmItem.Id);
-                                    }
-                                }
-                            }
-                        }
-
-                    }
-                }
-            }
-            else if (request.PracticeType == PracticeType.Group)
-            {
-                var group = tmGroups.Single(g => g.Id == request.GroupId);
-                if (group != null)
-                {
-                    var (total, tmList) = await _examTmRepository.GetListAsync(group, null, 0, 0, "", "", "", false, 0, int.MaxValue);
-                    if (total > 0)
-                    {
-                        foreach (var tmItem in tmList)
-                        {
-                            if (!zsds.Contains(tmItem.Zhishidian))
-                            {
-                                zsds.Add(tmItem.Zhishidian);
-                            }
-                            if (!tmIds.Contains(tmItem.Id))
-                            {
-                                tmIds.Add(tmItem.Id);
-                            }
-                        }
-                    }
-                }
+                tmIds.Add(1);
             }
             else if (request.PracticeType == PracticeType.Wrong)
             {
@@ -100,16 +54,29 @@ namespace XBLMS.Web.Controllers.Home.Exam
             var practiceId = 0;
             if (tmIds.Count > 0)
             {
-                practiceId = await _examPracticeRepository.InsertAsync(new ExamPractice
+                if (request.PracticeType == PracticeType.Group)
                 {
-                    Title = request.PracticeType.GetDisplayName(),
-                    PracticeType = request.PracticeType,
-                    UserId = user.Id,
-                    TmCount = tmIds.Count,
-                    TmIds = tmIds,
-                    Zsds = zsds,
-                    KeyWords = await _organManager.GetUserKeyWords(user.Id)
-                });
+                    var createPractice = await _examPracticeRepository.GetAsync(request.GroupId);
+                    createPractice.KeyWords = await _organManager.GetUserKeyWords(user.Id);
+                    createPractice.IsCreate = false;
+                    createPractice.ParentId = createPractice.Id;
+                    practiceId = await _examPracticeRepository.InsertAsync(createPractice);
+                }
+                else
+                {
+                    practiceId = await _examPracticeRepository.InsertAsync(new ExamPractice
+                    {
+                        Title = request.PracticeType.GetDisplayName(),
+                        IsCreate = false,
+                        PracticeType = request.PracticeType,
+                        UserId = user.Id,
+                        TmCount = tmIds.Count,
+                        TmIds = tmIds,
+                        Zsds = zsds,
+                        KeyWords = await _organManager.GetUserKeyWords(user.Id)
+                    });
+                }
+
                 if (practiceId <= 0)
                 {
                     success = false;

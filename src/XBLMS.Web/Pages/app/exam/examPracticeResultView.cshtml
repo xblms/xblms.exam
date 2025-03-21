@@ -1,0 +1,103 @@
+@page
+@{ Layout = "_LayoutApp"; }
+
+@section Styles{
+    <style>
+        .el-input__inner {
+            border-radius: 0;
+            border-top-width: 0px;
+            border-left-width: 0px;
+            border-right-width: 0px;
+            border-bottom-width: 2px;
+            background: none;
+        }
+
+        .el-radio {
+            white-space: normal;
+        }
+
+        .el-checkbox__label {
+            display: inline-grid;
+            word-wrap: break-word;
+            line-height: 20px;
+            white-space: pre-line;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+}
+<div class="p-3">
+    <div class="mb-3" v-for="(tm,tmIndex) in tmList">
+        <el-card class="position-relative">
+            <div class="position-absolute top-0 start-0 fw-bold fst-italic" :class="tm.answerInfo.isRight?'text-success':'text-danger'">{{ tmIndex+1 }}、</div>
+            <div class="mb-3 fw-bold" :id="'tmid_'+tm.id">
+                <div v-if="tm.baseTx==='Tiankongti'">
+                    <span v-if="tm.titleList && tm.titleList.length>0">
+                        <span v-for="tmContent in tm.titleList">
+                            <span v-if="utils.contains(tmContent.value,'___')">
+                                <el-input v-model.trim="tm.answerInfo.optionsValues[tmContent.key]" style="width:130px;"></el-input>
+                            </span>
+                            <span v-else v-html="tmContent.value"></span>
+                        </span>
+                    </span>
+                    <div v-else v-html="tm.titleHtml"></div>
+                </div>
+                <div v-else v-html="tm.titleHtml"></div>
+            </div>
+            <div class="list-group" v-if="tm.baseTx!=='Tiankongti'">
+                <div v-if="tm.baseTx==='Danxuanti' || tm.baseTx==='Panduanti'">
+                    <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.optionsRandom">
+                        <div class="d-flex justify-content-start align-items-start">
+                            <div class="me-1 position-relative">
+                                {{optionsABC[optionIndex]}}.
+                            </div>
+                            <div>
+                                <el-radio :label="option.key" v-model="tm.answerInfo.answer">
+                                    <span v-html="option.value"></span>
+                                </el-radio>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div v-else-if="tm.baseTx==='Duoxuanti'">
+                    <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.optionsRandom">
+                        <div class="d-flex justify-content-start align-items-start">
+                            <div class="me-1 position-relative">
+                                {{optionsABC[optionIndex]}}.
+                            </div>
+                            <div>
+                                <el-checkbox :true-label="option.key" false-label="" v-model="tm.answerInfo.optionsValues[optionsABC.indexOf(option.key)]">
+                                    <span v-html="option.value"></span>
+                                </el-checkbox>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div v-else-if="tm.baseTx==='Jiandati'">
+                    <el-input :key="tm.id" type="textarea" resize="none" v-model.trim="tm.answerInfo.answer" :autosize="{ minRows: 3}" maxlength="333" style="width:100%;"
+                              show-word-limit></el-input>
+                </div>
+                <div v-else>
+                    未知题型
+                </div>
+            </div>
+            <div class="p-3 my-3 bg-danger text-white" v-if="!tm.answerInfo.isRight">
+                <div class="mt-2">我的答案：{{ tm.answerInfo.answer }}</div>
+                <div class="mt-2">标准答案：<span>{{ tm.answer }}</span></div>
+                <div class="mt-2">解析：<span v-html="tm.jiexi"></span></div>
+            </div>
+        </el-card>
+    </div>
+</div>
+<div class="py-8"></div>
+<div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 animate__animated animate__fadeInUp">
+    <el-button-group class="rounded-0">
+        <el-button class="rounded-0" icon="el-icon-close" v-on:click="utils.closeLayerSelf">退出预览</el-button>
+    </el-button-group>
+</div>
+@section Scripts{
+    <script src="/sitefiles/assets/js/app/exam/examPracticeResultView.js" type="text/javascript"></script>
+}

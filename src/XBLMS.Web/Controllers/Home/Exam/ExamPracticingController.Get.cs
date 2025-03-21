@@ -20,11 +20,16 @@ namespace XBLMS.Web.Controllers.Home.Exam
             if (item != null)
             {
                 item.TmIds = item.TmIds.OrderBy(tm => { return StringUtils.Guid(); }).ToList();
+                var tmCount = item.TmCount;
+                if (item.ParentId > 0)
+                {
+                    tmCount = item.MineTmCount;
+                }
                 return new GetResult
                 {
-                    Title = item.PracticeType.GetDisplayName(),
+                    Title = item.Title,
                     TmIds = item.TmIds,
-                    Total = item.TmCount,
+                    Total = tmCount,
                     Watermark = await _authManager.GetWatermark()
                 };
 

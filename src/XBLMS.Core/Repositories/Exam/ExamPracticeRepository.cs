@@ -31,9 +31,18 @@ namespace XBLMS.Core.Repositories
         {
             return await _repository.GetAllAsync();
         }
+        public async Task<(int total, List<ExamPractice> list)> GetListAsync(int userId, int pageIndex, int pageSize)
+        {
+            var query = Q.Where(nameof(ExamPractice.UserId), userId).WhereTrue(nameof(ExamPractice.IsCreate));
+
+            var count = await _repository.CountAsync(query);
+
+            var list = await _repository.GetAllAsync(query.OrderByDesc(nameof(ExamCer.Id)).ForPage(pageIndex, pageSize));
+            return (count, list);
+        }
         public async Task<(int total, List<ExamPractice> list)> GetListAsync(int userId, string dateFrom, string dateTo, int pageIndex, int pageSize)
         {
-            var query = Q.Where(nameof(ExamPractice.UserId), userId);
+            var query = Q.Where(nameof(ExamPractice.UserId), userId).WhereNullOrFalse(nameof(ExamPractice.IsCreate));
 
             if (!string.IsNullOrWhiteSpace(dateFrom))
             {
@@ -70,9 +79,12 @@ namespace XBLMS.Core.Repositories
 
         public async Task DeleteAsync(int userId)
         {
-            await _repository.DeleteAsync(Q.Where(nameof(ExamPractice.UserId), userId));
+            await _repository.DeleteAsync(Q.Where(nameof(ExamPractice.UserId), userId).WhereNullOrFalse(nameof(ExamPractice.IsCreate)));
         }
-
+        public async Task DeleteByIdAsync(int id)
+        {
+            await _repository.DeleteAsync(Q.Where(nameof(ExamPractice.Id), id).OrWhere(nameof(ExamPractice.ParentId), id));
+        }
 
         public async Task<(int answerTotal, int rightTotal, int allAnswerTotal, int allRightTotal, int collectAnswerTotal, int collectRightTotal, int wrongAnswerTotal, int wrongRightTotal)> SumAsync(int userId)
         {

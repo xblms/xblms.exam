@@ -334,6 +334,19 @@ namespace XBLMS.Core.Services
             tm.Answer = "";
             tm.Set("OptionsValues", new List<string>());
         }
+        public async Task GetTmInfoByPracticeView(ExamTm tm)
+        {
+            await GetTmInfoByPaper(tm);
+
+            var optionsRandom = new List<KeyValuePair<string, string>>();
+            var options = ListUtils.ToList(tm.Get("options"));
+            var abcList = StringUtils.GetABC();
+            for (var i = 0; i < options.Count; i++)
+            {
+                optionsRandom.Add(new KeyValuePair<string, string>(abcList[i], options[i]));
+            }
+            tm.Set("OptionsRandom", optionsRandom);
+        }
 
         public async Task GetPaperInfo(ExamPaper paper, User user, bool cjList = false)
         {

@@ -7,63 +7,47 @@ namespace XBLMS.Web.Controllers.Home.Exam
     public partial class ExamPracticeController
     {
         [HttpGet, Route(Route)]
-        public async Task<ActionResult<GetResult>> Get([FromQuery] GetRequest request)
+        public async Task<ActionResult<GetCreateResult>> Get([FromQuery] GetRequest request)
         {
             var user = await _authManager.GetUserAsync();
             if (user == null) return Unauthorized();
 
-            var tmGroups = await _examTmGroupRepository.GetListWithoutLockedAsync();
-            var resultList = new List<GetResultItem>();
-            var resultTotal = 0;
-
-            if (tmGroups != null && tmGroups.Count > 0)
+            var (total, list) = await _examPracticeRepository.GetListAsync(user.Id, request.PageIndex, request.PageSize);
+            if (total > 0)
             {
-                foreach (var tmGroup in tmGroups)
+                foreach (var item in list)
                 {
-                    if (tmGroup.OpenUser)
+                    var txNames = new List<string>();
+                    if (item.TxIds != null && item.TxIds.Count > 0)
                     {
-                        var (total, tmList) = await _examTmRepository.GetListAsync(tmGroup, 0, int.MaxValue);
-                        if (total > 0)
+                        foreach (var txId in item.TxIds)
                         {
-                            var zsds = new List<string>();
-                            foreach (var tmItem in tmList)
+                            var tx = await _examTxRepository.GetAsync(txId);
+                            if (tx != null)
                             {
-                                resultTotal++;
-                                if (!zsds.Contains(tmItem.Zhishidian))
-                                {
-                                    zsds.Add(tmItem.Zhishidian);
-                                }
+                                txNames.Add(tx.Name);
                             }
-                            resultList.Add(new GetResultItem
-                            {
-                                Id = tmGroup.Id,
-                                TmTotal = total,
-                                Zsds = zsds
-                            });
                         }
                     }
-
+                    item.Set("TxNames", txNames);
                 }
             }
-
-            var collectTotal = 0;
-            var collect = await _examPracticeCollectRepository.GetAsync(user.Id);
-            if (collect != null && collect.TmIds != null)
+            return new GetCreateResult
             {
-                collectTotal = collect.TmIds.Count;
-            }
+                List = list,
+                Total = total,
+            };
+        }
+        [HttpGet, Route(RouteTotal)]
+        public async Task<ActionResult<GetTotalResult>> Get()
+        {
+            var user = await _authManager.GetUserAsync();
+            if (user == null) return Unauthorized();
 
-            var wrongTotal = 0;
-            var wrong = await _examPracticeWrongRepository.GetAsync(user.Id);
-            if (wrong != null && wrong.TmIds != null)
-            {
-                wrongTotal = wrong.TmIds.Count;
-            }
+            var (collectTotal, wrongTotal) = await _examManager.AnalysisPracticeTmTotalOnlyCollectAndWrong(user.Id);
 
-            return new GetResult
+            return new GetTotalResult
             {
-                List = resultList,
-                Total = resultTotal,
                 CollectTotal = collectTotal,
                 WrongTotal = wrongTotal
             };

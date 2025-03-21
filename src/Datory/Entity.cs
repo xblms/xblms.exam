@@ -12,10 +12,13 @@ namespace Datory
     {
         [DataColumn]
         public int Id { get; set; }
+        [JsonIgnore]
         [DataColumn]
         public int CompanyId { get; set; }
+        [JsonIgnore]
         [DataColumn]
         public int DepartmentId { get; set; }
+        [JsonIgnore]
         [DataColumn]
         public int CreatorId { get; set; }
 

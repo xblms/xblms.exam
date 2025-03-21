@@ -26,7 +26,8 @@
 <el-card class="rounded-0">
     <div class="d-flex justify-content-between align-items-center">
         <div>
-            <el-page-header v-on:back="goBack" title="">
+            <el-page-header v-on:back="goBack" class="d-flex align-items-center">
+                <div slot="title" class="pb-1"><span>返回</span></div>
                 <div slot="content">
                     <h2 class="h1 fw-bold">刷题记录</h2>
                     <small>共 {{total}} 条</small>
@@ -62,35 +63,40 @@
         <div class="ms-5 position-relative card-hover-with-icon" v-for="(practice,index) in list" v-on:click="goPracticeResult(practice.id)">
             <div class="position-absolute top-50 start-0 translate-middle">
                 <div class="position-relative">
-                    <i class="el-icon-finished fs-2"></i>
+                    <i class="el-icon-finished fs-3"></i>
                     <span class="position-absolute top-100 start-100 translate-middle mt-1 fs-6">{{ index+1 }}</span>
                 </div>
             </div>
             <el-card class="rounded-0 border-start-0 border-end-0" shadow="hover">
                 <div class="row align-items-center g-3 ms-6">
                     <div class="col">
-                        <div class="mb-3">
+                        <div class="mb-3 fw-bold">
                             <span>{{ practice.title }}</span>
                         </div>
                         <ul class="list-inline fw-light">
-                            <li class="list-inline-item fs-5">
+                            <li class="list-inline-item">
                                 <el-tag>{{ utils.getFriendlyDateTime(practice.createdDate) }}</el-tag>
                             </li>
-                            <li class="list-inline-item fs-5">
-                                共：{{ practice.tmCount }}题
+                            <li class="list-inline-item">
+                                共：{{ practice.mineTmCount }}题
                             </li>
-                            <li class="list-inline-item fs-5">
+                            <li class="list-inline-item">
                                 答题：{{ practice.answerCount }}
                             </li>
-                            <li class="list-inline-item fs-5">
+                            <li class="list-inline-item text-success">
                                 正确：{{ practice.rightCount }}
+                            </li>
+                            <li class="list-inline-item text-danger">
+                                错误：{{ practice.answerCount-practice.rightCount }}
                             </li>
                         </ul>
                     </div>
-                    <div class="col-auto">
+                    <div class="col-auto" style="width:300px;">
                         <div>
-                            <span class="fs-6 fw-light">正确率</span>
-                            <el-progress type="dashboard" :width="88" :stroke-width="6" color="#5cb87a" :percentage="utils.formatPercentFloat(practice.rightCount, practice.answerCount)"></el-progress>
+                            <div class="text-end"><small>正确率:{{ utils.formatPercentFloat(practice.rightCount, practice.answerCount) }}%</small></div>
+                            <div class="progress text-end text-white" aria-valuemin="0" aria-valuemax="100" style="height: 20px;">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" :style="'width:'+utils.formatPercentFloat(practice.rightCount, practice.answerCount)+'%'"></div>
+                            </div>
                         </div>
                     </div>
                 </div>

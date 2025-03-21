@@ -132,7 +132,7 @@
                     </div>
                 </div>
                 <div v-else>
-                    <el-button v-on:click="btnSubmitAnswerClick" type="primary"><i class="bi bi-save me-2"></i>提交答案</el-button>
+                    <el-button v-on:click="btnSubmitAnswerClick" type="primary"><i class="el-icon-s-promotion me-2"></i>提交答案</el-button>
                 </div>
             </div>
             <div class="text-end">
@@ -155,7 +155,7 @@
         </div>
     </el-card>
 </div>
-<div class="d-flex justify-content-between align-items-center px-3 pt-2">
+<div class="d-flex justify-content-between align-items-center px-3">
     <div style="min-width:60%;">
         <el-progress :text-inside="true" :stroke-width="20" :percentage="utils.formatPercentFloat(answerTotal,total)" status="success"></el-progress>
     </div>

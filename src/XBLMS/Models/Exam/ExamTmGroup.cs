@@ -35,6 +35,8 @@ namespace XBLMS.Models
         public bool Locked { get; set; } = false;
         [DataColumn]
         public bool OpenUser { get; set; } = false;
+        [DataColumn]
+        public List<int> OpenUserGroupIds { get; set; }
 
     }
 }

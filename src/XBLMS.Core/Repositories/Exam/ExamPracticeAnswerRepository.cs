@@ -1,5 +1,6 @@
 using Datory;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using XBLMS.Models;
 using XBLMS.Repositories;
@@ -34,6 +35,10 @@ namespace XBLMS.Core.Repositories
         {
             await _repository.DeleteAsync(Q.Where(nameof(ExamPracticeAnswer.UserId), userId));
         }
+        public async Task DeleteByPracticeIdAsync(int practiceId)
+        {
+            await _repository.DeleteAsync(Q.Where(nameof(ExamPracticeAnswer.PracticeId), practiceId));
+        }
         public async Task<(int rightCount, int wrongCount)> CountAsync(int tmId)
         {
             var rightCount = await _repository.CountAsync(Q.
@@ -45,6 +50,12 @@ namespace XBLMS.Core.Repositories
                 WhereNullOrFalse(nameof(ExamPracticeAnswer.IsRight)));
 
             return (rightCount, wrongCount);
+        }
+
+        public async Task<List<ExamPracticeAnswer>> GetListAsync(int practiceId)
+        {
+            var list= await _repository.GetAllAsync(Q.Where(nameof(ExamPracticeAnswer.PracticeId), practiceId).OrderBy(nameof(ExamPracticeAnswer.Id)));
+            return list;
         }
     }
 }

@@ -13,17 +13,14 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         [HttpGet, Route(RouteEditGet)]
         public async Task<ActionResult<GetEditResult>> GetEdit([FromQuery] IdRequest request)
         {
-
-
-            var group = new ExamTmGroup();
+            var group = new ExamTmGroup
+            {
+                Locked = false
+            };
             var selectOrganIds = new List<string>();
             if (request.Id > 0)
             {
                 group = await _examTmGroupRepository.GetAsync(request.Id);
-                if (group != null && group.GroupType == TmGroupType.Range)
-                {
-
-                }
             }
             var tmTree = await _examManager.GetExamTmTreeCascadesAsync();
             var groupTypeSelects = ListUtils.GetSelects<TmGroupType>();
@@ -35,12 +32,15 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 txList = await _examTxRepository.GetListAsync();
             }
 
+            var userGroups = await _userGroupRepository.GetListWithoutLockedAsync();
+
             return new GetEditResult
             {
                 Group = group,
                 GroupTypeSelects = groupTypeSelects,
                 TmTree = tmTree,
-                TxList = txList
+                TxList = txList,
+                UserGroups = userGroups
             };
         }
 

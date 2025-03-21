@@ -1,0 +1,88 @@
+@page
+@{ Layout = "_LayoutHome"; }
+@section Styles{
+    <style>
+        .el-checkbox{
+            margin-right:5px;
+      
+        }
+
+            .el-button + .el-button, .el-checkbox.is-bordered + .el-checkbox.is-bordered{
+                margin-left: 0;
+            }
+
+        .el-tag {
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .input-new-tag {
+            width: 120px;
+        }
+        .button-new-tag {
+            margin-right: 10px;
+            height: 32px;
+            line-height: 30px;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+    </style>
+}
+<el-card>
+    <div slot="header" class="d-flex justify-content-between align-items-center">
+        <div><span>刷题配置</span><span class="text-warning fs-6">（筛选一些题目，以此来提高刷题效率，当然也可以直接开始）</span></div>
+        <el-button type="text" v-on:click="utils.closeLayerSelf"><i class="el-icon-close"></i></el-button>
+    </div>
+    <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-200) + 'px' }">
+        <div style="margin-right:18px;">
+            <el-form v-on:submit.native.prevent ref="form" :model="form" status-icon label-width="140px">
+                <el-form-item label="刷题名称" prop="title" :rules="[{ required: true, message: '请输入名称' }]">
+                    <el-input v-model="form.title"></el-input>
+                </el-form-item>
+                <el-form-item label="题型">
+                    <el-checkbox-group v-model="form.txIds" v-on:change="apiGetSearch">
+                        <el-checkbox :label="tx.id" :key="tx.id" border v-for="tx in txList">{{ tx.name }}</el-checkbox>
+                    </el-checkbox-group>
+                </el-form-item>
+                <el-form-item label="难度">
+                    <el-checkbox-group v-model="form.nds" v-on:change="apiGetSearch">
+                        <el-checkbox v-for="nd in 5" :label="nd" :key="nd" border><span class="text-warning"><span>{{ nd }}</span><i class="el-icon-star-on ms-1 fs-6"></i></span></el-checkbox>
+                    </el-checkbox-group>
+                </el-form-item>
+                <el-form-item label="知识点">
+                    <el-tag :key="zsd"
+                            v-for="zsd in form.zsds"
+                            closable
+                            :disable-transitions="false"
+                            v-on:close="zsdhandleClose(zsd)">
+                        {{zsd}}
+                    </el-tag>
+                    <el-input class="input-new-tag"
+                              v-if="zsdinputVisible"
+                              v-model="zsdinputValue"
+                              ref="zsdsaveTagInput"
+                              v-on:keyup.enter.native="zsdhandleInputConfirm"
+                              v-on:blur="zsdhandleInputConfirm">
+                    </el-input>
+                    <el-button v-else class="button-new-tag" v-on:click="zsdshowInput">+ 添加</el-button>
+                </el-form-item>
+                <el-form-item label="刷题数量">
+                    <el-slider v-model="form.mineTmCount" :max="form.tmCount>=100?100:form.tmCount"
+                               show-input>
+                    </el-slider>
+                    <small>共 {{ form.tmCount }} 题</small>
+                </el-form-item>
+            </el-form>
+        </div>
+    </el-scrollbar>
+</el-card>
+<el-row align="center" style="margin-top:18px;">
+    <el-col :span="24" align="center">
+        <el-button icon="el-icon-check" type="success" v-on:click="btnSubmitClick">开始刷题</el-button>
+        <el-button icon="el-icon-close" v-on:click="utils.closeLayerSelf">取 消</el-button>
+    </el-col>
+</el-row>
+
+@section Scripts{
+    <script src="/sitefiles/assets/js/home/exam/examPracticeReady.js" type="text/javascript"></script>
+}

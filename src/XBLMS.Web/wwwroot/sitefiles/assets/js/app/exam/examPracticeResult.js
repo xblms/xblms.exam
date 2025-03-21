@@ -99,6 +99,22 @@ var methods = {
       utils.loading($this, false);
     });
   },
+  btnViewClick: function (id) {
+    var $this = this;
+    top.utils.openLayer({
+      title: false,
+      closebtn: 0,
+      url: utils.getExamUrl('examPracticeResultView', { id: this.id }),
+      width: "100%",
+      height: "100%",
+      end: function () {
+        $this.setDocumentTitle();
+      }
+    });
+  },
+  setDocumentTitle: function () {
+    top.document.title = "刷题记录";
+  }
 };
 Vue.component("apexchart", {
   extends: VueApexCharts
@@ -108,6 +124,7 @@ var $vue = new Vue({
   data: data,
   methods: methods,
   created: function () {
+    this.setDocumentTitle();
     this.apiGet();
   },
 });

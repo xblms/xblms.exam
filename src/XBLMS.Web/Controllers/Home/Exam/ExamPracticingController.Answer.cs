@@ -23,7 +23,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
                 Jiexi = tm.Jiexi
             };
 
-            if (StringUtils.Equals(tm.Answer, request.Answer))
+            if (StringUtils.EqualsIgnoreCase(tm.Answer, request.Answer))
             {
                 result.IsRight = true;
                 result.Answer = string.Empty;
@@ -50,13 +50,17 @@ namespace XBLMS.Web.Controllers.Home.Exam
                 }
             }
 
-            await _examPracticeAnswerRepository.InsertAsync(new ExamPracticeAnswer
+
+            var answerInfo = new ExamPracticeAnswer
             {
                 UserId = user.Id,
                 PracticeId = request.PracticeId,
                 TmId = request.Id,
-                IsRight = result.IsRight
-            });
+                IsRight = result.IsRight,
+                Answer = request.Answer,
+            };
+            answerInfo.Set("optionsValues", request.AnswerValues);
+            await _examPracticeAnswerRepository.InsertAsync(answerInfo);
 
 
             await _examPracticeRepository.IncrementAnswerCountAsync(request.PracticeId);

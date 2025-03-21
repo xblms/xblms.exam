@@ -177,32 +177,41 @@ var methods = {
     top.$vue.btnAppMenuClick(command);
   },
   btnCreatePracticeClick: function (practiceType) {
-    if (practiceType === 'All') {
-      if (this.practiceAllTmTotal > 0) {
-        this.apiCreatePractice(practiceType);
-      }
-      else {
-        utils.notifyError("没有题目可以练习");
-      }
+    var $this = this;
+    if (practiceType === 'Create') {
+      top.utils.openLayer({
+        title: false,
+        closebtn: 0,
+        url: utils.getExamUrl('examPracticeReady'),
+        width: "100%",
+        height: "100%"
+      });
     }
-    if (practiceType === 'Collect') {
-      if (this.practiceCollectTmTotal > 0) {
-        this.apiCreatePractice(practiceType);
-      }
-      else {
-        utils.notifyError("没有题目可以练习");
-      }
-    }
-    if (practiceType === 'Wrong') {
-      if (this.practiceWrongTmTotal > 0) {
-        this.apiCreatePractice(practiceType);
-      }
-      else {
-        utils.notifyError("没有题目可以练习");
-      }
+    else {
+      top.utils.alertWarning({
+        title: '准备进入刷题模式',
+        callback: function () {
+          if (practiceType === 'Collect') {
+            if ($this.practiceCollectTmTotal > 0) {
+              $this.apiCreatePractice(practiceType);
+            }
+            else {
+              utils.error("没有题目可以练习");
+            }
+          }
+          else if (practiceType === 'Wrong') {
+            if ($this.practiceWrongTmTotal > 0) {
+              $this.apiCreatePractice(practiceType);
+            }
+            else {
+              utils.error("没有题目可以练习");
+            }
+          }
+        }
+      });
     }
   },
-  apiCreatePractice: function (practiceType, groupId) {
+  apiCreatePractice: function (practiceType) {
     var $this = this;
 
     utils.loading(this, true, "正在创建练习...");
@@ -230,10 +239,7 @@ var methods = {
       closebtn: 0,
       url: utils.getExamUrl('examPracticing', { id: id }),
       width: "100%",
-      height: "100%",
-      end: function () {
-        $this.apiGet();
-      }
+      height: "100%"
     });
   },
   goKnowledges: function (id) {

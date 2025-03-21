@@ -74,6 +74,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
             public int PracticeId { get; set; }
             public int Id { get; set; }
             public string Answer { get; set; }
+            public List<string> AnswerValues { get; set; }
         }
         public class GetSubmitAnswerResult
         {

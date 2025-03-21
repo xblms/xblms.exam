@@ -265,7 +265,6 @@
                                         刷题练习
                                     </h2>
                                     <h1><i class="el-icon-s-order text-warning me-2"></i></h1>
-                                    <p class="mb-0 fs-4">共 {{ practiceAllTmTotal }} 道题可以练习</p>
                                 </div>
                             </div>
                         </div>
@@ -276,7 +275,7 @@
                                         <div class="card-body">
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <div>
-                                                    <el-progress type="circle" :percentage="practiceCollectPercent" color="#5cb87a" :width="88" :stroke-width="8"></el-progress>
+                                                    <el-progress type="circle" :percentage="practiceCollectPercent" color="#67C23A" :width="88" :stroke-width="8"></el-progress>
                                                 </div>
                                                 <div>
                                                     <div class="p-2 bg-light w-100 rounded-3">
@@ -296,19 +295,14 @@
                                     <div class="card rounded-5">
                                         <div class="card-body">
                                             <div class="text-center mb-3">
-                                                <el-progress type="dashboard" :percentage="practiceAllPercent" color="#5cb87a" :width="118" :stroke-width="12"></el-progress>
+                                                <el-progress type="dashboard" :percentage="practiceAnswerPercent" color="#6600FF" :width="118" :stroke-width="12"></el-progress>
                                                 <div class="mt-n2">
                                                     <small>刷题正确率</small>
                                                 </div>
                                             </div>
                                             <div class="p-2 bg-light w-100 rounded-pill">
-                                                <el-button type="success" plain class="w-100 p-4 rounded-pill" v-on:click="btnCreatePracticeClick('All')">
-                                                    <div class="d-flex justify-content-between align-items-center">
-                                                        <div class="fw-light fs-6">共 {{ practiceAllTmTotal }} 道题</div>
-                                                        <div>
-                                                            <i class="bi bi-fast-forward-circle-fill me-2"></i>快速开始
-                                                        </div>
-                                                    </div>
+                                                <el-button type="success" plain class="w-100 p-4 rounded-pill" v-on:click="btnCreatePracticeClick('Create')">
+                                                    <i class="bi bi-fast-forward-circle-fill me-2"></i>快速开始
                                                 </el-button>
                                             </div>
                                         </div>
@@ -329,7 +323,7 @@
                                                     </div>
                                                 </div>
                                                 <div>
-                                                    <el-progress type="circle" :percentage="practiceWrongPercent" color="#5cb87a" :width="88" :stroke-width="8"></el-progress>
+                                                    <el-progress type="circle" :percentage="practiceWrongPercent" color="#E6A23C" :width="88" :stroke-width="8"></el-progress>
                                                 </div>
                                             </div>
                                         </div>

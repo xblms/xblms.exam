@@ -8,6 +8,7 @@ namespace XBLMS.Core.Utils
 {
     public static class DateUtils
     {
+        public const string FormatStringDateTimeJoinCN = "yyyy年MM月dd日HH时mm分ss秒";
         public const string FormatStringDateTimeCN = "MM月dd日 HH:mm";
         public const string FormatStringDateOnlyCN = "yyyy年MM月dd日";
 

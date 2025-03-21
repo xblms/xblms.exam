@@ -103,6 +103,16 @@
                     </el-switch>
                     <div class="tips">开启之后允许考生对该范围内的题库进行刷题练习。</div>
                 </el-form-item>
+                <el-form-item label="刷题用户" prop="openUserGroupIds" v-if="form.openUser" :rules="{ required: true, message: '请选择用户组' }">
+                    <el-select ref="openUserGroupIds" v-model="form.openUserGroupIds" filterable multiple placeholder="请选择用户组" clearable style="width:100%">
+                        <el-option v-for="userGroup in userGroups"
+                                   :key="userGroup.id"
+                                   :label="userGroup.groupName"
+                                   :value="userGroup.id">
+                        </el-option>
+                    </el-select>
+                    <div class="tips">根据选择的用户组匹配可以刷题的用户，多个组为并集。</div>
+                </el-form-item>
                 <el-form-item label="状态" prop="locked">
                     <el-select v-model="form.locked">
                         <el-option label="启用" :value="false"></el-option>

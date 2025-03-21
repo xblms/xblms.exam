@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using XBLMS.Core.Utils;
 using XBLMS.Dto;
 
 namespace XBLMS.Web.Controllers.Home.Exam
@@ -15,7 +16,8 @@ namespace XBLMS.Web.Controllers.Home.Exam
             var practice = await _examPracticeRepository.GetAsync(request.Id);
             return new GetResult
             {
-                Total = practice.TmCount,
+                Title = $"{practice.Title}（{practice.CreatedDate.Value.ToString(DateUtils.FormatStringDateTimeCN)}）",
+                Total = practice.ParentId == 0 ? practice.MineTmCount = practice.TmCount : practice.MineTmCount,
                 AnswerTotal = practice.AnswerCount,
                 RightTotal = practice.RightCount,
                 WrongTotal = practice.AnswerCount - practice.RightCount

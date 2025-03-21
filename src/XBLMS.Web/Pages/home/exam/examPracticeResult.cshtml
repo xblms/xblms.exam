@@ -18,6 +18,7 @@
     </div>
 </el-card>
 <div class="text-center mt-3">
+    <el-button icon="el-icon-view" type="success" v-on:click="btnViewClick" v-if="answerTotal>0">预览答题</el-button>
     <el-button type="primary" plain v-on:click="utils.closeLayerSelf" icon="el-icon-close">关 闭</el-button>
 </div>
 @section Scripts{

@@ -1,4 +1,5 @@
 ﻿using Datory;
+using Datory.Utils;
 using SqlKata;
 using System;
 using System.Collections.Generic;
@@ -397,6 +398,103 @@ namespace XBLMS.Core.Repositories
             }
 
             return null;
+        }
+        public async Task<List<int>> Group_Practice_GetTmidsAsync(ExamTmGroup group,List<int> txIds,List<int> nds,List<string> zsds)
+        {
+            var query = Q.
+                Select(nameof(ExamTm.Id)).
+                WhereNullOrFalse(nameof(ExamTm.Locked));
+
+            if (txIds != null)
+            {
+                query.WhereIn(nameof(ExamTm.TxId),txIds);
+            }
+            else
+            {
+                return null;
+            }
+            if (nds != null)
+            {
+                query.WhereIn(nameof(ExamTm.Nandu), nds);
+            }
+            else
+            {
+                return null;
+            }
+            if (zsds != null)
+            {
+                query.Where(q =>{
+                    zsds.ForEach(zsd =>
+                    {
+                        q.OrWhereLike(nameof(ExamTm.Zhishidian), $"%{zsd}%");
+                    });
+                    return q;
+                });
+            }
+
+            if (group != null)
+            {
+                if (group.GroupType == TmGroupType.Fixed)
+                {
+                    if(group.TmIds!=null && group.TmIds.Count > 0)
+                    {
+                        query.WhereIn(nameof(ExamTm.Id), group.TmIds);
+                    }
+                    else
+                    {
+                        return null;
+                    }
+             
+                }
+                if (group.GroupType == TmGroupType.Range)
+                {
+                    var isRange = false;
+                    if (group.DateFrom.HasValue)
+                    {
+                        isRange = true;
+                        query.Where(nameof(ExamTm.CreatedDate), ">=", DateUtils.ToString(group.DateFrom));
+                    }
+                    if (group.DateTo.HasValue)
+                    {
+                        isRange = true;
+                        query.Where(nameof(ExamTm.CreatedDate), "<=", DateUtils.ToString(group.DateTo));
+                    }
+                    if (group.TreeIds != null && group.TreeIds.Count > 0)
+                    {
+                        isRange = true;
+                        query.WhereIn(nameof(ExamTm.TreeId), group.TreeIds);
+                    }
+                    if (group.TxIds != null && group.TxIds.Count > 0)
+                    {
+                        isRange = true;
+                        query.WhereIn(nameof(ExamTm.TxId), group.TxIds);
+                    }
+                    if (group.Nandus != null && group.Nandus.Count > 0)
+                    {
+                        isRange = true;
+                        query.WhereIn(nameof(ExamTm.Nandu), group.Nandus);
+                    }
+                    if (group.Zhishidians != null && group.Zhishidians.Count > 0)
+                    {
+                        isRange = true;
+                        query.Where(q =>
+                        {
+                            foreach (var zhishidian in group.Zhishidians)
+                            {
+                                var like = $"%{zhishidian}%";
+                                q.OrWhereLike(nameof(ExamTm.Zhishidian), like);
+                            }
+                            return q;
+                        });
+                    }
+                    if (!isRange)
+                    {
+                        return null;
+                    }
+                }
+            }
+
+            return await _repository.GetAllAsync<int>(query);
         }
         public async Task<List<ExamTm>> GetListByRandomAsync(bool allTm, bool hasGroup, List<int> tmIds, int txId, int nandu1Count = 0, int nandu2Count = 0, int nandu3Count = 0, int nandu4Count = 0, int nandu5Count = 0)
         {

@@ -2,7 +2,8 @@ var $url = "/exam/examPracticeResult";
 
 var data = utils.init({
   id: utils.getQueryInt("id"),
-  total:0,
+  title: null,
+  total: 0,
   answerTotal: 0,
   rightTotal: 0,
   wrongTotal: 0,
@@ -36,7 +37,7 @@ var data = utils.init({
         },
         track: {
           background: '#fff',
-          strokeWidth: '67%',
+          strokeWidth: '100%',
           margin: 0, // margin is in pixels
           dropShadow: {
             enabled: true,
@@ -85,12 +86,13 @@ var methods = {
     $api.get($url, { params: { id: $this.id } }).then(function (response) {
       var res = response.data;
 
+      $this.title = res.title;
       $this.total = res.total;
       $this.wrongTotal = res.wrongTotal;
       $this.rightTotal = res.rightTotal;
       $this.answerTotal = res.answerTotal;
 
-      
+
       $this.series = [utils.formatPercentFloat($this.rightTotal, $this.answerTotal)];
 
     }).catch(function (error) {
@@ -99,6 +101,10 @@ var methods = {
       utils.loading($this, false);
     });
   },
+  btnViewClick: function () {
+    utils.closeLayerSelf();
+    utils.openTopLeft(this.title + "-答题预览", utils.getExamUrl("examPracticeResultView", { id: this.id }));
+  }
 };
 Vue.component("apexchart", {
   extends: VueApexCharts

@@ -12,6 +12,7 @@ var data = utils.init({
   txList:null,
   filterText: '',
   selectOrgans: [],
+  userGroups:[],
   form: {
     groupType:'All'
   }
@@ -30,9 +31,10 @@ var methods = {
       $this.tmTree = res.tmTree;
       $this.groupTypeSelects = res.groupTypeSelects;
       $this.txList = res.txList;
+      $this.userGroups = res.userGroups;
 
+      $this.form = _.assign({}, res.group);
       if (res.group.id > 0) {
-        $this.form = _.assign({}, res.group);
         $this.checkdKeys = $this.expandedKeys = res.group.treeIds;
       }
 
