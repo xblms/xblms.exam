@@ -15,6 +15,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
             if (user == null) return Unauthorized();
 
             var tm = await _examTmRepository.GetAsync(request.Id);
+            var tx = await _examTxRepository.GetAsync(request.Id);
 
             var result = new GetSubmitAnswerResult
             {
@@ -23,7 +24,62 @@ namespace XBLMS.Web.Controllers.Home.Exam
                 Jiexi = tm.Jiexi
             };
 
-            if (StringUtils.EqualsIgnoreCase(tm.Answer, request.Answer))
+            var isRight = false;
+            if (tx.ExamTxBase == Enums.ExamTxBase.Tiankongti || tx.ExamTxBase == Enums.ExamTxBase.Jiandati)
+            {
+                if (StringUtils.EqualsIgnoreCase(tm.Answer, request.Answer))
+                {
+                    isRight = true;
+                }
+            }
+            else
+            {
+                var answerList = ListUtils.GetStringList(tm.Answer);
+                var allTrue = true;
+                foreach (var answer in answerList)
+                {
+                    if (!StringUtils.ContainsIgnoreCase(request.Answer, answer))
+                    {
+                        allTrue = false;
+                    }
+                }
+                if (!allTrue)
+                {
+                    answerList = ListUtils.GetStringList(tm.Answer, ";");
+                    foreach (var answer in answerList)
+                    {
+                        if (!StringUtils.ContainsIgnoreCase(request.Answer, answer))
+                        {
+                            allTrue = false;
+                        }
+                    }
+                }
+                if (!allTrue)
+                {
+                    answerList = ListUtils.GetStringList(tm.Answer, "，");
+                    foreach (var answer in answerList)
+                    {
+                        if (!StringUtils.ContainsIgnoreCase(request.Answer, answer))
+                        {
+                            allTrue = false;
+                        }
+                    }
+                }
+                if (!allTrue)
+                {
+                    answerList = ListUtils.GetStringList(tm.Answer, "；");
+                    foreach (var answer in answerList)
+                    {
+                        if (!StringUtils.ContainsIgnoreCase(request.Answer, answer))
+                        {
+                            allTrue = false;
+                        }
+                    }
+                }
+                isRight = allTrue;
+            }
+
+            if (isRight)
             {
                 result.IsRight = true;
                 result.Answer = string.Empty;

@@ -14,7 +14,7 @@ namespace XBLMS.Core.Services
             var tm = await _databaseManager.ExamPaperRandomTmRepository.GetAsync(examPaperAnswer.RandomTmId, examPaperAnswer.ExamPaperId);
             if (examPaperAnswer.ExamTmType == ExamTmType.Objective)
             {
-                if (StringUtils.Equals(tm.Answer, examPaperAnswer.Answer))
+                if (StringUtils.EqualsIgnoreCase(tm.Answer, examPaperAnswer.Answer))
                 {
                     examPaperAnswer.Score = tm.Score;
                 }
@@ -27,7 +27,7 @@ namespace XBLMS.Core.Services
                     var allTrue = true;
                     foreach (var answer in answerList)
                     {
-                        if (!StringUtils.Contains(examPaperAnswer.Answer, answer))
+                        if (!StringUtils.ContainsIgnoreCase(examPaperAnswer.Answer, answer))
                         {
                             allTrue = false;
                         }
@@ -37,7 +37,7 @@ namespace XBLMS.Core.Services
                         answerList = ListUtils.GetStringList(tm.Answer, ";");
                         foreach (var answer in answerList)
                         {
-                            if (!StringUtils.Contains(examPaperAnswer.Answer, answer))
+                            if (!StringUtils.ContainsIgnoreCase(examPaperAnswer.Answer, answer))
                             {
                                 allTrue = false;
                             }
@@ -48,7 +48,7 @@ namespace XBLMS.Core.Services
                         answerList = ListUtils.GetStringList(tm.Answer, "，");
                         foreach (var answer in answerList)
                         {
-                            if (!StringUtils.Contains(examPaperAnswer.Answer, answer))
+                            if (!StringUtils.ContainsIgnoreCase(examPaperAnswer.Answer, answer))
                             {
                                 allTrue = false;
                             }
@@ -59,7 +59,7 @@ namespace XBLMS.Core.Services
                         answerList = ListUtils.GetStringList(tm.Answer, "；");
                         foreach (var answer in answerList)
                         {
-                            if (!StringUtils.Contains(examPaperAnswer.Answer, answer))
+                            if (!StringUtils.ContainsIgnoreCase(examPaperAnswer.Answer, answer))
                             {
                                 allTrue = false;
                             }

@@ -75,7 +75,7 @@ var methods = {
     var $this = this;
     utils.loading(this, true);
 
-    $api.post($urlAnswer, { id: this.tm.id, answer: this.tm.answer,practiceId:this.id }).then(function (response) {
+    $api.post($urlAnswer, { id: this.tm.id, answer: this.tm.answer, practiceId: this.id, answerValues: this.tm.optionsValues }).then(function (response) {
       var res = response.data;
       $this.answerResult = res;
       if ($this.answerResult.isRight) {
