@@ -15,7 +15,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
             if (user == null) return Unauthorized();
 
             var tm = await _examTmRepository.GetAsync(request.Id);
-            var tx = await _examTxRepository.GetAsync(request.Id);
+            var tx = await _examTxRepository.GetAsync(tm.TxId);
 
             var result = new GetSubmitAnswerResult
             {
