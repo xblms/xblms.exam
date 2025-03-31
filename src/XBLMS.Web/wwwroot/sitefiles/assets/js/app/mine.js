@@ -2,6 +2,7 @@ var $url = '/index';
 
 var data = utils.init({
   user: null,
+  openMenus: [],
   version: null
 });
 
@@ -13,6 +14,7 @@ var methods = {
       var res = response.data;
       if (res.user) {
         $this.user = res.user;
+        $this.openMenus = res.openMenus;
         $this.version = res.version;
       }
     }).catch(function (error) {

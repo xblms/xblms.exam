@@ -54,7 +54,11 @@ namespace XBLMS.Core.Repositories
             var infoList = await _repository.GetAllAsync(Q.CachingGet(CacheKey));
             return infoList.FirstOrDefault(x => x.Id == id);
         }
-
+        public async Task<List<string>> GetOpenMenusAsync()
+        {
+            var nameList = await _repository.GetAllAsync<string>(Q.Select(nameof(UserMenu.Name)).WhereNullOrFalse(nameof(UserMenu.Disabled)).CachingGet(CacheKey));
+            return nameList.ToList();
+        }
         public async Task ResetAsync()
         {
             await _repository.DeleteAsync(Q.CachingRemove(CacheKey));

@@ -27,7 +27,7 @@
             <h2 class="h1 fw-bold m-0 p-0">首 页</h2>
         </div>
         <div>
-            <button type="button" class="btn btn-outline-dark-warning border-0 me-3" v-on:click="btnEventClick"><i class="bi bi-calendar3 me-2"></i>日 程</button>
+            <button type="button" class="btn btn-outline-dark-warning border-0 me-3" v-on:click="btnEventClick" v-if="utils.contains(openMenus,'examPaper')"><i class="bi bi-calendar3 me-2"></i>日 程</button>
             <el-dropdown :show-timeout="0" placement="left">
                 <img :src="user.avatarUrl || DEFAULT_AVATAR_URL" class="rounded-circle avatar-lg shadow-lg" />
                 <el-dropdown-menu slot="dropdown">
@@ -57,7 +57,7 @@
         </div>
         <div class="row my-8">
             <div class="col-7">
-                <div class="ps-8" v-if="todayExam && todayExam.id>0">
+                <div class="ps-8" v-if="todayExam && todayExam.id>0 && utils.contains(openMenus,'examPaper')">
                     <div class="text-uppercase text-warning fw-semibold p-4 mt-3">
                         <i class="bi bi-flag-fill me-2"></i>今日考试安排
                     </div>
@@ -101,7 +101,7 @@
 </div>
 <el-card class="rounded-0">
     <div class="row g-5 py-5">
-        <div class="col-xl-4 col-lg-4 col-md-4 col-4">
+        <div class="col-xl-4 col-lg-4 col-md-4 col-4" v-if="utils.contains(openMenus,'examPaper')">
             <a class="card card-lift rounded-0" href="javascript:;" v-on:click="btnMoreMenuClick('examPaper')">
                 <div class="d-flex justify-content-between align-items-center card-body">
                     <div class="ms-3">
@@ -118,7 +118,7 @@
                 </div>
             </a>
         </div>
-        <div class="col-xl-4 col-lg-4 col-md-4 col-4">
+        <div class="col-xl-4 col-lg-4 col-md-4 col-4" v-if="utils.contains(openMenus,'examPaperMoni')">
             <a class="card card-lift rounded-0" href="javascript:;" v-on:click="btnMoreMenuClick('examPaperMoni')">
                 <div class="d-flex justify-content-between align-items-center card-body">
                     <div class="ms-3">
@@ -135,7 +135,7 @@
                 </div>
             </a>
         </div>
-        <div class="col-xl-4 col-lg-4 col-md-4 col-4">
+        <div class="col-xl-4 col-lg-4 col-md-4 col-4" v-if="utils.contains(openMenus,'examPractice')">
             <a class="card card-lift rounded-0" href="javascript:;" v-on:click="btnMoreMenuClick('examPractice')">
                 <div class="d-flex justify-content-between align-items-center card-body">
                     <div class="ms-3">
@@ -154,7 +154,7 @@
         </div>
     </div>
 </el-card>
-<div class="mt-8">
+<div class="my-8">
     <div class="container mt-8">
         <div class="card p-5 rounded-5 bg-warning shadow-lg mt-3">
             <div class="card-body">
@@ -236,7 +236,7 @@
                 </div>
             </div>
         </div>
-        <div class="my-8" v-if="cerList && cerList.length>0">
+        <div class="my-8" v-if="cerList && cerList.length>0 && utils.contains(openMenus,'examPaperCer')">
             <div class="my-8">
                 <div class="text-center mt-8">
                     <h2 class="fw-bold">
@@ -254,7 +254,7 @@
                 </div>
             </div>
         </div>
-        <div class="my-8">
+        <div class="my-8" v-if="utils.contains(openMenus,'examPractice')">
             <div class="bg-light p-5 rounded-5">
                 <div class="container">
                     <div class="row">
@@ -338,7 +338,7 @@
                 </div>
             </div>
         </div>
-        <div class="my-8" v-if="knowList && knowList.length>0">
+        <div class="my-8" v-if="knowList && knowList.length>0 && utils.contains(openMenus,'knowleges')">
             <div class="my-8">
                 <div class="text-center mt-8">
                     <h2 class="fw-bold">

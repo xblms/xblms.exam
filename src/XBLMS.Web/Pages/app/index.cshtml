@@ -28,7 +28,7 @@
                     首页
                 </div>
             </a>
-            <a class="text-center text-dark lh-1" href="javascript:;" v-on:click="btnAppMenuClick('exam')">
+            <a class="text-center text-dark lh-1" href="javascript:;" v-on:click="btnAppMenuClick('exam')" v-if="utils.contains(openMenus,'examPaper')">
                 <div>
                     <i class="fs-2" :class="appMenuActive==='exam'?'bi bi-clipboard-check-fill fw-bold':'bi bi-clipboard-check'"></i>
                 </div>
@@ -36,7 +36,7 @@
                     考试
                 </div>
             </a>
-            <a class="text-center text-dark lh-1" href="javascript:;" v-on:click="btnAppMenuClick('moni')">
+            <a class="text-center text-dark lh-1" href="javascript:;" v-on:click="btnAppMenuClick('moni')" v-if="utils.contains(openMenus,'examPaperMoni')">
                 <div>
                     <i class="fs-2" :class="appMenuActive==='moni'?'bi bi-clipboard-fill fw-bold':'bi bi-clipboard'"></i>
                 </div>
@@ -44,7 +44,7 @@
                     模拟
                 </div>
             </a>
-            <a class="text-center text-dark lh-1" href="javascript:;" v-on:click="btnAppMenuClick('shuati')">
+            <a class="text-center text-dark lh-1" href="javascript:;" v-on:click="btnAppMenuClick('shuati')" v-if="utils.contains(openMenus,'examPractice')">
                 <div>
                     <i class="fs-2" :class="appMenuActive==='shuati'?'bi bi-clipboard-heart-fill fw-bold':'bi bi-clipboard-heart'"></i>
                 </div>

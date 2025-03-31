@@ -2,11 +2,29 @@ var $url = '/index';
 
 
 var data = utils.init({
+  openMenus: [],
   appMenuActive: "index",
   rightUrl: utils.getRootUrl('dashboard')
 });
 
 var methods = {
+  apiGet: function () {
+    var $this = this;
+    $api.get($url).then(function (response) {
+      var res = response.data;
+      if (res.user) {
+        $this.openMenus = res.openMenus;
+
+        $this.btnAppMenuClick("index");
+      } else {
+        location.href = utils.getRootUrl('login');
+      }
+    }).catch(function (error) {
+      utils.error(error);
+    }).then(function () {
+      utils.loading($this, false);
+    });
+  },
   btnAppMenuClick: function (common) {
 
     var $this = this;
@@ -46,8 +64,7 @@ var $vue = new Vue({
   data: data,
   methods: methods,
   created: function () {
-    utils.loading(this, false);
     document.title = '首页';
-    this.btnAppMenuClick("index");
+    this.apiGet();
   }
 });

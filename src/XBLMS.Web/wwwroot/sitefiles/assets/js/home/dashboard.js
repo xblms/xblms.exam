@@ -97,6 +97,8 @@ var data = utils.init({
   topCer: null,
   dateStr: null,
 
+  openMenus: [],
+
   cerList: null,
   todayExam: null,
   taskPaperList: null,
@@ -147,6 +149,8 @@ var methods = {
       $this.taskQList = res.taskQList;
       $this.taskAssList = res.taskAssList;
       $this.taskTotal = res.taskTotal;
+
+      $this.openMenus = res.openMenus;
 
       $this.version = res.version;
 

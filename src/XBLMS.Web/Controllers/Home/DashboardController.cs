@@ -33,6 +33,7 @@ namespace XBLMS.Web.Controllers.Home
         private readonly IExamAssessmentRepository _examAssessmentRepository;
 
         private readonly IKnowlegesRepository _knowlegesRepository;
+        private readonly IUserMenuRepository _userMenuRepository;
 
         public DashboardController(IConfigRepository configRepository,
             ISettingsManager settingsManager,
@@ -48,7 +49,8 @@ namespace XBLMS.Web.Controllers.Home
             IExamCerUserRepository examCerUserRepository,
             IExamAssessmentUserRepository examAssessmentUserRepository,
             IExamAssessmentRepository examAssessmentRepository,
-            IKnowlegesRepository knowlegesRepository)
+            IKnowlegesRepository knowlegesRepository,
+            IUserMenuRepository userMenuRepository)
         {
             _settingsManager = settingsManager;
             _configRepository = configRepository;
@@ -65,6 +67,7 @@ namespace XBLMS.Web.Controllers.Home
             _examAssessmentUserRepository = examAssessmentUserRepository;
             _examAssessmentRepository = examAssessmentRepository;
             _knowlegesRepository = knowlegesRepository;
+            _userMenuRepository = userMenuRepository;
         }
 
         public class GetRequest
@@ -109,6 +112,8 @@ namespace XBLMS.Web.Controllers.Home
             public List<ExamQuestionnaire> TaskQList { get; set; }
             public List<ExamAssessment> TaskAssList { get; set; }
             public int TaskTotal { get; set; }
+
+            public List<string> OpenMenus { get; set; }
             public string Version { get; set; }
 
         }

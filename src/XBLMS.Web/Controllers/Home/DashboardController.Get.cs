@@ -1,10 +1,10 @@
-﻿using DocumentFormat.OpenXml.Office2010.ExcelAc;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using XBLMS.Core.Utils;
 using XBLMS.Models;
+using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Home
 {
@@ -50,13 +50,14 @@ namespace XBLMS.Web.Controllers.Home
                 resultMoni = null;
             }
 
+            var openMenus = await _userMenuRepository.GetOpenMenusAsync();
 
             var taskTotal = 0;
             var taskPaperTotal = 0;
             var taskPaperList = new List<ExamPaper>();
             var todayExam = new ExamPaper();
             var taskPaperIds = await _examPaperUserRepository.GetPaperIdsByUser(user.Id);
-            if (taskPaperIds != null && taskPaperIds.Count > 0)
+            if (taskPaperIds != null && taskPaperIds.Count > 0 && ListUtils.Contains(openMenus, "examPaper"))
             {
                 foreach (var paperId in taskPaperIds)
                 {
@@ -86,7 +87,7 @@ namespace XBLMS.Web.Controllers.Home
             }
             var taskQList = new List<ExamQuestionnaire>();
             var (qPaperTotal, qPaperList) = await _examQuestionnaireUserRepository.GetTaskAsync(user.Id);
-            if (total > 0)
+            if (total > 0 && ListUtils.Contains(openMenus, "examPaperMoni"))
             {
                 foreach (var item in qPaperList)
                 {
@@ -99,7 +100,7 @@ namespace XBLMS.Web.Controllers.Home
 
             var taskAssList = new List<ExamAssessment>();
             var (assesstantTaskTotal, assesstantTaskList) = await _examAssessmentUserRepository.GetTaskAsync(user.Id);
-            if (assesstantTaskTotal > 0)
+            if (assesstantTaskTotal > 0 && ListUtils.Contains(openMenus, "examAssessment"))
             {
                 foreach (var item in assesstantTaskList)
                 {
@@ -112,7 +113,7 @@ namespace XBLMS.Web.Controllers.Home
 
             var topCer = new ExamCerUser();
             var (cerTotal, cerList) = await _examCerUserRepository.GetListAsync(user.Id, 1, 8);
-            if (total > 0)
+            if (total > 0 && ListUtils.Contains(openMenus, "examPaperCer"))
             {
                 var cerIndex = 0;
                 foreach (var item in cerList)
@@ -199,6 +200,8 @@ namespace XBLMS.Web.Controllers.Home
                 TaskQList = taskQList,
                 TaskAssList = taskAssList,
                 TaskTotal = taskTotal,
+
+                OpenMenus = openMenus,
 
                 Version = _settingsManager.Version
             };

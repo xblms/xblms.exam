@@ -7,6 +7,7 @@ namespace XBLMS.Repositories
 {
     public interface IUserMenuRepository : IRepository
     {
+        Task<List<string>> GetOpenMenusAsync();
         Task<int> InsertAsync(UserMenu userMenu);
 
         Task UpdateAsync(UserMenu userMenu);

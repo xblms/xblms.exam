@@ -98,6 +98,8 @@ var data = utils.init({
   topCer: null,
   dateStr: '',
 
+  openMenus: [],
+
   taskPaperList: null,
   taskQList: null,
   taskAssList: null,
@@ -151,6 +153,8 @@ var methods = {
 
       $this.todayExam = res.todayExam;
       $this.knowList = res.knowList;
+
+      $this.openMenus = res.openMenus;
 
       $this.version = res.version;
       setTimeout(function () {

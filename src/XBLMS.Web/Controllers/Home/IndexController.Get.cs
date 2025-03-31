@@ -63,11 +63,13 @@ namespace XBLMS.Web.Controllers.Home
                     Name = menuInfo1.Name,
                 });
             }
+            var openMenus = await _userMenuRepository.GetOpenMenusAsync();
 
             return new GetResult
             {
                 User = user,
                 Menus = menus,
+                OpenMenus = openMenus,
                 Version = _settingsManager.Version
             };
         }

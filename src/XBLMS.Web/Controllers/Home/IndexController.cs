@@ -36,6 +36,7 @@ namespace XBLMS.Web.Controllers.Home
         {
             public User User { get; set; }
             public List<Menu> Menus { get; set; }
+            public List<string> OpenMenus { get; set; }
             public string Version { get; set; }
         }
     }
