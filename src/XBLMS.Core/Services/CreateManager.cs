@@ -1,6 +1,7 @@
 ﻿using XBLMS.Dto;
 using XBLMS.Enums;
 using XBLMS.Models;
+using XBLMS.Repositories;
 using XBLMS.Services;
 
 namespace XBLMS.Core.Services

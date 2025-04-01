@@ -39,6 +39,16 @@ namespace XBLMS.Core.Services
                     }
                     catch (Exception ex)
                     {
+                        if (task.CreateType == CreateType.SubmitPaper)
+                        {
+                            var start = await _databaseManager.ExamPaperStartRepository.GetAsync(task.StartId);
+                            if (start != null)
+                            {
+                                start.IsSubmit = true;
+                                await _databaseManager.ExamPaperStartRepository.UpdateAsync(start);
+                            }
+                            await _databaseManager.ErrorLogRepository.AddErrorLogAsync(ex, "交卷异常");
+                        }
                         AddFailureLog(task, ex);
                     }
                     finally
