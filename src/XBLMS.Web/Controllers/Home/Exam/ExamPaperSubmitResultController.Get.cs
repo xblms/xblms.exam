@@ -21,7 +21,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
                     Success = true,
                     IsShowScore = paper.SecrecyScore,
                     Score = paper.SecrecyScore ? start.Score : 0,
-                    IsPass = paper.SecrecyScore ? start.Score >= paper.PassScore : false,
+                    IsPass = paper.SecrecyScore && start.Score >= paper.PassScore,
                     Title = paper.Title,
                     IsMark = start.IsMark
                 };
@@ -31,9 +31,18 @@ namespace XBLMS.Web.Controllers.Home.Exam
                 var queue = 0;
                 var taskStarids = _createManager.GetTaskStartIds();
 
-                if (taskStarids.Count > 0)
+                if (taskStarids.Count > 0 && taskStarids.Contains(request.Id))
                 {
                     queue = taskStarids.Count - taskStarids.IndexOf(request.Id);
+                }
+                else
+                {
+                    start = await _examPaperStartRepository.GetAsync(request.Id);
+                    if (!start.IsSubmit)
+                    {
+                        queue = 1;
+                        _createManager.CreateSubmitPaperAsync(start.Id);
+                    }
                 }
 
                 return new GetResult
