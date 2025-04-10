@@ -55,15 +55,18 @@
                             </el-form-item>
                             <el-form-item v-if="id>0">
                                 <el-checkbox v-model="isUpdateExamTimes">修改已安排的考生数据</el-checkbox>
+                                <div class="tips">会修改已经安排的考生的考试时间，保存按钮一样起效。</div>
                             </el-form-item>
                             <el-form-item label="性能扩展" prop="separateStorage">
-                                <el-checkbox v-model="form.separateStorage" :disabled="form.submitType==='Submit'">分配独立空间</el-checkbox>
+                                <el-checkbox v-model="form.separateStorage" :disabled="id>0">分配独立空间</el-checkbox>
                                 <br />
                                 <el-tooltip placement="top">
                                     <div slot="content">
                                         开启之后系统会单独创建存储空间来处理这场考试中涉及到的相关大数据，以保证更高性能的延展。
                                         <el-divider></el-divider>
                                         这是一个提高考试性能的策略，并且是持久化的，它可以让每一场关键考试都可以如释重负，应对自如。
+                                        <el-divider></el-divider>
+                                        试卷建立后不能再修改此属性
                                     </div>
                                     <span><i class="el-icon-info"></i></span>
                                 </el-tooltip>
