@@ -21,7 +21,7 @@ namespace XBLMS.Models
         /// 已用时 秒
         /// </summary>
         [DataColumn]
-        public long ExamTimeSeconds { get; set; }
+        public int ExamTimeSeconds { get; set; }
         [DataColumn]
         public int MarkTeacherId { get; set; }
         [DataColumn]
