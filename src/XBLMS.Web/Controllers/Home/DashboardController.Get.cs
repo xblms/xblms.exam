@@ -87,7 +87,7 @@ namespace XBLMS.Web.Controllers.Home
             }
             var taskQList = new List<ExamQuestionnaire>();
             var (qPaperTotal, qPaperList) = await _examQuestionnaireUserRepository.GetTaskAsync(user.Id);
-            if (total > 0 && ListUtils.Contains(openMenus, "examPaperMoni"))
+            if (total > 0 && ListUtils.Contains(openMenus, "examQuestionnaire"))
             {
                 foreach (var item in qPaperList)
                 {

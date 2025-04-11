@@ -32,7 +32,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
             }
 
             var existCount = 0;
-            long useTimeSecond = 0;
+            var useTimeSecond = 0;
             var noSubmitStart = await _examPaperStartRepository.GetNoSubmitAsync(paper.Id, user.Id);
             if (noSubmitStart != null)
             {
@@ -50,10 +50,10 @@ namespace XBLMS.Web.Controllers.Home.Exam
                 }
                 else
                 {
-                    useTimeSecond = (long)useTotalSecond;
+                    useTimeSecond = (int)useTotalSecond;
                 }
 
-                noSubmitStart.ExamTimeSeconds = (long)useTotalSecond;
+                noSubmitStart.ExamTimeSeconds = (int)useTotalSecond;
 
                 if (paper.ExistCount >= 0)
                 {
