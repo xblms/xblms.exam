@@ -87,7 +87,7 @@ namespace XBLMS.Web.Controllers.Home
             }
             var taskQList = new List<ExamQuestionnaire>();
             var (qPaperTotal, qPaperList) = await _examQuestionnaireUserRepository.GetTaskAsync(user.Id);
-            if (total > 0 && ListUtils.Contains(openMenus, "examQuestionnaire"))
+            if (qPaperTotal > 0 && ListUtils.Contains(openMenus, "examQuestionnaire"))
             {
                 foreach (var item in qPaperList)
                 {
@@ -113,7 +113,7 @@ namespace XBLMS.Web.Controllers.Home
 
             var topCer = new ExamCerUser();
             var (cerTotal, cerList) = await _examCerUserRepository.GetListAsync(user.Id, 1, 8);
-            if (total > 0 && ListUtils.Contains(openMenus, "examPaperCer"))
+            if (cerTotal > 0 && ListUtils.Contains(openMenus, "examPaperCer"))
             {
                 var cerIndex = 0;
                 foreach (var item in cerList)
