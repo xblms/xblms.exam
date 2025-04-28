@@ -24661,6 +24661,7 @@ UE.plugin.register('simpleupload', function (){
                             loader.setAttribute('alt', json.original || '');
                             loader.removeAttribute('id');
                             domUtils.removeClasses(loader, 'loadingclass');
+                            me.fireEvent("contentchange");
                         } else {
                             showErrorLoader && showErrorLoader(json.state);
                         }
