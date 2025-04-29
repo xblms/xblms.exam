@@ -42,7 +42,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
                 useTimeSecond = noSubmitStart.ExamTimeSeconds;
 
                 var timeSpan = DateTime.Now - noSubmitStart.BeginDateTime.Value;
-                var useTotalSecond = timeSpan.TotalSeconds + useTimeSecond;
+                var useTotalSecond = timeSpan.TotalSeconds;
                 if (useTotalSecond >= paper.TimingMinute * 60)
                 {
                     useTotalSecond = paper.TimingMinute * 60;
