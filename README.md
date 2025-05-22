@@ -4,6 +4,40 @@
 
 <br /><br />
 
+## 企业版
+
+* 商用，适用于中大型企业
+
+* [欢迎垂询，点击前往](http://182.92.223.118)
+
+## 社区版
+
+* 开源免费，适用于个人或中小企业
+
+> 管理端演示环境
+
+* 账号：admin，密码：123123
+
+* [点击前往管理端演示](http://182.92.223.118:5000/admin)
+
+> 用户端演示环境
+
+* 账号：test1，密码：123123
+
+* [点击前往用户端演示](http://182.92.223.118:5000/home)
+
+> 移动端演示环境
+
+* 账号：test1，密码：123123
+
+* 同一个账号不能同时登录，如果突然离线，有可能是其他用户登录后强制下线了
+
+* 防止踢来踢去，自己在后台创建管理员账号或者用户账号即可
+
+* 扫码前往移动端演示
+
+* <img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/二维码.png"/>
+
 ## 介绍
 
 基于 .NET Core 8 + Vue
@@ -51,52 +85,6 @@
 ### 系统升级
 
 * 访问/admin/syncDatabase 进行数据库升级。发布最新的代码替换到原来的部署包即可升级部署文件，不要替换xblms.json文件。
-
-## 演示地址
-
-* 登录时提示账号或密码错误可能是有人重置了账号密码，提醒我一下我来改回去就好了。
-
-### 管理端
-
-* 账号：admin，密码：123123
-
-* [点击前往管理端演示](http://182.92.223.118:5000/admin)
-
-### 用户端
-
-* 账号：test1，密码：123123
-
-* [点击前往用户端演示](http://182.92.223.118:5000/home)
-
-### 移动端
-
-* 账号：test1，密码：123123
-
-* 同一个账号不能同时登录，如果突然离线，有可能是其他用户登录后强制下线了
-
-* 防止踢来踢去，自己在后台创建管理员账号或者用户账号即可
-
-* 扫码前往移动端演示
-
-* <img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/二维码.png"/>
-
-## 系统展示
-
-* 移动端
-
-<img width="180" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/首页.jpg"/>
-<img width="180"  src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/考试中心.jpg"/>
-<img width="180"  src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/考试详细.jpg"/>
-<img width="180"  src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/考试中.jpg"/>
-<img width="180"  src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/交卷结果.jpg"/>
-<img width="180"  src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/考试成绩.jpg"/>
-<img width="180"  src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/查看答卷.jpg"/>
-<img width="180"  src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/问卷调查.jpg"/>
-<img width="180"  src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/刷题练习.jpg"/>
-<img width="180"  src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/刷题练习中.jpg"/>
-<img width="180"  src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/练习结果.jpg"/>
-<img width="180"  src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/刷题记录.jpg"/>
-<img width="180"  src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/我的.jpg"/>
 
 ## 发布手册
 
@@ -236,8 +224,6 @@
 | 系统管理  | 管理员设置、用户设置、数据库管理、访问拦截管理 等  |  
 | 日志管理  | 管理员日志、用户日志、系统错误日志，日志设置 等  |  
 | 统计图表  | 用户登录统计、访问拦截统计 等  |  
-
-
 
 
 ## 编译
