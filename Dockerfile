@@ -1,29 +1,43 @@
-#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
+#引入镜像，低版本 docker 去掉  AS base
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-WORKDIR /app
-EXPOSE 8080
-EXPOSE 80
-EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /src
-COPY ["src/XBLMS.Web/XBLMS.Web.csproj", "src/XBLMS.Web/"]
-COPY ["src/XBLMS.Core/XBLMS.Core.csproj", "src/XBLMS.Core/"]
-COPY ["src/XBLMS/XBLMS.csproj", "src/XBLMS/"]
-RUN dotnet restore "src/XBLMS.Web/XBLMS.Web.csproj"
+MAINTAINER xblm
+
+#配置工作目录
+WORKDIR /app
+  
+#暴露容器端口，此端口与程序运行路径一致
+EXPOSE 8888
+
+#复制文件到工作目录
 COPY . .
-WORKDIR "/src/src/XBLMS.Web"
-RUN dotnet build "XBLMS.Web.csproj" -c Release -o /app/build
+ 
+#ENV ：配置系统环境变量，比如程序环境环境等在这里配置（开发、预发、线上环境）
+#这里是配置程序运行端口，如果程序不使用默认的80端口这里一定要设置（程序运行端口）
+ENV ASPNETCORE_URLS http://+:8888
 
-FROM build AS publish
-RUN dotnet publish "XBLMS.Web.csproj" -c Release -o /app/xblms
-RUN cp -r /app/xblms/wwwroot /app/xblms/_wwwroot
-RUN echo `date +%Y-%m-%d-%H-%M-%S` > /app/xblms/_wwwroot/sitefiles/version.txt
+#设置时间为中国上海，默认为UTC时间
+ENV TZ=Asia/Shanghai
+#RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-FROM base AS final
-WORKDIR /app
-COPY --from=publish /app/xblms .
+#启动程序
 ENTRYPOINT ["dotnet", "XBLMS.Web.dll"]
 
-# docker build -t xblms/core:dev .
+
+
+
+#docker操作
+
+#1将该文件放入部署文件夹根目录
+
+#2创建镜像
+#docker build -t xblmsexam:8.0 .
+
+#3启动容器
+#docker run -d -p 8888:8888 xblmsexam:8.0
+
+#4访问 http://localhost:8888/admin/install 安装系统
+
+#5完成
+
+#删除容器后数据会丢失，有兴趣的朋友可以深入研究一下持久化

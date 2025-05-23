@@ -1,6 +1,5 @@
 ﻿using Datory;
 using XBLMS.Configuration;
-using XBLMS.Core.Services;
 using XBLMS.Utils;
 
 namespace XBLMS.Core.Utils
@@ -28,21 +27,7 @@ namespace XBLMS.Core.Utils
                 corsOrigins = new string[] { };
             }
 
-            var json = SettingsManager.RunningInContainer
-                ? $@"
-{{
-  ""IsDisablePlugins"": {StringUtils.ToLower(isDisablePlugins.ToString())},
-  ""AdminRestriction"": {{
-    ""Host"": ""{adminRestrictionHost}"",
-    ""AllowList"": {TranslateUtils.JsonSerialize(adminRestrictionAllowList)},
-    ""BlockList"": {TranslateUtils.JsonSerialize(adminRestrictionBlockList)}
-  }},
-  ""Cors"": {{
-    ""IsOrigins"": {StringUtils.ToLower(corsIsOrigins.ToString())},
-    ""Origins"": {TranslateUtils.JsonSerialize(corsOrigins)}
-  }}
-}}"
-                : $@"
+            var json = $@"
 {{
   ""IsProtectData"": {StringUtils.ToLower(isProtectData.ToString())},
   ""IsSafeMode"": {StringUtils.ToLower(isSafeMode.ToString())},
@@ -66,7 +51,7 @@ namespace XBLMS.Core.Utils
   }}
 }}";
 
-            
+
 
             FileUtils.WriteText(path, json.Trim());
 
@@ -80,61 +65,26 @@ namespace XBLMS.Core.Utils
 
         public static void Init(string contentRootPath)
         {
-            if (SettingsManager.RunningInContainer)
+            var wwwrootDirectory = PathUtils.Combine(contentRootPath, "wwwroot");
+            DirectoryUtils.CreateDirectoryIfNotExists(wwwrootDirectory);
+
+            var filePath = PathUtils.Combine(contentRootPath, Constants.ConfigFileName);
+            if (FileUtils.IsFileExists(filePath))
             {
-                var sourcePath = PathUtils.Combine(contentRootPath, "_wwwroot", DirectoryUtils.SiteFiles.DirectoryName, "version.txt");
-                var sourceVersion = FileUtils.IsFileExists(sourcePath) ? FileUtils.ReadText(sourcePath) : string.Empty;
-                var targetPath = PathUtils.Combine(contentRootPath, Constants.WwwrootDirectory, DirectoryUtils.SiteFiles.DirectoryName, "version.txt");
-                var targetVersion = FileUtils.IsFileExists(targetPath) ? FileUtils.ReadText(targetPath) : string.Empty;
-                if (sourceVersion != targetVersion)
+                var json = FileUtils.ReadText(filePath);
+                if (json.Contains(@"""SecurityKey"": """","))
                 {
-                    var directoryPath = PathUtils.Combine(contentRootPath, "_wwwroot");
-                    foreach (var folderName in DirectoryUtils.GetDirectoryNames(directoryPath))
-                    {
-                        DirectoryUtils.Copy(
-                            PathUtils.Combine(directoryPath, folderName),
-                            PathUtils.Combine(contentRootPath, Constants.WwwrootDirectory, folderName),
-                            true
-                        );
-                    }
-
-                    foreach (var fileName in DirectoryUtils.GetFileNames(directoryPath))
-                    {
-                        if (fileName == "index.html") continue;
-                        
-                        FileUtils.CopyFile(
-                            PathUtils.Combine(directoryPath, fileName),
-                            PathUtils.Combine(contentRootPath, Constants.WwwrootDirectory, fileName),
-                            false
-                        );
-                    }
-
-                    FileUtils.WriteText(targetPath, sourceVersion);
+                    var securityKey = StringUtils.GetSecurityKey();
+                    FileUtils.WriteText(filePath,
+                        json.Replace(@"""SecurityKey"": """",", $@"""SecurityKey"": ""{securityKey}"","));
                 }
             }
             else
             {
-                var wwwrootDirectory = PathUtils.Combine(contentRootPath, "wwwroot");
-                DirectoryUtils.CreateDirectoryIfNotExists(wwwrootDirectory);
-                
-                var filePath = PathUtils.Combine(contentRootPath, Constants.ConfigFileName);
-                if (FileUtils.IsFileExists(filePath))
-                {
-                    var json = FileUtils.ReadText(filePath);
-                    if (json.Contains(@"""SecurityKey"": """","))
-                    {
-                        var securityKey = StringUtils.GetSecurityKey();
-                        FileUtils.WriteText(filePath,
-                            json.Replace(@"""SecurityKey"": """",", $@"""SecurityKey"": ""{securityKey}"","));
-                    }
-                }
-                else
-                {
-                    var securityKey = StringUtils.GetSecurityKey();
+                var securityKey = StringUtils.GetSecurityKey();
 
-                    SaveSettings(contentRootPath, false, false, false, securityKey, DatabaseType.MySql.GetValue(),
-                        string.Empty, string.Empty, string.Empty, null, null, false, null);
-                }
+                SaveSettings(contentRootPath, false, false, false, securityKey, DatabaseType.MySql.GetValue(),
+                    string.Empty, string.Empty, string.Empty, null, null, false, null);
             }
         }
 

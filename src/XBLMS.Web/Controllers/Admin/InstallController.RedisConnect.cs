@@ -15,16 +15,9 @@ namespace XBLMS.Web.Controllers.Admin
             if (!await _configRepository.IsNeedInstallAsync()) return Unauthorized();
 
             var redisConnectionString = string.Empty;
-            if (_settingsManager.Containerized)
+            if (request.IsRedis)
             {
-                redisConnectionString = _settingsManager.RedisConnectionString;
-            }
-            else
-            {
-                if (request.IsRedis)
-                {
-                    redisConnectionString = InstallUtils.GetRedisConnectionString(request.RedisHost, request.IsRedisDefaultPort, request.RedisPort, request.IsSsl, request.RedisPassword);
-                }
+                redisConnectionString = InstallUtils.GetRedisConnectionString(request.RedisHost, request.IsRedisDefaultPort, request.RedisPort, request.IsSsl, request.RedisPassword);
             }
 
             var db = new Redis(redisConnectionString);

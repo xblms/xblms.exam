@@ -94,16 +94,7 @@
 
   <template v-if="pageIndex === 2">
 
-    <el-form v-on:submit.native.prevent v-if="containerized"  :size="euiSize" label-width="150px">
-      <el-form-item label="数据库类型">
-        {{ databaseType }}
-      </el-form-item>
-      <el-form-item label="连接字符串">
-        {{ databaseConnectionString }}
-      </el-form-item>
-    </el-form>
-
-    <el-form v-on:submit.native.prevent v-else ref="databaseForm"  :size="euiSize" :model="databaseForm" label-width="150px">
+    <el-form v-on:submit.native.prevent ref="databaseForm"  :size="euiSize" :model="databaseForm" label-width="150px">
       <el-form-item label="数据库类型" prop="databaseType" :rules="{ required: true, message: '请选择数据库类型' }">
         <el-radio-group v-model="databaseForm.databaseType">
           <el-radio-button v-for="databaseType in databaseTypes" :label="databaseType.value">{{ databaseType.label }}</el-radio-button>
@@ -160,16 +151,7 @@
 
   <template v-if="pageIndex === 3">
 
-    <el-form v-on:submit.native.prevent v-if="containerized"  :size="euiSize" label-width="150px">
-      <el-form-item label="缓存类型">
-        {{ redisConnectionString ? 'Redis缓存' : '默认缓存' }}
-      </el-form-item>
-      <el-form-item v-if="redisConnectionString" label="连接字符串">
-        {{ redisConnectionString }}
-      </el-form-item>
-    </el-form>
-
-    <el-form v-on:submit.native.prevent v-else ref="redisForm"  :size="euiSize" :model="redisForm" label-width="150px">
+    <el-form v-on:submit.native.prevent ref="redisForm"  :size="euiSize" :model="redisForm" label-width="150px">
       <el-form-item label="缓存类型" prop="isRedis" :rules="{ required: true, message: '请选择缓存类型' }">
         <el-radio-group v-model="redisForm.isRedis">
           <el-radio-button :label="false">默认缓存</el-radio-button>

@@ -95,7 +95,7 @@ var methods = {
     $api.post($url + '/actions/databaseConnect', this.databaseForm).then(function (response) {
       var res = response.data;
 
-      if ($this.containerized || $this.databaseForm.databaseType === $kingbaseES || $this.databaseForm.databaseType === $dm || $this.databaseForm.databaseType === $hg) {
+      if ($this.databaseForm.databaseType === $kingbaseES || $this.databaseForm.databaseType === $dm || $this.databaseForm.databaseType === $hg) {
         $this.pageIndex++;
         return;
       }
@@ -280,50 +280,31 @@ var methods = {
   btnDatabaseConnectClick: function () {
     var $this = this;
 
-    if (this.containerized) {
-      if (this.databaseType === $sqlite) {
-        this.pageIndex++;
-        return;
-      } else {
-        $this.apiDatabaseConnect();
-        return;
-      }
-    } else {
-      if (this.databaseNames && this.databaseForm.databaseName || this.databaseForm.databaseType === $sqlite) {
-        this.pageIndex++;
-        return;
-      }
-
-      this.$refs.databaseForm.validate(function(valid) {
-        if (valid) {
-          $this.apiDatabaseConnect();
-        }
-      });
+    if (this.databaseNames && this.databaseForm.databaseName || this.databaseForm.databaseType === $sqlite) {
+      this.pageIndex++;
+      return;
     }
+
+    this.$refs.databaseForm.validate(function (valid) {
+      if (valid) {
+        $this.apiDatabaseConnect();
+      }
+    });
   },
 
   btnRedisConnectClick: function () {
     var $this = this;
 
-    if (this.containerized) {
-      if (!this.redisConnectionString) {
-        this.pageIndex++;
-        return;
-      } else {
+    if (!this.redisForm.isRedis) {
+      this.pageIndex++;
+      return;
+    }
+
+    this.$refs.redisForm.validate(function (valid) {
+      if (valid) {
         $this.apiRedisConnect();
       }
-    } else {
-      if (!this.redisForm.isRedis) {
-        this.pageIndex++;
-        return;
-      }
-
-      this.$refs.redisForm.validate(function(valid) {
-        if (valid) {
-          $this.apiRedisConnect();
-        }
-      });
-    }
+    });
   },
 
   btnInstallClick: function() {

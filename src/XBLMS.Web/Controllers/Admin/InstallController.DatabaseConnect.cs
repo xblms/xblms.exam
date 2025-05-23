@@ -14,11 +14,9 @@ namespace XBLMS.Web.Controllers.Admin
         {
             if (!await _configRepository.IsNeedInstallAsync()) return Unauthorized();
 
-            var databaseType = _settingsManager.Containerized ? _settingsManager.DatabaseType : request.DatabaseType;
+            var databaseType = request.DatabaseType;
             var databaseName = (databaseType == DatabaseType.Dm || databaseType == DatabaseType.KingbaseES) ? request.DatabaseName : string.Empty;
-            var connectionString = _settingsManager.Containerized
-                ? _settingsManager.DatabaseConnectionString
-                : DbUtils.GetConnectionString(request.DatabaseType, request.DatabaseHost,
+            var connectionString = DbUtils.GetConnectionString(request.DatabaseType, request.DatabaseHost,
                     request.IsDatabaseDefaultPort, TranslateUtils.ToInt(request.DatabasePort), request.DatabaseUserName,
                     request.DatabasePassword, databaseName);
 
