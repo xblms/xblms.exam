@@ -127,7 +127,6 @@
                 "emotion",             // 表情
                 "scrawl",              // 涂鸦
                 "insertvideo",         // 视频
-                "insertaudio",         // 音频
                 "attachment",          // 附件
                 "insertframe",         // 插入Iframe
                 "insertcode",          // 插入代码
