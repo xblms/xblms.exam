@@ -11,12 +11,38 @@ namespace XBLMS.Core.Services
     {
         public async Task ExecuteSubmitAnswerAsync(ExamPaperAnswer examPaperAnswer)
         {
+            examPaperAnswer.Score = 0;
+
             var tm = await _databaseManager.ExamPaperRandomTmRepository.GetAsync(examPaperAnswer.RandomTmId, examPaperAnswer.ExamPaperId);
             if (examPaperAnswer.ExamTmType == ExamTmType.Objective)
             {
                 if (StringUtils.EqualsIgnoreCase(tm.Answer, examPaperAnswer.Answer))
                 {
                     examPaperAnswer.Score = tm.Score;
+                }
+                else
+                {
+                    decimal answerTotalScore = 0;
+                    var paper = await _databaseManager.ExamPaperRepository.GetAsync(examPaperAnswer.ExamPaperId);
+                    var tx = await _databaseManager.ExamTxRepository.GetAsync(tm.TxId);
+                    if (tx.ExamTxBase == ExamTxBase.Duoxuanti && paper.IsAutoScoreDuoxuanti && tm.Score > 0)
+                    {
+                        var answerlist = ListUtils.ToList(tm.Answer.ToCharArray());
+                        if (answerlist.Count > 1)
+                        {
+                            var myAnswerList = ListUtils.ToList(examPaperAnswer.Answer.ToCharArray());
+                            var itemScore = Math.Round(tm.Score / answerlist.Count, 2);
+
+                            foreach (var myanswer in myAnswerList)
+                            {
+                                if (StringUtils.ContainsIgnoreCase(tm.Answer, myanswer))
+                                {
+                                    answerTotalScore += itemScore;
+                                }
+                            }
+                        }
+                    }
+                    examPaperAnswer.Score = answerTotalScore;
                 }
             }
             else
@@ -32,7 +58,7 @@ namespace XBLMS.Core.Services
                             allTrue = false;
                         }
                     }
-                    if (!allTrue)
+                    if (StringUtils.ContainsIgnoreCase(tm.Answer, ";") && !allTrue)
                     {
                         answerList = ListUtils.GetStringList(tm.Answer, ";");
                         foreach (var answer in answerList)
@@ -43,7 +69,7 @@ namespace XBLMS.Core.Services
                             }
                         }
                     }
-                    if (!allTrue)
+                    if (StringUtils.ContainsIgnoreCase(tm.Answer, "，") && !allTrue)
                     {
                         answerList = ListUtils.GetStringList(tm.Answer, "，");
                         foreach (var answer in answerList)
@@ -54,7 +80,7 @@ namespace XBLMS.Core.Services
                             }
                         }
                     }
-                    if (!allTrue)
+                    if (StringUtils.ContainsIgnoreCase(tm.Answer, "；") && !allTrue)
                     {
                         answerList = ListUtils.GetStringList(tm.Answer, "；");
                         foreach (var answer in answerList)
@@ -65,9 +91,47 @@ namespace XBLMS.Core.Services
                             }
                         }
                     }
+
                     if (allTrue)
                     {
                         examPaperAnswer.Score = tm.Score;
+                    }
+                    else
+                    {
+                        if (answerList.Count > 1)
+                        {
+                            decimal answerTotalScore = 0;
+                            var paper = await _databaseManager.ExamPaperRepository.GetAsync(examPaperAnswer.ExamPaperId);
+                            var tx = await _databaseManager.ExamTxRepository.GetAsync(tm.TxId);
+                            if (tx.ExamTxBase == ExamTxBase.Tiankongti && paper.IsAutoScoreTiankongti && tm.Score > 0)
+                            {
+                                var myAnswerList = ListUtils.GetStringList(examPaperAnswer.Answer);
+                                var itemScore = Math.Round(tm.Score / answerList.Count, 2);
+                                if (answerList.Count >= myAnswerList.Count)
+                                {
+                                    for (var i = 0; i < myAnswerList.Count; i++)
+                                    {
+                                        if (StringUtils.EqualsIgnoreCase(answerList[i], myAnswerList[i]))
+                                        {
+                                            answerTotalScore += itemScore;
+                                        }
+                                    }
+                                }
+                            }
+                            if (tx.ExamTxBase == ExamTxBase.Jiandati && paper.IsAutoScoreJiandati && tm.Score > 0)
+                            {
+                                var itemScore = Math.Round(tm.Score / answerList.Count, 2);
+                                foreach(var answer in answerList)
+                                {
+                                    if (StringUtils.ContainsIgnoreCase(examPaperAnswer.Answer, answer))
+                                    {
+                                        answerTotalScore += itemScore;
+                                    }
+                                }
+                            }
+                            examPaperAnswer.Score = answerTotalScore;
+                        }
+
                     }
                 }
             }

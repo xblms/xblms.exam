@@ -105,7 +105,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="p-3 mt-3 mb-3 fs-5 me-3 bg-danger text-white" v-if="!tm.isRight">
+                        <div class="p-3 mt-3 mb-3 fs-5 me-3 bg-danger text-white" v-if="!tm.isRight || tm.score!==tm.answerInfo.score">
                             <div class="mt-2">我的答案：{{ tm.answerInfo.answer }}</div>
                             <div class="mt-2">标准答案：<span v-if="paper.secrecyPaperAnswer">{{ tm.answer }}</span><span v-else>******</span></div>
                             <div class="mt-2">解析：<span v-html="tm.jiexi"></span></div>

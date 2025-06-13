@@ -107,7 +107,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="p-3 mt-3 mb-3 fs-5 me-3 text-white" :class="tm.isRight?'bg-success':'bg-danger'">
+                        <div class="p-3 mt-3 mb-3 fs-5 me-3 text-white" :class="tm.isRight && tm.score===tm.answerInfo.score ? 'bg-success' : 'bg-danger'">
                             <div class="mt-2">考生答案：{{ tm.answerInfo.answer }}</div>
                             <div class="mt-2">标准答案：{{ tm.answer }}</div>
                             <div class="mt-2">解析：<span v-html="tm.jiexi"></span></div>

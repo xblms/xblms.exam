@@ -137,6 +137,20 @@
                                             <el-switch v-model="form.isAutoScore" active-color="#13ce66"
                                                        active-text="主观题自动判分">
                                             </el-switch>
+                                            <br />
+                                            <el-switch v-model="form.isAutoScoreTiankongti" active-color="#13ce66"
+                                                       active-text="填空题按空给分">
+                                            </el-switch>
+                                            <br />
+                                            <el-switch v-model="form.isAutoScoreJiandati" active-color="#13ce66"
+                                                       active-text="简答题按关键词给分">
+                                            </el-switch>
+                                            <br />
+                                            <el-switch v-model="form.isAutoScoreDuoxuanti" active-color="#13ce66"
+                                                       active-text="多选题按项给分">
+                                            </el-switch>
+                                            <div class="tips">按条件给的分值=题目分数/答案数量</div>
+                                            <div class="tips">题库中填空题和简答题的答案用逗号分隔即可</div>
                                         </el-form-item>
                                         <el-form-item label="退出次数">
                                             <el-input-number v-model="form.existCount" :min="0"></el-input-number>
