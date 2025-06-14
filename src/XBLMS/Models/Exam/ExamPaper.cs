@@ -49,11 +49,11 @@ namespace XBLMS.Models
         [DataColumn]
         public bool IsAutoScore { get; set; } = true;//自动判分
         [DataColumn]
-        public bool IsAutoScoreTiankongti { get; set; } = true;
+        public bool IsAutoScoreTiankongti { get; set; } = false;
         [DataColumn]
-        public bool IsAutoScoreJiandati { get; set; } = true;
+        public bool IsAutoScoreJiandati { get; set; } = false;
         [DataColumn]
-        public bool IsAutoScoreDuoxuanti { get; set; } = true;
+        public bool IsAutoScoreDuoxuanti { get; set; } = false;
 
         [DataColumn(Text = true)]
         public List<int> UserGroupIds { get; set; }
