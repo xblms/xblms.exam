@@ -49,8 +49,6 @@ namespace XBLMS.Core.Repositories
         {
             if (tmIds != null && tmIds.Count > 0)
             {
-                tmIds = ListUtils.GetRandomList(tmIds, 2000);
-
                 var list = await _repository.GetAllAsync(Q.WhereIn(nameof(ExamTm.Id), tmIds));
                 return list;
             }
@@ -60,7 +58,6 @@ namespace XBLMS.Core.Repositories
         {
             if (tmIds != null && tmIds.Count > 0)
             {
-                tmIds = ListUtils.GetRandomList(tmIds, 2000);
                 var list = await _repository.GetAllAsync(Q.WhereNullOrFalse(nameof(ExamTm.Locked)).WhereIn(nameof(ExamTm.Id), tmIds));
                 return list;
             }
@@ -103,7 +100,6 @@ namespace XBLMS.Core.Repositories
                 {
                     if (group.TmIds != null && group.TmIds.Count > 0)
                     {
-                        group.TmIds = ListUtils.GetRandomList(group.TmIds, 2000);
                         query.WhereIn(nameof(ExamTm.Id), group.TmIds);
                     }
                     else
@@ -116,7 +112,6 @@ namespace XBLMS.Core.Repositories
                     var ids = await GetIdsAsync(group.TreeIds, group.TxIds, group.Nandus, group.Zhishidians, group.DateFrom, group.DateTo);
                     if (ids != null && ids.Count > 0)
                     {
-                        ids = ListUtils.GetRandomList(ids, 2000);
                         query.WhereIn(nameof(ExamTm.Id), ids);
                     }
                     else
@@ -129,7 +124,6 @@ namespace XBLMS.Core.Repositories
 
             if (treeIds != null && treeIds.Count > 0)
             {
-                treeIds = ListUtils.GetRandomList(treeIds, 2000);
                 query.WhereIn(nameof(ExamTm.TreeId), treeIds);
             }
             if (withoutIds != null && withoutIds.Count > 0)
@@ -238,7 +232,6 @@ namespace XBLMS.Core.Repositories
         {
             if(treeIds!=null && treeIds.Count() > 0)
             {
-                treeIds = ListUtils.GetRandomList(treeIds, 2000);
                 return await _repository.CountAsync(Q.WhereIn(nameof(ExamTm.TreeId), treeIds));
             }
             return 0;
@@ -254,7 +247,6 @@ namespace XBLMS.Core.Repositories
         {
             if (ids != null && ids.Count > 0)
             {
-                ids = ListUtils.GetRandomList(ids, 2000);
                 return await _repository.CountAsync(Q.WhereNullOrFalse(nameof(ExamTm.Locked)).WhereIn(nameof(ExamTm.Id), ids));
             }
             return 0;
@@ -266,7 +258,6 @@ namespace XBLMS.Core.Repositories
 
             if (treeIds != null && treeIds.Count > 0)
             {
-                treeIds = ListUtils.GetRandomList(treeIds, 2000);
                 query.WhereIn(nameof(ExamTm.TreeId), treeIds);
             }
             if (txIds != null && txIds.Count > 0)
@@ -329,7 +320,6 @@ namespace XBLMS.Core.Repositories
                 Where(nameof(ExamTm.Nandu), nandu);
             if (tmIds != null && tmIds.Count > 0)
             {
-                tmIds = ListUtils.GetRandomList(tmIds, 2000);
                 query.WhereIn(nameof(ExamTm.Id), tmIds);
             }
 
