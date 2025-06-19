@@ -263,7 +263,6 @@ namespace XBLMS.Core.Services
                         Zhishidian = tm.Zhishidian,
                     };
 
-                    randomTm.Set("oldScore", randomTm.Score);
                     randomTm.Set("options", tm.Get("options"));
                     randomTm.Set("optionsValues", tm.Get("optionsValues"));
                     randomTmList.Add(randomTm);
@@ -303,8 +302,6 @@ namespace XBLMS.Core.Services
 
                 foreach (var tm in randomTmList)
                 {
-                    var oldScore = TranslateUtils.ToDecimal(tm.Get("oldScore").ToString());
-
                     var randomTmId = await _examPaperRandomTmRepository.InsertAsync(tm);
 
                     var tx = await _examTxRepository.GetAsync(tm.TxId);
@@ -316,7 +313,8 @@ namespace XBLMS.Core.Services
                         {
                             var smallIndex = 0;
 
-                            decimal smallTotalScore = 0;
+                            var smallTotalScore = smallList.Sum(ss => ss.Score);
+                            decimal smallTotalScoreNew = 0;
 
                             foreach (var small in smallList)
                             {
@@ -337,15 +335,33 @@ namespace XBLMS.Core.Services
                                 newSmall.Set("options", small.Get("options"));
                                 newSmall.Set("optionsValues", small.Get("optionsValues"));
 
-                                smallTotalScore += small.Score;
-
                                 smallIndex++;
 
-                                if (smallIndex == smallList.Count && tm.Score != oldScore && paper.TmScoreType == ExamPaperTmScoreType.ScoreTypeRate)
+                                if (smallTotalScore < tm.Score)
                                 {
-                                    newSmall.Score = newSmall.Score + (tm.Score - smallTotalScore);
-                                    newSmall.Score = newSmall.Score >= 0 ? newSmall.Score : 0;
+                                    if (smallIndex == smallList.Count)
+                                    {
+                                        newSmall.Score = newSmall.Score + (tm.Score - smallTotalScore);
+                                    }
                                 }
+                                if (smallTotalScore > tm.Score)
+                                {
+                                    if (smallIndex == smallList.Count)
+                                    {
+                                        newSmall.Score = tm.Score - smallTotalScoreNew;
+                                        if (newSmall.Score < 0)
+                                        {
+                                            newSmall.Score = 0;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        var newScore = small.Score / smallTotalScore * tm.Score;
+                                        newSmall.Score = Math.Round(newScore, 2);
+                                        smallTotalScoreNew += newSmall.Score;
+                                    }
+                                }
+
 
                                 await _examPaperRandomTmSmallRepository.InsertAsync(newSmall);
                             }
