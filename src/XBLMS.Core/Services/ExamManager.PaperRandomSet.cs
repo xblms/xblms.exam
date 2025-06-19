@@ -344,6 +344,7 @@ namespace XBLMS.Core.Services
                                 if (smallIndex == smallList.Count && tm.Score != oldScore && paper.TmScoreType == ExamPaperTmScoreType.ScoreTypeRate)
                                 {
                                     newSmall.Score = newSmall.Score + (tm.Score - smallTotalScore);
+                                    newSmall.Score = newSmall.Score >= 0 ? newSmall.Score : 0;
                                 }
 
                                 await _examPaperRandomTmSmallRepository.InsertAsync(newSmall);
