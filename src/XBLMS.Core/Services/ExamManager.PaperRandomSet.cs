@@ -1,9 +1,11 @@
-﻿using System;
+﻿using NPOI.SS.Formula.Functions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using XBLMS.Enums;
 using XBLMS.Models;
+using XBLMS.Utils;
 
 namespace XBLMS.Core.Services
 {
@@ -71,7 +73,7 @@ namespace XBLMS.Core.Services
                     {
                         foreach (var tx in txs)
                         {
-                            var tmList = await _examPaperRandomTmRepository.GetListAsync(randomId, tx.Id,paper.Id);
+                            var tmList = await _examPaperRandomTmRepository.GetListAsync(randomId, tx.Id, paper.Id);
                             var tmTotal = 0;
                             decimal scoreTotal = 0;
                             var tmIds = new List<int>();
@@ -124,11 +126,11 @@ namespace XBLMS.Core.Services
                     {
                         if (tmGroup.GroupType == TmGroupType.Fixed && tmGroup.TmIds != null && tmGroup.TmIds.Count > 0)
                         {
-                            if(tmGroup.TmIds!=null && tmGroup.TmIds.Count > 0)
+                            if (tmGroup.TmIds != null && tmGroup.TmIds.Count > 0)
                             {
                                 tmIds.AddRange(tmGroup.TmIds);
                             }
-                       
+
                         }
                         if (tmGroup.GroupType == TmGroupType.Range)
                         {
@@ -260,6 +262,8 @@ namespace XBLMS.Core.Services
                         WrongCount = tm.WrongCount,
                         Zhishidian = tm.Zhishidian,
                     };
+
+                    randomTm.Set("oldScore", randomTm.Score);
                     randomTm.Set("options", tm.Get("options"));
                     randomTm.Set("optionsValues", tm.Get("optionsValues"));
                     randomTmList.Add(randomTm);
@@ -299,7 +303,54 @@ namespace XBLMS.Core.Services
 
                 foreach (var tm in randomTmList)
                 {
-                    await _examPaperRandomTmRepository.InsertAsync(tm);
+                    var oldScore = TranslateUtils.ToDecimal(tm.Get("oldScore").ToString());
+
+                    var randomTmId = await _examPaperRandomTmRepository.InsertAsync(tm);
+
+                    var tx = await _examTxRepository.GetAsync(tm.TxId);
+                    if (tx.ExamTxBase == ExamTxBase.Zuheti)
+                    {
+                        var smallList = await _examTmSmallRepository.GetListAsync(tm.SourceTmId);
+
+                        if (smallList != null && smallList.Count > 0)
+                        {
+                            var smallIndex = 0;
+
+                            decimal smallTotalScore = 0;
+
+                            foreach (var small in smallList)
+                            {
+                                var newSmall = new ExamPaperRandomTmSmall()
+                                {
+                                    ParentId = randomTmId,
+                                    SourceTmId = small.Id,
+                                    ExamPaperId = paper.Id,
+                                    ExamPaperRandomId = randomId,
+                                    Score = small.Score,
+                                    Locked = small.Locked,
+                                    Answer = small.Answer,
+                                    AnswerCount = small.AnswerCount,
+                                    Jiexi = small.Jiexi,
+                                    Title = small.Title,
+                                    TxId = small.TxId,
+                                };
+                                newSmall.Set("options", small.Get("options"));
+                                newSmall.Set("optionsValues", small.Get("optionsValues"));
+
+                                smallTotalScore += small.Score;
+
+                                smallIndex++;
+
+                                if (smallIndex == smallList.Count && tm.Score != oldScore && paper.TmScoreType == ExamPaperTmScoreType.ScoreTypeRate)
+                                {
+                                    newSmall.Score = newSmall.Score + (tm.Score - smallTotalScore);
+                                }
+
+                                await _examPaperRandomTmSmallRepository.InsertAsync(newSmall);
+                            }
+                        }
+
+                    }
                 }
 
                 paper.TmCount = tmCount;

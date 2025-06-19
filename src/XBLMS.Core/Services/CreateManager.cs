@@ -23,6 +23,12 @@ namespace XBLMS.Core.Services
             _organManager = organManager;
         }
 
+
+        public void CreateSubmitAnswerSmallAsync(ExamPaperAnswerSmall answer)
+        {
+            var taskInfo = new CreateTask(CreateType.SubmitAnswer, answer);
+            AddPendingTask(taskInfo);
+        }
         public void CreateSubmitAnswerAsync(ExamPaperAnswer answer)
         {
             var taskInfo = new CreateTask(CreateType.SubmitAnswer, answer);

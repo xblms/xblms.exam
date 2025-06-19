@@ -17,7 +17,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
             var start = await _examPaperStartRepository.GetAsync(request.Id);
 
             var marker = await _administratorRepository.GetByUserIdAsync(start.MarkTeacherId);
-   
+
 
             var paper = await _examPaperRepository.GetAsync(start.ExamPaperId);
 
@@ -35,11 +35,11 @@ namespace XBLMS.Web.Controllers.Admin.Common
 
             var tmIndex = 1;
             var txIndex = 1;
-            var txList=new List<ExamPaperRandomConfig>();
+            var txList = new List<ExamPaperRandomConfig>();
             foreach (var config in configs)
             {
                 var tx = await _examTxRepository.GetAsync(config.TxId);
-                if(tx!=null && tx.ExamTxBase==ExamTxBase.Tiankongti || tx.ExamTxBase == ExamTxBase.Jiandati)
+                if (tx != null && (tx.ExamTxBase == ExamTxBase.Tiankongti || tx.ExamTxBase == ExamTxBase.Jiandati || tx.ExamTxBase == ExamTxBase.Zuheti))
                 {
                     var tms = await _examPaperRandomTmRepository.GetListAsync(randomId, config.TxId, config.ExamPaperId);
                     if (tms != null && tms.Count > 0)

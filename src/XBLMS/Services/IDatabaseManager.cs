@@ -30,6 +30,7 @@ namespace XBLMS.Services
         IExamTxRepository ExamTxRepository { get; }
         IExamTmTreeRepository ExamTmTreeRepository { get; }
         IExamTmRepository ExamTmRepository { get; }
+        IExamTmSmallRepository ExamTmSmallRepository { get; }
         IExamTmAnalysisRepository ExamTmAnalysisRepository { get; }
         IExamTmAnalysisTmRepository ExamTmAnalysisTmRepository { get; }
         IExamCerRepository ExamCerRepository { get; }
@@ -40,11 +41,13 @@ namespace XBLMS.Services
         IExamTmGroupRepository ExamTmGroupRepository { get; }
         IExamPaperRandomRepository ExamPaperRandomRepository { get; }
         IExamPaperRandomTmRepository ExamPaperRandomTmRepository { get; }
+        IExamPaperRandomTmSmallRepository ExamPaperRandomTmSmallRepository { get; }
         IExamPaperRandomConfigRepository ExamPaperRandomConfigRepository { get; }
 
         IExamPaperUserRepository ExamPaperUserRepository { get; }
         IExamPaperStartRepository ExamPaperStartRepository { get; }
         IExamPaperAnswerRepository ExamPaperAnswerRepository { get; }
+        IExamPaperAnswerSmallRepository ExamPaperAnswerSmallRepository { get; }
 
         IExamPracticeRepository ExamPracticeRepository { get; }
         IExamPracticeWrongRepository ExamPracticeWrongRepository { get; }

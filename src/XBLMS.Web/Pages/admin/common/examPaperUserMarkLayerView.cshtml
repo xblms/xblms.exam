@@ -54,7 +54,81 @@
                                     <div>{{ tm.score }}分</div>
                                 </div>
                                 <div class="pe-3">
-                                    <div>
+                                    <div v-if="tm.baseTx==='Zuheti'">
+                                        <div class="mb-3">
+                                            <div v-html="tm.titleHtml"></div>
+                                        </div>
+                                        <div class="mb-3" v-for="small in tm.smallLists">
+                                            <div class="d-flex justify-content-between align-items-center p-3 bg-light">
+                                                <div>第<span class="px-1">{{ small.tmIndex }}</span>小题（<span>{{ small.txName }}</span>）</div>
+                                                <div><span>{{ small.answerInfo.score }}/<span class="fs-6">{{ small.score }}分</span></span></div>
+                                            </div>
+                                            <div class="mb-3 fw-bold">
+                                                <div v-if="small.baseTx==='Tiankongti'">
+                                                    <span v-if="small.titleList && small.titleList.length>0">
+                                                        <span v-for="tmContent in small.titleList">
+                                                            <span v-if="utils.contains(tmContent.value,'___')">
+                                                                <el-input disabled v-model.trim="tm.answerInfo.optionsValues[tmContent.key]" style="width:130px;"></el-input>
+                                                            </span>
+                                                            <span v-else v-html="tmContent.value"></span>
+                                                        </span>
+                                                    </span>
+                                                    <div v-else v-html="small.titleHtml"></div>
+                                                </div>
+                                                <div v-else v-html="small.titleHtml"></div>
+                                            </div>
+                                            <div class="list-group" v-if="small.baseTx!=='Tiankongti'">
+                                                <div v-if="small.baseTx==='Danxuanti' || small.baseTx==='Panduanti'">
+                                                    <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in small.optionsRandom">
+                                                        <div class="d-flex justify-content-start align-items-start">
+                                                            <div class="me-1 position-relative">
+                                                                {{optionsABC[optionIndex]}}.
+                                                            </div>
+                                                            <div>
+                                                                <el-radio disabled :label="option.key" v-model="small.answerInfo.answer">
+                                                                    <span v-html="option.value"></span>
+                                                                </el-radio>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div v-else-if="small.baseTx==='Duoxuanti'">
+                                                    <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in small.optionsRandom">
+                                                        <div class="d-flex justify-content-start align-items-start">
+                                                            <div class="me-1 position-relative">
+                                                                {{optionsABC[optionIndex]}}.
+                                                            </div>
+                                                            <div>
+                                                                <el-checkbox disabled :true-label="option.key" false-label="" v-model="small.answerInfo.optionsValues[optionsABC.indexOf(option.key)]">
+                                                                    <span v-html="option.value"></span>
+                                                                </el-checkbox>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div v-else-if="small.baseTx==='Jiandati'">
+                                                    <el-input disabled :key="small.id" type="textarea" resize="none" v-model.trim="small.answerInfo.answer" :autosize="{ minRows: 3}" maxlength="333" style="width:100%;"
+                                                              show-word-limit></el-input>
+                                                </div>
+                                                <div v-else>
+                                                    未知题型
+                                                </div>
+                                            </div>
+                                            <div class="p-3 mt-3 mb-3 fs-5 bg-light">
+                                                <div class="mt-2">考生答案：{{ small.answerInfo.answer }}</div>
+                                                <div class="mt-2">标准答案：{{ small.answer }}</div>
+                                                <div class="mt-2">解析：<span v-html="small.jiexi"></span></div>
+                                            </div>
+                                            <div class="my-3">
+                                                <el-card>
+                                                    <div class="mt-2 d-flex justify-content-between align-items-center">
+                                                        {{ small.answerInfo.score }} /{{ small.score }}分
+                                                    </div>
+                                                </el-card>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div v-else>
                                         <div class="mb-3 fw-bold">
                                             <div v-if="tm.baseTx==='Tiankongti'">
                                                 <span v-if="tm.titleList && tm.titleList.length>0">
@@ -106,21 +180,21 @@
                                                 未知题型
                                             </div>
                                         </div>
+                                        <div class="p-3 mt-3 mb-3 fs-5 me-3 bg-light">
+                                            <div class="mt-2">考生答案：{{ tm.answerInfo.answer }}</div>
+                                            <div class="mt-2">标准答案：{{ tm.answer }}</div>
+                                            <div class="mt-2">解析：<span v-html="tm.jiexi"></span></div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="my-3">
                                     <el-card>
                                         <div class="mt-2">
-                                            <div class="me-3">
+                                            <div>
                                                 {{ tm.answerInfo.score }} /{{ tm.score }}分
                                             </div>
                                         </div>
                                     </el-card>
-                                </div>
-                                <div class="p-3 mt-3 mb-3 fs-5 me-3 bg-light">
-                                    <div class="mt-2">考生答案：{{ tm.answerInfo.answer }}</div>
-                                    <div class="mt-2">标准答案：{{ tm.answer }}</div>
-                                    <div class="mt-2">解析：<span v-html="tm.jiexi"></span></div>
                                 </div>
                             </el-card>
                         </div>

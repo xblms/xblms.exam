@@ -28,6 +28,9 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         private const string RouteImportWord = Route + "/importWord";
         private const string RouteExportWord = Route + "/exportWord";
 
+        private const string RouteEditSmall = Route + "/tmEdit/getSmall";
+        private const string RouteEditSmallSubmit = Route + "/tmEdit/submitSmall";
+        private const string RouteEditSmallDelete = Route + "/tmEdit/delSmall";
 
         private readonly IAuthManager _authManager;
         private readonly IPathManager _pathManager;
@@ -47,6 +50,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         private readonly IExamPracticeWrongRepository _examPracticeWrongRepository;
         private readonly IExamPracticeRepository _examPracticeRepository;
         private readonly IExamTmAnalysisTmRepository _examTmAnalysisTmRepository;
+        private readonly IExamTmSmallRepository _examTmSmallRepository;
 
         public ExamTmController(IAuthManager authManager, IPathManager pathManager, IDatabaseManager databaseManager, ICacheManager cacheManager,
             IConfigRepository configRepository, IExamManager examManager,
@@ -56,7 +60,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             IExamPracticeAnswerRepository examPracticeAnswerRepository,
             IExamPracticeCollectRepository examPracticeCollectRepository,
             IExamPracticeWrongRepository examPracticeWrongRepository,
-            IExamTmAnalysisTmRepository examTmAnalysisTmRepository)
+            IExamTmAnalysisTmRepository examTmAnalysisTmRepository, IExamTmSmallRepository examTmSmallRepository)
         {
             _organManager = organManager;
             _examManager = examManager;
@@ -76,12 +80,25 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             _examPracticeCollectRepository = examPracticeCollectRepository;
             _examPracticeWrongRepository = examPracticeWrongRepository;
             _examTmAnalysisTmRepository = examTmAnalysisTmRepository;
+            _examTmSmallRepository = examTmSmallRepository;
         }
         public class GetEditResult
         {
             public ExamTm Item { get; set; }
             public List<Cascade<int>> TmTree { get; set; }
             public List<ExamTx> TxList { get; set; }
+            public List<ExamTmSmall> SmallList { get; set; }
+        }
+
+        public class GetEditRequest
+        {
+            public ExamTm Item { get; set; }
+            public List<ExamTmSmall> Smalls { get; set; }
+        }
+
+        public class GetEditSmallRequest
+        {
+            public ExamTmSmall Item { get; set; }
         }
 
         public class GetSearchResults

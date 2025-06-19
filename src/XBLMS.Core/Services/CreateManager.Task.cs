@@ -26,6 +26,11 @@ namespace XBLMS.Core.Services
                         var start = DateTime.Now;
                         var timeSpan = DateUtils.GetRelatedDateTimeString(start);
 
+
+                        if (task.CreateType == CreateType.SubmitAnswerSmall)
+                        {
+                            await ExecuteSubmitAnswerSmallAsync(task.ExamPaperAnswerSmall);
+                        }
                         if (task.CreateType == CreateType.SubmitAnswer)
                         {
                             await ExecuteSubmitAnswerAsync(task.ExamPaperAnswer);

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using XBLMS.Enums;
 using XBLMS.Models;
 using XBLMS.Services;
 using XBLMS.Utils;
@@ -83,34 +84,94 @@ namespace XBLMS.Core.Utils.Office
             foreach (var tm in tmList)
             {
                 await _examManager.GetTmInfo(tm);
-                var excelList = new List<string> {
-                    tm.Get("TreeName").ToString(),
-                    tm.Get("TxName").ToString(),
-                    tm.Nandu.ToString(),
-                    tm.Zhishidian,
-                    tm.Score.ToString(),
-                    tm.Jiexi,
-                    DateUtils.GetDateAndTimeString(tm.CreatedDate),
-                    DateUtils.GetDateAndTimeString(tm.LastModifiedDate),
-                    tm.Get("TitleHtml").ToString(),
-                    tm.Answer
-                    //ListUtils.ToString( ListUtils.ToList(tm.Get("options")),";")
-                };
-                var options = ListUtils.ToList(tm.Get("options"));
-                if (options != null)
+
+                var tx = await _databaseManager.ExamTxRepository.GetAsync(tm.TxId);
+                if (tx.ExamTxBase == ExamTxBase.Zuheti)
                 {
-                    if (options.Count > 0)
+                    var smallList = await _databaseManager.ExamTmSmallRepository.GetListAsync(tm.Id);
+                    var excelList = new List<string>
                     {
-                        foreach (var option in options)
+                        tm.Get("TreeName").ToString(),
+                        tm.Get("TxName").ToString(),
+                        tm.Nandu.ToString(),
+                        tm.Zhishidian,
+                        tm.Score.ToString(),
+                        tm.Jiexi,
+                        DateUtils.GetDateAndTimeString(tm.CreatedDate),
+                        DateUtils.GetDateAndTimeString(tm.LastModifiedDate),
+                        tm.Get("TitleHtml").ToString(),
+                        (smallList?.Count ?? 0).ToString()
+                    };
+                    rows.Add(excelList);
+                    if (smallList != null && smallList.Count > 0)
+                    {
+                        foreach (var small in smallList)
                         {
-                            if (!string.IsNullOrWhiteSpace(option))
+                            var smallTx = await _databaseManager.ExamTxRepository.GetAsync(small.TxId);
+                            var smallexcelList = new List<string>
                             {
-                                excelList.Add(option);
+                                tm.Get("TreeName").ToString(),
+                                smallTx.Name,
+                                small.Nandu.ToString(),
+                                small.Zhishidian,
+                                small.Score.ToString(),
+                                small.Jiexi,
+                                DateUtils.GetDateAndTimeString(tm.CreatedDate),
+                                DateUtils.GetDateAndTimeString(tm.LastModifiedDate),
+                                small.Title,
+                                small.Answer
+                            };
+                            var options = ListUtils.ToList(small.Get("options"));
+                            if (options != null)
+                            {
+                                if (options.Count > 0)
+                                {
+                                    foreach (var option in options)
+                                    {
+                                        if (!string.IsNullOrWhiteSpace(option))
+                                        {
+                                            smallexcelList.Add(option);
+                                        }
+                                    }
+                                }
                             }
+                            rows.Add(smallexcelList);
                         }
                     }
                 }
-                rows.Add(excelList);
+                else
+                {
+                    var excelList = new List<string>
+                    {
+                        tm.Get("TreeName").ToString(),
+                        tm.Get("TxName").ToString(),
+                        tm.Nandu.ToString(),
+                        tm.Zhishidian,
+                        tm.Score.ToString(),
+                        tm.Jiexi,
+                        DateUtils.GetDateAndTimeString(tm.CreatedDate),
+                        DateUtils.GetDateAndTimeString(tm.LastModifiedDate),
+                        tm.Get("TitleHtml").ToString(),
+                        tm.Answer
+                    };
+
+                    var options = ListUtils.ToList(tm.Get("options"));
+                    if (options != null)
+                    {
+                        if (options.Count > 0)
+                        {
+                            foreach (var option in options)
+                            {
+                                if (!string.IsNullOrWhiteSpace(option))
+                                {
+                                    excelList.Add(option);
+                                }
+                            }
+                        }
+                    }
+                    rows.Add(excelList);
+                }
+
             }
             ExcelUtils.Write(filePath, head, rows);
         }

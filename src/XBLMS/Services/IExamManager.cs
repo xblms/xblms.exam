@@ -7,6 +7,8 @@ namespace XBLMS.Services
 {
     public partial interface IExamManager
     {
+        Task GetSmallListByPaper(ExamPaperRandomTm tm, int startId, ExamPaper paper);
+        Task<ExamTmSmall> GetSmallTmInfo(int tmId);
         Task<ExamTm> GetTmInfo(int tmId);
         Task GetTmInfo(ExamTm tm);
         Task GetTmDeleteInfo(ExamTm tm);

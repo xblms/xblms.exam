@@ -1,13 +1,20 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using Markdig.Extensions.Figures;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using NPOI.SS.Formula.Functions;
+using NPOI.SS.UserModel;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Threading.Tasks;
 using XBLMS.Configuration;
 using XBLMS.Core.Utils;
+using XBLMS.Dto;
 using XBLMS.Enums;
 using XBLMS.Models;
 using XBLMS.Utils;
+using static XBLMS.Web.Controllers.Admin.Settings.Administrators.AdministratorsController;
 
 namespace XBLMS.Web.Controllers.Admin.Exam
 {
@@ -91,6 +98,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                     cacheInfo.TmCurrent = 0;
                     _cacheManager.AddOrUpdateAbsolute(cacheKey, cacheInfo, 1);
 
+
                     for (var i = 1; i < sheet.Rows.Count; i++) //行
                     {
                         if (i == 1) continue;
@@ -129,7 +137,6 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
                         if (!string.IsNullOrEmpty(tx) && !string.IsNullOrEmpty(title))
                         {
-
                             var txInfo = await _examTxRepository.GetAsync(tx);
                             if (txInfo == null)
                             {
@@ -140,60 +147,78 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                                 failure++;
                                 continue;
                             }
-                            if (txInfo.ExamTxBase != ExamTxBase.Tiankongti && txInfo.ExamTxBase != ExamTxBase.Jiandati)
+                            var isGroup = txInfo.ExamTxBase == ExamTxBase.Zuheti;
+                            var smallCount = 0;
+                            if (isGroup)
                             {
-                                answer = answer.ToUpper();
-                                for (int optionindex = 7; optionindex < 17; optionindex++)
-                                {
-                                    try
-                                    {
-                                        if (!string.IsNullOrWhiteSpace(row[optionindex].ToString().Trim()))
-                                        {
-                                            options.Add(row[optionindex].ToString().Trim());
-                                        }
-                                    }
-                                    catch { }
-                                }
-                                if(txInfo.ExamTxBase == ExamTxBase.Duoxuanti)
-                                {
-                                    if (options.Count < answer.Length)
-                                    {
-                                        cacheInfo.TmCurrent++;
-                                        errorMessageList.Add($"【行{rowIndexName}:候选项和答案不匹配】");
-
-                                        _cacheManager.AddOrUpdateAbsolute(cacheKey, cacheInfo, 1);
-                                        failure++;
-                                        continue;
-                                    }
-                                }
-                                else
-                                {
-                                    if (answer.Length > 1)
-                                    {
-                                        cacheInfo.TmCurrent++;
-                                        errorMessageList.Add($"【行{rowIndexName}:候选项和答案不匹配】");
-
-                                        _cacheManager.AddOrUpdateAbsolute(cacheKey, cacheInfo, 1);
-                                        failure++;
-                                        continue;
-                                    }
-                                }
-                             
-                            }
-                            if (txInfo.ExamTxBase == ExamTxBase.Tiankongti)
-                            {
-                                if (!StringUtils.Contains(title, "___"))
+                                smallCount = TranslateUtils.ToInt(answer);
+                                if (smallCount == 0)
                                 {
                                     cacheInfo.TmCurrent++;
-                                    errorMessageList.Add($"【行{rowIndexName}:填空题未包含___】");
-
+                                    errorMessageList.Add($"【行{rowIndexName}:组合题没有填写小题的数量，终止导入】");
                                     _cacheManager.AddOrUpdateAbsolute(cacheKey, cacheInfo, 1);
 
                                     failure++;
-                                    continue;
+                                    break;
                                 }
                             }
+                            if (!isGroup)
+                            {
+                                if (txInfo.ExamTxBase != ExamTxBase.Tiankongti && txInfo.ExamTxBase != ExamTxBase.Jiandati)
+                                {
+                                    answer = answer.ToUpper();
+                                    for (int optionindex = 7; optionindex < 17; optionindex++)
+                                    {
+                                        try
+                                        {
+                                            if (!string.IsNullOrWhiteSpace(row[optionindex].ToString().Trim()))
+                                            {
+                                                options.Add(row[optionindex].ToString().Trim());
+                                            }
+                                        }
+                                        catch { }
+                                    }
+                                    if (txInfo.ExamTxBase == ExamTxBase.Duoxuanti)
+                                    {
+                                        if (options.Count < answer.Length)
+                                        {
+                                            cacheInfo.TmCurrent++;
+                                            errorMessageList.Add($"【行{rowIndexName}:候选项和答案不匹配】");
 
+                                            _cacheManager.AddOrUpdateAbsolute(cacheKey, cacheInfo, 1);
+                                            failure++;
+                                            continue;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (answer.Length > 1)
+                                        {
+                                            cacheInfo.TmCurrent++;
+                                            errorMessageList.Add($"【行{rowIndexName}:候选项和答案不匹配】");
+
+                                            _cacheManager.AddOrUpdateAbsolute(cacheKey, cacheInfo, 1);
+                                            failure++;
+                                            continue;
+                                        }
+                                    }
+
+                                }
+                                if (txInfo.ExamTxBase == ExamTxBase.Tiankongti)
+                                {
+                                    if (!StringUtils.Contains(title, "___"))
+                                    {
+                                        cacheInfo.TmCurrent++;
+                                        errorMessageList.Add($"【行{rowIndexName}:填空题未包含___】");
+
+                                        _cacheManager.AddOrUpdateAbsolute(cacheKey, cacheInfo, 1);
+
+                                        failure++;
+                                        continue;
+                                    }
+                                }
+
+                            }
                             try
                             {
                                 var examInfo = new ExamTm
@@ -201,7 +226,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                                     TreeId = treeId,
                                     TxId = txInfo.Id,
                                     Title = title,
-                                    Answer = answer,
+                                    Answer = isGroup ? "" : answer,
                                     Score = scoreDouble,
                                     Zhishidian = zhishidian,
                                     Nandu = nandu,
@@ -211,7 +236,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                                     DepartmentId = admin.DepartmentId
                                 };
 
-                                if (options.Count > 0)
+                                if (options.Count > 0 && !isGroup)
                                 {
                                     var answers = new List<string>();
 
@@ -256,6 +281,11 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
                                     _cacheManager.AddOrUpdateAbsolute(cacheKey, cacheInfo, 1);
                                     failure++;
+
+                                    if (isGroup)
+                                    {
+                                        i = i + smallCount + 1;
+                                    }
                                     continue;
                                 }
                                 else
@@ -272,6 +302,13 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
                                         cacheInfo.TmCurrent++;
                                         _cacheManager.AddOrUpdateAbsolute(cacheKey, cacheInfo, 1);
+
+                                        if (isGroup)
+                                        {
+                                            await ImportSmall(tmid, sheet, TranslateUtils.ToInt(answer), i+1);
+                                            i = i + smallCount + 1;
+                                        }
+
                                     }
                                     else
                                     {
@@ -336,6 +373,161 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             };
         }
 
+        public async Task ImportSmall(int parentId, DataTable sheet, int smallCount, int index)
+        {
+            if (sheet.Rows.Count >= smallCount + index)
+            {
+                decimal totalScore = 0;
+                for (var i = index; i <= smallCount + index; i++)
+                {
+                    var row = sheet.Rows[i];
 
+                    var tx = row[0].ToString().Trim();
+                    var nanduString = row[1].ToString().Trim();
+                    var nandu = 1;
+                    try
+                    {
+                        nandu = Convert.ToInt32(nanduString);
+                    }
+                    catch { }
+
+                    var zhishidian = row[2].ToString().Trim();
+                    var score = row[3].ToString().Trim();
+                    decimal scoreDouble = 0;
+
+                    try
+                    {
+                        scoreDouble = Convert.ToDecimal(score);
+                    }
+                    catch { }
+
+                    var jiexi = row[4].ToString().Trim();
+                    var title = row[5].ToString().Trim();
+                    var answer = row[6].ToString().Trim();
+                    var options = new List<string>();
+
+
+                    var rowIndexName = i + 1;
+
+
+                    if (!string.IsNullOrEmpty(tx) && !string.IsNullOrEmpty(title))
+                    {
+
+                        var txInfo = await _examTxRepository.GetAsync(tx);
+                        if (txInfo == null)
+                        {
+                            continue;
+                        }
+                        if (txInfo.ExamTxBase == ExamTxBase.Zuheti) continue;
+
+                        if (txInfo.ExamTxBase != ExamTxBase.Tiankongti && txInfo.ExamTxBase != ExamTxBase.Jiandati)
+                        {
+                            answer = answer.ToUpper();
+                            for (int optionindex = 7; optionindex < 17; optionindex++)
+                            {
+                                try
+                                {
+                                    if (!string.IsNullOrWhiteSpace(row[optionindex].ToString().Trim()))
+                                    {
+                                        options.Add(row[optionindex].ToString().Trim());
+                                    }
+                                }
+                                catch { }
+                            }
+                            if (txInfo.ExamTxBase == ExamTxBase.Duoxuanti)
+                            {
+                                if (options.Count < answer.Length)
+                                {
+                                    continue;
+                                }
+                            }
+                            else
+                            {
+                                if (answer.Length > 1)
+                                {
+                                    continue;
+                                }
+                            }
+
+                        }
+                        if (txInfo.ExamTxBase == ExamTxBase.Tiankongti)
+                        {
+                            if (!StringUtils.Contains(title, "___"))
+                            {
+                                continue;
+                            }
+                        }
+
+                        try
+                        {
+                            var examInfo = new ExamTmSmall
+                            {
+                                ParentId = parentId,
+                                TxId = txInfo.Id,
+                                Title = title,
+                                Answer = answer,
+                                Score = scoreDouble,
+                                Zhishidian = zhishidian,
+                                Nandu = nandu,
+                                Jiexi = jiexi
+                            };
+
+                            if (options.Count > 0)
+                            {
+                                var answers = new List<string>();
+
+                                var optionError = false;
+
+                                for (int optinindex = 0; optinindex < options.Count; optinindex++)
+                                {
+                                    answers.Add(StringUtils.GetABC()[optinindex]);
+                                    if (string.IsNullOrWhiteSpace(options[optinindex]))
+                                    {
+                                        optionError = true;
+                                        break;
+
+                                    }
+                                }
+
+                                if (optionError)
+                                {
+                                    continue;
+                                }
+
+                                for (int answerIndex = 0; answerIndex < answers.Count; answerIndex++)
+                                {
+                                    if (!answer.Contains(answers[answerIndex]))
+                                    {
+                                        answers[answerIndex] = "";
+                                    }
+                                }
+                                examInfo.Set("options", options.ToArray());
+                                examInfo.Set("optionsValues", answers.ToArray());
+                            }
+
+                            await _examTmSmallRepository.InsertAsync(examInfo);
+                            totalScore += examInfo.Score;
+
+                        }
+                        catch
+                        {
+                            continue;
+
+                        }
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+                if (totalScore > 0)
+                {
+                    var parent = await _examTmRepository.GetAsync(parentId);
+                    parent.Score = totalScore;
+                    await _examTmRepository.UpdateAsync(parent);
+                }
+            }
+
+        }
     }
 }

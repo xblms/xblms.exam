@@ -15,48 +15,100 @@
         <el-button style="float: right;padding:3px 0;" type="text" v-on:click="utils.closeLayerSelf"><i class="el-icon-close"></i></el-button>
     </div>
     <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-180) + 'px' }">
-        <div class="card">
+        <div class="card me-3">
             <div class="card-body">
                 <span class="mb-3 d-flex justify-content-start">
                     <span><span class="pe-1">{{ tm.txName }}</span>({{tm.score}}分)</span>
                 </span>
-                <div class="d-flex justify-content-start mb-3">
+                <div class="d-flex justify-content-start mb-3 fw-bolder">
                     <div v-html="tm.titleHtml"></div>
                 </div>
-                <div class="list-group" v-if="tm.baseTx!=='Tiankongti' && tm.baseTx!=='Jiandati'">
-                    <div v-if="tm.baseTx==='Danxuanti' || tm.baseTx==='Panduanti'">
-                        <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.options">
-                            <div class="d-flex justify-content-start align-items-start">
-                                <div class="me-1 position-relative">
-                                    <span class="position-absolute top-0 start-0 translate-middle pe-3 pt-2" v-if="utils.contains(utils.toCamelCase(tm.answer),utils.toCamelCase(optionsABC[optionIndex]))"><i class="el-icon-check text-success fw-bold"></i></span>
-                                    {{optionsABC[optionIndex]}}.
+                <template v-if="tm.baseTx==='Zuheti'">
+                    <el-card class="mb-3" v-for="small in tm.smallList">
+                        <span class="mb-3 d-flex justify-content-start">
+                            <span><span class="pe-1">{{ small.txName }}</span>({{small.score}}分)</span>
+                        </span>
+                        <div class="d-flex justify-content-start mb-3 fw-bolder">
+                            <div v-html="small.titleHtml"></div>
+                        </div>
+                        <div class="list-group" v-if="small.baseTx!=='Tiankongti' && small.baseTx!=='Jiandati'">
+                            <div v-if="small.baseTx==='Danxuanti' || small.baseTx==='Panduanti'">
+                                <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in small.options">
+                                    <div class="d-flex justify-content-start align-items-start">
+                                        <div class="me-1 position-relative">
+                                            <span class="position-absolute top-0 start-0 translate-middle pe-3 pt-2" v-if="utils.contains(utils.toCamelCase(small.answer),utils.toCamelCase(optionsABC[optionIndex]))"><i class="el-icon-check text-success fw-bold"></i></span>
+                                            {{optionsABC[optionIndex]}}.
+                                        </div>
+                                        <div>
+                                            <span v-html="option"></span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div>
-                                    <span v-html="option"></span>
+                            </div>
+                            <div v-if="small.baseTx==='Duoxuanti'">
+                                <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in small.options">
+                                    <div class="d-flex justify-content-start align-items-start">
+                                        <div class="me-1 position-relative">
+                                            <span class="position-absolute top-0 start-0 translate-middle pe-3 pt-2" v-if="utils.contains(utils.toCamelCase(small.answer),utils.toCamelCase(optionsABC[optionIndex]))"><i class="el-icon-check text-success fw-bold"></i></span>
+                                            {{optionsABC[optionIndex]}}.
+                                        </div>
+                                        <div>
+                                            <span v-html="option"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-start align-items-start mt-3">
+                            <div class="me-2">答案：</div>
+                            <div>
+                                <span v-html="small.answer"></span>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-start align-items-start mt-3">
+                            <div class="me-2">题目解析:</div>
+                            <div>
+                                <span v-html="small.jiexi"></span>
+                            </div>
+                        </div>
+                    </el-card>
+                </template>
+                <template v-else>
+                    <div class="list-group" v-if="tm.baseTx!=='Tiankongti' && tm.baseTx!=='Jiandati'">
+                        <div v-if="tm.baseTx==='Danxuanti' || tm.baseTx==='Panduanti'">
+                            <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.options">
+                                <div class="d-flex justify-content-start align-items-start">
+                                    <div class="me-1 position-relative">
+                                        <span class="position-absolute top-0 start-0 translate-middle pe-3 pt-2" v-if="utils.contains(utils.toCamelCase(tm.answer),utils.toCamelCase(optionsABC[optionIndex]))"><i class="el-icon-check text-success fw-bold"></i></span>
+                                        {{optionsABC[optionIndex]}}.
+                                    </div>
+                                    <div>
+                                        <span v-html="option"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div v-if="tm.baseTx==='Duoxuanti'">
+                            <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.options">
+                                <div class="d-flex justify-content-start align-items-start">
+                                    <div class="me-1 position-relative">
+                                        <span class="position-absolute top-0 start-0 translate-middle pe-3 pt-2" v-if="utils.contains(utils.toCamelCase(tm.answer),utils.toCamelCase(optionsABC[optionIndex]))"><i class="el-icon-check text-success fw-bold"></i></span>
+                                        {{optionsABC[optionIndex]}}.
+                                    </div>
+                                    <div>
+                                        <span v-html="option"></span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div v-if="tm.baseTx==='Duoxuanti'">
-                        <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.options">
-                            <div class="d-flex justify-content-start align-items-start">
-                                <div class="me-1 position-relative">
-                                    <span class="position-absolute top-0 start-0 translate-middle pe-3 pt-2" v-if="utils.contains(utils.toCamelCase(tm.answer),utils.toCamelCase(optionsABC[optionIndex]))"><i class="el-icon-check text-success fw-bold"></i></span>
-                                    {{optionsABC[optionIndex]}}.
-                                </div>
-                                <div>
-                                    <span v-html="option"></span>
-                                </div>
-                            </div>
+                    <div class="d-flex justify-content-start align-items-start mt-3">
+                        <div class="me-2" style="width:130px;">答案</div>
+                        <div>
+                            <span v-html="tm.answer"></span>
                         </div>
                     </div>
-                </div>
-                <div class="d-flex justify-content-start align-items-start mt-3">
-                    <div class="me-2" style="width:130px;">答案</div>
-                    <div>
-                        <span v-html="tm.answer"></span>
-                    </div>
-                </div>
+                </template>
                 <div class="d-flex justify-content-start align-items-center mt-3">
                     <div class="me-2" style="width:130px;">难度</div>
                     <div>

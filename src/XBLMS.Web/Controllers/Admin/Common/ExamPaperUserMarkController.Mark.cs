@@ -30,6 +30,16 @@ namespace XBLMS.Web.Controllers.Admin.Common
                 start.SubjectiveScore = totalS;
                 await _examPaperStartRepository.UpdateAsync(start);
             }
+            if (request.SmallList != null && request.SmallList.Count > 0)
+            {
+                foreach (var mark in request.SmallList)
+                {
+                    var answer = await _examPaperAnswerSmallRepository.GetAsync(mark.Id);
+                    answer.Score = mark.Score;
+                    answer.Set("MarkState", mark.Get("MarkState"));
+                    await _examPaperAnswerSmallRepository.UpdateAsync(answer);
+                }
+            }
 
             return new BoolResult
             {
@@ -56,6 +66,17 @@ namespace XBLMS.Web.Controllers.Admin.Common
                     await _examPaperAnswerRepository.UpdateAsync(answer);
                 }
             }
+            if (request.SmallList != null && request.SmallList.Count > 0)
+            {
+                foreach (var mark in request.SmallList)
+                {
+                    var answer = await _examPaperAnswerSmallRepository.GetAsync(mark.Id);
+                    answer.Score = mark.Score;
+                    answer.Set("MarkState", mark.Get("MarkState"));
+                    await _examPaperAnswerSmallRepository.UpdateAsync(answer);
+                }
+            }
+
             var start = await _examPaperStartRepository.GetAsync(request.StartId);
             var paper = await _examPaperRepository.GetAsync(start.ExamPaperId);
 

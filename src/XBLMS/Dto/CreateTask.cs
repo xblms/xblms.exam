@@ -10,6 +10,11 @@ namespace XBLMS.Dto
             ExamPaperAnswer = examPaperAnswer;
             CreateType = createType;
         }
+        public CreateTask(CreateType createType, ExamPaperAnswerSmall examPaperAnswerSmall)
+        {
+            ExamPaperAnswerSmall = examPaperAnswerSmall;
+            CreateType = createType;
+        }
         public CreateTask(CreateType createType,int startId)
         {
             StartId = startId;
@@ -17,6 +22,7 @@ namespace XBLMS.Dto
         }
         public CreateType CreateType { get; set; }
         public ExamPaperAnswer ExamPaperAnswer { get; set; }
+        public ExamPaperAnswerSmall ExamPaperAnswerSmall { get; set; }
         public int StartId { get; set; }
     }
 }

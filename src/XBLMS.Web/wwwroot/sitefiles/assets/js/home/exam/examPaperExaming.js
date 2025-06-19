@@ -1,6 +1,7 @@
 var $url = "/exam/examPaperExaming";
 var $urlItem = $url + "/item";
 var $urlSubmitAnswer = $url + "/submitAnswer";
+var $urlSubmitAnswerSmall = $url + "/submitAnswerSmall";
 var $urlSubmitPaper = $url + "/submitPaper";
 var $urlSubmitTiming = $url + "/submitTiming";
 
@@ -205,6 +206,57 @@ var methods = {
 
     this.apiSubmitAnswer(setTm.answerInfo);
   },
+  answerSmallChange: function (smallTm) {
+
+    let setTm = this.tm;
+
+    this.tmList = this.tmList.filter(f => f.id !== setTm.id);
+    setTm.answerStatus = false;
+
+
+    //子题状态
+    smallTm.answerStatus = false;
+    if (smallTm.baseTx === "Duoxuanti") {
+      smallTm.answerInfo.answer = smallTm.answerInfo.optionsValues.join('');
+    }
+    var completionStatus = true;
+    if (smallTm.baseTx === "Tiankongti") {
+      for (var i = 0; i < smallTm.answerInfo.optionsValues.length; i++) {
+        if (smallTm.answerInfo.optionsValues[i] === '' || smallTm.answerInfo.optionsValues[i] === null) {
+          completionStatus = false;
+        }
+      }
+      smallTm.answerInfo.answer = smallTm.answerInfo.optionsValues.join(',');
+    }
+
+    if (smallTm.answerInfo.answer !== '' && smallTm.answerInfo.answer.length > 0) {
+      if (completionStatus) {
+        smallTm.answerStatus = true;
+      }
+      else {
+        smallTm.answerStatus = false;
+      }
+    }
+    //
+    if (setTm.smallLists && setTm.smallLists.length > 0) {
+      var smallList = setTm.smallLists;
+      var allSmallAnswer = true;
+      smallList.forEach(small => {
+        if (!small.answerStatus) {
+          allSmallAnswer = false;
+        }
+      })
+      setTm.answerStatus = allSmallAnswer;
+    }
+
+
+    this.tmList.push(setTm);
+
+    var answerTotals = this.tmList.filter(f => f.answerStatus);
+    this.answerTotal = answerTotals.length;
+
+    this.apiSubmitSmallAnswer(smallTm.answerInfo);
+  },
   btnDownClick: function () {
     var curIndex = this.tm.tmIndex;
     let downTm = this.tmList.find(item => item.tmIndex === (curIndex + 1))
@@ -217,6 +269,9 @@ var methods = {
   },
   apiSubmitAnswer: function (setTm) {
     $api.post($urlSubmitAnswer, { answer: setTm }).then(function (response) { });
+  },
+  apiSubmitSmallAnswer: function (setTm) {
+    $api.post($urlSubmitAnswerSmall, { answer: setTm }).then(function (response) { });
   },
   apiSubmitPaper: function () {
     $api.post($urlSubmitPaper, { id: this.startId }).then(function (response) { });

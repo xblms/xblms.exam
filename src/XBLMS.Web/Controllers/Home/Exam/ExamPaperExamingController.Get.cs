@@ -98,6 +98,8 @@ namespace XBLMS.Web.Controllers.Home.Exam
             var paperTmTotal = 0;
 
             var tmIndex = 1;
+
+            var haveSubjective = false;
             foreach (var config in configs)
             {
                 var tx = await _examTxRepository.GetAsync(config.TxId);
@@ -105,6 +107,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
                 if (tx.ExamTxBase == ExamTxBase.Tiankongti || tx.ExamTxBase == ExamTxBase.Jiandati)
                 {
                     tmType = ExamTmType.Subjective;
+                    haveSubjective = true;
                 }
 
                 var tms = await _examPaperRandomTmRepository.GetListAsync(randomId, config.TxId, config.ExamPaperId);
@@ -128,7 +131,46 @@ namespace XBLMS.Web.Controllers.Home.Exam
                                 ExamTmType = tmType
                             };
                             examAnswer.Set("OptionsValues", new List<string>());
-                            await _examPaperAnswerRepository.InsertAsync(examAnswer);
+                            var answerId = await _examPaperAnswerRepository.InsertAsync(examAnswer);
+
+                            if (tx.ExamTxBase == ExamTxBase.Zuheti)
+                            {
+                                var smallList = await _examPaperRandomTmSmallRepository.GetListAsync(item.Id);
+
+                                if (smallList != null && smallList.Count > 0)
+                                {
+                                    var smallHasSubjective = false;
+                                    foreach (var small in smallList)
+                                    {
+                                        var smalltx = await _examTxRepository.GetAsync(small.TxId);
+                                        ExamTmType tmSmallType = ExamTmType.Objective;
+                                        if (smalltx.ExamTxBase == ExamTxBase.Tiankongti || smalltx.ExamTxBase == ExamTxBase.Jiandati)
+                                        {
+                                            tmSmallType = ExamTmType.Subjective;
+                                            smallHasSubjective = true;
+                                            haveSubjective = true;
+                                        }
+
+                                        var examAnswerSmall = new ExamPaperAnswerSmall
+                                        {
+                                            AnswerId = answerId,
+                                            UserId = user.Id,
+                                            ExamPaperId = paper.Id,
+                                            ExamStartId = startId,
+                                            RandomTmId = small.Id,
+                                            ExamTmType = tmSmallType
+                                        };
+                                        examAnswerSmall.Set("OptionsValues", new List<string>());
+                                        await _examPaperAnswerSmallRepository.InsertAsync(examAnswerSmall);
+                                    }
+                                    if (smallHasSubjective)
+                                    {
+                                        examAnswer = await _examPaperAnswerRepository.GetAsync(answerId, paper.Id);
+                                        examAnswer.ExamTmType = ExamTmType.Subjective;
+                                        await _examPaperAnswerRepository.UpdateAsync(examAnswer);
+                                    }
+                                }
+                            }
                         }
 
                         await _examManager.GetTmInfoByPaperUser(item, paper, startId);
@@ -138,6 +180,10 @@ namespace XBLMS.Web.Controllers.Home.Exam
                     config.Set("TmList", tms);
                 }
             }
+
+            var start = await _examPaperStartRepository.GetAsync(startId);
+            start.HaveSubjective = haveSubjective;
+            await _examPaperStartRepository.UpdateAsync(start);
 
             paper.Set("TmTotal", paperTmTotal);
             paper.Set("StartId", startId);

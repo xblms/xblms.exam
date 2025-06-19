@@ -31,7 +31,12 @@ namespace XBLMS.Enums
         /// 简答题
         /// </summary>
         [DataEnum(DisplayName = "简答题", Value = "Jiandati")]
-        Jiandati
+        Jiandati,
+        /// <summary>
+        /// 组合题，答题套小题
+        /// </summary>
+        [DataEnum(DisplayName = "组合题", Value = "Zuheti")]
+        Zuheti
     }
     public enum ExamTmType
     {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NPOI.SS.Formula.Functions;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using XBLMS.Core.Utils;
@@ -17,6 +18,7 @@ namespace XBLMS.Core.Services
         private readonly ICreateManager _createManager;
         private readonly IUserRepository _userRepository;
         private readonly IExamTmRepository _examTmRepository;
+        private readonly IExamTmSmallRepository _examTmSmallRepository;
         private readonly IExamTxRepository _examTxRepository;
         private readonly IExamTmTreeRepository _examTmTreeRepository;
         private readonly IExamPaperTreeRepository _examPaperTreeRepository;
@@ -25,6 +27,7 @@ namespace XBLMS.Core.Services
         private readonly IExamPaperRepository _examPaperRepository;
         private readonly IExamTmGroupRepository _examTmGroupRepository;
         private readonly IExamPaperRandomTmRepository _examPaperRandomTmRepository;
+        private readonly IExamPaperRandomTmSmallRepository _examPaperRandomTmSmallRepository;
         private readonly IUserGroupRepository _userGroupRepository;
         private readonly IExamPaperUserRepository _examPaperUserRepository;
         private readonly IExamPaperStartRepository _examPaperStartRepository;
@@ -34,6 +37,7 @@ namespace XBLMS.Core.Services
         private readonly IExamPracticeCollectRepository _examPracticeCollectRepository;
         private readonly IExamPracticeWrongRepository _examPracticeWrongRepository;
         private readonly IExamPracticeRepository _examPracticeRepository;
+        private readonly IExamPaperAnswerSmallRepository _examPaperAnswerSmallRepository;
 
         private readonly IExamQuestionnaireRepository _examQuestionnaireRepository;
         private readonly IExamQuestionnaireAnswerRepository _examQuestionnaireAnswerRepository;
@@ -87,7 +91,10 @@ namespace XBLMS.Core.Services
             IExamAssessmentConfigRepository examAssessmentConfigRepository,
             IExamAssessmentConfigSetRepository examAssessmentConfigSetRepository,
             IKnowlegesTreeRepository knowlegesTreeRepository,
-            IKnowlegesRepository knowlegesRepository)
+            IKnowlegesRepository knowlegesRepository,
+            IExamTmSmallRepository examTmSmallRepository,
+            IExamPaperRandomTmSmallRepository examPaperRandomTmSmallRepository,
+            IExamPaperAnswerSmallRepository examPaperAnswerSmallRepository)
         {
             _settingsManager = settingsManager;
             _organManager = organManager;
@@ -124,12 +131,22 @@ namespace XBLMS.Core.Services
             _examAssessmentConfigSetRepository = examAssessmentConfigSetRepository;
             _knowlegesTreeRepository = knowlegesTreeRepository;
             _knowlegesRepository = knowlegesRepository;
+            _examTmSmallRepository = examTmSmallRepository;
+            _examPaperRandomTmSmallRepository = examPaperRandomTmSmallRepository;
+            _examPaperAnswerSmallRepository = examPaperAnswerSmallRepository;
         }
 
 
         public async Task<ExamTm> GetTmInfo(int tmId)
         {
             var tm = await _examTmRepository.GetAsync(tmId);
+            tm.Set("Options", tm.Get("options"));
+            tm.Set("optionsValues", tm.Get("optionsValues"));
+            return tm;
+        }
+        public async Task<ExamTmSmall> GetSmallTmInfo(int tmId)
+        {
+            var tm = await _examTmSmallRepository.GetAsync(tmId);
             tm.Set("Options", tm.Get("options"));
             tm.Set("optionsValues", tm.Get("optionsValues"));
             return tm;
@@ -149,8 +166,40 @@ namespace XBLMS.Core.Services
             tm.Set("TxTaxis", tx.Taxis);
             tm.Set("BaseTx", tx.ExamTxBase);
 
+            var smallTmList = new List<ExamTmSmall>();
+            if (tx.ExamTxBase == ExamTxBase.Zuheti)
+            {
+                var smallList = await _examTmSmallRepository.GetListAsync(tm.Id);
+                if (smallList != null && smallList.Count > 0)
+                {
+                    for (var i = 0; i < smallList.Count; i++)
+                    {
+                        var smallTm = smallList[i];
+                        var smallTx = await _examTxRepository.GetAsync(smallTm.TxId);
 
+                        smallTm.Set("Options", smallTm.Get("options"));
+                        smallTm.Set("OptionsValues", smallTm.Get("optionsValues"));
+
+                        smallTm.Set("TitleHtml", smallTm.Title);
+
+                        var tmTitleList = GetTiankongtiTitleList(smallTx, smallTm.Title);
+
+                        smallTm.Title = StringUtils.StripTags(smallTm.Title);
+
+                        var smalltx = await _examTxRepository.GetAsync(smallTm.TxId);
+                        smallTm.Set("TxName", smalltx.Name);
+                        smallTm.Set("TxTaxis", smalltx.Taxis);
+                        smallTm.Set("BaseTx", smalltx.ExamTxBase);
+
+
+                        smallTm.Set("TitleList", tmTitleList);
+                        smallTmList.Add(smallTm);
+                    }
+                }
+            }
+            tm.Set("SmallList", smallTmList);
         }
+
         public async Task GetTmDeleteInfo(ExamTm tm)
         {
             tm.Set("Options", tm.Get("options"));
@@ -188,16 +237,12 @@ namespace XBLMS.Core.Services
 
         }
 
-        public async Task GetTmInfoByPaper(ExamTm tm)
+        public List<KeyValuePair<int, string>> GetTiankongtiTitleList(ExamTx tx, string title)
         {
-            await GetBaseTmInfo(tm);
-            tm.Title = tm.Get("TitleHtml").ToString();
-            var tx = await _examTxRepository.GetAsync(tm.TxId);
-
             var tmTitleList = new List<KeyValuePair<int, string>>();
-            if (tx.ExamTxBase == ExamTxBase.Tiankongti && tm.Title.Contains("___"))
+            if (tx.ExamTxBase == ExamTxBase.Tiankongti && title.Contains("___"))
             {
-                string newTitle = StringUtils.Replace(tm.Title, "___", "|___|");
+                string newTitle = StringUtils.Replace(title, "___", "|___|");
                 var tmTitleSplitList = ListUtils.GetStringList(newTitle, '|');
                 var inputIndex = 0;
                 for (int i = 0; i < tmTitleSplitList.Count; i++)
@@ -213,28 +258,111 @@ namespace XBLMS.Core.Services
                     }
                 }
             }
+            return tmTitleList;
+        }
+        public async Task GetSmallListByPaper(ExamPaperRandomTm tm, int startId, ExamPaper paper)
+        {
+            var tx = await _examTxRepository.GetAsync(tm.TxId);
+            var smallTmList = new List<ExamPaperRandomTmSmall>();
+            if (tx.ExamTxBase == ExamTxBase.Zuheti)
+            {
+                var smallList = await _examPaperRandomTmSmallRepository.GetListAsync(tm.Id);
+                if (smallList != null && smallList.Count > 0)
+                {
+                    for (var i = 0; i < smallList.Count; i++)
+                    {
+                        var smallTm = smallList[i];
+                        var smallTx = await _examTxRepository.GetAsync(smallTm.TxId);
+
+                        var options = smallTm.Get("options");
+                        smallTm.Set("Options", options);
+                        smallTm.Set("OptionsValues", smallTm.Get("optionsValues"));
+
+                        smallTm.Set("TitleHtml", smallTm.Title);
+
+                        var tmTitleList = GetTiankongtiTitleList(smallTx, smallTm.Title);
+
+                        smallTm.Title = StringUtils.StripTags(smallTm.Title);
+
+                        var smalltx = await _examTxRepository.GetAsync(smallTm.TxId);
+                        smallTm.Set("TxName", smalltx.Name);
+                        smallTm.Set("TxTaxis", smalltx.Taxis);
+                        smallTm.Set("BaseTx", smalltx.ExamTxBase);
+
+
+                        smallTm.Set("TitleList", tmTitleList);
+
+                        if (startId > 0 && paper != null)
+                        {
+                            var answerStatus = true;
+                            var answer = await _examPaperAnswerSmallRepository.GetAsync(smallTm.Id, startId, paper.Id);
+                            if (string.IsNullOrWhiteSpace(answer.Answer))
+                            {
+                                answerStatus = false;
+                            }
+
+
+                            smallTm.Set("AnswerInfo", answer);
+                            smallTm.Set("AnswerStatus", answerStatus);
+
+                            smallTm.Set("IsRight", StringUtils.Equals(smallTm.Answer, answer.Answer) || answer.Score > 0);
+                            if (!paper.SecrecyPaperAnswer)
+                            {
+                                smallTm.Answer = "";
+                            }
+
+                            var answerStatue = answer.Get("MarkState");
+
+                            var markState = false;
+                            if (answerStatue != null)
+                            {
+                                markState = TranslateUtils.ToBool(answer.Get("MarkState").ToString());
+                            }
+
+                            smallTm.Set("MarkState", markState);
+                        }
+
+
+                        smallTm.Set("OptionsRandom", GetOptionRandm(paper, ListUtils.ToList(options), true));
+                        smallTm.Set("TmIndex", i + 1);
+
+                        smallTmList.Add(smallTm);
+                    }
+                }
+            }
+            tm.Set("SmallLists", smallTmList);
+        }
+        public async Task GetTmInfoByPaper(ExamTm tm)
+        {
+            await GetBaseTmInfo(tm);
+            tm.Title = tm.Get("TitleHtml").ToString();
+            var tx = await _examTxRepository.GetAsync(tm.TxId);
+
+            var tmTitleList = GetTiankongtiTitleList(tx, tm.Title);
 
             tm.Set("TitleList", tmTitleList);
         }
 
-
-
-        public async Task GetTmInfoByPaperUser(ExamPaperRandomTm tm, ExamPaper paper, int startId, bool paperView = false)
+        public List<KeyValuePair<string, string>> GetOptionRandm(ExamPaper paper, List<string> options, bool paperView = false)
         {
-            await GetTmInfoByPaper(tm);
-
             var optionsRandom = new List<KeyValuePair<string, string>>();
-            var options = ListUtils.ToList(tm.Get("options"));
             var abcList = StringUtils.GetABC();
             for (var i = 0; i < options.Count; i++)
             {
                 optionsRandom.Add(new KeyValuePair<string, string>(abcList[i], options[i]));
             }
-            if (paper.IsExamingTmOptionRandomView && !paperView)
+            if (paper != null && paper.IsExamingTmOptionRandomView && !paperView)
             {
                 optionsRandom = ListUtils.GetRandomList(optionsRandom);
             }
-            tm.Set("OptionsRandom", optionsRandom);
+            return optionsRandom;
+        }
+
+        public async Task GetTmInfoByPaperUser(ExamPaperRandomTm tm, ExamPaper paper, int startId, bool paperView = false)
+        {
+            await GetTmInfoByPaper(tm);
+
+            tm.Set("OptionsRandom", GetOptionRandm(paper, ListUtils.ToList(tm.Get("options")), paperView));
 
             var answerStatus = true;
             var answer = await _examPaperAnswerRepository.GetAsync(tm.Id, startId, paper.Id);
@@ -260,21 +388,14 @@ namespace XBLMS.Core.Services
                 tm.Answer = "";
             }
 
+            await GetSmallListByPaper(tm, startId, paper);
 
         }
         public async Task GetTmInfoByPaperViewAdmin(ExamPaperRandomTm tm, ExamPaper paper, int startId)
         {
             await GetTmInfoByPaper(tm);
 
-            var optionsRandom = new List<KeyValuePair<string, string>>();
-            var options = ListUtils.ToList(tm.Get("options"));
-            var abcList = StringUtils.GetABC();
-            for (var i = 0; i < options.Count; i++)
-            {
-                optionsRandom.Add(new KeyValuePair<string, string>(abcList[i], options[i]));
-            }
-
-            tm.Set("OptionsRandom", optionsRandom);
+            tm.Set("OptionsRandom", GetOptionRandm(paper, ListUtils.ToList(tm.Get("options"))));
 
             var answerStatus = true;
             var answer = await _examPaperAnswerRepository.GetAsync(tm.Id, startId, paper.Id);
@@ -287,20 +408,13 @@ namespace XBLMS.Core.Services
             tm.Set("AnswerStatus", answerStatus);
             tm.Set("IsRight", StringUtils.Equals(tm.Answer, answer.Answer) || answer.Score > 0);
 
+            await GetSmallListByPaper(tm, startId, paper);
         }
         public async Task GetTmInfoByPaperMark(ExamPaperRandomTm tm, ExamPaper paper, int startId)
         {
             await GetTmInfoByPaper(tm);
 
-            var optionsRandom = new List<KeyValuePair<string, string>>();
-            var options = ListUtils.ToList(tm.Get("options"));
-            var abcList = StringUtils.GetABC();
-            for (var i = 0; i < options.Count; i++)
-            {
-                optionsRandom.Add(new KeyValuePair<string, string>(abcList[i], options[i]));
-            }
-
-            tm.Set("OptionsRandom", optionsRandom);
+            tm.Set("OptionsRandom", GetOptionRandm(paper, ListUtils.ToList(tm.Get("options"))));
 
             var answer = await _examPaperAnswerRepository.GetAsync(tm.Id, startId, paper.Id);
 
@@ -315,37 +429,23 @@ namespace XBLMS.Core.Services
             tm.Set("AnswerInfo", answer);
             tm.Set("MarkState", markState);
             tm.Set("IsRight", StringUtils.Equals(tm.Answer, answer.Answer) || answer.Score > 0);
-
+            await GetSmallListByPaper(tm, startId, paper);
         }
 
         public async Task GetTmInfoByPracticing(ExamTm tm)
         {
             await GetTmInfoByPaper(tm);
 
-            var optionsRandom = new List<KeyValuePair<string, string>>();
-            var options = ListUtils.ToList(tm.Get("options"));
-            var abcList = StringUtils.GetABC();
-            for (var i = 0; i < options.Count; i++)
-            {
-                optionsRandom.Add(new KeyValuePair<string, string>(abcList[i], options[i]));
-            }
-
-            tm.Set("OptionsRandom", optionsRandom);
+            tm.Set("OptionsRandom", GetOptionRandm(null, ListUtils.ToList(tm.Get("options"))));
             tm.Answer = "";
             tm.Set("OptionsValues", new List<string>());
+
         }
         public async Task GetTmInfoByPracticeView(ExamTm tm)
         {
             await GetTmInfoByPaper(tm);
 
-            var optionsRandom = new List<KeyValuePair<string, string>>();
-            var options = ListUtils.ToList(tm.Get("options"));
-            var abcList = StringUtils.GetABC();
-            for (var i = 0; i < options.Count; i++)
-            {
-                optionsRandom.Add(new KeyValuePair<string, string>(abcList[i], options[i]));
-            }
-            tm.Set("OptionsRandom", optionsRandom);
+            tm.Set("OptionsRandom", GetOptionRandm(null, ListUtils.ToList(tm.Get("options"))));
         }
 
         public async Task GetPaperInfo(ExamPaper paper, User user, bool cjList = false)

@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DocumentFormat.OpenXml.Office2013.Drawing.ChartStyle;
+using Microsoft.AspNetCore.Mvc;
+using NPOI.SS.Formula.Functions;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using XBLMS.Dto;
 using XBLMS.Enums;
@@ -14,24 +17,39 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         public async Task<ActionResult<GetEditResult>> Get([FromQuery] IdRequest request)
         {
             var tm = new ExamTm();
+            var resultSmalls = new List<ExamTmSmall>();
+
             if (request.Id > 0)
             {
                 tm = await _examManager.GetTmInfo(request.Id);
+                var smallList = await _examTmSmallRepository.GetListAsync(tm.Id);
+
+                if (smallList != null && smallList.Count > 0)
+                {
+                    for (var i = 0; i < smallList.Count; i++)
+                    {
+                        var smallTm = smallList[i];
+                        resultSmalls.Add(await _examManager.GetSmallTmInfo(smallTm.Id));
+                    }
+                }
             }
             var txList = await _examTxRepository.GetListAsync();
             var tmTree = await _examManager.GetExamTmTreeCascadesAsync();
+
+
 
             return new GetEditResult
             {
                 Item = tm,
                 TxList = txList,
                 TmTree = tmTree,
+                SmallList = resultSmalls
             };
         }
 
         [RequestSizeLimit(long.MaxValue)]
         [HttpPost, Route(RouteEditSubmit)]
-        public async Task<ActionResult<BoolResult>> SubmitTm([FromBody] ItemRequest<ExamTm> request)
+        public async Task<ActionResult<BoolResult>> SubmitTm([FromBody] GetEditRequest request)
         {
             if (request.Item.Id > 0)
             {
@@ -51,16 +69,18 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
             var admin = await _authManager.GetAdminAsync();
             var info = request.Item;
+            var txInfo = await _examTxRepository.GetAsync(info.TxId);
+            if (txInfo.ExamTxBase == ExamTxBase.Duoxuanti)
+            {
+                info.Answer = info.Answer.Replace(",", "").Trim();
+            }
+
             if (info.Id > 0)
             {
                 var last = await _examTmRepository.GetAsync(info.Id);
-                var txInfo = await _examTxRepository.GetAsync(info.TxId);
-                if (txInfo.ExamTxBase == ExamTxBase.Duoxuanti)
-                {
-                    info.Answer = info.Answer.Replace(",", "").Trim();
-                }
+
                 await _examTmRepository.UpdateAsync(info);
-                await _authManager.AddAdminLogAsync("修改题目", $"{StringUtils.StripTags(info.Title) }");
+                await _authManager.AddAdminLogAsync("修改题目", $"{StringUtils.StripTags(info.Title)}");
                 await _authManager.AddStatLogAsync(StatType.ExamTmUpdate, "修改题目", last.Id, StringUtils.StripTags(info.Title), last);
             }
             else
@@ -69,11 +89,6 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 {
                     return this.Error("已存在相同的题目");
                 }
-                var txInfo = await _examTxRepository.GetAsync(info.TxId);
-                if (txInfo.ExamTxBase == ExamTxBase.Duoxuanti)
-                {
-                    info.Answer = info.Answer.Replace(",", "").Trim();
-                }
 
                 info.CompanyId = admin.CompanyId;
                 info.DepartmentId = admin.DepartmentId;
@@ -81,9 +96,43 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
                 info.Id = await _examTmRepository.InsertAsync(info);
 
-                await _authManager.AddAdminLogAsync("新增题目", $"{ StringUtils.StripTags(info.Title) }");
+                await _authManager.AddAdminLogAsync("新增题目", $"{StringUtils.StripTags(info.Title)}");
                 await _authManager.AddStatLogAsync(StatType.ExamTmAdd, "新增题目", info.Id, StringUtils.StripTags(info.Title));
                 await _authManager.AddStatCount(StatType.ExamTmAdd);
+            }
+
+            if (txInfo.ExamTxBase == ExamTxBase.Zuheti)
+            {
+                if (request.Smalls != null && request.Smalls.Count > 0)
+                {
+                    for (var i = 0; i < request.Smalls.Count; i++)
+                    {
+                        var smallTm = request.Smalls[i];
+                        var smallTxInfo = await _examTxRepository.GetAsync(smallTm.TxId);
+                        if (smallTxInfo.ExamTxBase == ExamTxBase.Duoxuanti)
+                        {
+                            smallTm.Answer = smallTm.Answer.Replace(",", "").Trim();
+
+                        }
+                        smallTm.ParentId = info.Id;
+                        if (smallTm.Id > 0)
+                        {
+                            await _examTmSmallRepository.UpdateAsync(smallTm);
+                        }
+                        else
+                        {
+                            await _examTmSmallRepository.InsertAsync(smallTm);
+                        }
+                    }
+
+                }
+            }
+            else
+            {
+                if (info.Id > 0)
+                {
+                    await _examTmSmallRepository.DeleteAsync(info.Id);
+                }
             }
 
             return new BoolResult

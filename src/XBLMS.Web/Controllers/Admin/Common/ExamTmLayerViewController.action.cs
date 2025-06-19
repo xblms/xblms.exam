@@ -12,6 +12,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
         {
             var tm = await _examTmRepository.GetAsync(request.Id);
             await _examManager.GetTmInfo(tm);
+
             return new ItemResult<ExamTm>
             {
                 Item = tm

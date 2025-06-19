@@ -17,12 +17,14 @@ namespace XBLMS.Web.Controllers.Admin.Common
         private readonly IExamTmRepository _examTmRepository;
         private readonly IAuthManager _authManager;
         private readonly IExamManager _examManager;
+        private readonly IExamTxRepository _examTxRepository;
 
-        public ExamTmLayerViewController(IAuthManager authManager, IExamTmRepository examTmRepository, IExamManager examManager)
+        public ExamTmLayerViewController(IAuthManager authManager, IExamTmRepository examTmRepository, IExamManager examManager, IExamTxRepository examTxRepository)
         {
             _authManager = authManager;
             _examTmRepository = examTmRepository;
             _examManager = examManager;
+            _examTxRepository = examTxRepository;
         }
 
     }

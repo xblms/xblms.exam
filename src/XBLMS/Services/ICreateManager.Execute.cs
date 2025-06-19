@@ -6,5 +6,6 @@ namespace XBLMS.Services
     public partial interface ICreateManager
     {
         Task ExecuteSubmitAnswerAsync(ExamPaperAnswer examPaperAnswer);
+        Task ExecuteSubmitAnswerSmallAsync(ExamPaperAnswerSmall examPaperAnswer);
     }
 }

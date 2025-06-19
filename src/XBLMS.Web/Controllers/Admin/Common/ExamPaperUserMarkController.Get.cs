@@ -41,7 +41,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
             foreach (var config in configs)
             {
                 var tx = await _examTxRepository.GetAsync(config.TxId);
-                if (tx != null && (tx.ExamTxBase == ExamTxBase.Tiankongti || tx.ExamTxBase == ExamTxBase.Jiandati))
+                if (tx != null && (tx.ExamTxBase == ExamTxBase.Tiankongti || tx.ExamTxBase == ExamTxBase.Jiandati || tx.ExamTxBase == ExamTxBase.Zuheti))
                 {
                     var tms = await _examPaperRandomTmRepository.GetListAsync(randomId, config.TxId, paper.Id);
                     if (tms != null && tms.Count > 0)

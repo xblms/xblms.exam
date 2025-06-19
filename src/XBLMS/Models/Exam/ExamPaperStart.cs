@@ -31,6 +31,8 @@ namespace XBLMS.Models
         [DataColumn]
         public decimal Score { get; set; }
         [DataColumn]
+        public bool HaveSubjective { get; set; }
+        [DataColumn]
         public decimal SubjectiveScore { get; set; }
         [DataColumn]
         public decimal ObjectiveScore { get; set; }

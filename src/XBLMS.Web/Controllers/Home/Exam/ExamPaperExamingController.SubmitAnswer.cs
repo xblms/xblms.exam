@@ -9,5 +9,11 @@ namespace XBLMS.Web.Controllers.Home.Exam
         {
             _createManager.CreateSubmitAnswerAsync(request.Answer);
         }
+
+        [HttpPost, Route(RouteSubmitAnswerSmall)]
+        public void SubmitAnswerSmall([FromBody] GetSubmitAnswerSmallRequest request)
+        {
+            _createManager.ExecuteSubmitAnswerSmallAsync(request.Answer);
+        }
     }
 }

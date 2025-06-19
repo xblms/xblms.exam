@@ -55,22 +55,25 @@ var methods = {
     var totalSScore = 0;
     this.tmList.forEach(tm => {
       totalSScore += tm.answerInfo.score;
+      if (tm.smallLists && tm.smallLists.length > 0) {
+        totalSScore = 0;
+        var pTotalScore = 0;
+        var allMarked = true;
+        tm.smallLists.forEach(small => {
+          totalSScore += small.answerInfo.score;
+          pTotalScore += small.answerInfo.score;
+          if (!small.markState) {
+            allMarked = false;
+          }
+        })
+        tm.markState = allMarked;
+        tm.answerInfo.score = pTotalScore;
+      }
     });
     this.paper.userSScore = totalSScore;
   },
   btnSaveClick: function () {
-    var answerList = [];
-    this.tmList.forEach(tm => {
-      var answer = tm.answerInfo;
-      answer.markState = tm.markState;
-      answerList.push(answer);
-    });
-
-    var markForm = {
-      startId: this.id,
-      list: answerList
-    };
-
+    var markForm = this.getMarkForm();
 
     var $this = this;
 
@@ -110,21 +113,34 @@ var methods = {
       }
     });
   },
-  apiSubmitMark: function () {
-    var $this = this;
-
+  getMarkForm: function () {
     var answerList = [];
+    var smallList = [];
     this.tmList.forEach(tm => {
       var answer = tm.answerInfo;
       answer.markState = tm.markState;
       answerList.push(answer);
+
+      if (tm.smallLists && tm.smallLists.length > 0) {
+        tm.smallLists.forEach(small => {
+          var answerSmall = small.answerInfo;
+          answerSmall.markState = small.markState;
+          smallList.push(answerSmall);
+        })
+      }
     });
 
     var markForm = {
       startId: this.id,
-      list: answerList
+      list: answerList,
+      smallList: smallList
     };
+    return markForm;
+  },
+  apiSubmitMark: function () {
+    var $this = this;
 
+    var markForm = this.getMarkForm();
 
     utils.loading(this, true, '正在提交阅卷...');
     $api.post($urlSubmit, markForm).then(function (response) {

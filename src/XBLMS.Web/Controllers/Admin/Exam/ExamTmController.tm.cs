@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DocumentFormat.OpenXml.EMMA;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using XBLMS.Dto;
@@ -57,6 +58,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             var tm = await _examTmRepository.GetAsync(request.Id);
             if (tm == null) return this.NotFound();
             await _examTmRepository.DeleteAsync(request.Id);
+            await _examTmSmallRepository.DeleteByParentIdAsync(request.Id);
 
             await DeleteTm(new List<int> { tm.Id });
 
@@ -82,6 +84,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 var info = await _examTmRepository.GetAsync(id);
                 if (info == null) continue;
                 await _examTmRepository.DeleteAsync(info.Id);
+                await _examTmSmallRepository.DeleteByParentIdAsync(info.Id);
 
                 await _authManager.AddAdminLogAsync("删除题目", $"{StringUtils.StripTags(info.Title)}");
                 await _authManager.AddStatLogAsync(StatType.ExamTmDelete, "删除题目", info.Id, StringUtils.StripTags(info.Title), info);

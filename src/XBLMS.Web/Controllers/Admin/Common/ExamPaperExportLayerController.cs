@@ -35,6 +35,8 @@ namespace XBLMS.Web.Controllers.Admin.Common
         private readonly IExamPaperStartRepository _examPaperStartRepository;
         private readonly IUserRepository _userRepository;
         private readonly IExamPaperAnswerRepository _examPaperAnswerRepository;
+        private readonly IExamPaperRandomTmSmallRepository _examPaperRandomTmSmallRepository;
+        private readonly IExamPaperAnswerSmallRepository _examPaperAnswerSmallRepository;
 
         public ExamPaperExportLayerController(IAuthManager authManager,
             IPathManager pathManager,
@@ -48,7 +50,9 @@ namespace XBLMS.Web.Controllers.Admin.Common
             IExamTxRepository examTxRepository,
             IExamPaperStartRepository examPaperStartRepository,
             IUserRepository userRepository,
-            IExamPaperAnswerRepository examPaperAnswerRepository)
+            IExamPaperAnswerRepository examPaperAnswerRepository,
+            IExamPaperRandomTmSmallRepository examPaperRandomTmSmallRepository,
+            IExamPaperAnswerSmallRepository examPaperAnswerSmallRepository)
         {
             _authManager = authManager;
             _pathManager = pathManager;
@@ -63,6 +67,8 @@ namespace XBLMS.Web.Controllers.Admin.Common
             _examPaperStartRepository = examPaperStartRepository;
             _userRepository = userRepository;
             _examPaperAnswerRepository = examPaperAnswerRepository;
+            _examPaperRandomTmSmallRepository = examPaperRandomTmSmallRepository;
+            _examPaperAnswerSmallRepository = examPaperAnswerSmallRepository;
         }
 
 
@@ -124,12 +130,13 @@ namespace XBLMS.Web.Controllers.Admin.Common
 
                         await _examManager.GetTmInfoByPaper(tm);
                         var tx = await _examTxRepository.GetAsync(tm.TxId);
+                        var isGroup = tx.ExamTxBase == ExamTxBase.Zuheti;
                         answerList.Add(new KeyValuePair<int, string>(tmIndex, tm.Answer));
 
                         var tmTitle = tm.Get("TitleHtml").ToString().Trim();
                         if (StringUtils.StartsWithIgnoreCase(tmTitle, "<p>"))
                         {
-                            tmTitle = StringUtils.ReplaceStartsWithIgnoreCase(tmTitle, "<p>", $"<p>{tmIndex}.");
+                            tmTitle = StringUtils.ReplaceStartsWithIgnoreCase(tmTitle, "<p>", $"<p>{tmIndex}、");
                             if (isScore)
                             {
                                 tmTitle = StringUtils.ReplaceEndsWithIgnoreCase(tmTitle, "</p>", $"（{answer.Score}/{tm.Score}分）</p>");
@@ -145,17 +152,17 @@ namespace XBLMS.Web.Controllers.Admin.Common
                         {
                             if (isScore)
                             {
-                                wordContent.Append($"<p>{tmIndex}.{tmTitle}（{answer.Score}/{tm.Score}分）</p>");
+                                wordContent.Append($"<p>{tmIndex}、{tmTitle}（{answer.Score}/{tm.Score}分）</p>");
                             }
                             else
                             {
-                                wordContent.Append($"<p>{tmIndex}.{tmTitle}（{tm.Score}分）</p>");
+                                wordContent.Append($"<p>{tmIndex}、{tmTitle}（{tm.Score}分）</p>");
                             }
 
                         }
 
 
-                        if (tx.ExamTxBase != ExamTxBase.Tiankongti && tx.ExamTxBase != ExamTxBase.Jiandati)
+                        if (!isGroup && tx.ExamTxBase != ExamTxBase.Tiankongti && tx.ExamTxBase != ExamTxBase.Jiandati)
                         {
                             var options = ListUtils.ToList(tm.Get("options"));
                             if (options != null)
@@ -181,16 +188,99 @@ namespace XBLMS.Web.Controllers.Admin.Common
                                 }
                             }
                         }
-                        if (isScore)
+                        if (isScore && !isGroup)
                         {
                             wordContent.Append($"<p>考生答案：{answer.Answer}</p>");
-                            if(withAnswer)
+                            if (withAnswer)
                             {
                                 wordContent.Append($"<p>标准答案：{tm.Answer}</p>");
                             }
                         }
-                 
-                       
+
+                        if (isGroup)
+                        {
+                            var smallList = await _examPaperRandomTmSmallRepository.GetListAsync(tm.Id);
+                            if(smallList!=null && smallList.Count > 0)
+                            {
+                                var smallIndex = 1;
+                                foreach (var small in smallList)
+                                {
+                                    var smallTx = await _examTxRepository.GetAsync(small.TxId);
+                                    var smallAnswer = new ExamPaperAnswerSmall();
+
+                                    if (isScore)
+                                    {
+                                        smallAnswer = await _examPaperAnswerSmallRepository.GetAsync(small.Id, start.Id, paper.Id);
+                                    }
+                                    var smallTitle = small.Title;
+                                    if (StringUtils.StartsWithIgnoreCase(tmTitle, "<p>"))
+                                    {
+                                        smallTitle = StringUtils.ReplaceStartsWithIgnoreCase(smallTitle, "<p>", $"<p>第{smallIndex}小题、");
+                                        if (isScore)
+                                        {
+                                            smallTitle = StringUtils.ReplaceEndsWithIgnoreCase(smallTitle, "</p>", $"（{smallAnswer.Score}/{small.Score}分）</p>");
+                                        }
+                                        else
+                                        {
+                                            smallTitle = StringUtils.ReplaceEndsWithIgnoreCase(smallTitle, "</p>", $"（{smallAnswer.Score}分）</p>");
+                                        }
+
+                                        wordContent.Append(smallTitle);
+                                    }
+                                    else
+                                    {
+                                        if (isScore)
+                                        {
+                                            wordContent.Append($"<p>第{smallIndex}小题、{smallTitle}（{smallAnswer.Score}/{small.Score}分）</p>");
+                                        }
+                                        else
+                                        {
+                                            wordContent.Append($"<p>第{smallIndex}小题、{smallTitle}（{small.Score}分）</p>");
+                                        }
+
+                                    }
+
+                                    if (smallTx.ExamTxBase != ExamTxBase.Tiankongti && smallTx.ExamTxBase != ExamTxBase.Jiandati)
+                                    {
+                                        var options = ListUtils.ToList(small.Get("options"));
+                                        if (options != null)
+                                        {
+                                            if (options.Count > 0)
+                                            {
+                                                for (var oi = 0; oi < options.Count; oi++)
+                                                {
+                                                    var option = options[oi];
+                                                    if (!string.IsNullOrWhiteSpace(option))
+                                                    {
+                                                        if (StringUtils.StartsWithIgnoreCase(option, "<p>"))
+                                                        {
+                                                            option = StringUtils.ReplaceStartsWithIgnoreCase(option, "<p>", $"<p>{StringUtils.GetABC()[oi]}.");
+                                                            wordContent.Append(option);
+                                                        }
+                                                        else
+                                                        {
+                                                            wordContent.Append($"<p>{StringUtils.GetABC()[oi]}.{option}</p>");
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if (isScore)
+                                    {
+                                        wordContent.Append($"<p>考生答案：{smallAnswer.Answer}</p>");
+                                    }
+                                    if (withAnswer)
+                                    {
+                                        wordContent.Append($"<p>标准答案：{small.Answer}</p>");
+                                    }
+
+                                    smallIndex++;
+                                }
+                            }
+                        }
+
+
                         tmIndex++;
                         wordContent.Append($"<p></p>");
                     }

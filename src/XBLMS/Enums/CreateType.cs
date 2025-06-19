@@ -9,6 +9,8 @@ namespace XBLMS.Enums
     {
         [DataEnum(DisplayName = "提交答案")]
         SubmitAnswer,
+        [DataEnum(DisplayName = "提交组合题答案")]
+        SubmitAnswerSmall,
         [DataEnum(DisplayName = "提交答卷")]
         SubmitPaper,
     }

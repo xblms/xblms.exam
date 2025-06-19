@@ -40,6 +40,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
                         tmTotal++;
                         scoreTotal += tm.Score;
                         await _examManager.GetTmInfoByPaper(tm);
+                        await _examManager.GetSmallListByPaper(tm, 0, paper);
                         tm.Set("TmIndex", tmIndex);
                         tmIndex++;
                     }

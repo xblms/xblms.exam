@@ -32,6 +32,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
         private readonly IExamManager _examManager;
         private readonly IUserRepository _userRepository;
         private readonly IExamTxRepository _examTxRepository;
+        private readonly IExamPaperAnswerSmallRepository _examPaperAnswerSmallRepository;
 
         public ExamPaperUserMarkController(IConfigRepository configRepository,
             ICreateManager createManager,
@@ -45,7 +46,8 @@ namespace XBLMS.Web.Controllers.Admin.Common
             IExamPaperAnswerRepository examPaperAnswerRepository,
             IExamPaperStartRepository examPaperStartRepository,
             IUserRepository userRepository,
-            IExamTxRepository examTxRepository)
+            IExamTxRepository examTxRepository,
+            IExamPaperAnswerSmallRepository examPaperAnswerSmallRepository)
         {
             _configRepository = configRepository;
             _authManager = authManager;
@@ -60,6 +62,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
             _examPaperStartRepository = examPaperStartRepository;
             _userRepository = userRepository;
             _examTxRepository = examTxRepository;
+            _examPaperAnswerSmallRepository = examPaperAnswerSmallRepository;
         }
         public class GetResult
         {
@@ -72,6 +75,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
         {
             public int StartId { get; set; }
             public List<ExamPaperAnswer> List { get; set; }
+            public List<ExamPaperAnswerSmall> SmallList { get; set; }
         }
     }
 }

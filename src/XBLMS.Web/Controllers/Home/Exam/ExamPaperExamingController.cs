@@ -16,6 +16,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
     {
         private const string Route = "exam/examPaperExaming";
         private const string RouteSubmitAnswer = Route + "/submitAnswer";
+        private const string RouteSubmitAnswerSmall = Route + "/submitAnswerSmall";
         private const string RouteSubmitPaper = Route + "/submitPaper";
         private const string RouteSubmitTiming = Route + "/submitTiming";
 
@@ -28,7 +29,9 @@ namespace XBLMS.Web.Controllers.Home.Exam
         private readonly IExamPaperRandomConfigRepository _examPaperRandomConfigRepository;
         private readonly IExamPaperRandomRepository _examPaperRandomRepository;
         private readonly IExamPaperRandomTmRepository _examPaperRandomTmRepository;
+        private readonly IExamPaperRandomTmSmallRepository _examPaperRandomTmSmallRepository;
         private readonly IExamPaperAnswerRepository _examPaperAnswerRepository;
+        private readonly IExamPaperAnswerSmallRepository _examPaperAnswerSmallRepository;
         private readonly IExamPaperStartRepository _examPaperStartRepository;
         private readonly IExamManager _examManager;
         private readonly IExamTxRepository _examTxRepository;
@@ -45,7 +48,9 @@ namespace XBLMS.Web.Controllers.Home.Exam
             IExamPaperAnswerRepository examPaperAnswerRepository,
             IExamPaperStartRepository examPaperStartRepository,
             IOrganManager organManager,
-            IExamTxRepository examTxRepository)
+            IExamTxRepository examTxRepository,
+            IExamPaperAnswerSmallRepository examPaperAnswerSmallRepository,
+            IExamPaperRandomTmSmallRepository examPaperRandomTmSmallRepository)
         {
             _configRepository = configRepository;
             _authManager = authManager;
@@ -60,6 +65,8 @@ namespace XBLMS.Web.Controllers.Home.Exam
             _examPaperStartRepository = examPaperStartRepository;
             _organManager = organManager;
             _examTxRepository = examTxRepository;
+            _examPaperAnswerSmallRepository = examPaperAnswerSmallRepository;
+            _examPaperRandomTmSmallRepository = examPaperRandomTmSmallRepository;
         }
         public class GetRequest
         {
@@ -75,6 +82,10 @@ namespace XBLMS.Web.Controllers.Home.Exam
         public class GetSubmitAnswerRequest
         {
             public ExamPaperAnswer Answer { get; set; }
+        }
+        public class GetSubmitAnswerSmallRequest
+        {
+            public ExamPaperAnswerSmall Answer { get; set; }
         }
     }
 }

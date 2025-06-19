@@ -50,7 +50,69 @@
                     </div>
                     <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-327) + 'px' }" ref="answerScrollbar">
                         <div class="pe-3">
-                            <div>
+                            <div v-if="tm.baseTx==='Zuheti'">
+                                <div class="mb-3">
+                                    <div v-html="tm.titleHtml"></div>
+                                </div>
+                                <div class="mb-3" v-for="small in tm.smallLists">
+                                    <div class="d-flex justify-content-between align-items-center p-3 bg-light">
+                                        <div>第<span class="px-1">{{ small.tmIndex }}</span>小题（<span>{{ small.txName }}</span>）</div>
+                                        <div><span>{{ small.score }}分</span></div>
+                                    </div>
+                                    <div class="mb-3 fw-bold">
+                                        <div v-if="small.baseTx==='Tiankongti'">
+                                            <span v-if="small.titleList && small.titleList.length>0">
+                                                <span v-for="tmContent in small.titleList">
+                                                    <span v-if="utils.contains(tmContent.value,'___')">
+                                                        <el-input v-model.trim="small.answerInfo.optionsValues[tmContent.key]" v-on:change="answerSmallChange(small)" style="width:130px;"></el-input>
+                                                    </span>
+                                                    <span v-else v-html="tmContent.value"></span>
+                                                </span>
+                                            </span>
+                                            <div v-else v-html="small.titleHtml"></div>
+                                        </div>
+                                        <div v-else v-html="small.titleHtml"></div>
+                                    </div>
+                                    <div class="list-group" v-if="small.baseTx!=='Tiankongti'">
+                                        <div v-if="small.baseTx==='Danxuanti' || small.baseTx==='Panduanti'">
+                                            <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in small.optionsRandom">
+                                                <div class="d-flex justify-content-start align-items-center">
+                                                    <div class="me-1 position-relative">
+                                                        {{optionsABC[optionIndex]}}
+                                                    </div>
+                                                    <div class="w-100 pt-1">
+                                                        <el-radio class="border-0 w-100" border :label="option.key" v-model="small.answerInfo.answer" v-on:change="answerSmallChange(small)" size="medium">
+                                                            <span v-html="option.value"></span>
+                                                        </el-radio>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div v-else-if="small.baseTx==='Duoxuanti'">
+                                            <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in small.optionsRandom">
+                                                <div class="d-flex justify-content-start align-items-center">
+                                                    <div class="me-1 position-relative">
+                                                        {{optionsABC[optionIndex]}}
+                                                    </div>
+                                                    <div class="w-100 pt-1">
+                                                        <el-checkbox class="border-0 w-100" border :true-label="option.key" false-label="" v-model="small.answerInfo.optionsValues[optionsABC.indexOf(option.key)]" v-on:change="answerSmallChange(small)" size="medium">
+                                                            <span v-html="option.value"></span>
+                                                        </el-checkbox>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div v-else-if="small.baseTx==='Jiandati'">
+                                            <el-input :key="small.id" type="textarea" resize="none" v-model="small.answerInfo.answer" :autosize="{ minRows: 3}" maxlength="333" style="width:100%;"
+                                                      show-word-limit v-on:change="answerSmallChange(small)"></el-input>
+                                        </div>
+                                        <div v-else>
+                                            未知题型
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else>
                                 <div class="mb-3 fw-bold">
                                     <div v-if="tm.baseTx==='Tiankongti'">
                                         <span v-if="tm.titleList && tm.titleList.length>0">

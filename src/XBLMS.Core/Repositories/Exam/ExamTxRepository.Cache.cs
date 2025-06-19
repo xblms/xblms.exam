@@ -28,6 +28,5 @@ namespace XBLMS.Core.Repositories
             )).ToList();
             return list;
         }
-
     }
 }

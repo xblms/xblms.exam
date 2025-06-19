@@ -1,20 +1,19 @@
-var $url = 'exam/examTm/tmEdit/get';
-var $urlsubmit = 'exam/examTm/tmEdit/submit';
-var $urlDelSmall = 'exam/examTm/tmEdit/delSmall';
+var $url = 'exam/examTm/tmEdit/getSmall';
+var $urlsubmit = 'exam/examTm/tmEdit/submitSmall';
 
 var data = utils.init({
+  pf: utils.getQueryString("pf"),
   id: utils.getQueryInt("id"),
-  treeId: utils.getQueryInt("treeId"),
+  tmGuid: utils.getQueryString("guid"),
+  isAdd: utils.getQueryBoolean("isAdd"),
   txList: [],
-  tmTreeData: [],
   form: null,
   btnMinusOptionsShow: false,
   curBaseTx: null,
   options: ['正确', '错误'],
   optionsValue: '',
   optionsEditShow: [],
-  optionsEditReloaded: [],
-  tableTmSmallList: []
+  optionsEditReloaded: []
 });
 
 var methods = {
@@ -24,11 +23,11 @@ var methods = {
     $api.get($url, { params: { id: this.id } }).then(function (response) {
       var res = response.data;
       var tm = res.item;
-      $this.tmTreeData = res.tmTree;
       $this.txList = res.txList;
 
-      $this.form = _.assign({}, tm);
+
       if (tm.id > 0) {
+        $this.form = _.assign({}, tm);
         $this.options = tm.options;
         $this.optionsValue = tm.answer;
 
@@ -36,23 +35,47 @@ var methods = {
         if ($this.curBaseTx === 'Duoxuanti') {
           $this.optionsValue = $this.form.optionsValues;
         }
-
-        $this.tableTmSmallList = res.smallList;
       }
       else {
-        $this.form.txId = null;
-        $this.form.treeId = null;
-        $this.form.nandu = 1;
-
-        if ($this.treeId > 0) {
-          $this.form.treeId = $this.treeId;
+        if ($this.isAdd) {
+          $this.form = _.assign({}, tm);
+          $this.form.txId = null;
+          $this.form.nandu = 1;
         }
+        else {
+          var parentLayer = top.frames[$this.pf];
+          var smallList = parentLayer.$vue.tableTmSmallList;
+          smallList.forEach(tmItem => {
+            if (tmItem.guid === $this.tmGuid) {
+              $this.form = _.assign({}, tmItem);
+
+              $this.options = tmItem.options;
+              $this.optionsValue = tmItem.answer;
+
+              $this.curBaseTx = $this.txFormatter($this.form.txId);
+              if ($this.curBaseTx === 'Duoxuanti') {
+                $this.optionsValue = $this.form.optionsValues;
+              }
+            }
+          })
+        }
+
       }
 
     }).catch(function (error) {
       utils.error(error, { layer: true });
     }).then(function () {
       utils.loading($this, false);
+    });
+  },
+  apiEditSubmit: function () {
+    var $this = this;
+    $api.post($urlsubmit, { item: this.form }
+    ).then(function (response) {
+      var res = response.data;
+    }).catch(function () {
+    }).then(function () {
+      utils.closeLayerSelf();
     });
   },
   btnAddOptions: function () {
@@ -109,48 +132,29 @@ var methods = {
               return;
             }
           }
-
-          if ($this.curBaseTx === 'Zuheti') {
-            if (this.tableTmSmallList === null || this.tableTmSmallList.length === 0) {
-              utils.error('请完善组合题子题', { layer: true });
-              return;
-            }
-          }
-
           $this.form.answer = $this.optionsValue;
           $this.form.options = $this.options;
           $this.form.optionsValues = $this.optionsValue;
         }
 
+        $this.form.guid = $this.tmGuid;
 
-        $this.apiSubmit();
+        var parentLayer = top.frames[$this.pf];
+        parentLayer.$vue.smallEditCallBack($this.form, $this.isAdd);
+
+        if ($this.form.id > 0) {
+          $this.apiEditSubmit();
+        }
+        else {
+          utils.closeLayerSelf();
+        }
       }
     });
   },
-  apiSubmit: function () {
-    var $this = this;
-    utils.loading(this, true);
 
-    $api.post($urlsubmit, { item: this.form, smalls: this.tableTmSmallList }
-    ).then(function (response) {
-      var res = response.data;
-      if (res.value) {
-        utils.success("操作成功");
-        utils.closeLayer(false);
-      }
-    }).catch(function (error) {
-      utils.error(error, { layer: true });
-    }).then(function () {
-      utils.loading($this, false);
-    });
-  },
   txFormatter: function (id) {
     let tx = this.txList.find(item => item.id === id);
     return tx.examTxBase;
-  },
-  txFormatterName: function (id) {
-    let tx = this.txList.find(item => item.id === id);
-    return tx.name;
   },
   txChange: function (value) {
     this.form.answer = "";
@@ -187,67 +191,6 @@ var methods = {
   },
   setOptionsValue: function (index, value) {
     this.$set(this.options, index, value);
-  },
-
-  btnSmallEdit: function (tmId, tmuuId) {
-    var isAdd = false;
-    if (tmuuId === '') {
-      tmuuId = utils.uuid();
-      isAdd = true;
-    }
-
-    top.utils.openLayer({
-      title: false,
-      closebtn: 0,
-      url: utils.getExamUrl('examTmEditSmall', { isAdd: isAdd, id: tmId, guid: tmuuId, pf: window.name }),
-      width: "78%",
-      height: "88%",
-    });
-  },
-
-  smallEditCallBack: function (smallTm, isAdd) {
-    if (isAdd) {
-      this.tableTmSmallList.push(smallTm);
-    }
-    else {
-      for (var i = 0; i < this.tableTmSmallList.length; i++) {
-        var itemTm = this.tableTmSmallList[i];
-        if (smallTm.guid === itemTm.guid) {
-          this.$set(this.tableTmSmallList, i, smallTm);
-        }
-      }
-    }
-    this.numerateSmallTotalScore();
-  },
-  btnSmallDelete: function (tmId, tmuuId) {
-
-    var $this = this;
-
-    top.utils.alertDelete({
-      title: '删除子题',
-      text: '确定删除该子题吗？',
-      callback: function () {
-        if (tmId > 0) {
-
-          $api.post($urlDelSmall, { id: tmId }
-          ).then(function (response) {
-            var res = response.data;
-          }).catch(function () {
-          }).then(function () {
-          });
-        }
-
-        $this.tableTmSmallList = $this.tableTmSmallList.filter(f => f.guid !== tmuuId);
-        $this.numerateSmallTotalScore();
-      }
-    });
-  },
-  numerateSmallTotalScore: function () {
-    var totalScore = 0;
-    for (var i = 0; i < this.tableTmSmallList.length; i++) {
-      totalScore += this.tableTmSmallList[i].score;
-    }
-    this.form.score = totalScore;
   }
 };
 

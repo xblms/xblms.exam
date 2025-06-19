@@ -1,6 +1,7 @@
 var $url = "/exam/examPaperExaming";
 var $urlItem = $url+ "/item";
-var $urlSubmitAnswer = $url +"/submitAnswer";
+var $urlSubmitAnswer = $url + "/submitAnswer";
+var $urlSubmitAnswerSmall = $url + "/submitAnswerSmall";
 var $urlSubmitPaper = $url + "/submitPaper";
 var $urlSubmitTiming = $url + "/submitTiming";
 
@@ -147,6 +148,51 @@ var methods = {
 
     this.apiSubmitAnswer(tm.answerInfo);
   },
+  answerSmallChange: function (tm,smallTm) {
+
+    tm.answerStatus = false;
+
+
+    //子题状态
+    smallTm.answerStatus = false;
+    if (smallTm.baseTx === "Duoxuanti") {
+      smallTm.answerInfo.answer = smallTm.answerInfo.optionsValues.join('');
+    }
+    var completionStatus = true;
+    if (smallTm.baseTx === "Tiankongti") {
+      for (var i = 0; i < smallTm.answerInfo.optionsValues.length; i++) {
+        if (smallTm.answerInfo.optionsValues[i] === '' || smallTm.answerInfo.optionsValues[i] === null) {
+          completionStatus = false;
+        }
+      }
+      smallTm.answerInfo.answer = smallTm.answerInfo.optionsValues.join(',');
+    }
+
+    if (smallTm.answerInfo.answer !== '' && smallTm.answerInfo.answer.length > 0) {
+      if (completionStatus) {
+        smallTm.answerStatus = true;
+      }
+      else {
+        smallTm.answerStatus = false;
+      }
+    }
+    //
+    if (tm.smallLists && tm.smallLists.length > 0) {
+      var smallList = tm.smallLists;
+      var allSmallAnswer = true;
+      smallList.forEach(small => {
+        if (!small.answerStatus) {
+          allSmallAnswer = false;
+        }
+      })
+      tm.answerStatus = allSmallAnswer;
+    }
+
+    var answerTotals = this.tmList.filter(f => f.answerStatus);
+    this.answerTotal = answerTotals.length;
+
+    this.apiSubmitSmallAnswer(smallTm.answerInfo);
+  },
   btnGoTm: function (id) {
     var tmel = document.getElementById("tmid_" + id);
     if (tmel) {
@@ -156,6 +202,9 @@ var methods = {
   },
   apiSubmitAnswer: function (setTm) {
     $api.post($urlSubmitAnswer, { answer: setTm }).then(function (response) { });
+  },
+  apiSubmitSmallAnswer: function (setTm) {
+    $api.post($urlSubmitAnswerSmall, { answer: setTm }).then(function (response) { });
   },
   apiSubmitPaper: function () {
     $api.post($urlSubmitPaper, { id: this.startId }).then(function (response) { });
