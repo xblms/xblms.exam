@@ -1,5 +1,6 @@
 using Datory;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using XBLMS.Models;
 using XBLMS.Repositories;
@@ -65,9 +66,15 @@ namespace XBLMS.Core.Repositories
         public async Task<List<KeyValuePair<int, int>>> GetChatByTxList(int analysisId)
         {
             var result = new List<KeyValuePair<int, int>>();
-            var txIds = await _repository.GetAllAsync<int>(Q.Select(nameof(ExamTmAnalysisTm.TxId)).Where(nameof(ExamTmAnalysisTm.AnalysisId), analysisId).GroupBy(nameof(ExamTmAnalysisTm.TxId)));
+
+            var txIds = await _repository.GetAllAsync<int>(Q.
+                Select(nameof(ExamTmAnalysisTm.TxId)).
+                Where(nameof(ExamTmAnalysisTm.AnalysisId), analysisId).
+                GroupBy(nameof(ExamTmAnalysisTm.TxId)));
+
             if (txIds != null && txIds.Count > 0)
             {
+                txIds = txIds.Distinct().ToList();
                 foreach (var txId in txIds)
                 {
                     var txWrongTotal = await _repository.SumAsync(nameof(ExamTmAnalysisTm.WrongCount), Q.Where(nameof(ExamTmAnalysisTm.TxId), txId).Where(nameof(ExamTmAnalysisTm.AnalysisId), analysisId));
@@ -92,9 +99,15 @@ namespace XBLMS.Core.Repositories
         public async Task<List<KeyValuePair<string, int>>> GetChatByZsdList(int analysisId)
         {
             var result = new List<KeyValuePair<string, int>>();
-            var zsds = await _repository.GetAllAsync<string>(Q.Select(nameof(ExamTmAnalysisTm.Zhishidian)).Where(nameof(ExamTmAnalysisTm.AnalysisId), analysisId).GroupBy(nameof(ExamTmAnalysisTm.Zhishidian)));
+
+            var zsds = await _repository.GetAllAsync<string>(Q.
+                Select(nameof(ExamTmAnalysisTm.Zhishidian)).
+                Where(nameof(ExamTmAnalysisTm.AnalysisId), analysisId).
+                GroupBy(nameof(ExamTmAnalysisTm.Zhishidian)));
+
             if (zsds != null && zsds.Count > 0)
             {
+                zsds = zsds.Distinct().ToList();
                 foreach (var zsd in zsds)
                 {
                     if (!string.IsNullOrEmpty(zsd))

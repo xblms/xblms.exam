@@ -170,7 +170,7 @@ namespace XBLMS.Core.Repositories
 
             if (!string.IsNullOrEmpty(keyWords))
             {
-             
+
                 var like = $"%{keyWords}%";
                 query.WhereLike(nameof(ExamPaperStart.KeyWords), like);
             }
@@ -247,11 +247,16 @@ namespace XBLMS.Core.Repositories
         }
         public async Task<int> CountDistinctAsync(int paperId)
         {
-            return await _repository.CountAsync(Q.
+            var userIds = await _repository.GetAllAsync<int>(Q.
+                Select(nameof(ExamPaperStart.UserId)).
                 WhereTrue(nameof(ExamPaperStart.IsMark)).
                 WhereTrue(nameof(ExamPaperStart.IsSubmit)).
-                Where(nameof(ExamPaperStart.ExamPaperId), paperId).
-                GroupBy(nameof(ExamPaperStart.UserId)));
+                Where(nameof(ExamPaperStart.ExamPaperId), paperId));
+            if (userIds != null && userIds.Count > 0)
+            {
+                return userIds.Distinct().Count();
+            }
+            return 0;
         }
         public async Task<decimal> SumScoreAsync(int paperId)
         {
@@ -277,12 +282,17 @@ namespace XBLMS.Core.Repositories
         }
         public async Task<int> CountByPassDistinctAsync(int paperId, int passScore)
         {
-            return await _repository.CountAsync(Q.
-                Where(nameof(ExamPaperStart.Score), ">=", passScore).
-                WhereTrue(nameof(ExamPaperStart.IsMark)).
-                WhereTrue(nameof(ExamPaperStart.IsSubmit)).
-                Where(nameof(ExamPaperStart.ExamPaperId), paperId).
-                GroupBy(nameof(ExamPaperStart.UserId)));
+            var userIds = await _repository.GetAllAsync<int>(Q.
+                  Select(nameof(ExamPaperStart.UserId)).
+                  Where(nameof(ExamPaperStart.Score), ">=", passScore).
+                  WhereTrue(nameof(ExamPaperStart.IsMark)).
+                  WhereTrue(nameof(ExamPaperStart.IsSubmit)).
+              Where(nameof(ExamPaperStart.ExamPaperId), paperId));
+            if (userIds != null && userIds.Count > 0)
+            {
+                return userIds.Distinct().Count();
+            }
+            return 0;
         }
         public async Task<int> CountByMarkAsync(int paperId)
         {
