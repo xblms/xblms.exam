@@ -103,11 +103,10 @@ var methods = {
   },
 
   tmRandomTypeChange: function (value) {
-    this.tmRandomTypeChange = null;
     this.form.txIds = null;
     this.form.tmGroupIds = null;
     this.tmGroupList = [];
-    if (value == 'RandomNone') {
+    if (value === 'RandomNone') {
       this.tmGroupList = this.tmFixedGroupList;
     }
     else {
