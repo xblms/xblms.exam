@@ -152,10 +152,10 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                             if (isGroup)
                             {
                                 smallCount = TranslateUtils.ToInt(answer);
-                                if (smallCount == 0)
+                                if (smallCount == 0 || i + smallCount + 1 > sheet.Rows.Count)
                                 {
                                     cacheInfo.TmCurrent++;
-                                    errorMessageList.Add($"【行{rowIndexName}:组合题没有填写小题的数量，终止导入】");
+                                    errorMessageList.Add($"【行{rowIndexName}:组合题未匹配小题，终止导入】");
                                     _cacheManager.AddOrUpdateAbsolute(cacheKey, cacheInfo, 1);
 
                                     failure++;
@@ -305,8 +305,8 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
                                         if (isGroup)
                                         {
-                                            await ImportSmall(tmid, sheet, TranslateUtils.ToInt(answer), i+1);
-                                            i = i + smallCount + 1;
+                                            await ImportSmall(tmid, sheet, TranslateUtils.ToInt(answer), (i + 1), (smallCount + i));
+                                            i = smallCount + i;
                                         }
 
                                     }
@@ -373,159 +373,156 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             };
         }
 
-        public async Task ImportSmall(int parentId, DataTable sheet, int smallCount, int index)
+        public async Task ImportSmall(int parentId, DataTable sheet, int smallCount, int index, int maxIndex)
         {
-            if (sheet.Rows.Count >= smallCount + index)
+            decimal totalScore = 0;
+            for (var i = index; i <= maxIndex; i++)
             {
-                decimal totalScore = 0;
-                for (var i = index; i <= smallCount + index; i++)
+                var row = sheet.Rows[i];
+
+                var tx = row[0].ToString().Trim();
+                var nanduString = row[1].ToString().Trim();
+                var nandu = 1;
+                try
                 {
-                    var row = sheet.Rows[i];
+                    nandu = Convert.ToInt32(nanduString);
+                }
+                catch { }
 
-                    var tx = row[0].ToString().Trim();
-                    var nanduString = row[1].ToString().Trim();
-                    var nandu = 1;
-                    try
+                var zhishidian = row[2].ToString().Trim();
+                var score = row[3].ToString().Trim();
+                decimal scoreDouble = 0;
+
+                try
+                {
+                    scoreDouble = Convert.ToDecimal(score);
+                }
+                catch { }
+
+                var jiexi = row[4].ToString().Trim();
+                var title = row[5].ToString().Trim();
+                var answer = row[6].ToString().Trim();
+                var options = new List<string>();
+
+
+                var rowIndexName = i + 1;
+
+
+                if (!string.IsNullOrEmpty(tx) && !string.IsNullOrEmpty(title))
+                {
+
+                    var txInfo = await _examTxRepository.GetAsync(tx);
+                    if (txInfo == null)
                     {
-                        nandu = Convert.ToInt32(nanduString);
+                        continue;
                     }
-                    catch { }
+                    if (txInfo.ExamTxBase == ExamTxBase.Zuheti) continue;
 
-                    var zhishidian = row[2].ToString().Trim();
-                    var score = row[3].ToString().Trim();
-                    decimal scoreDouble = 0;
-
-                    try
+                    if (txInfo.ExamTxBase != ExamTxBase.Tiankongti && txInfo.ExamTxBase != ExamTxBase.Jiandati)
                     {
-                        scoreDouble = Convert.ToDecimal(score);
-                    }
-                    catch { }
-
-                    var jiexi = row[4].ToString().Trim();
-                    var title = row[5].ToString().Trim();
-                    var answer = row[6].ToString().Trim();
-                    var options = new List<string>();
-
-
-                    var rowIndexName = i + 1;
-
-
-                    if (!string.IsNullOrEmpty(tx) && !string.IsNullOrEmpty(title))
-                    {
-
-                        var txInfo = await _examTxRepository.GetAsync(tx);
-                        if (txInfo == null)
+                        answer = answer.ToUpper();
+                        for (int optionindex = 7; optionindex < 17; optionindex++)
                         {
-                            continue;
+                            try
+                            {
+                                if (!string.IsNullOrWhiteSpace(row[optionindex].ToString().Trim()))
+                                {
+                                    options.Add(row[optionindex].ToString().Trim());
+                                }
+                            }
+                            catch { }
                         }
-                        if (txInfo.ExamTxBase == ExamTxBase.Zuheti) continue;
-
-                        if (txInfo.ExamTxBase != ExamTxBase.Tiankongti && txInfo.ExamTxBase != ExamTxBase.Jiandati)
+                        if (txInfo.ExamTxBase == ExamTxBase.Duoxuanti)
                         {
-                            answer = answer.ToUpper();
-                            for (int optionindex = 7; optionindex < 17; optionindex++)
+                            if (options.Count < answer.Length)
                             {
-                                try
-                                {
-                                    if (!string.IsNullOrWhiteSpace(row[optionindex].ToString().Trim()))
-                                    {
-                                        options.Add(row[optionindex].ToString().Trim());
-                                    }
-                                }
-                                catch { }
+                                continue;
                             }
-                            if (txInfo.ExamTxBase == ExamTxBase.Duoxuanti)
-                            {
-                                if (options.Count < answer.Length)
-                                {
-                                    continue;
-                                }
-                            }
-                            else
-                            {
-                                if (answer.Length > 1)
-                                {
-                                    continue;
-                                }
-                            }
-
                         }
-                        if (txInfo.ExamTxBase == ExamTxBase.Tiankongti)
+                        else
                         {
-                            if (!StringUtils.Contains(title, "___"))
+                            if (answer.Length > 1)
                             {
                                 continue;
                             }
                         }
 
-                        try
-                        {
-                            var examInfo = new ExamTmSmall
-                            {
-                                ParentId = parentId,
-                                TxId = txInfo.Id,
-                                Title = title,
-                                Answer = answer,
-                                Score = scoreDouble,
-                                Zhishidian = zhishidian,
-                                Nandu = nandu,
-                                Jiexi = jiexi
-                            };
-
-                            if (options.Count > 0)
-                            {
-                                var answers = new List<string>();
-
-                                var optionError = false;
-
-                                for (int optinindex = 0; optinindex < options.Count; optinindex++)
-                                {
-                                    answers.Add(StringUtils.GetABC()[optinindex]);
-                                    if (string.IsNullOrWhiteSpace(options[optinindex]))
-                                    {
-                                        optionError = true;
-                                        break;
-
-                                    }
-                                }
-
-                                if (optionError)
-                                {
-                                    continue;
-                                }
-
-                                for (int answerIndex = 0; answerIndex < answers.Count; answerIndex++)
-                                {
-                                    if (!answer.Contains(answers[answerIndex]))
-                                    {
-                                        answers[answerIndex] = "";
-                                    }
-                                }
-                                examInfo.Set("options", options.ToArray());
-                                examInfo.Set("optionsValues", answers.ToArray());
-                            }
-
-                            await _examTmSmallRepository.InsertAsync(examInfo);
-                            totalScore += examInfo.Score;
-
-                        }
-                        catch
+                    }
+                    if (txInfo.ExamTxBase == ExamTxBase.Tiankongti)
+                    {
+                        if (!StringUtils.Contains(title, "___"))
                         {
                             continue;
-
                         }
                     }
-                    else
+
+                    try
+                    {
+                        var examInfo = new ExamTmSmall
+                        {
+                            ParentId = parentId,
+                            TxId = txInfo.Id,
+                            Title = title,
+                            Answer = answer,
+                            Score = scoreDouble,
+                            Zhishidian = zhishidian,
+                            Nandu = nandu,
+                            Jiexi = jiexi
+                        };
+
+                        if (options.Count > 0)
+                        {
+                            var answers = new List<string>();
+
+                            var optionError = false;
+
+                            for (int optinindex = 0; optinindex < options.Count; optinindex++)
+                            {
+                                answers.Add(StringUtils.GetABC()[optinindex]);
+                                if (string.IsNullOrWhiteSpace(options[optinindex]))
+                                {
+                                    optionError = true;
+                                    break;
+
+                                }
+                            }
+
+                            if (optionError)
+                            {
+                                continue;
+                            }
+
+                            for (int answerIndex = 0; answerIndex < answers.Count; answerIndex++)
+                            {
+                                if (!answer.Contains(answers[answerIndex]))
+                                {
+                                    answers[answerIndex] = "";
+                                }
+                            }
+                            examInfo.Set("options", options.ToArray());
+                            examInfo.Set("optionsValues", answers.ToArray());
+                        }
+
+                        await _examTmSmallRepository.InsertAsync(examInfo);
+                        totalScore += examInfo.Score;
+
+                    }
+                    catch
                     {
                         continue;
+
                     }
                 }
-                if (totalScore > 0)
+                else
                 {
-                    var parent = await _examTmRepository.GetAsync(parentId);
-                    parent.Score = totalScore;
-                    await _examTmRepository.UpdateAsync(parent);
+                    continue;
                 }
+            }
+            if (totalScore > 0)
+            {
+                var parent = await _examTmRepository.GetAsync(parentId);
+                parent.Score = totalScore;
+                await _examTmRepository.UpdateAsync(parent);
             }
 
         }
