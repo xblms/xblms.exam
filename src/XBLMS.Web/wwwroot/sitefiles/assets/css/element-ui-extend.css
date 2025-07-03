@@ -1,4 +1,10 @@
-﻿.el-table-column--selection .cell{
+﻿pre{
+    background-color:#f1f1f1;
+    border-radius:9px;
+    padding:9px;
+}
+
+.el-table-column--selection .cell{
     margin-left:0px !important;
     padding-left:0px !important;
 }
