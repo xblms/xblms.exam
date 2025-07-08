@@ -10,6 +10,8 @@
 
 * [欢迎垂询，点击前往](http://182.92.223.118)
 
+* <img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/examzj.jpg"/>
+
 ## 社区版
 
 * 开源免费，适用于个人或中小企业
