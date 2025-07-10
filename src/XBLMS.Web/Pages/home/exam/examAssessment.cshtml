@@ -24,7 +24,7 @@
             <h2 class="h1 fw-bold">测评中心</h2>
         </div>
         <div>
-            <el-form :inline="true" :model="form">
+            <el-form v-on:submit.native.prevent :inline="true" :model="form">
                 <el-form-item label="测评">
                     <el-input prefix-icon="el-icon-search" v-model="form.keyWords" placeholder="关键字"></el-input>
                 </el-form-item>

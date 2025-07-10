@@ -4,7 +4,7 @@
     <div slot="header" class="clearfix">
         <el-row :gutter="13">
             <el-col :span="20">
-                <el-form ref="form" :model="form" :size="euiSize">
+                <el-form v-on:submit.native.prevent ref="form" :model="form" :size="euiSize">
                     <el-form-item label="数据库查询命令" prop="query" name="query" :rules="{ required: true, message: '请输入数据库查询命令' }">
                         <el-input type="textarea" rows="3" v-model="form.query" placeholder="查询命令"></el-input>
                         <div class="tips">

@@ -4,7 +4,7 @@
 <el-row :gutter="0">
     <el-col :span="6">
         <el-card style="border-radius:0;">
-            <el-form :size="euiSize">
+            <el-form v-on:submit.native.prevent :size="euiSize">
                 <el-form-item label="">
                     <el-input placeholder="关键字过滤组织架构"
                               v-model="filterText" prefix-icon="el-icon-search" clearable>

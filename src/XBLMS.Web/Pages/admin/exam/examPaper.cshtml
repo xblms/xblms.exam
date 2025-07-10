@@ -7,7 +7,7 @@
     </el-col>
     <el-col :span="18">
         <el-card shadow="never" style="border-radius:0;">
-            <el-form :inline="true" :size="euiSize">
+            <el-form v-on:submit.native.prevent :inline="true" :size="euiSize">
                 <el-form-item label="试卷">
                     <el-input clearable v-model="formInline.keyword" placeholder="关键字" prefix-icon="el-icon-search"></el-input>
                 </el-form-item>

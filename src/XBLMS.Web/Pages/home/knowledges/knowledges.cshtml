@@ -29,7 +29,7 @@
             <small>共 {{total}} 个文档</small>
         </div>
         <div>
-            <el-form :inline="true" :model="form">
+            <el-form v-on:submit.native.prevent :inline="true" :model="form">
                 <el-form-item label="">
                     <el-input clearable prefix-icon="el-icon-search" v-model="form.keywords" placeholder="关键字"></el-input>
                 </el-form-item>

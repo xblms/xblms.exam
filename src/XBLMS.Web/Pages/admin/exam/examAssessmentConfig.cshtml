@@ -6,7 +6,7 @@
         <span>测评类别</span>
         <el-button style="float: right;padding:3px 0;" type="text" v-on:click="utils.closeLayerSelf"><i class="el-icon-close"></i></el-button>
     </div>
-    <el-form :inline="true" :size="euiSize">
+    <el-form v-on:submit.native.prevent :inline="true" :size="euiSize">
         <el-form-item label="类别">
             <el-input v-model="form.keyword" placeholder="关键字" prefix-icon="el-icon-search" clearable></el-input>
         </el-form-item>

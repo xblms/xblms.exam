@@ -25,7 +25,7 @@
             <small>共 {{total}} 场考试安排</small>
         </div>
         <div>
-            <el-form :inline="true" :model="form">
+            <el-form v-on:submit.native.prevent :inline="true" :model="form">
                 <el-form-item label="开考时间">
                     <el-select v-model="form.date" placeholder="开考时间">
                         <el-option label="全部" value=""></el-option>

@@ -2,7 +2,7 @@
 @{ Layout = "_Layout"; }
 
 <el-card class="box-card">
-    <el-form :inline="true" :size="euiSize">
+    <el-form v-on:submit.native.prevent :inline="true" :size="euiSize">
         <el-form-item label="题目组">
             <el-input v-model="search"
                       prefix-icon="el-icon-search" clearable

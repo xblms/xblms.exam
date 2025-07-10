@@ -2,7 +2,7 @@
 @{ Layout = "_Layout"; }
 
 <el-card>
-    <el-form :inline="true" :size="euiSize">
+    <el-form v-on:submit.native.prevent :inline="true" :size="euiSize">
         <el-form-item label="竞赛">
             <el-input v-model="form.keyword" placeholder="关键字" prefix-icon="el-icon-search" clearable></el-input>
         </el-form-item>

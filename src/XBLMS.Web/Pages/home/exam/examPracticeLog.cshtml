@@ -35,7 +35,7 @@
             </el-page-header>
         </div>
         <div>
-            <el-form :inline="true" :model="form">
+            <el-form v-on:submit.native.prevent :inline="true" :model="form">
                 <el-form-item label="">
                     <el-date-picker v-model="form.dateFrom"
                                     type="datetime"

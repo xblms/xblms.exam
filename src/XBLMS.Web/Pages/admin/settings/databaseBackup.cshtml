@@ -10,7 +10,7 @@
 <el-card class="box-card">
     <el-tabs>
         <el-tab-pane label="数据备份与恢复">
-            <el-form :inline="true" :size="euiSize">
+            <el-form v-on:submit.native.prevent :inline="true" :size="euiSize">
                 <el-form-item>
                     <el-button plain icon="el-icon-connection" type="primary" v-on:click="btnAsyncClick">
                         手动执行一次备份

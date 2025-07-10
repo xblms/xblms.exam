@@ -10,7 +10,7 @@
 }
 
 <el-card>
-    <el-form :inline="true" :size="euiSize">
+    <el-form v-on:submit.native.prevent :inline="true" :size="euiSize">
         <el-form-item label="">
             <el-select v-model="form.type">
                 <el-option v-for="type in typeList"

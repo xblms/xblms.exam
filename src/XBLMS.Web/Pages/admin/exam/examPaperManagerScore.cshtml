@@ -6,7 +6,7 @@
 <template>
     <div style="padding:0 11px;">
         <div>
-            <el-form :inline="true" :size="euiSize">
+            <el-form v-on:submit.native.prevent :inline="true" :size="euiSize">
                 <el-form-item label="关键字">
                     <el-input v-model="formScore.keywords" placeholder="组织、用户名、姓名" prefix-icon="el-icon-search" clearable></el-input>
                 </el-form-item>

@@ -3,7 +3,7 @@
 <template>
     <el-card>
         <div>
-            <el-form :inline="true" :size="euiSize">
+            <el-form v-on:submit.native.prevent :inline="true" :size="euiSize">
                 <el-form-item label="试卷">
                     <el-input v-model="form.keywords" placeholder="关键字" prefix-icon="el-icon-search" clearable></el-input>
                 </el-form-item>

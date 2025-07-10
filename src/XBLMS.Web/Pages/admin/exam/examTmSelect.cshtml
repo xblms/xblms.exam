@@ -114,7 +114,7 @@
             </el-scrollbar>
         </el-card>
         <el-card>
-            <el-form :size="euiSize">
+            <el-form v-on:submit.native.prevent :size="euiSize">
                 <el-form-item label="">
                     <el-select v-model="formInline.txId" placeholder="请选择题型" clearable v-on:change="btnSearchClick" style="width:100%;">
                         <el-option v-for="tx in txList"
