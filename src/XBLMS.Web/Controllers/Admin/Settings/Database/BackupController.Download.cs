@@ -28,7 +28,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Database
                     var zipFileName = $"dbback-{DateTime.Now:yyyy-MM-dd-hh-mm-ss}.zip";
 
                     DirectoryUtils.CreateDirectoryIfNotExists(zipFilePath);
-                    var filePath = $"{zipFilePath}\\{zipFileName}";
+                    var filePath = PathUtils.Combine(zipFilePath, zipFileName);
 
                     _pathManager.CreateZip(filePath, directionryPath);
 
