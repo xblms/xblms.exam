@@ -39,6 +39,16 @@ var methods = {
       utils.loading($this, false);
     });
   },
+  answerChangeDuowei: function (setTm) {
+    setTm.answer = setTm.optionsValues.join('');
+    if (setTm.answer !== '' && setTm.answer.length > 0) {
+      setTm.answerStatus = true;
+    }
+    else {
+      setTm.answerStatus = false;
+    }
+    this.getAnswerTotal(setTm);
+  },
   answerChange: function (setTm) {
 
     if (setTm.tx === "Duoxuanti") {
@@ -51,13 +61,30 @@ var methods = {
     else {
       setTm.answerStatus = false;
     }
-    this.getAnswerTotal();
+
+    this.getAnswerTotal(setTm);
   },
-  getAnswerTotal: function () {
+  getAnswerTotal: function (setTm) {
     this.answerTotal = 0;
+
+    var smallTm = this.tmList.find(item => item.id === setTm.id);
+
+
     this.tmList.forEach(tm => {
+
+      if (tm.parentId > 0 && tm.id === setTm.id) {
+        tm.answerStatus = setTm.answerStatus;
+        tm.answer = setTm.answer;
+      }
+
       if (tm.answerStatus) {
         this.answerTotal++;
+      }
+      else {
+        if (tm.id === setTm.parentId && !tm.answerStatus) {
+          tm.answerStatus = true;
+          this.answerTotal++;
+        }
       }
     });
   },
@@ -104,7 +131,7 @@ var methods = {
   checkAnswer: function () {
     for (let i = 0; i < this.tmList.length; i++) {
       let letTm = this.tmList[i];
-      if (!letTm.answerStatus) {
+      if (!letTm.answerStatus && letTm.parentId===0) {
         this.tmDidScroll(letTm.id);
         utils.error('请完善问卷', { layer: true });
         return false;

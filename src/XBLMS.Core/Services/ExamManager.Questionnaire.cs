@@ -18,10 +18,32 @@ namespace XBLMS.Core.Services
         {
             if (tmList != null && tmList.Count > 0)
             {
+                var parentId = 0;
                 foreach (var tm in tmList)
                 {
-                    tm.ExamPaperId = paperId;
-                    await _examQuestionnaireTmRepository.InsertAsync(tm);
+                    tm.Remove("TmIndex");
+                    if (tm.ParentId > 0)
+                    {
+                        tm.Remove("Answer");
+                        tm.Remove("Answers");
+                        tm.ParentId = parentId;
+                        tm.ExamPaperId = paperId;
+                        var tmId = await _examQuestionnaireTmRepository.InsertAsync(tm);
+                    }
+                    else
+                    {
+                        tm.Remove("SmallList");
+                        tm.ExamPaperId = paperId;
+                        var tmId = await _examQuestionnaireTmRepository.InsertAsync(tm);
+                        if (tm.Tx == ExamQuestionnaireTxType.DanxuantiErwei || tm.Tx == ExamQuestionnaireTxType.DuoxuantiErwei || tm.Tx == ExamQuestionnaireTxType.DanxuantiSanwei || tm.Tx == ExamQuestionnaireTxType.DuoxuantiSanwei)
+                        {
+                            parentId = tmId;
+                        }
+                        else
+                        {
+                            parentId = 0;
+                        }
+                    }
                 }
             }
         }

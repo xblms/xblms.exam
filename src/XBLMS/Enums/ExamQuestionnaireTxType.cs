@@ -21,6 +21,26 @@ namespace XBLMS.Enums
         /// 简答题
         /// </summary>
         [DataEnum(DisplayName = "简答题", Value = "Jiandati")]
-        Jiandati
+        Jiandati,
+        /// <summary>
+        /// 二维单选题
+        /// </summary>
+        [DataEnum(DisplayName = "二维单选题", Value = "DanxuantiErwei")]
+        DanxuantiErwei,
+        /// <summary>
+        /// 二维多选题
+        /// </summary>
+        [DataEnum(DisplayName = "二维多选题", Value = "DuoxuantiErwei")]
+        DuoxuantiErwei,
+        /// <summary>
+        /// 三维单选题
+        /// </summary>
+        [DataEnum(DisplayName = "三维单选题", Value = "DanxuantiSanwei")]
+        DanxuantiSanwei,
+        /// <summary>
+        /// 三维多选题
+        /// </summary>
+        [DataEnum(DisplayName = "三维多选题", Value = "DuoxuantiSanwei")]
+        DuoxuantiSanwei
     }
 }

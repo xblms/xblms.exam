@@ -49,6 +49,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         {
             public List<string> ErrorMsgList { get; set; }
             public List<ExamQuestionnaireTm> TmList { get; set; }
+            public int SuccessTotal { get; set; }
         }
         public class GetResult
         {

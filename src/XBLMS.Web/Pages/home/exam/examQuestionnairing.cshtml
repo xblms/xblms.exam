@@ -25,47 +25,124 @@
         <h2>{{ paper.title }}</h2>
     </div>
     <div class="container">
-        <el-card v-for="(tm,tmIndex) in tmList" class="mb-3 z-1" :ref="'tm_'+tm.id" :id="'tm_'+tm.id">
-            <div slot="header">
-                <div class="d-flex justify-content-start align-items-start fw-bold">
-                    <div>{{ tmIndex+1 }}、</div>
-                    <div>{{ tm.title }}（<span v-if="tm.tx==='Duoxuanti'">多选</span><span v-else-if="tm.tx==='Danxuanti'">单选</span><span v-else>简答</span>）</div>
+        <div v-for="(tm,tmIndex) in tmList">
+            <el-card v-if="tm.parentId===0" class="mb-3 z-1" :ref="'tm_'+tm.id" :id="'tm_'+tm.id">
+                <div slot="header">
+                    <div class="d-flex justify-content-start align-items-start fw-bold">
+                        <div>{{ tm.tmIndex }}、</div>
+                        <div>{{ tm.title }}（<span v-if="tm.tx==='Duoxuanti'">多选</span><span v-else-if="tm.tx==='Danxuanti'">单选</span><span v-else-if="tm.tx==='DanxuantiErwei' || tm.tx==='DuoxuantiErwei' || tm.tx==='DanxuantiSanwei' || tm.tx==='DuoxuantiSanwei'">多维</span><span v-else>简答</span>）</div>
+                    </div>
+                    <div class="mt-2" v-if="!tm.answerStatus">
+                        <span class="text-warning fs-6"><i class="el-icon-info me-2"></i>请完善该项内容</span>
+                    </div>
                 </div>
-                <div class="mt-2" v-if="!tm.answerStatus">
-                    <span class="text-warning fs-6"><i class="el-icon-info me-2"></i>请完善该项内容</span>
-                </div>
-            </div>
-            <div>
                 <div>
-                    <div class="list-group">
-                        <div v-if="tm.tx==='Danxuanti'">
-                            <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.optionsRandom">
-                                <div>
-                                    <el-radio :label="option.key" v-model="tm.answer" v-on:change="answerChange(tm)" size="medium">
-                                        <span v-html="option.value"></span>
-                                    </el-radio>
+                    <div>
+                        <div class="list-group">
+                            <div v-if="tm.tx==='Danxuanti'">
+                                <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.optionsRandom">
+                                    <div class="w-100 pt-1">
+                                        <el-radio class="border-0 w-100" border :label="option.key" v-model="tm.answer" v-on:change="answerChange(tm)" size="medium">
+                                            <span v-html="option.value"></span>
+                                        </el-radio>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div v-else-if="tm.tx==='Duoxuanti'">
-                            <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.optionsRandom">
-                                <div>
-                                    <div>
-                                        <el-checkbox :true-label="option.key" false-label="" v-model="tm.optionsValues[optionsABC.indexOf(option.key)]" v-on:change="answerChange(tm)" size="medium">
+                            <div v-else-if="tm.tx==='Duoxuanti'">
+                                <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.optionsRandom">
+                                    <div class="w-100 pt-1">
+                                        <el-checkbox class="border-0 w-100" border :true-label="option.key" false-label="" v-model="tm.optionsValues[optionsABC.indexOf(option.key)]" v-on:change="answerChange(tm)" size="medium">
                                             <span v-html="option.value"></span>
                                         </el-checkbox>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div v-else-if="tm.tx==='Jiandati'">
-                            <el-input :key="tm.id" type="textarea" resize="none" v-model.trim="tm.answer" :autosize="{ minRows: 3}" maxlength="333" style="width:100%;"
-                                      show-word-limit v-on:change="answerChange(tm)"></el-input>
+                            <div v-else-if="tm.tx==='Jiandati'">
+                                <el-input :key="tm.id" type="textarea" resize="none" v-model.trim="tm.answer" :autosize="{ minRows: 3}" maxlength="333" style="width:100%;"
+                                          show-word-limit v-on:change="answerChange(tm)"></el-input>
+                            </div>
+                            <div v-else-if="tm.tx==='DanxuantiErwei' || tm.tx==='DuoxuantiErwei'">
+                                <table class="table table-bordered">
+                                    <tr v-for="(small,smallIndex) in tm.smallList">
+                                        <td class="p-3">
+                                            <span v-html="small.title"></span>
+                                        </td>
+                                        <td>
+                                            <template v-if="tm.tx==='DanxuantiErwei'">
+                                                <div class="row">
+                                                    <div class="col col-12 col-md-6 col-lg-3 py-2" v-for="option in tm.options">
+                                                        <el-radio :label="option" v-model="small.answer" v-on:change="answerChange(small)" size="medium">
+                                                            <span v-html="option"></span>
+                                                        </el-radio>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                            <template v-else>
+                                                <div class="row">
+                                                    <div class="col col-12 col-md-6 col-lg-3 py-2" v-for="option in tm.options">
+                                                        <el-checkbox :true-label="option" false-label="" v-model="small.optionsValues[tm.options.indexOf(option)]" v-on:change="answerChange(small)" size="medium">
+                                                            <span v-html="option"></span>
+                                                        </el-checkbox>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div v-else-if="tm.tx==='DanxuantiSanwei'">
+                                <table class="table table-bordered">
+                                    <tr v-for="(small,smallIndex) in tm.smallList">
+                                        <td class="p-3">
+                                            <span v-html="small.title"></span>
+                                        </td>
+                                        <td>
+                                            <div v-for="option in tm.options">
+                                                <div class="py-2 fw-bolder">
+                                                    <span>{{ option }}</span>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col col-12 col-md-6 col-lg-3" v-for="optionSmall in small.options">
+                                                        <el-radio :label="option+'_'+optionSmall" v-model="small.optionsValues[tm.options.indexOf(option)]" v-on:change="answerChangeDuowei(small)" size="medium">
+                                                            <span v-html="optionSmall"></span>
+                                                        </el-radio>
+                                                    </div>
+                                                </div>
+                                                <hr />
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div v-else-if="tm.tx==='DuoxuantiSanwei'">
+                                <table class="table table-bordered">
+                                    <tr v-for="(small,smallIndex) in tm.smallList">
+                                        <td class="p-3">
+                                            <span v-html="small.title"></span>
+                                        </td>
+                                        <td>
+                                            <div v-for="option in tm.options">
+                                                <div class="py-2 fw-bolder">
+                                                    <span>{{ option }}</span>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col col-12 col-md-6 col-lg-3" v-for="optionSmall in small.options">
+                                                        <el-checkbox :true-label="option+'_'+optionSmall" false-label="" v-model="small.optionsValues[small.optionsAnswerValues.indexOf(option+'_'+optionSmall)]" v-on:change="answerChangeDuowei(small)" size="medium">
+                                                            <span v-html="optionSmall"></span>
+                                                        </el-checkbox>
+                                                    </div>
+                                                </div>
+                                                <hr />
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </el-card>
+            </el-card>
+        </div>
     </div>
     <div class="py-8"></div>
     <div style="position:fixed;left:0;bottom:0;width:100%;" class="z-2 d-flex justify-content-between align-items-center pb-4 p-3 bg-white  animate__animated animate__fadeInUp">

@@ -61,10 +61,10 @@
                             <div v-if="tmList && tmList.length>0">
                                 <el-button icon="el-icon-upload" :size="euiSize" plain type="warning" v-on:click="btnImportTmClick">重新导入内容</el-button>
                                 <div class="mt-3" v-for="(tm,tmIndex) in tmList">
-                                    <el-card>
+                                    <el-card v-if="tm.parentId===0">
                                         <div :id="'tm_'+tm.id">
-                                            <span class="mb-3 d-flex justify-content-start  align-items-start">
-                                                <span>{{ tmIndex+1 }}、</span>
+                                            <span class="mb-3 d-flex justify-content-start align-items-start">
+                                                <span>{{ tm.tmIndex }}、</span>
                                                 <span v-html="tm.title"></span>
                                             </span>
                                             <div class="list-group" v-if="tm.tx==='Danxuanti' || tm.tx==='Duoxuanti'">
@@ -92,6 +92,72 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                            </div>
+                                            <div v-if="tm.tx==='DanxuantiErwei' || tm.tx==='DuoxuantiErwei'">
+                                                <table class="table table-bordered">
+                                                   <tr>
+                                                       <td></td>
+                                                        <td v-for="(option,optionIndex) in tm.options">
+                                                            {{ option }}
+                                                       </td>
+                                                   </tr>
+                                                   <tr v-for="(small,smallIndex) in tm.smallList">
+                                                       <td>
+                                                            <span v-html="small.title"></span>
+                                                       </td>
+                                                        <td v-for="(option,optionIndex) in tm.options">
+                                                            <el-radio size="mini" border v-if="tm.tx==='DanxuantiErwei'" v-model="small.answer" :label="option">
+                                                                <span></span>
+                                                            </el-radio>
+                                                            <el-checkbox size="mini" border v-else>
+                                                            </el-checkbox>
+                                                        </td>
+                                                   </tr>
+                                                </table>
+                                            </div>
+                                            <div v-if="tm.tx==='DanxuantiSanwei'">
+                                                <table class="table table-bordered">
+                                                    <tr>
+                                                        <td></td>
+                                                        <td v-for="(option,optionIndex) in tm.options">
+                                                            {{ option }}
+                                                        </td>
+                                                    </tr>
+                                                    <tr v-for="(small,smallIndex) in tm.smallList">
+                                                        <td>
+                                                            <span v-html="small.title"></span>
+                                                        </td>
+                                                        <td v-for="(option,optionIndex) in tm.options">
+                                                            <div class="mb-1" v-for="item in small.options">
+                                                                <el-radio size="mini" border v-model="small.answers[optionIndex]" :label="option+'_'+item">
+                                                                    {{ item }}
+                                                                </el-radio>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div v-if="tm.tx==='DuoxuantiSanwei'">
+                                                <table class="table table-bordered">
+                                                    <tr>
+                                                        <td></td>
+                                                        <td v-for="(option,optionIndex) in tm.options">
+                                                            {{ option }}
+                                                        </td>
+                                                    </tr>
+                                                    <tr v-for="(small,smallIndex) in tm.smallList">
+                                                        <td>
+                                                            <span v-html="small.title"></span>
+                                                        </td>
+                                                        <td v-for="(option,optionIndex) in tm.options">
+                                                            <div class="mb-1" v-for="item in small.options">
+                                                                <el-checkbox size="mini" border>
+                                                                    <span>{{ item }}</span>
+                                                                </el-checkbox>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </table>
                                             </div>
                                         </div>
                                     </el-card>
@@ -185,7 +251,7 @@
                 </el-upload>
                 <div class="text-center p-3" v-if="uploadLoading"><i class="el-icon-loading fs-2 me-2"></i>正在导入...</div>
                 <div v-if="uploadResult">
-                    <div class="text-success">成功导入:{{ tmList.length }} 条内容</div>
+                    <div class="text-success">成功导入:{{ successTotal }} 条内容</div>
                     <div v-if="errorMsgList && errorMsgList.length>0">
                         <div v-for="msg in errorMsgList" class="mt-1 text-danger">{{ msg }}</div>
                     </div>

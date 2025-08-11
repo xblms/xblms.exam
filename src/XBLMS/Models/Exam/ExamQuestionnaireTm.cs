@@ -9,6 +9,8 @@ namespace XBLMS.Models
     {
         [DataColumn]
         public int ExamPaperId { get; set; }
+        [DataColumn]
+        public int ParentId { get; set; }
         [DataColumn(Text = true)]
         public string Title { get; set; }
         [DataColumn]

@@ -5,7 +5,7 @@
 }
 <div class="px-3">
     <div class="d-flex justify-content-between  align-items-center mb-3">
-        <span>共：{{ paper.tmTotal }}项，调查人次：{{ paper.answerTotal }}</span>
+        <span>共：{{ paper.tmTotal }} 项，调查人次：{{ paper.answerTotal }}</span>
         <div>
             <el-button :size="euiSize" icon="el-icon-download" v-on:click="btnExportWordClick" plain>导出 Word</el-button>
         </div>
@@ -13,18 +13,12 @@
     <el-row>
         <el-col>
             <div class="mb-3" v-for="(tm,tmIndex) in list">
-                <el-card>
+                <el-card v-if="tm.parentId===0">
                     <div :id="'tm_'+tm.id">
                         <span class="mb-3 d-flex justify-content-start  align-items-start">
-                            <span>{{ tmIndex+1 }}、</span>
-                            <span v-if="tm.tx==='Danxuanti'">
-                                （单选）
-                            </span>
-                            <span v-else-if="tm.tx==='Duoxuanti'">
-                                （多选）
-                            </span>
-                            <span v-else>
-                                （简答）
+                            <span>{{ tm.tmIndex }}、</span>
+                            <span>
+                                （{{ tm.txName }}）
                             </span>
                             <span v-html="tm.title"></span>
                         </span>
@@ -83,6 +77,18 @@
                                             <span v-html="option"></span>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                            <div v-if="tm.tx==='DanxuantiErwei' || tm.tx==='DuoxuantiErwei' || tm.tx==='DanxuantiSanwei' || tm.tx==='DuoxuantiSanwei'">
+                                <table class="table table-bordered">
+                                    <tr v-for="(small,smallIndex) in tm.smallList">
+                                        <td v-for="smallV in small">
+                                            <span>{{ smallV }}</span>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <div class="py-2">
+                                    <apexchart type="bar" :options="tm.chartOptions" :series="tm.chatSeries" :height="(tm.tx==='DanxuantiSanwei' || tm.tx==='DuoxuantiSanwei') ? 400 : 200"></apexchart>
                                 </div>
                             </div>
                         </div>

@@ -15,7 +15,8 @@ var data = utils.init({
   uploadResult: false,
   errorMsgList: [],
   uploadExcelTmList: [],
-  userGroupList: null
+  userGroupList: null,
+  successTotal: 0
 });
 
 var methods = {
@@ -139,6 +140,8 @@ var methods = {
     this.uploadLoading = false;
     this.tmList = res.tmList;
     this.errorMsgList = res.errorMsgList;
+    this.successTotal = res.successTotal;
+
     this.uploadResult = true;
     utils.success("导入完成，请查看导入结果", { layer: true });
   },

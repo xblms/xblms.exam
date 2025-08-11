@@ -8,6 +8,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
 {
     public partial class ExamQuestionnairingController
     {
+        [RequestSizeLimit(long.MaxValue)]
         [HttpPost, Route(RouteSubmitPaper)]
         public async Task<ActionResult<BoolResult>> SubmitPaper([FromBody] GetSubmitRequest request)
         {
@@ -43,7 +44,6 @@ namespace XBLMS.Web.Controllers.Home.Exam
                     });
                 }
             }
-   
 
             await _examQuestionnaireRepository.IncrementAsync(request.Id);
 
