@@ -12,7 +12,7 @@ var data = utils.init({
   },
   scoreList: null,
   scoreTotal: 0,
-  passSeries: [100],
+  passSeries: [0],
   passChartOptions: {
     chart: {
       type: 'radialBar',
@@ -181,11 +181,7 @@ var methods = {
         if ($this.totalExamTimes > 0) {
           var passS = utils.formatPercentFloat($this.totalPass, $this.totalExamTimes);
           $this.passSeries = [passS];
-          $this.nopassSeries = [100 - passS];
-        }
-        else {
-          $this.passSeries = [0];
-          $this.nopassSeries = [0];
+          $this.nopassSeries = [(100 - passS).toFixed(2)];
         }
       }, 1000);
 
