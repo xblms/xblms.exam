@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Ubiety.Dns.Core;
 using XBLMS.Core.Utils;
 using XBLMS.Enums;
 using XBLMS.Models;
@@ -377,15 +378,15 @@ namespace XBLMS.Core.Services
 
             if (paperView)
             {
-                tm.Set("IsRight", StringUtils.Equals(tm.Answer, answer.Answer) || answer.Score > 0);
+                await GetTmIsRightByView(tm, answer);
                 if (!paper.SecrecyPaperAnswer)
                 {
-                    tm.Answer = "";
+                    tm.Answer = string.Empty;
                 }
             }
             else
             {
-                tm.Answer = "";
+                tm.Answer = string.Empty;
             }
 
             await GetSmallListByPaper(tm, startId, paper);
@@ -406,8 +407,8 @@ namespace XBLMS.Core.Services
 
             tm.Set("AnswerInfo", answer);
             tm.Set("AnswerStatus", answerStatus);
-            tm.Set("IsRight", StringUtils.Equals(tm.Answer, answer.Answer) || answer.Score > 0);
 
+            await GetTmIsRightByView(tm, answer);
             await GetSmallListByPaper(tm, startId, paper);
         }
         public async Task GetTmInfoByPaperMark(ExamPaperRandomTm tm, ExamPaper paper, int startId)
@@ -428,8 +429,19 @@ namespace XBLMS.Core.Services
 
             tm.Set("AnswerInfo", answer);
             tm.Set("MarkState", markState);
-            tm.Set("IsRight", StringUtils.Equals(tm.Answer, answer.Answer) || answer.Score > 0);
+
+            await GetTmIsRightByView(tm, answer);
             await GetSmallListByPaper(tm, startId, paper);
+        }
+        public async Task GetTmIsRightByView(ExamPaperRandomTm tm, ExamPaperAnswer answer)
+        {
+            var tx = await _examTxRepository.GetAsync(tm.TxId);
+            var isRight = StringUtils.Equals(tm.Answer, answer.Answer) || answer.Score > 0;
+            if (tx.ExamTxBase == ExamTxBase.Zuheti)
+            {
+                isRight = answer.Score == tm.Score;
+            }
+            tm.Set("IsRight", isRight);
         }
 
         public async Task GetTmInfoByPracticing(ExamTm tm)
