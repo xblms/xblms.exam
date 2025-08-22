@@ -39,6 +39,7 @@ namespace XBLMS.Core.Services
         private readonly IExamPracticeWrongRepository _examPracticeWrongRepository;
         private readonly IExamPracticeRepository _examPracticeRepository;
         private readonly IExamPaperAnswerSmallRepository _examPaperAnswerSmallRepository;
+        private readonly IExamPracticeAnswerSmallRepository _examPracticeAnswerSmallRepository;
 
         private readonly IExamQuestionnaireRepository _examQuestionnaireRepository;
         private readonly IExamQuestionnaireAnswerRepository _examQuestionnaireAnswerRepository;
@@ -95,7 +96,8 @@ namespace XBLMS.Core.Services
             IKnowlegesRepository knowlegesRepository,
             IExamTmSmallRepository examTmSmallRepository,
             IExamPaperRandomTmSmallRepository examPaperRandomTmSmallRepository,
-            IExamPaperAnswerSmallRepository examPaperAnswerSmallRepository)
+            IExamPaperAnswerSmallRepository examPaperAnswerSmallRepository,
+            IExamPracticeAnswerSmallRepository examPracticeAnswerSmallRepository)
         {
             _settingsManager = settingsManager;
             _organManager = organManager;
@@ -135,6 +137,7 @@ namespace XBLMS.Core.Services
             _examTmSmallRepository = examTmSmallRepository;
             _examPaperRandomTmSmallRepository = examPaperRandomTmSmallRepository;
             _examPaperAnswerSmallRepository = examPaperAnswerSmallRepository;
+            _examPracticeAnswerSmallRepository = examPracticeAnswerSmallRepository;
         }
 
 
@@ -194,6 +197,11 @@ namespace XBLMS.Core.Services
 
 
                         smallTm.Set("TitleList", tmTitleList);
+                        smallTm.Set("OptionsValues", new List<string>());
+                        smallTm.Set("OptionsRandom", GetOptionRandm(null, ListUtils.ToList(smallTm.Get("options"))));
+
+                        smallTm.Set("MyAnswer", "");
+
                         smallTmList.Add(smallTm);
                     }
                 }
@@ -238,7 +246,7 @@ namespace XBLMS.Core.Services
 
         }
 
-        public List<KeyValuePair<int, string>> GetTiankongtiTitleList(ExamTx tx, string title)
+        private List<KeyValuePair<int, string>> GetTiankongtiTitleList(ExamTx tx, string title)
         {
             var tmTitleList = new List<KeyValuePair<int, string>>();
             if (tx.ExamTxBase == ExamTxBase.Tiankongti && title.Contains("___"))
@@ -443,7 +451,53 @@ namespace XBLMS.Core.Services
             }
             tm.Set("IsRight", isRight);
         }
+        public async Task GetSmallTmListByPracticeView(ExamTm tm, int practiceId)
+        {
+            var tx = await _examTxRepository.GetAsync(tm.TxId);
+            var smallTmList = new List<ExamTmSmall>();
+            if (tx.ExamTxBase == ExamTxBase.Zuheti)
+            {
+                var smallList = await _examTmSmallRepository.GetListAsync(tm.Id);
+                if (smallList != null && smallList.Count > 0)
+                {
+                    for (var i = 0; i < smallList.Count; i++)
+                    {
+                        var smallTm = smallList[i];
+                        var smallTx = await _examTxRepository.GetAsync(smallTm.TxId);
 
+                        var options = smallTm.Get("options");
+                        smallTm.Set("Options", options);
+                        smallTm.Set("OptionsValues", smallTm.Get("optionsValues"));
+
+                        smallTm.Set("TitleHtml", smallTm.Title);
+
+                        var tmTitleList = GetTiankongtiTitleList(smallTx, smallTm.Title);
+
+                        smallTm.Title = StringUtils.StripTags(smallTm.Title);
+
+                        var smalltx = await _examTxRepository.GetAsync(smallTm.TxId);
+                        smallTm.Set("TxName", smalltx.Name);
+                        smallTm.Set("TxTaxis", smalltx.Taxis);
+                        smallTm.Set("BaseTx", smalltx.ExamTxBase);
+
+
+                        smallTm.Set("TitleList", tmTitleList);
+
+                        var answer = await _examPracticeAnswerSmallRepository.GetAsync(smallTm.Id, practiceId);
+
+                        smallTm.Set("AnswerInfo", answer);
+                        smallTm.Set("IsRight", StringUtils.Equals(smallTm.Answer, answer.Answer));
+
+
+                        smallTm.Set("OptionsRandom", GetOptionRandm(null, ListUtils.ToList(options), true));
+                        smallTm.Set("TmIndex", i + 1);
+
+                        smallTmList.Add(smallTm);
+                    }
+                }
+            }
+            tm.Set("SmallLists", smallTmList);
+        }
         public async Task GetTmInfoByPracticing(ExamTm tm)
         {
             await GetTmInfoByPaper(tm);
@@ -453,10 +507,10 @@ namespace XBLMS.Core.Services
             tm.Set("OptionsValues", new List<string>());
 
         }
-        public async Task GetTmInfoByPracticeView(ExamTm tm)
+        public async Task GetTmInfoByPracticeView(ExamTm tm, int practiceId)
         {
             await GetTmInfoByPaper(tm);
-
+            await GetSmallTmListByPracticeView(tm, practiceId);
             tm.Set("OptionsRandom", GetOptionRandm(null, ListUtils.ToList(tm.Get("options"))));
         }
 

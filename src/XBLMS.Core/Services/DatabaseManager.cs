@@ -59,6 +59,7 @@ namespace XBLMS.Core.Services
 
         public IExamPracticeRepository ExamPracticeRepository { get; }
         public IExamPracticeAnswerRepository ExamPracticeAnswerRepository { get; }
+        public IExamPracticeAnswerSmallRepository ExamPracticeAnswerSmallRepository { get; }
         public IExamPracticeCollectRepository ExamPracticeCollectRepository { get; }
         public IExamPracticeWrongRepository ExamPracticeWrongRepository { get; }
 
@@ -126,6 +127,7 @@ namespace XBLMS.Core.Services
             IExamPaperAnswerSmallRepository examPaperAnswerSmallRepository,
             IExamPracticeRepository examPracticeRepository,
             IExamPracticeAnswerRepository examPracticeAnswerRepository,
+            IExamPracticeAnswerSmallRepository examPracticeAnswerSmallRepository,
             IExamPracticeCollectRepository examPracticeCollectRepository,
             IExamPracticeWrongRepository examPracticeWrongRepository,
             IExamQuestionnaireAnswerRepository examQuestionnaireAnswerRepository,
@@ -187,6 +189,7 @@ namespace XBLMS.Core.Services
             ExamPaperAnswerSmallRepository = examPaperAnswerSmallRepository;
             ExamPracticeRepository = examPracticeRepository;
             ExamPracticeAnswerRepository = examPracticeAnswerRepository;
+            ExamPracticeAnswerSmallRepository = examPracticeAnswerSmallRepository;
             ExamPracticeCollectRepository = examPracticeCollectRepository;
             ExamPracticeWrongRepository = examPracticeWrongRepository;
             ExamQuestionnaireAnswerRepository = examQuestionnaireAnswerRepository;
@@ -253,6 +256,7 @@ namespace XBLMS.Core.Services
                 ExamPracticeRepository,
                 ExamPracticeWrongRepository,
                 ExamPracticeAnswerRepository,
+                ExamPracticeAnswerSmallRepository,
                 ExamPracticeCollectRepository,
                 ExamQuestionnaireUserRepository,
                 ExamQuestionnaireTmRepository,

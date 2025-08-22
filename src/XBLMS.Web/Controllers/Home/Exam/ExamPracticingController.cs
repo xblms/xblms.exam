@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using System.Collections.Generic;
 using XBLMS.Configuration;
+using XBLMS.Models;
 using XBLMS.Repositories;
 using XBLMS.Services;
 
@@ -21,11 +22,11 @@ namespace XBLMS.Web.Controllers.Home.Exam
         private const string RouteWrongRemove = Route + "/wrongRemove";
 
 
-        private const string RoutePricticingTmIds = Route+ "/tmids";
+        private const string RoutePricticingTmIds = Route + "/tmids";
 
-        private const string RoutePricticingSubmit = Route+"/submit";
+        private const string RoutePricticingSubmit = Route + "/submit";
 
-     
+
         private const string RouteCollectionSubmit = Route + "/collectionSubmit";
 
         private const string RouteError = Route + "home/exam/practice/error";
@@ -37,13 +38,15 @@ namespace XBLMS.Web.Controllers.Home.Exam
         private readonly IDatabaseManager _databaseManager;
         private readonly IAdministratorRepository _adminRepository;
         private readonly IExamTmRepository _examTmRepository;
+        private readonly IExamTmSmallRepository _examTmSmallRepository;
         private readonly IExamPracticeRepository _examPracticeRepository;
         private readonly IExamTxRepository _examTxRepository;
         private readonly IExamManager _examManager;
         private readonly IExamPracticeAnswerRepository _examPracticeAnswerRepository;
+        private readonly IExamPracticeAnswerSmallRepository _examPracticeAnswerSmallRepository;
         private readonly IExamPracticeCollectRepository _examPracticeCollectRepository;
         private readonly IExamPracticeWrongRepository _examPracticeWrongRepository;
-        
+
 
         public ExamPracticingController(IAuthManager authManager,
             IConfigRepository configRepository,
@@ -52,8 +55,10 @@ namespace XBLMS.Web.Controllers.Home.Exam
             IAdministratorRepository administratorRepository,
             IExamPracticeRepository examPracticeRepository,
             IExamTmRepository examTmRepository,
+            IExamTmSmallRepository examTmSmallRepository,
             IExamTxRepository examTxRepository,
             IExamPracticeAnswerRepository examPracticeAnswerRepository,
+            IExamPracticeAnswerSmallRepository examPracticeAnswerSmallRepository,
             IExamPracticeCollectRepository examPracticeCollectRepository,
             IExamPracticeWrongRepository examPracticeWrongRepository)
         {
@@ -63,15 +68,24 @@ namespace XBLMS.Web.Controllers.Home.Exam
             _databaseManager = databaseManager;
             _adminRepository = administratorRepository;
             _examTmRepository = examTmRepository;
+            _examTmSmallRepository = examTmSmallRepository;
             _examPracticeRepository = examPracticeRepository;
             _examTxRepository = examTxRepository;
-            _examPracticeWrongRepository= examPracticeWrongRepository;
-            _examPracticeCollectRepository= examPracticeCollectRepository;
-            _examPracticeAnswerRepository= examPracticeAnswerRepository;
+            _examPracticeWrongRepository = examPracticeWrongRepository;
+            _examPracticeCollectRepository = examPracticeCollectRepository;
+            _examPracticeAnswerRepository = examPracticeAnswerRepository;
+            _examPracticeAnswerSmallRepository = examPracticeAnswerSmallRepository;
         }
         public class GetSubmitAnswerRequest
         {
             public int PracticeId { get; set; }
+            public int Id { get; set; }
+            public string Answer { get; set; }
+            public List<string> AnswerValues { get; set; }
+            public List<GetSubmitAnswerSmallRequest> SmallList { get; set; }
+        }
+        public class GetSubmitAnswerSmallRequest
+        {
             public int Id { get; set; }
             public string Answer { get; set; }
             public List<string> AnswerValues { get; set; }

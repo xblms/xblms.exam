@@ -17,7 +17,7 @@ var data = utils.init({
   tm: null,
   tmIndex: 0,
   watermark: null,
-  answerResult:null
+  answerResult: null
 });
 
 var methods = {
@@ -50,6 +50,7 @@ var methods = {
     $api.get($urlTm, { params: { id: tmid } }).then(function (response) {
       var res = response.data;
       $this.tm = res.item;
+
     }).catch(function (error) {
       utils.error(error, { layer: true });
     }).then(function () {
@@ -71,11 +72,38 @@ var methods = {
 
     this.tm.answer = answer;
   },
+  answerChangeSmall: function () {
+    var smallList = this.tm.smallList;
+    var allSmallAnswer = true;
+    smallList.forEach(small => {
+      let answer = small.myAnswer;
+      if (small.baseTx === "Duoxuanti") {
+        answer = small.optionsValues.join('');
+      }
+      if (small.baseTx === "Tiankongti") {
+        answer = small.optionsValues.join(',');
+      }
+      small.myAnswer = answer;
+      if (answer.length === 0) {
+        allSmallAnswer = false;
+      }
+    })
+    if (allSmallAnswer) {
+      this.tm.answer = "ok";
+    }
+  },
   apiSubmitAnswer: function () {
     var $this = this;
     utils.loading(this, true);
 
-    $api.post($urlAnswer, { id: this.tm.id, answer: this.tm.answer, practiceId: this.id, answerValues: this.tm.optionsValues }).then(function (response) {
+    var smallList = [];
+    if (this.tm.baseTx === 'Zuheti' && this.tm.smallList !== null && this.tm.smallList.length > 0) {
+      this.tm.smallList.forEach(small => {
+        smallList.push({ id: small.id, answer: small.myAnswer, answerValues: small.optionsValues });
+      });
+    }
+
+    $api.post($urlAnswer, { id: this.tm.id, answer: this.tm.answer, practiceId: this.id, answerValues: this.tm.optionsValues, smallList: smallList }).then(function (response) {
       var res = response.data;
       $this.answerResult = res;
       if ($this.answerResult.isRight) {
@@ -149,7 +177,7 @@ var methods = {
       utils.loading($this, false);
     });
   },
-  btnWrongRemoveClick: function(){
+  btnWrongRemoveClick: function () {
     this.apiWrongRemove();
   },
   apiWrongRemove: function () {
@@ -172,7 +200,7 @@ var methods = {
     this.goResult();
   },
   goResult: function () {
-    utils.loading(this, true,"正在统计练习...");
+    utils.loading(this, true, "正在统计练习...");
     location.href = utils.getExamUrl("examPracticeResult", { id: this.id });
   }
 };

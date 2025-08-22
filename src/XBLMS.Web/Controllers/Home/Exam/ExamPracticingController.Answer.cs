@@ -24,62 +24,54 @@ namespace XBLMS.Web.Controllers.Home.Exam
                 Jiexi = tm.Jiexi
             };
 
-            var isRight = false;
-            if (tx.ExamTxBase == Enums.ExamTxBase.Tiankongti || tx.ExamTxBase == Enums.ExamTxBase.Jiandati)
+            if (tx.ExamTxBase == Enums.ExamTxBase.Zuheti)
             {
-                if (StringUtils.EqualsIgnoreCase(tm.Answer, request.Answer))
+                var allRight = true;
+                foreach (var small in request.SmallList)
                 {
-                    isRight = true;
+                    var smallTm = await _examTmSmallRepository.GetAsync(small.Id);
+                    var smallTx = await _examTxRepository.GetAsync(smallTm.TxId);
+
+                    var smallIsRight = IsRight(smallTx, smallTm, small.Answer);
+                    if (!smallIsRight)
+                    {
+                        allRight = false;
+                    }
+                    var smallAnswerInfo = new ExamPracticeAnswerSmall
+                    {
+                        UserId = user.Id,
+                        PracticeId = request.PracticeId,
+                        TmId = small.Id,
+                        IsRight = smallIsRight,
+                        Answer = small.Answer,
+                        AnswerId = request.Id
+                    };
+                    smallAnswerInfo.Set("optionsValues", small.AnswerValues);
+                    await _examPracticeAnswerSmallRepository.InsertAsync(smallAnswerInfo);
+                }
+                if (allRight)
+                {
+                    result.IsRight = true;
                 }
             }
             else
             {
-                var answerList = ListUtils.GetStringList(tm.Answer);
-                var allTrue = true;
-                foreach (var answer in answerList)
-                {
-                    if (!StringUtils.ContainsIgnoreCase(request.Answer, answer))
-                    {
-                        allTrue = false;
-                    }
-                }
-                if (!allTrue)
-                {
-                    answerList = ListUtils.GetStringList(tm.Answer, ";");
-                    foreach (var answer in answerList)
-                    {
-                        if (!StringUtils.ContainsIgnoreCase(request.Answer, answer))
-                        {
-                            allTrue = false;
-                        }
-                    }
-                }
-                if (!allTrue)
-                {
-                    answerList = ListUtils.GetStringList(tm.Answer, "，");
-                    foreach (var answer in answerList)
-                    {
-                        if (!StringUtils.ContainsIgnoreCase(request.Answer, answer))
-                        {
-                            allTrue = false;
-                        }
-                    }
-                }
-                if (!allTrue)
-                {
-                    answerList = ListUtils.GetStringList(tm.Answer, "；");
-                    foreach (var answer in answerList)
-                    {
-                        if (!StringUtils.ContainsIgnoreCase(request.Answer, answer))
-                        {
-                            allTrue = false;
-                        }
-                    }
-                }
-                isRight = allTrue;
+                result.IsRight = IsRight(tx, tm, request.Answer);
             }
 
-            if (isRight)
+            var answerInfo = new ExamPracticeAnswer
+            {
+                UserId = user.Id,
+                PracticeId = request.PracticeId,
+                TmId = request.Id,
+                IsRight = result.IsRight,
+                Answer = request.Answer,
+            };
+
+            answerInfo.Set("optionsValues", request.AnswerValues);
+            await _examPracticeAnswerRepository.InsertAsync(answerInfo);
+
+            if (result.IsRight)
             {
                 result.IsRight = true;
                 result.Answer = string.Empty;
@@ -107,18 +99,6 @@ namespace XBLMS.Web.Controllers.Home.Exam
             }
 
 
-            var answerInfo = new ExamPracticeAnswer
-            {
-                UserId = user.Id,
-                PracticeId = request.PracticeId,
-                TmId = request.Id,
-                IsRight = result.IsRight,
-                Answer = request.Answer,
-            };
-            answerInfo.Set("optionsValues", request.AnswerValues);
-            await _examPracticeAnswerRepository.InsertAsync(answerInfo);
-
-
             await _examPracticeRepository.IncrementAnswerCountAsync(request.PracticeId);
             if (result.IsRight)
             {
@@ -127,8 +107,66 @@ namespace XBLMS.Web.Controllers.Home.Exam
 
             return result;
         }
-
+        private bool IsRight(ExamTx tx, ExamTm tm, string myAnswer)
+        {
+            var isRight = false;
+            if (tx.ExamTxBase == Enums.ExamTxBase.Tiankongti || tx.ExamTxBase == Enums.ExamTxBase.Jiandati)
+            {
+                if (StringUtils.EqualsIgnoreCase(tm.Answer, myAnswer))
+                {
+                    isRight = true;
+                }
+            }
+            else
+            {
+                var answerList = ListUtils.GetStringList(tm.Answer);
+                var allTrue = true;
+                foreach (var answer in answerList)
+                {
+                    if (!StringUtils.ContainsIgnoreCase(myAnswer, answer))
+                    {
+                        allTrue = false;
+                    }
+                }
+                if (!allTrue)
+                {
+                    answerList = ListUtils.GetStringList(tm.Answer, ";");
+                    foreach (var answer in answerList)
+                    {
+                        if (!StringUtils.ContainsIgnoreCase(myAnswer, answer))
+                        {
+                            allTrue = false;
+                        }
+                    }
+                }
+                if (!allTrue)
+                {
+                    answerList = ListUtils.GetStringList(tm.Answer, "，");
+                    foreach (var answer in answerList)
+                    {
+                        if (!StringUtils.ContainsIgnoreCase(myAnswer, answer))
+                        {
+                            allTrue = false;
+                        }
+                    }
+                }
+                if (!allTrue)
+                {
+                    answerList = ListUtils.GetStringList(tm.Answer, "；");
+                    foreach (var answer in answerList)
+                    {
+                        if (!StringUtils.ContainsIgnoreCase(myAnswer, answer))
+                        {
+                            allTrue = false;
+                        }
+                    }
+                }
+                isRight = allTrue;
+            }
+            return isRight;
+        }
     }
+
 }
 
 

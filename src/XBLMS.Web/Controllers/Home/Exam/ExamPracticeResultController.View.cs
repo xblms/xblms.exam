@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using XBLMS.Dto;
+using XBLMS.Enums;
 using XBLMS.Models;
+using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Home.Exam
 {
@@ -22,7 +24,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
                 foreach (var answer in answerList)
                 {
                     var tm = await _examManager.GetTmInfo(answer.TmId);
-                    await _examManager.GetTmInfoByPracticeView(tm);
+                    await _examManager.GetTmInfoByPracticeView(tm, practice.Id);
                     tm.Set("AnswerInfo", answer);
                     tmList.Add(tm);
                 }

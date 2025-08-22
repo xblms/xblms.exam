@@ -53,6 +53,7 @@ namespace XBLMS.Services
         IExamPracticeWrongRepository ExamPracticeWrongRepository { get; }
         IExamPracticeCollectRepository ExamPracticeCollectRepository { get; }
         IExamPracticeAnswerRepository ExamPracticeAnswerRepository { get; }
+        IExamPracticeAnswerSmallRepository ExamPracticeAnswerSmallRepository { get; }
 
         IExamQuestionnaireAnswerRepository ExamQuestionnaireAnswerRepository { get; }
         IExamQuestionnaireRepository ExamQuestionnaireRepository { get; }
