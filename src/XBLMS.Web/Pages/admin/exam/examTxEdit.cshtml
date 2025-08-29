@@ -13,10 +13,11 @@
                     <el-input v-model.trim="form.name" maxlength="10" show-word-limit placeholder="请输入题型名称"></el-input>
                 </el-form-item>
                 <el-form-item label="基本题型" prop="examTxBase" :rules="[{ required: true, message: '请选择题型' }]">
-                    <el-select v-model="form.examTxBase" class="form-control">
+                    <el-select v-model="form.examTxBase" class="form-control" :disabled="tmTotal>0">
                         <el-option label="请选择基本题型" value=""></el-option>
                         <el-option v-for="type in typeList" :label="type.label" :value="type.value" :key="type.value"></el-option>
                     </el-select>
+                    <div class="tips" v-if="tmTotal>0" style="color:red;"><i class="el-icon-info"></i> 题库中已经存在该基本题型的题目，禁止修改基本题型。</div>
                 </el-form-item>
                 <el-form-item label="分数" prop="score" :rules="[{ required: true, message: '请输入分数' },{ validator:utils.validateInt }]">
                     <el-input-number v-model="form.score" :min="1" :max="100" placeholder="请输入分数"></el-input-number>

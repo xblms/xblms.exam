@@ -4,7 +4,8 @@ var $urlAdd = $url + '/add';
 
 var data = utils.init({
   id: utils.getQueryInt('id'),
-  typeList:null,
+  typeList: null,
+  tmTotal: 0,
   form: {}
 });
 
@@ -13,9 +14,10 @@ var methods = {
     var $this = this;
 
     utils.loading(this, true);
-    $api.get($url, { params: { id: this.id }}).then(function (response) {
+    $api.get($url, { params: { id: this.id } }).then(function (response) {
       var res = response.data;
       $this.typeList = res.typeList;
+      $this.tmTotal = res.tmTotal;
       $this.form = _.assign({}, res.item);
     }).catch(function (error) {
       utils.error(error, { layer: true });
@@ -54,7 +56,7 @@ var methods = {
 
   btnSubmitClick: function () {
     var $this = this;
-    this.$refs.form.validate(function(valid) {
+    this.$refs.form.validate(function (valid) {
       if (valid) {
         $this.apiEdit();
       }

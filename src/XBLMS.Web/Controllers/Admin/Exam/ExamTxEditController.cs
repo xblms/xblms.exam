@@ -21,16 +21,19 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
         private readonly IAuthManager _authManager;
         private readonly IExamTxRepository _examTxRepository;
+        private readonly IExamTmRepository _examTmRepository;
 
-        public ExamTxEditController(IAuthManager authManager, IExamTxRepository examTxRepository)
+        public ExamTxEditController(IAuthManager authManager, IExamTxRepository examTxRepository, IExamTmRepository examTmRepository)
         {
             _authManager = authManager;
             _examTxRepository = examTxRepository;
+            _examTmRepository = examTmRepository;
         }
         public class GetResult
         {
             public ExamTx Item { get; set; }
             public IEnumerable<Select<string>> TypeList { get; set; }
+            public int TmTotal { get; set; }
         }
     }
 }

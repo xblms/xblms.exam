@@ -14,14 +14,17 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         {
             var typeList = ListUtils.GetSelects<ExamTxBase>();
             var tx = new ExamTx();
+            var tmTotal = 0;
             if (request.Id > 0)
             {
                 tx = await _examTxRepository.GetAsync(request.Id);
+                tmTotal = await _examTmRepository.GetCountByTxIdAsync(tx.Id);
             }
             return new GetResult
             {
                 Item = tx,
-                TypeList = typeList
+                TypeList = typeList,
+                TmTotal = tmTotal
             };
         }
     }
