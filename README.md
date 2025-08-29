@@ -6,9 +6,10 @@
 <img src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/logo.png" height="180" align="center">
 
 <br />
+<br />
+<br />
 
-
-* >300并发或者用户的企业级应用场景建议看到最后，否则请忽略。
+* 大于300并发或者用户的企业级应用场景建议看到最后，否则请忽略。
 
 ## 演示环境
 
