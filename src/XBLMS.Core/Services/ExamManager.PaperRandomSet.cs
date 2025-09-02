@@ -218,19 +218,25 @@ namespace XBLMS.Core.Services
 
                     if (paper.TmScoreType == ExamPaperTmScoreType.ScoreTypeTx)
                     {
-                        var configTx = examConfig.Single(config => config.TxId == tm.TxId);
+                        tmScore = tm.Score;
+
                         var tx = await _examTxRepository.GetAsync(tm.TxId);
-                        if (configTx != null)
-                        {
-                            tmScore = configTx.TxScore;
-                        }
-                        else if (tx != null)
+                        if (paper.TmRandomType == ExamPaperTmRandomType.RandomNone)
                         {
                             tmScore = tx.Score;
                         }
                         else
                         {
-                            tmScore = tm.Score;
+                            var configTx = examConfig.Single(config => config.TxId == tm.TxId);
+
+                            if (configTx != null)
+                            {
+                                tmScore = configTx.TxScore;
+                            }
+                            else if (tx != null)
+                            {
+                                tmScore = tx.Score;
+                            }
                         }
                     }
 
@@ -298,6 +304,13 @@ namespace XBLMS.Core.Services
                         randomTmList[randomTmList.Count - 1].Score = lastTm.Score;
                     }
                     tmTotalScore = paper.TotalScore;
+                }
+                else
+                {
+                    if (paper.PassScore > tmTotalScore)
+                    {
+                        paper.PassScore = Convert.ToInt32(tmTotalScore);
+                    }
                 }
 
                 foreach (var tm in randomTmList)
