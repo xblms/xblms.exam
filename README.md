@@ -9,8 +9,6 @@
 <br />
 <br />
 
-* 大于300并发或者用户的企业级应用场景建议看到最后，否则请忽略。
-
 ## 演示环境
 
 > 管理端演示环境
@@ -322,7 +320,6 @@ npm run copy-linux-arm64
 
 如发现问题或对产品有任何建议，请提交至 [Gitee Issues](https://gitee.com/xblms/xblmes/issues)。
 
-
 ## License
 
 [GNU Affero General Public License v3.0](LICENSE)
@@ -331,15 +328,9 @@ Copyright (C) 2024 XBLMS.EXAM
 
 ## 打赏
 
-开源无盈利，生活不容易，多少是心意，感谢支持与鼓励！
-
 <img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/ds.png"/>
 
-## 你不一般
-
-* 能看到这里，请帮忙点个star，当然没看到这里的朋友点了star那也是万分感谢（❤）。
-
-* 除了上面提到的社区版（开源）之外，我们还准备了企业版（企业解决方案），介于你能力出众智慧超群万里挑一且品学兼优，恰好你的单位有这个需求，那么，从这里开始不再仅仅是代码的事情，是系统、架构、解决方案以及高效的持续跟踪服务。
+## 企业级应用解决方案
 
 * [欢迎垂询，点击前往](http://182.92.223.118)
 
