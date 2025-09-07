@@ -21,11 +21,11 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             var tx = await _examTxRepository.GetAsync(request.Id);
             if (tx == null) return this.NotFound();
             var txTmCount = 0;
-            if (txTmCount > 0) return this.Error($"ÓĞ¡¾{txTmCount}¡¿ÌâÄ¿ÓÃµ½ÁË¸ÃÌâĞÍ£¬ÔİÊ±²»ÔÊĞíÉ¾³ı");
+            if (txTmCount > 0) return this.Error($"æœ‰ã€{txTmCount}ã€‘é¢˜ç›®ç”¨åˆ°äº†è¯¥é¢˜å‹ï¼Œæš‚æ—¶ä¸å…è®¸åˆ é™¤");
             await _examTxRepository.DeleteAsync(request.Id);
 
-            await _authManager.AddAdminLogAsync("É¾³ıÌâĞÍ", $"{tx.Name}");
-            await _authManager.AddStatLogAsync(StatType.ExamTxDelete, "É¾³ıÌâĞÍ", tx.Id, tx.Name, tx);
+            await _authManager.AddAdminLogAsync("åˆ é™¤é¢˜å‹", $"{tx.Name}");
+            await _authManager.AddStatLogAsync(StatType.ExamTxDelete, "åˆ é™¤é¢˜å‹", tx.Id, tx.Name, tx);
             await _authManager.AddStatCount(StatType.ExamTxDelete);
             return new BoolResult
             {

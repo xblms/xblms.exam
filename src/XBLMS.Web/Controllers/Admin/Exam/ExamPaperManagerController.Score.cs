@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+ï»¿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using XBLMS.Core.Utils;
@@ -39,7 +39,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
             var paper = await _examPaperRepository.GetAsync(request.Id);
 
-            var fileName = $"{paper.Title}-³É¼¨µ¥.xlsx";
+            var fileName = $"{paper.Title}-æˆç»©å•.xlsx";
             var filePath = _pathManager.GetDownloadFilesPath(fileName);
 
             DirectoryUtils.CreateDirectoryIfNotExists(DirectoryUtils.GetDirectoryPath(filePath));
@@ -47,16 +47,16 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
             var head = new List<string>
             {
-                "ĞòºÅ",
-                "ÕËºÅ",
-                "ĞÕÃû",
-                "×éÖ¯",
-                "¿ª¿¼Ê±¼ä",
-                "½»¾íÊ±¼ä",
-                "ÓÃÊ±",
-                "¿Í¹ÛÌâ³É¼¨",
-                "Ö÷¹ÛÌâ³É¼¨",
-                "³É¼¨",
+                "åºå·",
+                "è´¦å·",
+                "å§“å",
+                "ç»„ç»‡",
+                "å¼€è€ƒæ—¶é—´",
+                "äº¤å·æ—¶é—´",
+                "ç”¨æ—¶",
+                "å®¢è§‚é¢˜æˆç»©",
+                "ä¸»è§‚é¢˜æˆç»©",
+                "æˆç»©",
             };
             var rows = new List<List<string>>();
 
@@ -89,8 +89,8 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             ExcelUtils.Write(filePath, head, rows);
             var downloadUrl = _pathManager.GetDownloadFilesUrl(fileName);
 
-            await _authManager.AddAdminLogAsync("µ¼³ö³É¼¨µ¥", paper.Title);
-            await _authManager.AddStatLogAsync(StatType.Export, "µ¼³ö³É¼¨µ¥", 0, string.Empty, new StringResult { Value = downloadUrl });
+            await _authManager.AddAdminLogAsync("å¯¼å‡ºæˆç»©å•", paper.Title);
+            await _authManager.AddStatLogAsync(StatType.Export, "å¯¼å‡ºæˆç»©å•", 0, string.Empty, new StringResult { Value = downloadUrl });
 
             return new StringResult
             {

@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+锘縰sing Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using XBLMS.Dto;
 using XBLMS.Enums;
@@ -17,7 +17,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             var cer = await _examCerRepository.GetAsync(request.Id);
 
 
-            var zipFileName = $"{cer.Name}-证书.zip";
+            var zipFileName = $"{cer.Name}-璇佷功.zip";
             var zipFilePath = _pathManager.GetDownloadFilesPath(zipFileName);
 
             DirectoryUtils.CreateDirectoryIfNotExists(zipFilePath);
@@ -41,8 +41,8 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
             var zipUrl = _pathManager.GetRootUrlByPath(zipPath);
 
-            await _authManager.AddAdminLogAsync("导出证书", cer.Name);
-            await _authManager.AddStatLogAsync(StatType.Export, "导出证书", 0, string.Empty, new StringResult { Value = zipUrl });
+            await _authManager.AddAdminLogAsync("瀵煎嚭璇佷功", cer.Name);
+            await _authManager.AddStatLogAsync(StatType.Export, "瀵煎嚭璇佷功", 0, string.Empty, new StringResult { Value = zipUrl });
 
             return new StringResult
             {

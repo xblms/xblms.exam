@@ -23,9 +23,9 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             if (item == null) return this.NotFound();
             var ids = await _examTmTreeRepository.GetIdsAsync(request.Id);
             var tmCount =0;
-            if (tmCount > 0) return this.Error($"¸Ã·ÖÀàÏÂÃæ°üº¬¡¾{tmCount}¡¿ÌâÄ¿£¬ÔİÊ±²»ÔÊĞíÉ¾³ı");
+            if (tmCount > 0) return this.Error($"è¯¥åˆ†ç±»ä¸‹é¢åŒ…å«ã€{tmCount}ã€‘é¢˜ç›®ï¼Œæš‚æ—¶ä¸å…è®¸åˆ é™¤");
             await _examTmTreeRepository.DeleteAsync(ids);
-            await _authManager.AddAdminLogAsync("É¾³ıÌâÄ¿·ÖÀà¼°ËùÓĞÏÂ¼¶", $"{item.Name}");
+            await _authManager.AddAdminLogAsync("åˆ é™¤é¢˜ç›®åˆ†ç±»åŠæ‰€æœ‰ä¸‹çº§", $"{item.Name}");
             return new BoolResult
             {
                 Value = true

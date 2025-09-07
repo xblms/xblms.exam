@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+ï»¿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using XBLMS.Core.Utils;
@@ -17,7 +17,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
             var cer = await _examCerRepository.GetAsync(request.Id);
 
-            var fileName = $"{cer.Name}-»ñÖ¤ÈËÔ±ÁĞ±í.xlsx";
+            var fileName = $"{cer.Name}-è·è¯äººå‘˜åˆ—è¡¨.xlsx";
             var filePath = _pathManager.GetDownloadFilesPath(fileName);
 
             DirectoryUtils.CreateDirectoryIfNotExists(DirectoryUtils.GetDirectoryPath(filePath));
@@ -25,21 +25,21 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
             var head = new List<string>
             {
-                "ĞòºÅ",
-                "ÕËºÅ",
-                "ĞÕÃû",
-                "×éÖ¯",
-                "ÊÔ¾í",
-                "¿ª¿¼Ê±¼ä",
-                "½»¾íÊ±¼ä",
-                "ÓÃÊ±",
-                "¿Í¹ÛÌâ³É¼¨",
-                "Ö÷¹ÛÌâ³É¼¨",
-                "³É¼¨",
-                "Ö¤ÊéÃû³Æ",
-                "Ö¤Êé±àÂë",
-                "°ä·¢µ¥Î»",
-                "»ñÖ¤Ê±¼ä",
+                "åºå·",
+                "è´¦å·",
+                "å§“å",
+                "ç»„ç»‡",
+                "è¯•å·",
+                "å¼€è€ƒæ—¶é—´",
+                "äº¤å·æ—¶é—´",
+                "ç”¨æ—¶",
+                "å®¢è§‚é¢˜æˆç»©",
+                "ä¸»è§‚é¢˜æˆç»©",
+                "æˆç»©",
+                "è¯ä¹¦åç§°",
+                "è¯ä¹¦ç¼–ç ",
+                "é¢å‘å•ä½",
+                "è·è¯æ—¶é—´",
             };
             var rows = new List<List<string>>();
 
@@ -78,8 +78,8 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
             var downloadUrl = _pathManager.GetDownloadFilesUrl(fileName);
 
-            await _authManager.AddAdminLogAsync("µ¼³ö»ñÖ¤ÈËÔ±", cer.Name);
-            await _authManager.AddStatLogAsync(StatType.Export, "µ¼³ö»ñÖ¤ÈËÔ±", 0, string.Empty, new StringResult { Value = downloadUrl });
+            await _authManager.AddAdminLogAsync("å¯¼å‡ºè·è¯äººå‘˜", cer.Name);
+            await _authManager.AddStatLogAsync(StatType.Export, "å¯¼å‡ºè·è¯äººå‘˜", 0, string.Empty, new StringResult { Value = downloadUrl });
 
             return new StringResult
             {

@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+ï»¿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using XBLMS.Dto;
@@ -129,7 +129,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
             var paper = await _examPaperRepository.GetAsync(request.Id);
 
-            var fileName = $"{paper.Title}-¿¼ÉúÁĞ±í.xlsx";
+            var fileName = $"{paper.Title}-è€ƒç”Ÿåˆ—è¡¨.xlsx";
             var filePath = _pathManager.GetDownloadFilesPath(fileName);
 
             DirectoryUtils.CreateDirectoryIfNotExists(DirectoryUtils.GetDirectoryPath(filePath));
@@ -137,14 +137,14 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
             var head = new List<string>
             {
-                "ĞòºÅ",
-                "ÕËºÅ",
-                "ĞÕÃû",
-                "×éÖ¯",
-                "²Î¿¼´ÎÊı",
-                "¿¼ÊÔ´ÎÊı",
-                "¿¼ÊÔÊ±¼ä",
-                "×î¸ß·Ö"
+                "åºå·",
+                "è´¦å·",
+                "å§“å",
+                "ç»„ç»‡",
+                "å‚è€ƒæ¬¡æ•°",
+                "è€ƒè¯•æ¬¡æ•°",
+                "è€ƒè¯•æ—¶é—´",
+                "æœ€é«˜åˆ†"
             };
             var rows = new List<List<string>>();
 
@@ -179,8 +179,8 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
             var downloadUrl = _pathManager.GetDownloadFilesUrl(fileName);
 
-            await _authManager.AddAdminLogAsync("µ¼³ö¿¼Éú", paper.Title);
-            await _authManager.AddStatLogAsync(StatType.Export, "µ¼³ö¿¼Éú", 0, string.Empty, new StringResult { Value = downloadUrl });
+            await _authManager.AddAdminLogAsync("å¯¼å‡ºè€ƒç”Ÿ", paper.Title);
+            await _authManager.AddStatLogAsync(StatType.Export, "å¯¼å‡ºè€ƒç”Ÿ", 0, string.Empty, new StringResult { Value = downloadUrl });
 
             return new StringResult
             {

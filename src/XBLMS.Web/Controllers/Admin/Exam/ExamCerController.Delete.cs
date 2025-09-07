@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+锘縰sing Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using XBLMS.Dto;
 using XBLMS.Enums;
@@ -25,9 +25,9 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 FileUtils.DeleteFileIfExists(pre_filePath);
 
                 await _examCerRepository.DeleteAsync(request.Id);
-                await _authManager.AddAdminLogAsync("删除证书模板", $"{cerInfo.Name}");
+                await _authManager.AddAdminLogAsync("鍒犻櫎璇佷功妯℃澘", $"{cerInfo.Name}");
 
-                await _authManager.AddStatLogAsync(StatType.ExamCerDelete, "删除证书模板", cerInfo.Id, cerInfo.Name, cerInfo);
+                await _authManager.AddStatLogAsync(StatType.ExamCerDelete, "鍒犻櫎璇佷功妯℃澘", cerInfo.Id, cerInfo.Name, cerInfo);
                 await _authManager.AddStatCount(StatType.ExamCerDelete);
             }
 

@@ -26,7 +26,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             {
                 if (string.IsNullOrEmpty(item)) continue;
 
-                var count = StringUtils.GetStartCount("£­", item) == 0 ? StringUtils.GetStartCount("-", item) : StringUtils.GetStartCount("£­", item);
+                var count = StringUtils.GetStartCount("ï¼", item) == 0 ? StringUtils.GetStartCount("-", item) : StringUtils.GetStartCount("ï¼", item);
                 var name = item.Substring(count, item.Length - count);
                 count++;
 
@@ -53,7 +53,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                         CreatorId= admin.CreatorId
                     });
 
-                    await _authManager.AddAdminLogAsync("ĞÂÔöÌâÄ¿·ÖÀà", $"{name}");
+                    await _authManager.AddAdminLogAsync("æ–°å¢é¢˜ç›®åˆ†ç±»", $"{name}");
 
 
                     insertedTreeIdHashtable[count + 1] = insertedTkId;

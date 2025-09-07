@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+锘縰sing Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using XBLMS.Dto;
 using XBLMS.Enums;
@@ -21,15 +21,15 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             var tx = request.Item;
             if (await _examTxRepository.IsExistsAsync(tx.Name))
             {
-                return this.Error("保存失败，已存在相同名称的题型！");
+                return this.Error("淇濆瓨澶辫触锛屽凡瀛樺湪鐩稿悓鍚嶇О鐨勯鍨嬶紒");
             }
             tx.CompanyId = admin.CompanyId;
             tx.DepartmentId = admin.DepartmentId;
             tx.CreatorId = admin.Id;
 
             var txId = await _examTxRepository.InsertAsync(tx);
-            await _authManager.AddAdminLogAsync("新增题型", $"{tx.Name}");
-            await _authManager.AddStatLogAsync(StatType.ExamTxAdd, "新增题型", txId, tx.Name);
+            await _authManager.AddAdminLogAsync("鏂板棰樺瀷", $"{tx.Name}");
+            await _authManager.AddStatLogAsync(StatType.ExamTxAdd, "鏂板棰樺瀷", txId, tx.Name);
             await _authManager.AddStatCount(StatType.ExamTxAdd);
             return new BoolResult
             {
