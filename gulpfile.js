@@ -9,7 +9,7 @@ const filter = require('gulp-filter');
 const runSequence = require('gulp4-run-sequence');
 
 let os = '';
-const version = process.env.PRODUCTVERSION || '8.1';
+const version = process.env.PRODUCTVERSION || '8.1.8';
 const timestamp = (new Date()).getTime();
 let publishDir = '';
 let htmlDict = {};
