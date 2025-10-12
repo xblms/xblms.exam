@@ -9,15 +9,14 @@
 <br />
 <br />
 
-## 系统展示
+## 剧照
 
-### 管理端
+<br />
 
 <img src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/admin/index.png">
 
 <br />
-
-### 用户端
+<br />
 
 <img src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/home/index.png">
 
@@ -27,13 +26,13 @@
 
 > 管理端演示环境
 
-* admin/123123
+* 账号：admin，密码：123123
 
 * [点击前往管理端演示](http://182.92.223.118:5000/xblms-admin)
 
 > 用户端演示环境
 
-* test/123123
+* 账号：test，密码：123123
 
 * [点击前往用户端演示](http://182.92.223.118:5000/home)
 
@@ -96,7 +95,7 @@
 
 ## 发布手册
 
-* 进交流群获取
+* 进群获取[qq群:1027427177]
 
 ## 支持环境
 ### 支持的操作系统
@@ -156,3 +155,78 @@
 ```
 
 
+## 编译
+
+项目编译需要使用 Visual Studio 2022，你可以从这里下载 [Visual Studio Community 2022](https://www.visualstudio.com/downloads/)
+
+[SDK 开发用](https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/sdk-8.0.403-windows-x64-installer)
+
+[运行时 部署用](https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/runtime-aspnetcore-8.0.2-windows-hosting-bundle-installer)
+
+## 发布跨平台版本
+
+### Window(x64)：
+
+```
+npm install
+npm run build-win-x64
+dotnet build ./build-win-x64/build.sln -c Release
+dotnet publish ./build-win-x64/src/XBLMS.Web/XBLMS.Web.csproj -r win-x64 -c Release -o ./publish/xblms-win-x64
+npm run copy-win-x64
+```
+
+> 进入文件夹 `./publish/xblms-win-x64` 获取部署文件
+
+### Window(x32)：
+
+```
+npm install
+npm run build-win-x86
+dotnet build ./build-win-x86/build.sln -c Release
+dotnet publish ./build-win-x86/src/XBLMS.Web/XBLMS.Web.csproj -r win-x86 -c Release -o ./publish/xblms-win-x86
+npm run copy-win-x86
+```
+
+> 进入文件夹 `./publish/xblms-win-x86` 获取部署文件
+
+### Linux(x64)：
+
+```
+npm install
+npm run build-linux-x64
+dotnet build ./build-linux-x64/build.sln -c Release
+dotnet publish ./build-linux-x64/src/XBLMS.Web/XBLMS.Web.csproj -r linux-x64 -c Release -o ./publish/xblms-linux-x64
+npm run copy-linux-x64
+```
+
+> 进入文件夹 `./publish/xblms-linux-x64` 获取部署文件
+
+### Linux(arm64)：
+
+```
+npm install
+npm run build-linux-arm64
+dotnet build ./build-linux-arm64/build.sln -c Release
+dotnet publish ./build-linux-arm64/src/XBLMS.Web/XBLMS.Web.csproj -r linux-arm64 -c Release -o ./publish/xblms-linux-arm64
+npm run copy-linux-arm64
+```
+
+> 进入文件夹 `./publish/xblms-linux-arm64` 获取部署文件
+
+## 问题与建议
+
+如发现问题或对产品有任何建议，请提交至 [Gitee Issues](https://gitee.com/xblms/xblmes/issues)。
+
+## License
+
+[GNU Affero General Public License v3.0](LICENSE)
+
+Copyright (C) 2024 XBLMS.EXAM
+
+## 打赏
+
+<img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/ds.png"/>
+
+## 对公业务请联系客服微信
+
+<img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/linkmewechat.jpg"/>
