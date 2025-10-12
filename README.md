@@ -9,6 +9,43 @@
 <br />
 <br />
 
+## 展示
+
+<br />
+
+### 管理端
+
+<br />
+
+<img src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/admin/index.png">
+
+<br />
+
+### 用户端
+
+<br />
+
+<img src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/home/index.png">
+
+<br />
+
+## 演示环境
+
+> 管理端演示环境
+
+* [点击前往管理端演示](http://182.92.223.118:5000/xblms-admin)（admin/123123）
+
+> 用户端演示环境
+
+* [点击前往用户端演示](http://182.92.223.118:5000/home)（test/123123）
+
+> 移动端演示环境
+
+* 扫码前往移动端演示
+
+<img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/二维码.png"/>
+
+<br />
 
 ## 介绍
 
