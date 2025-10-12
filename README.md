@@ -9,19 +9,11 @@
 <br />
 <br />
 
-## 展示
-
-<br />
-
-### 管理端
+## 系统展示
 
 <br />
 
 <img src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/admin/index.png">
-
-<br />
-
-### 用户端
 
 <br />
 
