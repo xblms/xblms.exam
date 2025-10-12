@@ -25,15 +25,12 @@
 
 > 管理端演示环境
 
-* [点击前往管理端演示](http://182.92.223.118:5000/xblms-admin)（admin/123123）
-
+* [点击前往管理端演示](http://182.92.223.118:5000/xblms-admin)
 > 用户端演示环境
 
-* [点击前往用户端演示](http://182.92.223.118:5000/home)（test/123123）
+* [点击前往用户端演示](http://182.92.223.118:5000/home)
 
 > 移动端演示环境
-
-* 扫码前往移动端演示
 
 <img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/二维码.png"/>
 
