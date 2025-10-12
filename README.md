@@ -95,7 +95,7 @@
 
 ## 发布手册
 
-* 进群获取[qq群:1027427177]
+* 进群获取[qq:1027427177]
 
 ## 支持环境
 ### 支持的操作系统
@@ -227,6 +227,6 @@ Copyright (C) 2024 XBLMS.EXAM
 
 <img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/ds.png"/>
 
-## 对公业务请联系客服微信
+## 更多想法请联系客服
 
 <img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/linkmewechat.jpg"/>
