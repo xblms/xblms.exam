@@ -8,6 +8,7 @@ namespace XBLMS.Repositories
 {
     public interface IExamPaperUserRepository : IRepository
     {
+        Task<int> IncrementSubmitAsync(int planId, int courseId, int paperId, int userId);
         Task<int> CountAsync(int paperId);
         Task<ExamPaperUser> GetAsync(int id);
         Task<ExamPaperUser> GetAsync(int paperId, int userId);
@@ -17,9 +18,11 @@ namespace XBLMS.Repositories
         Task<int> InsertAsync(ExamPaperUser item);
         Task<bool> ExistsAsync(int paperId, int userId);
         Task<List<int>> GetPaperIdsByUser(int userId);
+        Task<(int total, List<ExamPaperUser> list)> GetListByUserTask(int userId);
+        Task<(int total, List<ExamPaperUser> list)> GetListByUserToday(int userId);
         Task<(int total, List<ExamPaperUser> list)> GetListAsync(int paperId, string keyWords, int pageIndex, int pageSize);
         Task<(int total, List<ExamPaperUser> list)> GetListAsync(int userId, bool isMoni, bool isApp, string date, string keyWords, int pageIndex, int pageSize);
-
+        Task<(int total, List<ExamPaperUser> list)> GetEventListAsync(int userId, bool isApp);
         Task IncrementAsync(int id);
         Task DecrementAsync(int id);
         Task UpdateExamDateTimeAsync(int paperId, DateTime beginDateTime, DateTime endDateTime);

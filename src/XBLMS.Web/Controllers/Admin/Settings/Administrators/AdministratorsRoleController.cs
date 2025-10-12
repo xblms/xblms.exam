@@ -29,7 +29,10 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
             _administratorRepository = administratorRepository;
             _administratorsInRolesRepository = administratorsInRolesRepository;
         }
-
+        public class GetRequest
+        {
+            public string KeyWords { get; set; }
+        }
         public class ListRequest
         {
             public List<Role> Roles { get; set; }

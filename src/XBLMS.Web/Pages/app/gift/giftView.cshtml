@@ -1,0 +1,124 @@
+@page
+@{ Layout = "_LayoutApp"; }
+@section Styles{
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+        }
+
+        html {
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+}
+<el-carousel height="190px" :interval="2000" arrow="never">
+    <el-carousel-item v-for="item in gift.coverImg" :key="item">
+        <el-image :src="item"
+                  fit="cover"></el-image>
+    </el-carousel-item>
+</el-carousel>
+<div class="card rounded-0 border-0">
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-12">
+                <div class="row g-3">
+                    <div class="col-6" v-for="item in gift.coverImg">
+                        <img :src="item" class="img-fluid rounded-3 w-100">
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="my-5 mx-lg-8">
+                    <div class="d-flex flex-column gap-2">
+                        <h1 class="mb-0">{{ gift.name }}</h1>
+                        <div>
+                            <span>
+                                <i class="el-icon-user"></i>
+                                {{ gift.shopTotal }} 个用户兑换了该商品
+                            </span>
+                        </div>
+                    </div>
+                    <hr class="my-3">
+                    <div class="mb-5 d-flex flex-column gap-1">
+                        <h4 class="mb-0">
+                            <i class="bi bi-database-check fs-1 text-warning"></i>
+                            <span>需要 {{ gift.point }}</span> 个积分
+                        </h4>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="d-grid">
+                                <button type="button" class="btn btn-outline-success w-100 p-4" v-on:click="payDialogVisible=true" v-if="gift.myPoint>=gift.point">兑换这个商品</button>
+                                <button type="button" class="btn btn-outline-danger w-100 p-4" disabled v-else>剩余 {{ gift.myPoint }} 积分不够兑换该商品</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card mt-4">
+                        <div class="card-body">
+                            <div class="card-title">商品描述</div>
+                            <div v-html="gift.subject"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<template>
+    <el-dialog title="积分兑换商品"
+               :visible.sync="payDialogVisible" :show-close="false"
+               fullscreen>
+        <div>
+            <el-form v-on:submit.native.prevent ref="payForm" :model="payForm" label-position="top">
+                <el-form-item label="商品名称">
+                    {{ gift.name }}
+                </el-form-item>
+                <el-form-item label="消耗积分">
+                    {{ gift.point }}<span class="fw-normal ms-2">剩余积分：{{ gift.myPoint }}</span>
+                </el-form-item>
+                <el-form-item label="领取方式" v-if="gift.shopType==='OnSelf'" prop="shopType" :rules="[{ required: true, message: '请选择领取方式' }]">
+                    <el-radio-group v-model="payForm.shopType">
+                        <el-radio label="Online">线上发货</el-radio>
+                        <el-radio label="Offline">线下领取</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+                <el-form-item label="领取方式" v-else>
+                    {{ gift.shopTypeStr }}
+                </el-form-item>
+                <template v-if="payForm.shopType==='Online'">
+                    <el-form-item label="联系人" prop="linkMan" :rules="[{ required: true, message: '请输入联系人' }]">
+                        <el-input v-model="payForm.linkMan"></el-input>
+                    </el-form-item>
+                    <el-form-item label="联系电话" prop="linkTel" :rules="[{ required: true, message: '请输入联系电话' }]">
+                        <el-input v-model="payForm.linkTel"></el-input>
+                    </el-form-item>
+                    <el-form-item label="收件地址" prop="linkAddress" :rules="[{ required: true, message: '请输入收件地址' }]">
+                        <el-input v-model="payForm.linkAddress"></el-input>
+                    </el-form-item>
+                </template>
+                <template v-if="payForm.shopType==='Offline'">
+                    <el-form-item label="领取地址">
+                        {{ gift.offLineAddress }}
+                    </el-form-item>
+                </template>
+                <el-form-item label="兑换数量">
+                    1
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" class="border-0" icon="el-icon-check" v-on:click="btnPaySubmitClick">确定兑换</el-button>
+                    <el-button class="border-0" icon="el-icon-close" v-on:click="payDialogVisible = false">取 消</el-button>
+                </el-form-item>
+            </el-form>
+        </div>
+    </el-dialog>
+</template>
+<div class="py-8"></div>
+<div class="py-8"></div>
+<div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 animate__animated animate__fadeInUp">
+    <el-button class="rounded-pill" type="primary" v-on:click="utils.closeLayerSelf" icon="el-icon-back">返 回</el-button>
+</div>
+@section Scripts{
+    <script src="/sitefiles/assets/js/app/gift/giftView.js" type="text/javascript"></script>
+}

@@ -22,14 +22,14 @@ namespace XBLMS.Core.Services
             double paperPass = 0;
 
 
-            var (total, list) = await _examPaperStartRepository.GetListAsync(userId, "", "", "", 1, int.MaxValue);
+            var (total, list) = await _databaseManager.ExamPaperStartRepository.GetListAsync(userId, "", "", "", 1, int.MaxValue);
             if (total > 0)
             {
                 foreach (var item in list)
                 {
                     paperTotal++;
 
-                    var paper = await _examPaperRepository.GetAsync(item.ExamPaperId);
+                    var paper = await _databaseManager.ExamPaperRepository.GetAsync(item.ExamPaperId);
                     if (paper != null)
                     {
                         if (item.Score > paper.PassScore)

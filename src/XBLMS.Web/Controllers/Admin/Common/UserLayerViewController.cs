@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using XBLMS.Configuration;
+using XBLMS.Enums;
 using XBLMS.Models;
 using XBLMS.Repositories;
 using XBLMS.Services;
@@ -19,12 +20,15 @@ namespace XBLMS.Web.Controllers.Admin.Common
         private readonly IUserRepository _userRepository;
         private readonly IUserGroupRepository _userGroupRepository;
         private readonly IOrganManager _organManager;
-        public UserLayerViewController(IAuthManager authManager, IUserRepository userRepository, IUserGroupRepository userGroupRepository, IOrganManager organManager)
+        private readonly IConfigRepository _configRepository;
+
+        public UserLayerViewController(IAuthManager authManager, IUserRepository userRepository, IUserGroupRepository userGroupRepository, IOrganManager organManager, IConfigRepository configRepository)
         {
             _authManager = authManager;
             _userRepository = userRepository;
             _userGroupRepository = userGroupRepository;
             _organManager = organManager;
+            _configRepository = configRepository;
         }
 
         public class GetRequest
@@ -36,6 +40,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
         {
             public User User { get; set; }
             public string GroupName { get; set; }
+            public SystemCode SystemCode { get; set; }
         }
     }
 }

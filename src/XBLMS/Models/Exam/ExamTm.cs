@@ -1,5 +1,6 @@
 ﻿using Datory;
 using Datory.Annotations;
+using System.Collections.Generic;
 
 namespace XBLMS.Models
 {
@@ -32,5 +33,9 @@ namespace XBLMS.Models
         public int RightCount { get; set; }
         [DataColumn]
         public int WrongCount { get; set; }
+        [DataColumn]
+        public List<string> TreeParentPath { get; set; }
+        [DataColumn]
+        public List<string> TmGroupIds { get; set; }
     }
 }

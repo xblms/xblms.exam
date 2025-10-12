@@ -8,7 +8,6 @@ namespace XBLMS.Web.Controllers.Home.Exam
 {
     public partial class ExamQuestionnairingController
     {
-        [RequestSizeLimit(long.MaxValue)]
         [HttpPost, Route(RouteSubmitPaper)]
         public async Task<ActionResult<BoolResult>> SubmitPaper([FromBody] GetSubmitRequest request)
         {
@@ -25,11 +24,36 @@ namespace XBLMS.Web.Controllers.Home.Exam
             {
                 user = await _authManager.GetUserAsync();
 
-                var paperUser = await _examQuestionnaireUserRepository.GetAsync(request.Id, user.Id);
-                paperUser.SubmitType = SubmitType.Submit;
-                await _examQuestionnaireUserRepository.UpdateAsync(paperUser);
+                var paperUser = await _examQuestionnaireUserRepository.GetAsync(request.PlanId, request.CourseId, request.Id, user.Id);
+                if (paperUser == null)
+                {
+                    await _examQuestionnaireUserRepository.InsertAsync(new ExamQuestionnaireUser
+                    {
+                        PlanId = request.PlanId,
+                        CourseId = request.CourseId,
+                        ExamPaperId = paper.Id,
+                        UserId = user.Id,
+                        KeyWords = paper.Title,
+                        KeyWordsAdmin = await _organManager.GetUserKeyWords(user.Id),
+                        Locked = paper.Locked,
+                        ExamBeginDateTime = paper.ExamBeginDateTime,
+                        ExamEndDateTime = paper.ExamEndDateTime,
+                        CompanyId = user.CompanyId,
+                        DepartmentId = user.DepartmentId,
+                        CreatorId = user.CreatorId,
+                        DepartmentParentPath = user.DepartmentParentPath,
+                        CompanyParentPath = user.CompanyParentPath,
+                        SubmitType = SubmitType.Submit
+                    });
+                }
+                else
+                {
+                    paperUser.SubmitType = SubmitType.Submit;
+                    await _examQuestionnaireUserRepository.UpdateAsync(paperUser);
+                }
+
+                await _authManager.AddPointsLogAsync(PointType.PointExamQ, user, paper.Id, paper.Title);
             }
-          
 
             if (request.TmList != null && request.TmList.Count > 0)
             {

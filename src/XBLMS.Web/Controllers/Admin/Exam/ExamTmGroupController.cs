@@ -20,10 +20,9 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
         private const string RouteEditGet = Route + "/editGet";
         private const string RouteEditPost = Route + "/editPost";
+        private const string RouteTmTotal = Route + "/tmTotal";
 
         private readonly IAuthManager _authManager;
-        private readonly ICacheManager _cacheManager;
-        private readonly IConfigRepository _configRepository;
         private readonly IExamTmGroupRepository _examTmGroupRepository;
         private readonly IExamTxRepository _examTxRepository;
         private readonly IExamManager _examManager;
@@ -32,11 +31,9 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         private readonly IExamPaperRepository _examPaperRepository;
         private readonly IUserGroupRepository _userGroupRepository;
 
-        public ExamTmGroupController(IAuthManager authManager, ICacheManager cacheManager, IConfigRepository configRepository, IExamTmGroupRepository examTmGroupRepository, IExamManager examManager, IExamTxRepository examTxRepository, IAdministratorRepository administratorRepository, IExamTmRepository examTmRepository, IExamPaperRepository examPaperRepository, IUserGroupRepository userGroupRepository)
+        public ExamTmGroupController(IAuthManager authManager, IExamTmGroupRepository examTmGroupRepository, IExamManager examManager, IExamTxRepository examTxRepository, IAdministratorRepository administratorRepository, IExamTmRepository examTmRepository, IExamPaperRepository examPaperRepository, IUserGroupRepository userGroupRepository)
         {
             _authManager = authManager;
-            _cacheManager = cacheManager;
-            _configRepository = configRepository;
             _examTmGroupRepository = examTmGroupRepository;
             _examManager = examManager;
             _examTxRepository = examTxRepository;
@@ -54,7 +51,6 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             public IEnumerable<ExamTmGroup> Groups { get; set; }
         }
 
-
         public class GetEditResult
         {
             public ExamTmGroup Group { get; set; }
@@ -62,6 +58,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             public List<ExamTx> TxList { get; set; }
             public List<Select<string>> GroupTypeSelects { get; set; }
             public List<UserGroup> UserGroups { get; set; }
+            public bool WithTree { get; set; }
         }
 
         public class GetEditRequest
@@ -69,6 +66,10 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             public ExamTmGroup Group { get; set; }
         }
 
-
+        public class GetTmTotalResult
+        {
+            public int TmTotal { get; set; }
+            public int UseTotal { get; set; }
+        }
     }
 }

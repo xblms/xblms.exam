@@ -7,9 +7,6 @@ namespace XBLMS.Core.Services
     {
         public async Task<(int answerTmTotal, double answerPercent, int allTmTotal, double allAnswerPercent, int collectTmTotal, double collectAnswerPercent, int wrongTmTotal, double wrongAnswerPercent)> AnalysisPractice(int userId)
         {
-            var tmGroups = await _examTmGroupRepository.GetListWithoutLockedAsync();
-
-
             double answerPercent = 0;
 
             var allTmTotal = 0;
@@ -21,15 +18,15 @@ namespace XBLMS.Core.Services
             var wrongTmTotal = 0;
             double wrongPercent = 0;
 
-            var (answerTotal, rightTotal, allAnswerTotal, allRightTotal, collectAnswerTotal, collectRightTotal, wrongAnswerTotal, wrongRightTotal) = await _examPracticeRepository.SumAsync(userId);
+            var (answerTotal, rightTotal, allAnswerTotal, allRightTotal, collectAnswerTotal, collectRightTotal, wrongAnswerTotal, wrongRightTotal) = await _databaseManager.ExamPracticeRepository.SumAsync(userId);
 
-            var collect = await _examPracticeCollectRepository.GetAsync(userId);
+            var collect = await _databaseManager.ExamPracticeCollectRepository.GetAsync(userId);
             if (collect != null && collect.TmIds != null)
             {
                 collectTmTotal = collect.TmIds.Count;
             }
 
-            var wrong = await _examPracticeWrongRepository.GetAsync(userId);
+            var wrong = await _databaseManager.ExamPracticeWrongRepository.GetAsync(userId);
             if (wrong != null && wrong.TmIds != null)
             {
                 wrongTmTotal = wrong.TmIds.Count;
@@ -64,13 +61,13 @@ namespace XBLMS.Core.Services
             var collectTmTotal = 0;
             var wrongTmTotal = 0;
 
-            var collect = await _examPracticeCollectRepository.GetAsync(userId);
+            var collect = await _databaseManager.ExamPracticeCollectRepository.GetAsync(userId);
             if (collect != null && collect.TmIds != null)
             {
                 collectTmTotal = collect.TmIds.Count;
             }
 
-            var wrong = await _examPracticeWrongRepository.GetAsync(userId);
+            var wrong = await _databaseManager.ExamPracticeWrongRepository.GetAsync(userId);
             if (wrong != null && wrong.TmIds != null)
             {
                 wrongTmTotal = wrong.TmIds.Count;

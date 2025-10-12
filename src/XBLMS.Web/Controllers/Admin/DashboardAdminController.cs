@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using System.Collections.Generic;
 using XBLMS.Configuration;
+using XBLMS.Enums;
 using XBLMS.Models;
 using XBLMS.Repositories;
 using XBLMS.Services;
@@ -29,8 +30,10 @@ namespace XBLMS.Web.Controllers.Admin
         private readonly IOrganManager _organManager;
         private readonly IStatLogRepository _statLogRepository;
         private readonly IStatRepository _statRepository;
+        private readonly IExamPaperRepository _examPaperRepository;
+        private readonly IConfigRepository _configRepository;
 
-        public DashboardAdminController(IHttpContextAccessor context, IAuthManager authManager, IAntiforgery antiforgery, ICacheManager cacheManager, ISettingsManager settingsManager, IDatabaseManager databaseManager, IAdministratorRepository administratorRepository, IOrganManager organManager, IStatLogRepository statLogRepository, IStatRepository statRepository)
+        public DashboardAdminController(IHttpContextAccessor context, IAuthManager authManager, IAntiforgery antiforgery, ICacheManager cacheManager, ISettingsManager settingsManager, IDatabaseManager databaseManager, IAdministratorRepository administratorRepository, IOrganManager organManager, IStatLogRepository statLogRepository, IStatRepository statRepository, IExamPaperRepository examPaperRepository, IConfigRepository configRepository)
         {
             _context = context;
             _authManager = authManager;
@@ -42,6 +45,8 @@ namespace XBLMS.Web.Controllers.Admin
             _organManager = organManager;
             _statLogRepository = statLogRepository;
             _statRepository = statRepository;
+            _examPaperRepository = examPaperRepository;
+            _configRepository = configRepository;
         }
         public class GetLogRequest
         {
@@ -62,6 +67,12 @@ namespace XBLMS.Web.Controllers.Admin
         {
             public List<string> DataTitleList { get; set; }
             public List<GetDataInfo> DataList { get; set; }
+            public int ExamTotalToday { get; set; }
+            public int ExamTotalWeek { get; set; }
+            public int PlanOverTotal { get; set; }
+            public int PlanCreateTotal { get; set; }
+            public int OffTrainTotal { get; set; }
+            public SystemCode SystemCode { get; set; }
         }
 
         public class GetDataInfo

@@ -8,7 +8,7 @@ using XBLMS.Services;
 
 namespace XBLMS.Core.Repositories
 {
-    public class ExamCerUserRepository : IExamCerUserRepository
+    public partial class ExamCerUserRepository : IExamCerUserRepository
     {
         private readonly Repository<ExamCerUser> _repository;
 

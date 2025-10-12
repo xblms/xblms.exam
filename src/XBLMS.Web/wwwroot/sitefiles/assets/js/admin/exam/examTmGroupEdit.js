@@ -9,13 +9,11 @@ var data = utils.init({
   checkdKeys: null,
   expandedKeys: null,
   checkStrictly: false,
-  txList:null,
+  txList: null,
   filterText: '',
   selectOrgans: [],
-  userGroups:[],
-  form: {
-    groupType:'All'
-  }
+  userGroups: [],
+  form: null
 });
 
 var methods = {
@@ -34,6 +32,7 @@ var methods = {
       $this.userGroups = res.userGroups;
 
       $this.form = _.assign({}, res.group);
+
       if (res.group.id > 0) {
         $this.checkdKeys = $this.expandedKeys = res.group.treeIds;
       }
@@ -50,9 +49,12 @@ var methods = {
 
     utils.loading(this, true);
 
-    $api.post($urlPost, { group: $this.form  }).then(function (response) {
-      utils.success('操作成功！');
-      utils.closeLayer(false);
+    $api.post($urlPost, { group: $this.form }).then(function (response) {
+      var res = response.data;
+      if (res.value) {
+        utils.success("操作成功");
+        utils.closeLayerSelf();
+      }
     }).catch(function (error) {
       utils.error(error, { layer: true });
     }).then(function () {
@@ -71,6 +73,10 @@ var methods = {
         selectNodes.forEach((node) => {
           $this.form.treeIds.push(node.id);
         });
+      }
+      else {
+        utils.error("请选择题目分类", { layer: true });
+        return;
       }
     }
 

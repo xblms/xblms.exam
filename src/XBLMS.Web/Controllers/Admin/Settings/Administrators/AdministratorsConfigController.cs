@@ -32,6 +32,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
 
         public class SubmitRequest
         {
+            public string AdminDefaultPassword { get; set; }
             public int AdminUserNameMinLength { get; set; }
             public int AdminPasswordMinLength { get; set; }
             public PasswordRestriction AdminPasswordRestriction { get; set; }

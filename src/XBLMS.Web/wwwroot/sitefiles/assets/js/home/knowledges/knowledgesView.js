@@ -1,4 +1,4 @@
-var $url = "/knowledgesView";
+﻿var $url = "/knowledgesView";
 var $urlLike = $url + "/like";
 var $urlCollect = $url + "/collect";
 
@@ -22,6 +22,8 @@ var methods = {
       $this.isCollect = res.isCollect;
       $this.likes = res.likes;
       $this.collects = res.collects;
+
+      top.utils.pointNotice(res.pointNotice);
     }).catch(function (error) {
       utils.error(error);
     }).then(function () {
@@ -29,10 +31,22 @@ var methods = {
     });
   },
   btnLikeClick: function () {
+    if (this.isLike) {
+      this.likes--;
+    }
+    else {
+      this.likes++;
+    }
     this.isLike = !this.isLike;
     this.apiLike();
   },
   btnCollectClick: function () {
+    if (this.isCollect) {
+      this.collects--;
+    }
+    else {
+      this.collects++;
+    }
     this.isCollect = !this.isCollect;
     this.apiCollect();
   },

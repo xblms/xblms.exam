@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -30,7 +30,8 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 }
             }
 
-            var admin = await _authManager.GetAdminAsync();
+            var adminAuth = await _authManager.GetAdminAuth();
+            var admin = adminAuth.Admin;
             var cer = request.Item;
             if (cer.Id > 0)
             {
@@ -45,14 +46,15 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             }
             else
             {
-
-                cer.CompanyId = admin.CompanyId;
+                cer.CompanyId = adminAuth.CurCompanyId;
                 cer.CreatorId = admin.Id;
                 cer.DepartmentId = admin.DepartmentId;
-                var id = await _examCerRepository.InsertAsync(cer);
-                await _statRepository.AddCountAsync(StatType.ExamCerAdd);
-                await _authManager.AddAdminLogAsync("新增证书模板", $"{cer.Name}");
+                cer.DepartmentParentPath = admin.DepartmentParentPath;
+                cer.CompanyParentPath = adminAuth.CompanyParentPath;
 
+                var id = await _examCerRepository.InsertAsync(cer);
+
+                await _authManager.AddAdminLogAsync("新增证书模板", $"{cer.Name}");
                 await _authManager.AddStatLogAsync(StatType.ExamCerAdd, "新增证书模板", id, cer.Name);
                 await _authManager.AddStatCount(StatType.ExamCerAdd);
                 return new IntResult
@@ -67,7 +69,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         public async Task<ActionResult<BoolResult>> SubmitPosition([FromBody] SubmitWartmarkPositionData request)
         {
             var admin = await _authManager.GetAdminAsync();
- 
+
             var cerInfo = await _examCerRepository.GetAsync(request.Id);
             if (!string.IsNullOrWhiteSpace(cerInfo.BackgroundImg))
             {

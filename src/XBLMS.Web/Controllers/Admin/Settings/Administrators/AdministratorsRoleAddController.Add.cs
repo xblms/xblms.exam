@@ -33,7 +33,9 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
                 Description = request.Description,
                 CompanyId = admin.CompanyId,
                 DepartmentId = admin.DepartmentId,
-                CreatorId = admin.Id
+                CreatorId = admin.Id,
+                CompanyParentPath = admin.CompanyParentPath,
+                DepartmentParentPath = admin.DepartmentParentPath
             };
             if (request.Menus != null && request.Menus.Count > 0)
             {

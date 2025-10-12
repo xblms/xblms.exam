@@ -1,10 +1,6 @@
 ﻿using Datory;
 using Microsoft.AspNetCore.Mvc;
-using MySqlX.XDevAPI.Common;
-using NPOI.SS.Formula.Functions;
-using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using XBLMS.Dto;
@@ -16,7 +12,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
     public partial class ExamQuestionnaireAnalysisController
     {
         [HttpGet, Route(Route)]
-        public async Task<ActionResult<GetResult>> Get([FromQuery] IdRequest request)
+        public async Task<ActionResult<GetResult>> Get([FromQuery] GetRequest request)
         {
             if (!await _authManager.HasPermissionsAsync(MenuPermissionType.Manage))
             {
@@ -97,7 +93,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                                                 var keyword = $"{tmOptions[i]}_{smallOptions[smallcurent]}";
 
                                                 twoline.Add(smallOptions[smallcurent]);
-                                                var answerCount = await _questionnaireAnswerRepository.GetCountSubmitUser(paper.Id, smallid, keyword);
+                                                var answerCount = await _questionnaireAnswerRepository.GetCountSubmitUser(0, 0, paper.Id, smallid, keyword);
                                                 twoline.Add(answerCount.ToString());
 
                                                 optionCountList.Add(new KeyValuePair<string, int>($"{smallid}{tmOptions[i]}{smallOptions[smallcurent]}", answerCount));
@@ -112,7 +108,6 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                                 }
 
                                 tm.Set("SmallList", dtlist);
-
 
                                 var chatSeries = new List<Apexchart.Series_Data_Group>();
                                 foreach (var smallOption in smallOptions)
@@ -174,7 +169,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                                     for (var j = 0; j < tmOptions.Count; j++)
                                     {
                                         var keyword = $"{tmOptions[j]}";
-                                        var answerCount = await _questionnaireAnswerRepository.GetCountSubmitUser(paper.Id, smallid, keyword);
+                                        var answerCount = await _questionnaireAnswerRepository.GetCountSubmitUser(0, 0, paper.Id, smallid, keyword);
                                         twoline.Add(answerCount.ToString());
                                         optionCountList.Add(new KeyValuePair<string, int>($"{smalltitle}{tmOptions[j]}", answerCount));
                                     }
@@ -214,7 +209,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                             var optionAnswer = new List<string>();
                             if (tm.Tx == ExamQuestionnaireTxType.Jiandati)
                             {
-                                var answerList = await _questionnaireAnswerRepository.GetListAnswer(paper.Id, tm.Id);
+                                var answerList = await _questionnaireAnswerRepository.GetListAnswer(0, 0, paper.Id, tm.Id);
                                 if (answerList != null && answerList.Count > 0)
                                 {
                                     optionAnswer.AddRange(answerList);
@@ -234,7 +229,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                                         var abcList = StringUtils.GetABC();
                                         var optionAnswerValue = abcList[i];
                                         optionsValues.Add(optionAnswerValue);
-                                        var answerCount = await _questionnaireAnswerRepository.GetCountSubmitUser(paper.Id, tm.Id, optionAnswerValue);
+                                        var answerCount = await _questionnaireAnswerRepository.GetCountSubmitUser(0, 0, paper.Id, tm.Id, optionAnswerValue);
                                         optionsAnswers[i] = answerCount;
                                         tmAnswerToTal += answerCount;
                                     }

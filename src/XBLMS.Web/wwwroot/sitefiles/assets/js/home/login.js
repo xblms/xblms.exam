@@ -14,8 +14,9 @@ var data = utils.init({
     isPersistent: false,
     captchaValue: null,
   },
-  version:null,
-  homeTitle: DOCUMENTTITLE_HOME,
+  version: null,
+  versionName: null,
+  systemCodeName: null,
   returnUrl: utils.getQueryString('returnUrl')
 });
 
@@ -34,7 +35,10 @@ var methods = {
     $api.get($url).then(function (response) {
       var res = response.data;
 
+      $this.systemCodeName = res.systemCodeName;
+      document.title = res.systemCodeName;
       $this.version = res.version;
+      $this.versionName = res.versionName;
       $this.isUserCaptchaDisabled = res.isUserCaptchaDisabled;
       if ($this.isUserCaptchaDisabled) {
         $this.btnTypeClick();
@@ -56,6 +60,7 @@ var methods = {
       var res = response.data;
 
       $this.captchaToken = res.value;
+      $this.form.captchaValue = '';
       $this.captchaUrl = $apiUrl + $urlCaptcha + '?token=' + $this.captchaToken;
       $this.btnTypeClick();
     }).catch(function (error) {
@@ -78,6 +83,7 @@ var methods = {
     }).then(function (response) {
       var res = response.data;
 
+      sessionStorage.setItem(SESSION_ID_NAME, res.sessionId);
       localStorage.removeItem(ACCESS_TOKEN_NAME);
       localStorage.setItem(ACCESS_TOKEN_NAME, res.token);
       if ($this.returnUrl) {
@@ -112,7 +118,7 @@ var methods = {
 
   btnSubmitClick: function () {
     var $this = this;
-    this.$refs.formAccount.validate(function (valid) {
+    this.$refs.form.validate(function (valid) {
       if (valid) {
         $this.apiSubmit();
       }
@@ -125,7 +131,6 @@ var $vue = new Vue({
   data: data,
   methods: methods,
   created: function () {
-    document.title = DOCUMENTTITLE_HOME + '-登录';
     this.apiGet();
   }
 });

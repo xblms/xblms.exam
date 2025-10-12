@@ -3,6 +3,8 @@ var $urlExportWord = $url +'/exportWord';
 
 var data = utils.init({
   id: utils.getQueryInt('id'),
+  planId: utils.getQueryInt('planId'),
+  courseId: utils.getQueryInt('courseId'),
   paper: null,
   list: null,
   pieChartColors: ['#67c23a', '#1989fa', '#5cb87a', '#e6a23c'],
@@ -15,7 +17,7 @@ var methods = {
     utils.loading(this, true);
     $api.get($url, {
       params: {
-        id: this.id
+        id: this.id, planId: this.planId, courseId: this.courseId
       }
     }).then(function (response) {
       var res = response.data;
@@ -34,7 +36,7 @@ var methods = {
     utils.loading(this, true);
     $api.get($urlExportWord, {
       params: {
-        id: this.id
+        id: this.id, planId: this.planId, courseId: this.courseId
       } }).then(function (response) {
       var res = response.data;
 

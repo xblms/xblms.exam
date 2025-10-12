@@ -8,6 +8,10 @@ namespace XBLMS.Models
     public class ExamPaperStart : Entity
     {
         [DataColumn]
+        public int PlanId { get; set; }
+        [DataColumn]
+        public int CourseId { get; set; }
+        [DataColumn]
         public int UserId { get; set; }
         [DataColumn]
         public int ExamPaperId { get; set; }
@@ -31,8 +35,6 @@ namespace XBLMS.Models
         [DataColumn]
         public decimal Score { get; set; }
         [DataColumn]
-        public bool HaveSubjective { get; set; }
-        [DataColumn]
         public decimal SubjectiveScore { get; set; }
         [DataColumn]
         public decimal ObjectiveScore { get; set; }
@@ -41,6 +43,12 @@ namespace XBLMS.Models
         [DataColumn]
         public bool Locked { get; set; }
         [DataColumn]
+        public bool Moni { get; set; }
+        [DataColumn]
         public int ExistCount { get; set; } = 0;
+        [DataColumn]
+        public bool IsPass { get; set; }
+        [DataColumn]
+        public bool HaveSubjective { get; set; }
     }
 }

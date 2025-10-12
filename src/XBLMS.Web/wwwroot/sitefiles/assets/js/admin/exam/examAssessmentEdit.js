@@ -103,13 +103,13 @@ var methods = {
       var res = response.data;
       if (res.value) {
         utils.success("操作成功");
+        utils.closeLayerSelf();
       }
 
     }).catch(function (error) {
       utils.error(error, { layer: true });
     }).then(function () {
       utils.loading($this, false);
-      utils.closeLayerSelf();
     });
   },
   submitValid: function () {

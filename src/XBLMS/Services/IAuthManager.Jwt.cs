@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using XBLMS.Models;
+﻿using XBLMS.Models;
 
 namespace XBLMS.Services
 {
@@ -7,10 +6,6 @@ namespace XBLMS.Services
     {
         string AuthenticateAdministrator(Administrator administrator, bool isPersistent);
 
-        Task<string> RefreshAdministratorTokenAsync(string accessToken);
-
         string AuthenticateUser(User user, bool isPersistent);
-
-        Task<string> RefreshUserTokenAsync(string accessToken);
     }
 }

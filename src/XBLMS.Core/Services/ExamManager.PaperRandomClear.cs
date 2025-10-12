@@ -8,43 +8,43 @@ namespace XBLMS.Core.Services
         {
             if (isClear)
             {
-                await _examPaperRandomRepository.DeleteByPaperAsync(examPaperId);
-                await _examPaperRandomTmRepository.DeleteByPaperAsync(examPaperId);
-                await _examPaperRandomConfigRepository.DeleteByPaperAsync(examPaperId);
-                await _examPaperUserRepository.ClearByPaperAsync(examPaperId);
-                await _examPaperStartRepository.ClearByPaperAsync(examPaperId);
-                await _examPaperAnswerRepository.ClearByPaperAsync(examPaperId);
-                await _examCerUserRepository.DeleteByPaperId(examPaperId);
-
+                await _databaseManager.ExamPaperRandomRepository.DeleteByPaperAsync(examPaperId);
+                await _databaseManager.ExamPaperRandomTmRepository.DeleteByPaperAsync(examPaperId);
+                await _databaseManager.ExamPaperRandomConfigRepository.DeleteByPaperAsync(examPaperId);
+                await _databaseManager.ExamPaperUserRepository.ClearByPaperAsync(examPaperId);
+                await _databaseManager.ExamPaperStartRepository.ClearByPaperAsync(examPaperId);
+                await _databaseManager.ExamPaperAnswerRepository.ClearByPaperAsync(examPaperId);
+                await _databaseManager.ExamCerUserRepository.DeleteByPaperId(examPaperId);
             }
             else
             {
-                var randomList = await _examPaperRandomRepository.GetListByPaperAsync(examPaperId);
+                var randomList = await _databaseManager.ExamPaperRandomRepository.GetListByPaperAsync(examPaperId);
                 if (randomList != null && randomList.Count > 0)
                 {
                     foreach (var random in randomList)
                     {
                         random.Locked = true;
-                        await _examPaperRandomRepository.UpdateAsync(random);
+                        await _databaseManager.ExamPaperRandomRepository.UpdateAsync(random);
                     }
                 }
 
             }
         }
+
         public async Task ClearRandomUser(int examPaperId, int userId)
         {
-            var startList = await _examPaperStartRepository.GetNoSubmitListAsync(examPaperId, userId);
+            var startList = await _databaseManager.ExamPaperStartRepository.GetNoSubmitListAsync(examPaperId, userId);
             if (startList != null && startList.Count > 0)
             {
                 foreach (var start in startList)
                 {
-                    var paper = await _examPaperRepository.GetAsync(examPaperId);
+                    var paper = await _databaseManager.ExamPaperRepository.GetAsync(examPaperId);
                     if (paper.TmRandomType == Enums.ExamPaperTmRandomType.RandomExaming)
                     {
-                        await _examPaperRandomRepository.DeleteAsync(start.ExamPaperRandomId, examPaperId);
-                        await _examPaperRandomTmRepository.DeleteByRandomIdAsync(start.ExamPaperRandomId, examPaperId);
+                        await _databaseManager.ExamPaperRandomRepository.DeleteAsync(start.ExamPaperRandomId, examPaperId);
+                        await _databaseManager.ExamPaperRandomTmRepository.DeleteByRandomIdAsync(start.ExamPaperRandomId, examPaperId);
                     }
-                    await _examPaperStartRepository.DeleteAsync(start.Id);
+                    await _databaseManager.ExamPaperStartRepository.DeleteAsync(start.Id);
                 }
             }
         }

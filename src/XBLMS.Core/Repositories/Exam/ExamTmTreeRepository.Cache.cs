@@ -1,7 +1,10 @@
 ﻿using Datory;
+using SqlKata;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using XBLMS.Dto;
+using XBLMS.Enums;
 using XBLMS.Models;
 using XBLMS.Utils;
 
@@ -9,45 +12,27 @@ namespace XBLMS.Core.Repositories
 {
     public partial class ExamTmTreeRepository
     {
-        public async Task<List<ExamTmTree>> GetListAsync()
-        {
-            return await GetAllAsync();
-        }
         public async Task<List<ExamTmTree>> GetAllAsync()
         {
-            return await _repository.GetAllAsync(Q
-                .OrderBy(nameof(ExamTmTree.CreatedDate))
-                .CachingGet(_cacheKey)
-            );
+            return await _repository.GetAllAsync();
         }
-
+        public async Task<List<ExamTmTree>> GetListAsync(AdminAuth auth)
+        {
+            var query = Q.OrderBy(nameof(ExamTmTree.Id));
+            query = GetQueryByAuth(query, auth);
+            return await _repository.GetAllAsync(query);
+        }
         public async Task<ExamTmTree> GetAsync(int id)
         {
-            var tks = await GetAllAsync();
-            var list = tks.ToList();
-            return list.Where(x => x.Id == id).FirstOrDefault();
+            return await _repository.GetAsync(id);
         }
-
 
         public async Task<List<int>> GetIdsAsync(int id)
         {
-            var all = await GetAllAsync();
-            var ids = new List<int>();
-            ids.Add(id);
-            await GetIdsAsync(ids, all, id);
-            return ids;
+            return await _repository.GetAllAsync<int>(Q.
+                 Select(nameof(ExamTmTree.Id)).
+                 WhereLike(nameof(ExamTmTree.ParentPath), $"%'{id}'%"));
         }
-
-        private async Task GetIdsAsync(List<int> ids, List<ExamTmTree> all, int parentid)
-        {
-            var children = all.Where(x => x.ParentId == parentid).ToList();
-            foreach (var child in children)
-            {
-                ids.Add(child.Id);
-                await GetIdsAsync(ids, all, child.Id);
-            }
-        }
-
 
         public async Task<string> GetPathNamesAsync(int id)
         {
@@ -68,7 +53,7 @@ namespace XBLMS.Core.Repositories
                 }
 
             }
-            return ListUtils.ToString(names, ">"); ;
+            return ListUtils.ToString(names, "/"); ;
         }
         public async Task GetPathNamesAsync(List<ExamTmTree> names, int parentId)
         {
@@ -78,6 +63,60 @@ namespace XBLMS.Core.Repositories
                 names.Add(info);
                 await GetPathNamesAsync(names, info.ParentId);
             }
+        }
+
+        public async Task<List<string>> GetParentPathAsync(int id)
+        {
+            var current = await _repository.GetAsync(id);
+            var ids = new List<int> { id };
+
+            if (current.ParentId > 0)
+            {
+                await GetParentIdsAsync(ids, current.ParentId);
+            }
+
+            var path = new List<string>();
+            for (var i = ids.Count - 1; i >= 0; i--)
+            {
+                path.Add($"'{ids[i]}'");
+            }
+
+            return path;
+        }
+        private async Task GetParentIdsAsync(List<int> ids, int parentId)
+        {
+            ids.Add(parentId);
+
+            var current = await _repository.GetAsync(parentId);
+
+            if (current.ParentId > 0)
+            {
+                await GetParentIdsAsync(ids, current.ParentId);
+            }
+        }
+
+        private Query GetQueryByAuth(Query query, AdminAuth auth)
+        {
+            if (auth.AuthDataType == AuthorityDataType.DataCreator)
+            {
+                query.Where(nameof(ExamTmTree.CreatorId), auth.AdminId);
+            }
+            else
+            {
+                if (auth.AuthDataShowAll)
+                {
+                    if (auth.CurCompanyId != 1)
+                    {
+                        query.WhereLike(nameof(ExamTmTree.CompanyParentPath), $"%'{auth.CurCompanyId}'%");
+                    }
+                }
+                else
+                {
+                    query.Where(nameof(ExamTmTree.CompanyId), auth.CurCompanyId);
+                }
+            }
+
+            return query;
         }
 
     }

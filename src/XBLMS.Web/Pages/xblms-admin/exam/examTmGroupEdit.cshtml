@@ -1,0 +1,135 @@
+﻿@page
+@{ Layout = "_Layout"; }
+
+<el-card>
+    <div slot="header" class="clearfix">
+        <span>{{ id > 0 ? "修改" : "新增" }}题目组</span>
+        <el-button style="float: right;padding:3px 0;" type="text" v-on:click="utils.closeLayer(false)"><i class="el-icon-close"></i></el-button>
+    </div>
+    <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-180) + 'px' }">
+        <div style="margin-right:18px;">
+            <el-form v-on:submit.native.prevent :size="euiSize" ref="form" :model="form" status-icon label-width="140px">
+                <el-form-item label="题目组名称" prop="groupName" :rules="[{ required: true, message: '请输入名称' }]">
+                    <el-input v-model="form.groupName"></el-input>
+                </el-form-item>
+                <el-form-item label="类型">
+                    <el-select v-model="form.groupType" :rules="[{ required: true, message: '请选择类型' }]">
+                        <el-option v-for="type in groupTypeSelects"
+                                   :key="type.value"
+                                   :label="type.label"
+                                   :value="type.value">
+                        </el-option>
+                    </el-select>
+                    <small class="tips" v-if="form.groupType==='Fixed'">在列表中选择题目</small>
+                </el-form-item>
+                <template v-if="form.groupType==='Range'">
+                    <el-form-item label="分类范围">
+                        <el-row>
+                            <el-col :span="10">
+                                <el-input placeholder="输入关键字进行过滤"
+                                          v-model="filterText">
+                                </el-input>
+                            </el-col>
+                            <el-col :span="14" style="padding-left:10px;">
+                                <el-checkbox v-model="checkStrictly" border>联动选择</el-checkbox>
+                            </el-col>
+                        </el-row>
+                        <div style="height:10px;"></div>
+                        <el-card shadow="hover">
+                            <el-tree ref="tmTree"
+                                     :data="tmTree"
+                                     show-checkbox :check-strictly="!checkStrictly"
+                                     node-key="id"
+                                     :default-checked-keys="checkdKeys"
+                                     :default-expanded-keys="expandedKeys"
+                                     :filter-node-method="filterNode"
+                                     :props="{ disabled:true }">
+                            </el-tree>
+                        </el-card>
+                    </el-form-item>
+                    <el-form-item label="题型范围" prop="txIds">
+                        <el-select ref="selectTx" v-model="form.txIds" multiple placeholder="全部题型" style="width:100%">
+                            <el-option v-for="tx in txList"
+                                       :key="tx.id"
+                                       :label="tx.name"
+                                       :value="tx.id">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="难度范围" prop="txIds">
+                        <el-select ref="selectNandu" v-model="form.nandus" multiple placeholder="全部难度" style="width:100%">
+                            <el-option v-for="nd in 5"
+                                       :key="nd"
+                                       :label="nd"
+                                       :value="nd">
+                                <span>{{ nd }}<i class="el-icon-star-on" style="color:#FF9900;margin-left:3px;font-size:14px;"></i></span>
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="知识点范围" prop="zhishidians">
+                        <el-select v-model="form.zhishidians"
+                                   multiple
+                                   filterable
+                                   allow-create
+                                   default-first-option
+                                   placeholder="知识点模糊匹配" style="width:100%">
+                            <el-option v-for="item in form.zhishidians"
+                                       :key="item"
+                                       :label="item"
+                                       :value="item">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="创建时间范围">
+                        <el-date-picker v-model="form.dateFrom"
+                                        type="date"
+                                        value-format="yyyy-MM-ddTHH:mm:ss.000Z"
+                                        placeholder="选择开始日期">
+                        </el-date-picker>
+                        -
+                        <el-date-picker v-model="form.dateTo"
+                                        type="date"
+                                        value-format="yyyy-MM-ddTHH:mm:ss.000Z"
+                                        placeholder="选择结束日期">
+                        </el-date-picker>
+                    </el-form-item>
+                </template>
+                <el-form-item label="备注">
+                    <el-input type="textarea" v-model.trim="form.description" :rows="3" resize="none"></el-input>
+                </el-form-item>
+                <el-form-item label="刷题">
+                    <el-switch v-model="form.openUser" active-color="#13ce66"
+                               active-text="允许刷题">
+                    </el-switch>
+                    <div class="tips">开启之后允许考生对该范围内的题库进行刷题练习。</div>
+                </el-form-item>
+                <el-form-item label="刷题用户" prop="openUserGroupIds" v-if="form.openUser" :rules="{ required: true, message: '请选择用户组' }">
+                    <el-select ref="openUserGroupIds" v-model="form.openUserGroupIds" filterable multiple placeholder="请选择用户组" clearable style="width:100%">
+                        <el-option v-for="userGroup in userGroups"
+                                   :key="userGroup.id"
+                                   :label="userGroup.groupName"
+                                   :value="userGroup.id">
+                        </el-option>
+                    </el-select>
+                    <div class="tips">根据选择的用户组匹配可以刷题的用户，多个组为并集。</div>
+                </el-form-item>
+                <el-form-item label="状态" prop="locked">
+                    <el-select v-model="form.locked">
+                        <el-option label="启用" :value="false"></el-option>
+                        <el-option label="停用" :value="true"></el-option>
+                    </el-select>
+                </el-form-item>
+            </el-form>
+        </div>
+    </el-scrollbar>
+</el-card>
+<el-row align="center" style="margin-top:18px;">
+    <el-col :span="24" align="center">
+        <el-button icon="el-icon-check" :size="euiSize" type="primary" v-on:click="btnSubmitClick">确 定</el-button>
+        <el-button icon="el-icon-close" :size="euiSize" v-on:click="btnCancelClick">取 消</el-button>
+    </el-col>
+</el-row>
+
+@section Scripts{
+    <script src="/sitefiles/assets/js/admin/exam/examTmGroupEdit.js" type="text/javascript"></script>
+}

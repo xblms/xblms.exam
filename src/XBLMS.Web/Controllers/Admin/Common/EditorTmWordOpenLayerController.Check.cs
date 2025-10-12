@@ -9,9 +9,10 @@ namespace XBLMS.Web.Controllers.Admin.Common
         [HttpPost, Route(RouteCheck)]
         public async Task<GetCheckResult> Check([FromBody] GetRequest reqeust)
         {
-            var admin = await _authManager.GetAdminAsync();
+            var adminAuth = await _authManager.GetAdminAuth();
+            var admin = adminAuth.Admin;
 
-            var (total, successTotal, errorTotal, tmList, resultHtml) = await Check(reqeust.TmHtml, reqeust.TreeId, admin);
+            var (total, successTotal, errorTotal, tmList, resultHtml) = await Check(reqeust.TmHtml, reqeust.TreeId, admin, adminAuth);
 
             return new GetCheckResult()
             {

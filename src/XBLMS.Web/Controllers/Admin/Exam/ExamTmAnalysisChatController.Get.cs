@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+ï»¿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -39,7 +39,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             {
                 foreach (var ndchat in ndChats)
                 {
-                    nds.Add($"{ndchat.Key}ÐÇ");
+                    nds.Add($"{ndchat.Key}æ˜Ÿ");
                     ndvs.Add(ndchat.Value);
                 }
             }

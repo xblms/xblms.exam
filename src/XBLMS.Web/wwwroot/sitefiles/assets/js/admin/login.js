@@ -7,17 +7,20 @@ if (window.top != self) {
 
 var data = utils.init({
   status: utils.getQueryInt('status'),
+  form: {
+    account: null,
+    password: null,
+    captchaValue: null,
+  },
+  isPersistent: false,
   pageSubmit: false,
   pageAlert: null,
-  account: null,
-  password: null,
-  isPersistent: false,
   captchaToken: null,
-  captchaValue: null,
   captchaUrl: null,
-  version:null,
+  version: null,
+  versionName: null,
   isAdminCaptchaDisabled: false,
-  loginTitle: DOCUMENTTITLE_ADMIN
+  systemCodeName: null,
 });
 
 var methods = {
@@ -26,8 +29,8 @@ var methods = {
 
     if (this.status === 401) {
       this.pageAlert = {
-        type: 'danger',
-        html: '账号登录已过期或失效，请重新登录'
+        type: 'error',
+        title: '账号登录已过期或失效，请重新登录'
       };
     }
 
@@ -35,7 +38,10 @@ var methods = {
     $api.get($url).then(function (response) {
       var res = response.data;
       if (res.success) {
+        $this.systemCodeName = res.systemCodeName;
+        document.title = res.systemCodeName;
         $this.version = res.version;
+        $this.versionName = res.versionName;
         $this.isAdminCaptchaDisabled = res.isAdminCaptchaDisabled;
         $this.apiCaptcha();
       } else {
@@ -56,7 +62,7 @@ var methods = {
       var res = response.data;
 
       $this.captchaToken = res.value;
-      $this.captchaValue = '';
+      $this.form.captchaValue = '';
       $this.pageSubmit = false;
       $this.captchaUrl = $apiUrl + $urlCaptcha + '?token=' + $this.captchaToken;
     }).catch(function (error) {
@@ -70,14 +76,14 @@ var methods = {
   apiSubmit: function (isForceLogoutAndLogin) {
     var $this = this;
 
-    utils.loading(this, true);
+    utils.loading(this, true, "登录...");
     $api.post($url, {
-      account: this.account,
-      password: md5(this.password),
+      account: this.form.account,
+      password: md5(this.form.password),
       isPersistent: this.isPersistent,
       isForceLogoutAndLogin: isForceLogoutAndLogin,
       token: this.captchaToken,
-      value: this.captchaValue
+      value: this.form.captchaValue
     }).then(function (response) {
       var res = response.data;
 
@@ -123,30 +129,27 @@ var methods = {
     this.apiCaptcha();
   },
 
-  btnSubmitClick: function (e) {
-    e && e.preventDefault();
-    this.pageSubmit = true;
-    this.pageAlert = null;
-
-    if (!this.account || !this.password) return;
-    if (!this.isAdminCaptchaDisabled && !this.captchaValue) return;
-    this.apiSubmit(false);
+  btnSubmitClick: function () {
+    var $this = this;
+    this.$refs.form.validate(function (valid) {
+      if (valid) {
+        $this.pageSubmit = true;
+        $this.pageAlert = null;
+        $this.apiSubmit(false);
+      }
+    });
   }
 };
 
 var $vue = new Vue({
   el: '#main',
   data: data,
-  directives: {
-    focus: {
-      inserted: function (el) {
-        el.focus()
-      }
-    }
-  },
   methods: methods,
   created: function () {
-    document.title = DOCUMENTTITLE_ADMIN + '-登录';
+    var $this = this;
     this.apiGet();
+    setTimeout(function () {
+      $this.$refs.account.focus();
+    }, 100);
   }
 });

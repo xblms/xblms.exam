@@ -11,7 +11,7 @@ namespace XBLMS.Models
         public string Name { get; set; }
         [DataColumn]
         public int ParentId { get; set; }
-        public IList<OrganCompany> Children { get; set; }
-
+        [DataColumn]
+        public List<string> ParentNames { get; set; }
     }
 }

@@ -22,6 +22,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         private readonly IExamManager _examManager;
         private readonly IPathManager _pathManager;
         private readonly IUserGroupRepository _userGroupRepository;
+        private readonly IConfigRepository _configRepository;
 
         private readonly IExamQuestionnaireRepository _questionnaireRepository;
         private readonly IExamQuestionnaireTmRepository _questionnaireTmRepository;
@@ -35,15 +36,17 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             IUserGroupRepository userGroupRepository,
             IExamQuestionnaireRepository examQuestionnaireRepository,
             IExamQuestionnaireTmRepository examQuestionnaireTmRepository,
-            IExamQuestionnaireUserRepository examQuestionnaireUserRepository)
+            IExamQuestionnaireUserRepository examQuestionnaireUserRepository,
+            IConfigRepository configRepository)
         {
             _authManager = authManager;
             _examManager = examManager;
-            _pathManager= pathManager;
+            _pathManager = pathManager;
             _userGroupRepository = userGroupRepository;
             _questionnaireRepository = examQuestionnaireRepository;
             _questionnaireTmRepository = examQuestionnaireTmRepository;
             _questionnaireUserRepository = examQuestionnaireUserRepository;
+            _configRepository = configRepository;
         }
         public class GetUploadTmResult
         {
@@ -53,6 +56,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         }
         public class GetResult
         {
+            public SystemCode SystemCode { get; set; }
             public ExamQuestionnaire Item { get; set; }
             public List<UserGroup> UserGroupList { get; set; }
             public List<ExamQuestionnaireTm> TmList { get; set; }

@@ -39,18 +39,13 @@ var methods = {
     $api.post(editUrl, { item: this.form }).then(function (response) {
       var res = response.data;
       if (res.value) {
-        if ($this.id > 0) {
-          utils.success("成功修改题型")
-        }
-        else {
-          utils.success("成功新增题型")
-        }
+        utils.success("操作成功");
+        utils.closeLayerSelf();
       }
     }).catch(function (error) {
       utils.error(error, { layer: true });
     }).then(function () {
       utils.loading($this, false);
-      utils.closeLayerSelf();
     });
   },
 

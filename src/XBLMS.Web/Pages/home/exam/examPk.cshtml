@@ -6,148 +6,124 @@
             margin-bottom: 0px;
         }
 
-        body {
+        body,html {
             padding: 0;
             margin: 0;
-            background-color: #ffffff;
-        }
-
-        html {
-            padding: 0;
-            margin: 0;
-            background-color: #ffffff;
         }
     </style>
 }
-<el-card class="rounded-0">
-    <div class="d-flex justify-content-between align-items-center">
-        <div>
-            <h2 class="h1 fw-bold">竞赛中心</h2>
-        </div>
+<div class="rounded-0 shadow p-3 bg-white sticky-top">
+    <div class="fw-bolder text-center">
+        答题竞赛
     </div>
-</el-card>
-<div class="p-3">
-    <div class="text-center my-3">
-        <h4><i class="bi bi-trophy-fill me-2"></i>我的赛事</h4>
-    </div>
-    <div class="p-5 bg-light">
-        <div v-if="roomTotal>0">
-            <div class="row g-5">
-                <div class="col-3" v-for="room in roomList">
-                    <el-card class="mb-3 card-hover-with-icon border-top border-5">
-                        <div v-on:click="btnViewRoomClick(room)">
-                            <div class="text-center mb-3">
-                                <span class="px-3 py-1 rounded-pill fs-6 card-icon">{{ room.mark }}</span>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div v-if="room.userId_A>0" class="text-center">
-                                    <div class="avatar avatar-sm">
-                                        <img :src="room.userA.avatarUrl || DEFAULT_AVATAR_URL" class="rounded-circle">
+</div>
+<div class="p-5">
+    <el-tabs tab-position="top">
+        <el-tab-pane label="我的赛事">
+            <div>
+                <div v-if="roomTotal>0">
+                    <div class="row g-5">
+                        <div class="col-4" v-for="room in roomList">
+                            <el-card class="card-hover-with-icon border-3 border-start-0 border-end-0 border-bottom-0 border-0">
+                                <div v-on:click="btnViewRoomClick(room)">
+                                    <div class="text-center mb-3 fw-border">
+                                        <span class="px-3 py-1 rounded-pill card-icon">{{ room.mark }}</span>
                                     </div>
-                                    <div class="fs-6">
-                                        {{ room.userA.displayName }}
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div v-if="room.userId_A>0" class="text-center">
+                                            <div class="avatar avatar-sm">
+                                                <img :src="room.userA.avatarUrl || DEFAULT_AVATAR_URL" class="rounded-circle">
+                                            </div>
+                                            <div>
+                                                {{ room.userA.displayName }}
+                                            </div>
+                                            <div class="mt-2" v-if="room.winUserId>0">
+                                                <span v-if="room.winUserId===room.userId_A" class="text-success">胜</span>
+                                                <span v-else class="text-danger">负</span>
+                                            </div>
+                                        </div>
+                                        <div v-else>
+                                            <div class="avatar avatar-sm">
+                                                <img :src="DEFAULT_NOBODY_AVATAR_URL" class="rounded-circle">
+                                            </div>
+                                        </div>
+                                        <div class="text-warning">
+                                            <span>vs</span>
+                                        </div>
+                                        <div v-if="room.userId_B>0" class="text-center">
+                                            <div class="avatar avatar-sm">
+                                                <img :src="room.userB.avatarUrl || DEFAULT_AVATAR_URL" class="rounded-circle">
+                                            </div>
+                                            <div>
+                                                {{ room.userB.displayName }}
+                                            </div>
+                                            <div class="mt-2" v-if="room.winUserId>0">
+                                                <span v-if="room.winUserId===room.userId_B" class="text-success">胜</span>
+                                                <span v-else class="text-danger">负</span>
+                                            </div>
+                                        </div>
+                                        <div v-else>
+                                            <div class="avatar avatar-sm">
+                                                <img :src="DEFAULT_NOBODY_AVATAR_URL" class="rounded-circle">
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="mt-2" v-if="room.winUserId>0">
-                                        <span v-if="room.winUserId===room.userId_A" class="text-success">胜</span>
-                                        <span v-else class="text-danger">负</span>
+                                    <div class="text-center mt-3">
+                                        <span><i class="bi bi-calendar3-event me-1 text-warning"></i> {{ room.beginDateTimeStr }}</span>
                                     </div>
                                 </div>
-                                <div v-else>
-                                    <div class="avatar avatar-sm">
-                                        <img :src="DEFAULT_NOBODY_AVATAR_URL" class="rounded-circle">
-                                    </div>
-                                </div>
-                                <div class="text-warning">
-                                    <span>vs</span>
-                                </div>
-                                <div v-if="room.userId_B>0" class="text-center">
-                                    <div class="avatar avatar-sm">
-                                        <img :src="room.userB.avatarUrl || DEFAULT_AVATAR_URL" class="rounded-circle">
-                                    </div>
-                                    <div class="fs-6">
-                                        {{ room.userB.displayName }}
-                                    </div>
-                                    <div class="mt-2" v-if="room.winUserId>0">
-                                        <span v-if="room.winUserId===room.userId_B" class="text-success">胜</span>
-                                        <span v-else class="text-danger">负</span>
-                                    </div>
-                                </div>
-                                <div v-else>
-                                    <div class="avatar avatar-sm">
-                                        <img :src="DEFAULT_NOBODY_AVATAR_URL" class="rounded-circle">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="text-center mt-3">
-                                <span class="fs-6"><i class="bi bi-calendar3-event me-1 text-warning"></i> {{ room.beginDateTimeStr }}</span>
-                            </div>
+                            </el-card>
                         </div>
-                    </el-card>
-                </div>
-            </div>
-            <div class="my-5 text-center">
-                <el-button icon="el-icon-refresh-right" v-if="roomList.length>0 && roomList.length<roomTotal" v-on:click="btnRoomLoadMoreClick" :loading="roomLoadMoreLoading">加载更多</el-button>
-                <small v-else>没有更多了</small>
-            </div>
-        </div>
-        <div class="pt-10" v-else>
-            <el-empty description="暂无赛事"></el-empty>
-        </div>
-    </div>
-    <div class="text-center my-3">
-        <h4><i class="bi bi-trophy-fill me-2"></i>全部赛事</h4>
-    </div>
-    <div class="bg-light p-5">
-        <div v-if="total>0">
-            <div class="ms-5 mb-3 position-relative card-hover-with-icon" v-for="(pk,index) in list" v-on:click="btnViewClick(pk.id)">
-                <div class="position-absolute top-50 start-0 translate-middle">
-                    <div class="position-relative">
-                        <i class="bi bi-trophy-fill fs-2 rounded-3 px-1 card-icon text-warning"></i>
-                        <span class="position-absolute top-100 start-100 translate-middle mt-1 fs-6">{{ index+1 }}</span>
+                    </div>
+                    <div class="my-5 text-center">
+                        <el-button class="border-0 rounded-pill" icon="el-icon-refresh-right" v-if="roomList.length>0 && roomList.length<roomTotal" v-on:click="btnRoomLoadMoreClick" :loading="roomLoadMoreLoading">加载更多</el-button>
+                        <small v-else>没有更多了</small>
                     </div>
                 </div>
-                <el-card shadow="hover" class="mb-2">
-                    <div class="row align-items-center g-3 ms-6">
-                        <div class="col">
-                            <div class="mb-3 fw-bold">
-                                <el-link :underline="false" v-on:click.stop="btnViewClick(pk.id)">
-                                    {{ pk.name }}
-                                </el-link>
-                            </div>
-                            <ul class="list-inline fw-light">
-                                <li class="list-inline-item fs-5">
+                <div class="pt-10" v-else>
+                    <el-empty description="暂无赛事"></el-empty>
+                </div>
+            </div>
+        </el-tab-pane>
+        <el-tab-pane label="全部赛事">
+            <div>
+                <div v-if="total>0">
+                    <div class="d-flex align-items-center my-3 pb-3 border border-start-0 border-end-0 border-top-0 card-hover-bg-title" style="cursor:pointer;" v-for="(pk,index) in list" v-on:click="btnViewClick(pk)">
+            <div class="position-relative">
+                            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M24 30C30.6274 30 36 24.4694 36 17.6471V4H12V17.6471C12 24.4694 17.3726 30 24 30Z" fill="none" stroke="#333" stroke-width="1" stroke-linejoin="round" /><path fill-rule="evenodd" clip-rule="evenodd" d="M12 21V11H4C4 17.6667 8 21 12 21Z" stroke="#333" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" /><path fill-rule="evenodd" clip-rule="evenodd" d="M36 21V11H44C44 17.6667 40 21 36 21Z" stroke="#333" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" /><path d="M24 32V36" stroke="#333" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" /><path d="M15 42L18.69 36H29.0425L33 42H15Z" fill="none" stroke="#333" stroke-width="1" stroke-linejoin="round" /></svg>
+                <span class="position-absolute top-50 start-100 translate-middle ms-2 mt-2 card-title">.{{ index+1 }}</span>
+            </div>
+            <div class="ps-8">
+                <div class="mb-3">
+                                <span class="card-title">{{ pk.name }}</span>
+                </div>
+                <ul class="list-inline fw-light m-0 d-flex align-items-center">
+                                <li class="list-inline-item">
                                     <i class="bi bi-person me-2"></i>参赛人数：{{ pk.userTotal }}人
                                 </li>
-                                <li class="list-inline-item fs-5">
-                                    <span class="rounded-3 p-2 card-icon fw-bold">
-                                        <span class="text-warning" v-if="pk.haveMe">我需要参与</span>
-                                        <span class="text-success" v-else>我不需要参与</span>
-                                    </span>
-                                </li>
-                            </ul>
-                            <ul class="list-inline fw-light">
-                                <li class="list-inline-item fs-5">
+                                <li class="list-inline-item">
                                     <i class="bi bi-calendar3-event me-2 text-warning"></i>竞赛时间：{{ pk.pkBeginDateTimeStr }}-{{ pk.pkEndDateTimeStr }}
                                 </li>
-                            </ul>
-                        </div>
-                        <div class="col-auto">
-                            <div class="bg-light p-2 rounded-0">
-                                <el-button type="primary" plain icon="el-icon-s-order" class="rounded-0 p-4" v-on:click.stop="btnViewClick(pk.id)">赛 程</el-button>
-                            </div>
-                        </div>
+                </ul>
+            </div>
+          <div class="ms-auto d-flex align-items-center">
+                            <span class="rounded-3 py-2 px-3 card-icon bg-light">
+                                <span class="text-warning" v-if="pk.haveMe">我需要参与</span>
+                                <span class="text-success" v-else>我不需要参与</span>
+                            </span>
+            </div>
+        </div>
+                    <div class="my-5 text-center">
+                        <el-button class="border-0 rounded-pill" icon="el-icon-refresh-right" v-if="list.length>0 && list.length<total" v-on:click="btnLoadMoreClick" :loading="loadMoreLoading">加载更多</el-button>
+                        <small v-else>没有更多了</small>
                     </div>
-                </el-card>
+                </div>
+                <div class="pt-10" v-else>
+                    <el-empty description="暂无赛事"></el-empty>
+                </div>
             </div>
-            <div class="my-5 text-center">
-                <el-button icon="el-icon-refresh-right" v-if="list.length>0 && list.length<total" v-on:click="btnLoadMoreClick" :loading="loadMoreLoading">加载更多</el-button>
-                <small v-else>没有更多了</small>
-            </div>
-        </div>
-        <div class="pt-10" v-else>
-            <el-empty description="暂无赛事"></el-empty>
-        </div>
-    </div>
+        </el-tab-pane>
+    </el-tabs>
 </div>
 @section Scripts{
     <script src="/sitefiles/assets/js/home/exam/examPk.js" type="text/javascript"></script>

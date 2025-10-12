@@ -53,7 +53,7 @@ var methods = {
     }).then(function (response) {
       var res = response.data;
       if (res.value) {
-        utils.closeLayer(false);
+        utils.closeLayerSelf();
       }
     }).catch(function (error) {
       utils.error(error, { layer: true });
@@ -75,7 +75,7 @@ var methods = {
     }).then(function (response) {
       var res = response.data;
       if (res.value) {
-        utils.closeLayer(false);
+        utils.closeLayerSelf();
       }
     }).catch(function (error) {
       utils.error(error, { layer: true });
@@ -98,7 +98,7 @@ var methods = {
   },
 
   btnCancelClick: function () {
-    utils.closeLayer(false);
+    utils.closeLayerSelf();
   }
 };
 

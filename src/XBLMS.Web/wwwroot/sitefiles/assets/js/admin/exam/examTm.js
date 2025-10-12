@@ -1,4 +1,5 @@
 ﻿var $url = '/exam/examTm';
+var $urlCache = $url + '/cache';
 var $urlExportExcel = $url + '/export';
 var $urlDelete = $url + '/del';
 var $urlDeleteSearch = $url + '/delSearch';
@@ -7,10 +8,11 @@ var $treeUrl = '/exam/examTmTree';
 var $treeUrlAdd = $treeUrl + '/add';
 var $treeUrlUpdate = $treeUrl + '/update';
 var $treeUrlDelete = $treeUrl + '/del';
+var $treeUrlTmTotal = $treeUrl + '/tmTotal';
 
 var data = utils.init({
   formInline: {
-    tmGroupId:null,
+    tmGroupId: null,
     treeIsChildren: true,
     treeId: 0,
     txId: null,
@@ -26,7 +28,10 @@ var data = utils.init({
   pageSizes: [PER_PAGE, 100, 500, 1000],
   txList: null,
   orderTypeList: null,
-  tmGroups:null,
+  tmGroups: null,
+  isAdmin: false,
+  isCache: false,
+  tmRealTotal: 0,
 
   //tree
   treeItems: null,
@@ -58,8 +63,11 @@ var methods = {
     $api.get($url, { params: $this.formInline }).then(function (response) {
       var res = response.data;
 
+      $this.isAdmin = res.isAdmin;
+      $this.isCache = res.isCache;
       $this.tmList = res.items;
       $this.tmTotal = res.total;
+      $this.tmRealTotal = res.tmRealTotal;
 
     }).catch(function (error) {
       utils.loading($this, false);
@@ -118,6 +126,7 @@ var methods = {
           width: "68%",
           height: "88%",
           end: function () {
+            $this.apiGetTree();
             $this.btnSearchClick();
           }
         });
@@ -140,6 +149,7 @@ var methods = {
         width: "99%",
         height: "99%",
         end: function () {
+          $this.apiGetTree();
           $this.btnSearchClick();
         }
       });
@@ -170,6 +180,7 @@ var methods = {
       width: "78%",
       height: "98%",
       end: function () {
+        $this.apiGetTree();
         $this.btnSearchClick();
       }
     });
@@ -187,7 +198,8 @@ var methods = {
       utils.error(error);
     }).then(function () {
       utils.loading($this, false);
-      $this.apiGet();
+      $this.apiGetTree();
+      $this.btnSearchClick();
     });
   },
   btnDeleteSearchClick: function () {
@@ -226,12 +238,51 @@ var methods = {
       utils.error(error);
     }).then(function () {
       utils.loading($this, false);
+      $this.apiGetTree();
       $this.btnSearchClick();
     });
   },
+  btnCacheClick: function () {
+    if (this.tmRealTotal > 0) {
+      var $this = this;
+      if (this.isCache) {
+        top.utils.alertWarning({
+          title: '清除缓存',
+          text: '确定吗？',
+          callback: function () {
+            $this.apiCache();
+          }
+        });
+      }
+      else {
+        top.utils.alertWarning({
+          title: '缓存题目',
+          text: '将缓存所有题目，以此来提高系统性能。缓存后的数据只作用于用户端参加考试，务必在发布考试以后再缓存且及时取消，确定缓存吗？',
+          callback: function () {
+            $this.apiCache();
+          }
+        });
+      }
+    }
+    else {
+      utils.error("还没有创建任何题目");
+    }
+  },
+  apiCache: function () {
+    var $this = this;
+    top.utils.loading(top.$vue, true, this.isCache ? "正在注销缓存数据，请稍等..." : "正在缓存所有题目数据，请稍等...");
+    $api.post($urlCache).then(function (response) {
+      var res = response.data;
+      utils.notifySuccess("当前缓存题目数量：" + res.value);
+      utils.success("操作成功");
+      $this.isCache = !$this.isCache;
 
-
-
+    }).catch(function (error) {
+      utils.error(error);
+    }).then(function () {
+      top.utils.loading(top.$vue, false);
+    });
+  },
 
   //tree
   apiGetTree: function () {
@@ -248,8 +299,44 @@ var methods = {
       utils.loading($this, false);
       $this.$nextTick(() => {
         $this.treeDefaultExpandedKeys = $this.treeDefaultExpandedSetKeys;
+        $this.apiGetTmTotal();
       })
     });
+  },
+  apiGetTmTotal: function () {
+    var $this = this;
+    setTimeout(function () {
+      if ($this.treeItems && $this.treeItems.length > 0) {
+        $this.treeItems.forEach(item => {
+          $api.get($treeUrlTmTotal, { params: { id: item.id } }).then(function (response) {
+            var res = response.data;
+            item.total = res.total;
+            item.selfTotal = res.count;
+            if (item.children && item.children.length > 0) {
+              $this.apiGetTmTotalChildren(item.children);
+            }
+          }).catch(function () {
+          }).then(function () {
+          });
+        })
+      }
+    }, 100);
+  },
+  apiGetTmTotalChildren: function (childrenItems) {
+    var $this = this;
+    childrenItems.forEach(item => {
+      $api.get($treeUrlTmTotal, { params: { id: item.id } }).then(function (response) {
+        var res = response.data;
+        item.total = res.total;
+        item.selfTotal = res.count;
+        if (item.children && item.children.length > 0) {
+          $this.apiGetTmTotalChildren(item.children);
+        }
+      }).catch(function () {
+      }).then(function () {
+      });
+    })
+
   },
   treeBtnHidePopover: function () {
     this.treePopoverVisibles = this.treePopoverVisibles.map(item => false);

@@ -1,6 +1,4 @@
-﻿using DocumentFormat.OpenXml.Office2013.Drawing.ChartStyle;
-using Microsoft.AspNetCore.Mvc;
-using NPOI.SS.Formula.Functions;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using XBLMS.Dto;
@@ -16,12 +14,14 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         [HttpGet, Route(RouteEdit)]
         public async Task<ActionResult<GetEditResult>> Get([FromQuery] IdRequest request)
         {
-            var tm = new ExamTm();
-            var resultSmalls = new List<ExamTmSmall>();
+            var adminAuth = await _authManager.GetAdminAuth();
 
+            var resultSmalls = new List<ExamTmSmall>();
+            var tm = new ExamTm();
             if (request.Id > 0)
             {
                 tm = await _examManager.GetTmInfo(request.Id);
+
                 var smallList = await _examTmSmallRepository.GetListAsync(tm.Id);
 
                 if (smallList != null && smallList.Count > 0)
@@ -34,9 +34,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 }
             }
             var txList = await _examTxRepository.GetListAsync();
-            var tmTree = await _examManager.GetExamTmTreeCascadesAsync();
-
-
+            var tmTree = await _examManager.GetExamTmTreeCascadesAsync(adminAuth);
 
             return new GetEditResult
             {
@@ -66,9 +64,17 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 }
             }
 
+            var adminAuth = await _authManager.GetAdminAuth();
+            var admin = adminAuth.Admin;
 
-            var admin = await _authManager.GetAdminAsync();
             var info = request.Item;
+
+            var tree = await _examTmTreeRepository.GetAsync(info.TreeId);
+            if (tree != null)
+            {
+                info.TreeParentPath = tree.ParentPath;
+            }
+
             var txInfo = await _examTxRepository.GetAsync(info.TxId);
             if (txInfo.ExamTxBase == ExamTxBase.Duoxuanti)
             {
@@ -78,7 +84,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             if (info.Id > 0)
             {
                 var last = await _examTmRepository.GetAsync(info.Id);
-
+               
                 await _examTmRepository.UpdateAsync(info);
                 await _authManager.AddAdminLogAsync("修改题目", $"{StringUtils.StripTags(info.Title)}");
                 await _authManager.AddStatLogAsync(StatType.ExamTmUpdate, "修改题目", last.Id, StringUtils.StripTags(info.Title), last);
@@ -90,9 +96,11 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                     return this.Error("已存在相同的题目");
                 }
 
-                info.CompanyId = admin.CompanyId;
+                info.CompanyId = adminAuth.CurCompanyId;
                 info.DepartmentId = admin.DepartmentId;
                 info.CreatorId = admin.Id;
+                info.CompanyParentPath = adminAuth.CompanyParentPath;
+                info.DepartmentParentPath = admin.DepartmentParentPath;
 
                 info.Id = await _examTmRepository.InsertAsync(info);
 

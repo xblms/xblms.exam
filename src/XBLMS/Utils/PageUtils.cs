@@ -96,7 +96,6 @@ namespace XBLMS.Utils
             {
                 host = request.Host.Host;
             }
-
             return string.IsNullOrEmpty(host) ? string.Empty : host.Trim().ToLower();
         }
 

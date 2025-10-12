@@ -11,7 +11,7 @@ namespace XBLMS.Core.Services
             var admin = await _administratorRepository.GetByUserIdAsync(adminId);
 
             var roleNames = await _administratorRepository.GetRoleNames(admin.Id);
-            var organNames = await GetOrganName(admin.DutyId, admin.DepartmentId, admin.CompanyId);
+            var organNames = await GetOrganName(admin.DepartmentId, admin.CompanyId);
             admin.Set("RoleNames", roleNames);
             admin.Set("OrganNames", organNames);
             admin.Set("AuthName", GetAdminAuthName(admin));
@@ -22,32 +22,30 @@ namespace XBLMS.Core.Services
         {
             var user = await _userRepository.GetByUserIdAsync(userId);
 
-            var organNames = await GetOrganName(user.DutyId, user.DepartmentId, user.CompanyId);
+            var organNames = await GetOrganName(user.DepartmentId, user.CompanyId);
             user.Set("OrganNames", organNames);
 
             return user;
         }
         public async Task GetUser(User user)
         {
-            var organNames = await GetOrganName(user.DutyId, user.DepartmentId, user.CompanyId);
+            var organNames = await GetOrganName(user.DepartmentId, user.CompanyId);
             user.Set("OrganNames", organNames);
         }
         private static string GetAdminAuthName(Administrator admin)
         {
-            return admin.Auth.GetDisplayName(); 
+            if (admin.AuthData == Enums.AuthorityDataType.DataCreator)
+            {
+                return $"{admin.Auth.GetDisplayName()}（管理权限内自己创建的资源）";
+            }
+            return admin.Auth.GetDisplayName();
         }
         public async Task<string> GetUserKeyWords(int userId)
         {
             var user = await _userRepository.GetByUserIdAsync(userId);
-            var organNames = await GetOrganName(user.DutyId, user.DepartmentId, user.CompanyId);
+            var organNames = await GetOrganName(user.DepartmentId, user.CompanyId);
 
-            return $"{user.UserName}-{user.DisplayName}-{organNames}";
-        }
-        public async Task<string> GetUserKeyWords(User user)
-        {
-            var organNames = await GetOrganName(user.DutyId, user.DepartmentId, user.CompanyId);
-
-            return $"{user.UserName}-{user.DisplayName}-{organNames}";
+            return $"{user.UserName}-{user.DisplayName}-{user.DutyName}-{organNames}";
         }
     }
 }

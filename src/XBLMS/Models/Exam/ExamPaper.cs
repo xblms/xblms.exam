@@ -9,6 +9,8 @@ namespace XBLMS.Models
     public class ExamPaper : Entity
     {
         [DataColumn]
+        public bool IsCourseUse { get; set; }
+        [DataColumn]
         public int TreeId { get; set; }
         [DataColumn]
         public string Title { get; set; }
@@ -54,7 +56,6 @@ namespace XBLMS.Models
         public bool IsAutoScoreJiandati { get; set; } = false;
         [DataColumn]
         public bool IsAutoScoreDuoxuanti { get; set; } = false;
-
         [DataColumn(Text = true)]
         public List<int> UserGroupIds { get; set; }
         [DataColumn(Text = true)]
@@ -78,9 +79,9 @@ namespace XBLMS.Models
         [DataColumn(Text = true)]
         public List<int> TmIds { get; set; }//固定题目的时候用
 
-       /// <summary>
-       /// 允许查看成绩
-       /// </summary>
+        /// <summary>
+        /// 允许查看成绩
+        /// </summary>
         [DataColumn]
         public bool SecrecyScore { get; set; } = true;
         /// <summary>
@@ -125,6 +126,8 @@ namespace XBLMS.Models
         public bool LockedApp { get; set; } = false;
         [DataColumn]
         public bool FullScreen { get; set; } = false;
+        [DataColumn]
+        public List<string> TreeParentPath { get; set; }
         [DataColumn]
         public bool SeparateStorage { get; set; }
     }

@@ -1,4 +1,5 @@
 using Datory;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using XBLMS.Core.Utils;
@@ -27,6 +28,26 @@ namespace XBLMS.Core.Repositories
         {
             return await _repository.GetAsync(id);
         }
+        public async Task<DbBackup> GetBackupingAsync()
+        {
+            return await _repository.GetAsync(Q.Where(nameof(DbBackup.Status), 0));
+        }
+        public async Task<bool> ExistsBackupingAsync()
+        {
+            return await _repository.ExistsAsync(Q.Where(nameof(DbBackup.Status), 0));
+        }
+        public async Task<bool> ExistsTodayAsync()
+        {
+            var query = Q.NewQuery();
+
+            var dateFromStr = DateTime.Now.ToString("yyyy-MM-dd 00:00:00");
+            var dateToStr = DateTime.Now.ToString("yyyy-MM-dd 23:59:59");
+
+            query.Where(nameof(DbBackup.EndTime), ">=", DateUtils.ToString(dateFromStr));
+            query.Where(nameof(DbBackup.EndTime), "<=", DateUtils.ToString(dateToStr));
+
+            return await _repository.ExistsAsync(query);
+        }
         public async Task<(int total, List<DbBackup> list)> GetListAsync(int pageIndex,int pageSize)
         {
             var total=await _repository.CountAsync();
@@ -37,6 +58,10 @@ namespace XBLMS.Core.Repositories
         public async Task<int> InsertAsync(DbBackup info)
         {
             return await _repository.InsertAsync(info);
+        }
+        public async Task<bool> UpdateAsync(DbBackup info)
+        {
+            return await _repository.UpdateAsync(info);
         }
         public async Task DeleteAsync(int id)
         {

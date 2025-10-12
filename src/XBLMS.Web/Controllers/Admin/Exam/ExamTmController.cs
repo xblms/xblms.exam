@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using XBLMS.Configuration;
 using XBLMS.Dto;
-using XBLMS.Enums;
 using XBLMS.Models;
 using XBLMS.Repositories;
 using XBLMS.Services;
@@ -17,6 +16,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
     public partial class ExamTmController : ControllerBase
     {
         private const string Route = "exam/examTm";
+        private const string RouteCache = Route + "/cache";
         private const string RouteDelete = Route + "/del";
         private const string RouteSearch = Route + "/search";
         private const string RouteImportExcel = Route + "/importExcel";
@@ -50,6 +50,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         private readonly IExamPracticeWrongRepository _examPracticeWrongRepository;
         private readonly IExamPracticeRepository _examPracticeRepository;
         private readonly IExamTmAnalysisTmRepository _examTmAnalysisTmRepository;
+        private readonly ITableStyleRepository _tableStyleRepository;
         private readonly IExamTmSmallRepository _examTmSmallRepository;
 
         public ExamTmController(IAuthManager authManager, IPathManager pathManager, IDatabaseManager databaseManager, ICacheManager cacheManager,
@@ -60,7 +61,8 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             IExamPracticeAnswerRepository examPracticeAnswerRepository,
             IExamPracticeCollectRepository examPracticeCollectRepository,
             IExamPracticeWrongRepository examPracticeWrongRepository,
-            IExamTmAnalysisTmRepository examTmAnalysisTmRepository, IExamTmSmallRepository examTmSmallRepository)
+            IExamTmAnalysisTmRepository examTmAnalysisTmRepository,
+            ITableStyleRepository tableStyleRepository, IExamTmSmallRepository examTmSmallRepository)
         {
             _organManager = organManager;
             _examManager = examManager;
@@ -80,6 +82,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             _examPracticeCollectRepository = examPracticeCollectRepository;
             _examPracticeWrongRepository = examPracticeWrongRepository;
             _examTmAnalysisTmRepository = examTmAnalysisTmRepository;
+            _tableStyleRepository = tableStyleRepository;
             _examTmSmallRepository = examTmSmallRepository;
         }
         public class GetEditResult
@@ -87,6 +90,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             public ExamTm Item { get; set; }
             public List<Cascade<int>> TmTree { get; set; }
             public List<ExamTx> TxList { get; set; }
+            public List<TableStyle> TmStyles { get; set; }
             public List<ExamTmSmall> SmallList { get; set; }
         }
 
@@ -103,6 +107,9 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
         public class GetSearchResults
         {
+            public int TmRealTotal { get; set; }
+            public bool IsAdmin { get; set; }
+            public bool IsCache { get; set; }
             public List<ExamTm> Items { get; set; }
             public int Total { get; set; }
 
@@ -155,33 +162,22 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             public int TmTotal { get; set; } = 0;
             public int TmCurrent { get; set; } = 0;
         }
-
-        private async Task DeleteTm(List<int> tmIds)
+        private async Task<List<KeyValuePair<string, string>>> GetTmStyles()
         {
-            var groupList = await _examTmGroupRepository.GetListAsync();
-            foreach (var group in groupList)
+            var tmStyles = await _tableStyleRepository.GetExamTmStylesAsync(false);
+            var styles = new List<KeyValuePair<string, string>>();
+
+            if (tmStyles != null && tmStyles.Count > 0)
             {
-                if (group.GroupType == TmGroupType.Fixed && group.TmIds != null && group.TmIds.Count > 0)
+                foreach (var style in tmStyles)
                 {
-                    if (tmIds != null && tmIds.Count > 0)
-                    {
-                        var isUpdate = false;
-                        foreach (var tmId in tmIds)
-                        {
-                            if (group.TmIds.Contains(tmId))
-                            {
-                                group.TmIds.Remove(tmId);
-                                isUpdate = true;
-                            }
-                        }
-                        if (isUpdate)
-                        {
-                            await _examTmGroupRepository.UpdateAsync(group);
-                        }
-                    }
+                    styles.Add(new KeyValuePair<string, string>(style.AttributeName, style.DisplayName));
                 }
             }
-
+            return styles;
+        }
+        private async Task DeleteTm(List<int> tmIds)
+        {
             foreach (var tmId in tmIds)
             {
                 await _examPracticeAnswerRepository.DeleteByTmIdAsync(tmId);

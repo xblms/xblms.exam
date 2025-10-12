@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
-using System.Collections.Generic;
+using System.Threading.Tasks;
 using XBLMS.Configuration;
-using XBLMS.Models;
+using XBLMS.Dto;
+using XBLMS.Enums;
 using XBLMS.Repositories;
 using XBLMS.Services;
+using XBLMS.Web.Controllers.Admin;
 
 namespace XBLMS.Web.Controllers.Home
 {
@@ -15,29 +17,60 @@ namespace XBLMS.Web.Controllers.Home
     public partial class IndexController : ControllerBase
     {
         private const string Route = "index";
+        private const string RouteSession = Route + "/resses";
 
         private readonly ISettingsManager _settingsManager;
         private readonly IAuthManager _authManager;
         private readonly IConfigRepository _configRepository;
-        private readonly IUserMenuRepository _userMenuRepository;
+        private readonly IDbCacheRepository _dbCacheRepository;
+        private readonly IPathManager _pathManager;
 
         public IndexController(IAuthManager authManager,
             ISettingsManager settingsManager,
             IConfigRepository configRepository,
-            IUserMenuRepository userMenuRepository)
+            IDbCacheRepository dbCacheRepository,
+            IPathManager pathManager)
         {
             _settingsManager = settingsManager;
             _authManager = authManager;
             _configRepository = configRepository;
-            _userMenuRepository = userMenuRepository;
+            _dbCacheRepository = dbCacheRepository;
+            _pathManager = pathManager;
         }
-
+        public class GetRequest
+        {
+            public string SessionId { get; set; }
+        }
         public class GetResult
         {
-            public User User { get; set; }
-            public List<Menu> Menus { get; set; }
-            public List<string> OpenMenus { get; set; }
-            public string Version { get; set; }
+            public string SystemCodeName { get; set; }
+            public SystemCode SystemCode { get; set; }
+            public PointNotice PointNotice { get; set; }
+            public string DisplayName { get; set; }
+            public string AvatarUrl { get; set; }
+            public bool Value { get; set; }
+            public string RedirectUrl { get; set; }
+        }
+
+        private async Task<(bool redirect, string redirectUrl)> AdminRedirectCheckAsync()
+        {
+            var redirect = false;
+            var redirectUrl = string.Empty;
+
+            var config = await _configRepository.GetAsync();
+
+            if (string.IsNullOrEmpty(_settingsManager.Database.ConnectionString) || await _configRepository.IsNeedInstallAsync())
+            {
+                redirect = true;
+                redirectUrl = _pathManager.GetAdminUrl(InstallController.Route);
+            }
+            else if (config.Initialized && config.DatabaseVersion != _settingsManager.Version)
+            {
+                redirect = true;
+                redirectUrl = _pathManager.GetAdminUrl(SyncDatabaseController.Route);
+            }
+
+            return (redirect, redirectUrl);
         }
     }
 }

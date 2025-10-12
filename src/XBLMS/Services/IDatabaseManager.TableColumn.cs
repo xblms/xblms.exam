@@ -22,6 +22,7 @@ namespace XBLMS.Services
         Task<List<string>> GetTableNamesAsync();
         Task<List<dynamic>> QueryAsync(string query);
         List<string> GetPropertyKeysForDynamic(dynamic dynamicToGetPropertiesFor);
+        Task<int> ExecuteAsync(string query);
     }
 
 }

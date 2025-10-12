@@ -52,8 +52,10 @@ namespace XBLMS.Core.Repositories
         public async Task<(int total, List<ExamQuestionnaireUser> list)> GetListAsync(int userId, string keyWords, int pageIndex, int pageSize)
         {
             var query = Q.
+                Where(nameof(ExamQuestionnaireUser.PlanId), 0).
+                Where(nameof(ExamQuestionnaireUser.CourseId), 0).
                 WhereNullOrFalse(nameof(ExamQuestionnaireUser.Locked)).
-                Where(nameof(ExamQuestionnaireUser.UserId),userId);
+                Where(nameof(ExamQuestionnaireUser.UserId), userId);
 
             if (!string.IsNullOrWhiteSpace(keyWords))
             {
@@ -70,6 +72,8 @@ namespace XBLMS.Core.Repositories
         public async Task<(int total, List<ExamQuestionnaireUser> list)> GetListAsync(int paperId, string isSubmit, string keyWords, int pageIndex, int pageSize)
         {
             var query = Q.
+                Where(nameof(ExamQuestionnaireUser.PlanId), 0).
+                Where(nameof(ExamQuestionnaireUser.CourseId), 0).
                 Where(nameof(ExamQuestionnaireUser.ExamPaperId), paperId);
 
             if (!string.IsNullOrEmpty(isSubmit))
@@ -96,9 +100,11 @@ namespace XBLMS.Core.Repositories
             return (total, list);
         }
 
-        public async Task<ExamQuestionnaireUser> GetAsync(int paperId, int userId)
+        public async Task<ExamQuestionnaireUser> GetAsync(int planId, int courseId, int paperId, int userId)
         {
             return await _repository.GetAsync(Q.
+                Where(nameof(ExamQuestionnaireUser.PlanId), planId).
+                Where(nameof(ExamQuestionnaireUser.CourseId), courseId).
                 Where(nameof(ExamQuestionnaireUser.ExamPaperId), paperId).
                 Where(nameof(ExamQuestionnaireUser.UserId), userId));
         }
@@ -121,8 +127,17 @@ namespace XBLMS.Core.Repositories
                 Set(nameof(ExamQuestionnaireUser.ExamEndDateTime), endDateTime).
                 Where(nameof(ExamQuestionnaireUser.ExamPaperId), paperId));
         }
+        public async Task<int> CountAsync(int userId)
+        {
+            var query = Q.
+                WhereNullOrFalse(nameof(ExamQuestionnaireUser.Locked)).
+                Where(nameof(ExamQuestionnaireUser.SubmitType), SubmitType.Submit.GetValue()).
+                Where(nameof(ExamQuestionnaireUser.UserId), userId);
 
-        public async Task<(int total,List<ExamQuestionnaireUser> list)> GetTaskAsync(int userId)
+            var total = await _repository.CountAsync(query);
+            return total;
+        }
+        public async Task<(int total, List<ExamQuestionnaireUser> list)> GetTaskAsync(int userId)
         {
             var query = Q.
                 WhereNullOrFalse(nameof(ExamQuestionnaireUser.Locked)).
@@ -131,9 +146,21 @@ namespace XBLMS.Core.Repositories
                 Where(nameof(ExamQuestionnaireUser.ExamEndDateTime), ">", DateTime.Now).
                 Where(nameof(ExamQuestionnaireUser.UserId), userId);
 
-            var total= await _repository.CountAsync(query);
+            var total = await _repository.CountAsync(query);
             var list = await _repository.GetAllAsync(query);
             return (total, list);
         }
+        public async Task<int> GetSubmitUserCountAsync(int planId, int courseId, int paperId)
+        {
+            var query = Q.
+                Where(nameof(ExamQuestionnaireUser.SubmitType), SubmitType.Submit.GetValue()).
+                Where(nameof(ExamQuestionnaireUser.ExamPaperId), paperId).
+                Where(nameof(ExamQuestionnaireUser.PlanId), planId).
+                Where(nameof(ExamQuestionnaireUser.CourseId), courseId);
+
+            var total = await _repository.CountAsync(query);
+            return total;
+        }
+
     }
 }

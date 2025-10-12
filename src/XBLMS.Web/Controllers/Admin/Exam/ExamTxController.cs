@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using System.Collections.Generic;
@@ -33,6 +33,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         }
         public class GetResult
         {
+            public bool Operate { get; set; }
             public List<ExamTx> Items { get; set; }
         }
     }

@@ -1,5 +1,4 @@
 ﻿using Datory;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using XBLMS.Models;
 
@@ -9,6 +8,6 @@ namespace XBLMS.Repositories
     {
         Task<int> InsertAsync(ExamTmTree item);
         Task<bool> UpdateAsync(ExamTmTree item);
-        Task<bool> DeleteAsync(List<int> ids);
+        Task<bool> DeleteAsync(int id);
     }
 }

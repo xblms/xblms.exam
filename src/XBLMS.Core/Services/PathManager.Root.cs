@@ -7,6 +7,12 @@ namespace XBLMS.Core.Services
 {
     public partial class PathManager
     {
+        public string DefaultAvatarUrl => GetSiteFilesUrl("assets/images/default_avatar.png");
+        public string DefaultBookCoverUrl => GetSiteFilesUrl("assets/images/default_book.jpg");
+        public string DefaultCourseCoverUrl => GetSiteFilesUrl("assets/images/cover/course.jpg");
+        public string DefaultCourseFaceCoverUrl => GetSiteFilesUrl("assets/images/cover/face.jpg");
+        public string DefaultCoursePlanCoverUrl => GetSiteFilesUrl("assets/images/cover/plan.jpg");
+
         public string GetRootUrl(params string[] paths)
         {
             return PageUtils.Combine("/", PageUtils.Combine(paths));
@@ -78,17 +84,10 @@ namespace XBLMS.Core.Services
             return ParsePath(resolvedPath);
         }
 
-
-
-
-
         public string GetHomeUploadUrl(params string[] paths)
         {
             return GetSiteFilesUrl(DirectoryUtils.SiteFiles.Home, PageUtils.Combine(paths));
         }
-
-        public string DefaultAvatarUrl => GetSiteFilesUrl("assets/images/default_avatar.png");
-        public string DefaultBookCoverUrl => GetSiteFilesUrl("assets/images/default_book.jpg");
 
         public string GetUserUploadFileName(string filePath)
         {
@@ -211,7 +210,6 @@ namespace XBLMS.Core.Services
         {
             return GetHomeUploadPath(userId.ToString(), relatedPath);
         }
-
         public string GetCoverUploadPath(params string[] paths)
         {
             var path = GetSiteFilesPath(DirectoryUtils.SiteFiles.Upload, DirectoryUtils.SiteFiles.Cover, PathUtils.Combine(paths));

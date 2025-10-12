@@ -1,0 +1,42 @@
+<div class="position-relative p-1">
+    <img :src="course.coverImg" class="img-fluid card-img rounded-top-4">
+    <span class="px-2 rounded-3 bg-dark text-white position-absolute bottom-0 end-0 m-2 fs-6">{{ utils.formatDuration(course.duration) }}</span>
+    <el-tag size="mini" type="success" effect="dark" class="position-absolute top-0 end-0 m-2" v-if="course.state==='Yiwancheng'">{{ course.stateStr }}</el-tag>
+    <el-tag size="mini" type="warning" effect="dark" class="position-absolute top-0 end-0 m-2" v-else>{{ course.stateStr }}</el-tag>
+    <span class="position-absolute bottom-0 start-0 m-2">
+        <el-tag size="mini" type="primary" effect="dark" class="me-1">{{ course.courseType}}</el-tag>
+        <el-tag size="mini" type="primary" effect="plain" v-if="course.offLine">面授课</el-tag>
+    </span>
+</div>
+<div class="card-body">
+    <div class="mb-3 fw-bolder">
+        <a href="javascript:;" class="text-inherit">{{ course.name }}</a>
+    </div>
+    <div class="mb-3 lh-1 fs-5 fw-normal">
+        <span>
+            <i class="bi bi-star-fill text-warning me-2"></i>
+            <span>{{ course.evaluationAvg }}</span>
+        </span>
+        <span class="mx-1">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                 fill="var(--gk-gray-400)" class="bi bi-dot" viewBox="0 0 16 16">
+                <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"></path>
+            </svg>
+        </span>
+        <span>
+            <i class="bi bi-person-video3 me-2"></i>
+            <span>{{ course.totaEvaluationlUser }}</span>
+        </span>
+    </div>
+    <div class="lh-1 fs-5 fw-normal">
+        <span>{{ course.studyHour }}</span> 课时
+        <span class="mx-1">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                 fill="var(--gk-gray-400)" class="bi bi-dot" viewBox="0 0 16 16">
+                <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"></path>
+            </svg>
+        </span>
+        <span class="text-success" v-if="course.state==='Yiwancheng'">{{ course.credit }}学分</span>
+        <span v-else>{{ course.credit }}学分</span>
+    </div>
+</div>

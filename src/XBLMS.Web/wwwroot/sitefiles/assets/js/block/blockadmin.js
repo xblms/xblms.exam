@@ -20,7 +20,7 @@ var blockAuthen = function (password) {
       if (res.success) {
         sessionStorage.setItem(BLOCK_ADMIN_SESSION_ID, res.sessionId);
 
-        location.href = "/admin/"
+        location.href = "/xblms-admin/"
       } else {
         Swal.fire({
           title: "访问密码不正确！",
@@ -55,7 +55,7 @@ blockApi
         location.href = redirectUrl;
       } else if (blockMethod === "Warning") {
         bodyHtml = document.body.innerHTML;
-        document.title = DOCUMENTTITLE_BLOCK;
+        document.title = "访问受限";
         document.body.innerHTML = "";
         document.body.style.display = "block";
         Swal.fire({
@@ -68,7 +68,7 @@ blockApi
         });
       } else if (blockMethod === "Password") {
         bodyHtml = document.body.innerHTML;
-        document.title = DOCUMENTTITLE_BLOCK;
+        document.title = "访问受限";
         document.body.innerHTML = "";
         document.body.style.display = "block";
         Swal.fire({

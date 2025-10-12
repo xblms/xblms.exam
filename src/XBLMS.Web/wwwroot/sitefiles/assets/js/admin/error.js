@@ -1,4 +1,4 @@
-var $url = "/error";
+﻿var $url = "/error";
 
 var data = utils.init({
   logId: utils.getQueryInt('logId'),
@@ -36,16 +36,10 @@ var $vue = new Vue({
   data: data,
   methods: methods,
   created: function () {
-    top.$vue.apiGet();
-    document.title = DOCUMENTTITLE_ERROR;
-    if (this.logId > 0) {
-      this.apiGet();
-    } else if (this.uuid) {
-      var error = JSON.parse(sessionStorage.getItem(this.uuid));
-      this.message = error.message;
-      this.stackTrace = error.stackTrace;
-      this.createdDate = error.createdDate;
-      utils.loading(this, false);
-    }
+    var error = JSON.parse(sessionStorage.getItem(this.uuid));
+    this.message = error.message;
+    this.stackTrace = error.stackTrace;
+    this.createdDate = error.createdDate;
+    utils.loading(this, false);
   },
 });

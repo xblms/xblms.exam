@@ -55,7 +55,6 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
 
                     var companyName = row[0].ToString().Trim();
                     var departmentName = row[1].ToString().Trim();
-                    var dutyName = row[2].ToString().Trim();
 
                     if (!string.IsNullOrEmpty(companyName))
                     {
@@ -76,19 +75,6 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
                                     msgList.Add(new KeyValuePair<int, string>(i, $"【{companyName}】单位下没有【{departmentName}】部门"));
                                     failure++;
                                     continue;
-                                }
-                                else
-                                {
-                                    if (!string.IsNullOrEmpty(dutyName))
-                                    {
-                                        var duty = await _organManager.GetDutyAsync(company.Id, department.Id, dutyName);
-                                        if (duty == null)
-                                        {
-                                            msgList.Add(new KeyValuePair<int, string>(i, $"【{companyName}】单位下【{departmentName}】部门下没有【{dutyName}】岗位"));
-                                            failure++;
-                                            continue;
-                                        }
-                                    }
                                 }
                             }
                         }
@@ -112,7 +98,8 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
                         failure++;
                         continue;
                     }
-                    if (!string.IsNullOrEmpty(mobile) &&  mobileList.Contains(mobile))
+
+                    if (!string.IsNullOrEmpty(mobile) && mobileList.Contains(mobile))
                     {
                         msgList.Add(new KeyValuePair<int, string>(i, "手机号码已存在"));
                         failure++;
@@ -150,7 +137,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
                 }
             }
             var resultValue = msgList == null || msgList.Count == 0;
-            var resultFilePath = TranslateUtils.EncryptStringBySecretKey(filePath, "userimport");
+            var resultFilePath = DesEncryptor.EncryptStringBySecretKey(filePath, "userimport");
             return new ImportCheckResult
             {
                 Value = resultValue,
@@ -167,7 +154,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
         public async Task<ActionResult<ImportResult>> Import([FromBody] ImportRequest request)
         {
             var adminId = _authManager.AdminId;
-            var filePath = TranslateUtils.DecryptStringBySecretKey(request.FilePath, "userimport");
+            var filePath = DesEncryptor.DecryptStringBySecretKey(request.FilePath, "userimport");
             var sheet = ExcelUtils.Read(filePath);
 
             var success = 0;
@@ -191,28 +178,28 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
 
                     var companyId = 0;
                     var departmentId = 0;
-                    var dutyId = 0;
 
                     var company = await _organManager.GetCompanyAsync(companName);
                     companyId = company.Id;
+
+                    var department = new OrganDepartment();
                     if (!string.IsNullOrEmpty(departmentName))
                     {
-                        var department = await _organManager.GetDepartmentAsync(company.Id, departmentName);
-                        departmentId = department.Id;
-                        if (!string.IsNullOrEmpty(dutyName))
+                        department = await _organManager.GetDepartmentAsync(company.Id, departmentName);
+                        if (department != null && department.Id > 0)
                         {
-                            var duty = await _organManager.GetDutyAsync(company.Id, department.Id, dutyName);
-                            dutyId = duty.Id;
+                            departmentId = department.Id;
                         }
+
                     }
-              
+
                     var userName = row[3].ToString().Trim();
                     var password = row[4].ToString().Trim();
                     var displayName = row[5].ToString().Trim();
                     var mobile = row[6].ToString().Trim();
                     var email = row[7].ToString().Trim();
 
-                    var (user, message) = await _userRepository.InsertAsync(new User
+                    var insertUser = new User
                     {
                         UserName = userName,
                         DisplayName = displayName,
@@ -220,9 +207,19 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
                         Email = email,
                         CompanyId = companyId,
                         DepartmentId = departmentId,
-                        DutyId = dutyId,
+                        DutyName = dutyName,
                         CreatorId = adminId
-                    }, password, true, string.Empty);
+                    };
+                    if (insertUser.CompanyId > 0)
+                    {
+                        insertUser.CompanyParentPath = company.CompanyParentPath;
+                    }
+                    if (insertUser.DepartmentId > 0)
+                    {
+                        insertUser.DepartmentParentPath = department.DepartmentParentPath;
+                    }
+
+                    var (user, message) = await _userRepository.InsertAsync(insertUser, password, true, string.Empty);
 
                     if (user != null)
                     {
@@ -232,7 +229,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
                         success++;
                     }
 
-                    
+
                 }
             }
             FileUtils.DeleteFileIfExists(filePath);

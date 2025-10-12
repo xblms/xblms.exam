@@ -17,7 +17,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             {
                 return this.NoAuth();
             }
-
+            var adminAuth = await _authManager.GetAdminAuth();
             var treeIds = new List<int>();
             if (request.TreeId > 0)
             {
@@ -32,7 +32,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             }
             var group = await _examTmGroupRepository.GetAsync(request.TmGroupId);
 
-            var (total, list) = await _examTmRepository.GetListAsync(group, treeIds, request.TxId, request.Nandu, request.Keyword, request.Order, request.OrderType, request.IsStop, 1, int.MaxValue);
+            var (total, list) = await _examTmRepository.GetListAsync(adminAuth, group, treeIds, request.TxId, request.Nandu, request.Keyword, request.Order, request.OrderType, request.IsStop, 1, int.MaxValue);
 
             var fileName = "题目列表.xlsx";
             var filePath = _pathManager.GetDownloadFilesPath(fileName);

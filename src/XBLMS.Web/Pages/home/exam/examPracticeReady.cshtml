@@ -30,7 +30,12 @@
 }
 <el-card>
     <div slot="header" class="d-flex justify-content-between align-items-center">
-        <div><span>刷题配置</span><span class="text-warning fs-6">（筛选一些题目，以此来提高刷题效率，当然也可以直接开始）</span></div>
+        <div>
+            <span>刷题配置</span>
+            <el-tooltip class="item" effect="dark" content="筛选一些题目，以此来提高刷题效率，当然也可以直接开始" placement="right">
+                <i class="el-icon-info ms-2"></i>
+            </el-tooltip>
+        </div>
         <el-button type="text" v-on:click="utils.closeLayerSelf"><i class="el-icon-close"></i></el-button>
     </div>
     <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-200) + 'px' }">
@@ -40,12 +45,12 @@
                     <el-input v-model="form.title"></el-input>
                 </el-form-item>
                 <el-form-item label="题型">
-                    <el-checkbox-group v-model="form.txIds" v-on:change="apiGetSearch">
+                    <el-checkbox-group v-model="form.txIds" v-on:change="txndChange">
                         <el-checkbox :label="tx.id" :key="tx.id" border v-for="tx in txList">{{ tx.name }}</el-checkbox>
                     </el-checkbox-group>
                 </el-form-item>
                 <el-form-item label="难度">
-                    <el-checkbox-group v-model="form.nds" v-on:change="apiGetSearch">
+                    <el-checkbox-group v-model="form.nds" v-on:change="txndChange">
                         <el-checkbox v-for="nd in 5" :label="nd" :key="nd" border><span class="text-warning"><span>{{ nd }}</span><i class="el-icon-star-on ms-1 fs-6"></i></span></el-checkbox>
                     </el-checkbox-group>
                 </el-form-item>
@@ -57,14 +62,7 @@
                             v-on:close="zsdhandleClose(zsd)">
                         {{zsd}}
                     </el-tag>
-                    <el-input class="input-new-tag"
-                              v-if="zsdinputVisible"
-                              v-model="zsdinputValue"
-                              ref="zsdsaveTagInput"
-                              v-on:keyup.enter.native="zsdhandleInputConfirm"
-                              v-on:blur="zsdhandleInputConfirm">
-                    </el-input>
-                    <el-button v-else class="button-new-tag" v-on:click="zsdshowInput">+ 添加</el-button>
+                    <el-button class="button-new-tag" v-on:click="zsdBtnSelectClick">+ 选择</el-button>
                 </el-form-item>
                 <el-form-item label="刷题数量">
                     <el-slider v-model="form.mineTmCount" :max="form.tmCount>=100?100:form.tmCount"

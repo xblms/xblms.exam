@@ -12,7 +12,7 @@ namespace XBLMS.Core.Services
         public async Task<bool> HasPermissionsAsync(MenuPermissionType menuPermissionType = MenuPermissionType.Select)
         {
             var admin = await GetAdminAsync();
-            if (admin.Auth == AuthorityType.Admin) return true;//超级管理员
+            if (admin.Auth == AuthorityType.Admin || admin.Auth == AuthorityType.AdminCompany) return true;
 
             var menuId = MenuId;
             if (string.IsNullOrEmpty(menuId))
@@ -48,10 +48,43 @@ namespace XBLMS.Core.Services
             return true; ;
         }
 
-
+        public List<Select<string>> AuthorityDataTypes()
+        {
+            return ListUtils.GetSelects<AuthorityDataType>();
+        }
         public List<Select<string>> AuthorityTypes()
         {
             return ListUtils.GetSelects<AuthorityType>();
+        }
+
+        public async Task<AdminAuth> GetAdminAuth()
+        {
+            var admin = await GetAdminAsync();
+            var cpath = admin.CompanyParentPath;
+            var dpath = admin.DepartmentParentPath;
+            var dId = admin.DepartmentId;
+            if (admin.CompanyId != admin.AuthDataCurrentOrganId)
+            {
+                var company = await _databaseManager.OrganCompanyRepository.GetAsync(admin.AuthDataCurrentOrganId);
+                cpath = company.CompanyParentPath;
+                dpath = new List<string>();
+                dId = 0;
+            }
+
+            var authResult = new AdminAuth()
+            {
+                Admin = admin,
+                AuthType = admin.Auth,
+                AuthDataType = admin.AuthData,
+                AuthDataShowAll = admin.AuthDataShowAll,
+                AdminId = admin.Id,
+                CompanyId = admin.CompanyId,
+                DepartmentId = dId,
+                CurCompanyId = admin.AuthDataCurrentOrganId,
+                CompanyParentPath = cpath,
+                DepartmentParentPath = dpath,
+            };
+            return authResult;
         }
     }
 }

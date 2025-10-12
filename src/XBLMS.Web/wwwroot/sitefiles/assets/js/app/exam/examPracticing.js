@@ -32,9 +32,9 @@ var methods = {
       $this.total = res.total;
       $this.title = res.title;
 
+      top.utils.pointNotice(res.pointNotice);
+
       $this.watermark = res.watermark;
-
-
       $this.apiGetTmInfo($this.tmIds[0])
 
     }).catch(function (error) {
@@ -49,7 +49,7 @@ var methods = {
 
     $api.get($urlTm, { params: { id: tmid } }).then(function (response) {
       var res = response.data;
-      $this.tm = res.item;
+      $this.tm = JSON.parse(utils.AESDecrypt(res.tm, res.salt));
     }).catch(function (error) {
       utils.error(error, { layer: true });
     }).then(function () {
@@ -64,7 +64,6 @@ var methods = {
     if (setTm.baseTx === "Duoxuanti") {
       answer = setTm.optionsValues.join('');
     }
-    var completionStatus = true;
     if (setTm.baseTx === "Tiankongti") {
       answer = setTm.optionsValues.join(',');
     }
@@ -101,6 +100,7 @@ var methods = {
         smallList.push({ id: small.id, answer: small.myAnswer, answerValues: small.optionsValues });
       });
     }
+
     $api.post($urlAnswer, { id: this.tm.id, answer: this.tm.answer, practiceId: this.id, answerValues: this.tm.optionsValues, smallList: smallList }).then(function (response) {
       var res = response.data;
       $this.answerResult = res;

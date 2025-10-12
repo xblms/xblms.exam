@@ -9,7 +9,7 @@ using XBLMS.Utils;
 
 namespace XBLMS.Core.Repositories
 {
-    public class ExamPracticeRepository : IExamPracticeRepository
+    public partial class ExamPracticeRepository : IExamPracticeRepository
     {
         private readonly Repository<ExamPractice> _repository;
 

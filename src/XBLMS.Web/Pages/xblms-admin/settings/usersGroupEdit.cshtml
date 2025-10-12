@@ -1,0 +1,93 @@
+﻿@page
+@{ Layout = "_Layout"; }
+
+@section Styles{
+    <style>
+        .el-tag {
+            margin-right: 10px;
+            margin-bottom:10px;
+        }
+
+        .button-new-tag {
+            margin-right: 10px;
+            height: 32px;
+            line-height: 30px;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+    </style>
+}
+
+<el-card>
+    <div slot="header" class="clearfix">
+        <span>{{ id > 0 ? "修改" : "新增" }}用户组</span>
+        <el-button style="float: right;padding:3px 0;" type="text" v-on:click="utils.closeLayer(false)"><i class="el-icon-close"></i></el-button>
+    </div>
+    <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-180) + 'px' }">
+        <div style="margin-right:18px;">
+            <el-form v-on:submit.native.prevent :size="euiSize" ref="form" :model="form" status-icon label-width="140px">
+                <el-form-item label="用户组名称" prop="groupName" :rules="[{ required: true, message: '请输入名称' }]">
+                    <el-input v-model="form.groupName"></el-input>
+                </el-form-item>
+                <el-form-item label="类型" prop="groupType" :rules="[{ required: true, message: '请选择类型' }]">
+                    <el-select v-model="form.groupType">
+                        <el-option v-for="type in groupTypeSelects"
+                                   :key="type.value"
+                                   :label="type.label"
+                                   :value="type.value">
+                        </el-option>
+                    </el-select>
+                    <span class="tips" v-if="form.groupType==='Fixed'">在列表中安排用户</span>
+                </el-form-item>
+                <template v-if="form.groupType==='Range'">
+                    <el-form-item label="组织范围">
+                        <el-tag v-for="organTag in organs"
+                                closable
+                                :disable-transitions="false"
+                                v-on:close="handleOrganTagClose(organTag)">
+                            {{organTag.name}}
+                        </el-tag>
+                        <el-button icon="el-icon-plus" class="button-new-tag" :size="euiSize" v-on:click="btnSelectOrganClick">选择组织</el-button>
+                    </el-form-item>
+                    <el-form-item prop="groupRangeWithChildren">
+                        <el-checkbox v-model="form.groupRangeWithChildren">包含所有下级</el-checkbox>
+                    </el-form-item>
+                    <el-form-item label="岗位" prop="dutyNames">
+                    <el-select v-model="form.dutyNames"
+                               multiple
+                               filterable
+                               allow-create
+                               default-first-option
+                               placeholder="模糊匹配" style="width:100%">
+                        <el-option v-for="item in form.dutyNames"
+                                   :key="item"
+                                   :label="item"
+                                   :value="item">
+                        </el-option>
+                    </el-select>
+                    </el-form-item>
+                </template>
+                <el-form-item label="备注">
+                    <el-input type="textarea" v-model.trim="form.description" :rows="3" resize="none"></el-input>
+                </el-form-item>
+                <el-form-item label="状态" prop="locked">
+                    <el-select v-model="form.locked">
+                        <el-option label="启用" :value="false"></el-option>
+                        <el-option label="停用" :value="true"></el-option>
+                    </el-select>
+                </el-form-item>
+            </el-form>
+        </div>
+
+    </el-scrollbar>
+</el-card>
+<el-row align="center" style="margin-top:18px;">
+    <el-col :span="24" align="center">
+        <el-button icon="el-icon-check" :size="euiSize" type="primary" v-on:click="btnSubmitClick">确 定</el-button>
+        <el-button icon="el-icon-close" :size="euiSize" v-on:click="utils.closeLayerSelf">取 消</el-button>
+    </el-col>
+</el-row>
+
+@section Scripts{
+    <script src="/sitefiles/assets/js/admin/settings/usersGroupEdit.js" type="text/javascript"></script>
+}

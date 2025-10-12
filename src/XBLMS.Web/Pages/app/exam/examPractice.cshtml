@@ -2,18 +2,17 @@
 @{ Layout = "_LayoutApp"; }
 @section Styles{
     <style>
-        .el-form-item {
-            margin-bottom: 0px;
-        }
-
         body {
             margin: 0;
             padding: 0;
         }
     </style>
 }
-<div class="p-3">
-    <div v-if="total>0">
+<div class="px-3 pt-3">
+    <el-button class="rounded-0 w-100 py-3" icon="el-icon-s-promotion" type="primary" v-on:click="btnCreateClick('Create')">自定义新的练习</el-button>
+</div>
+<div class="p-3"  v-if="total>0">
+    <div>
         <div v-for="(item,index) in list">
             <div class="card card-bordered mb-3 card-hover cursor-pointer rounded-0" v-on:click="btnCreateClick('Group',item.id,item.tmCount)">
                 <div class="card-body">
@@ -25,9 +24,9 @@
                             <div class="w-100 ms-lg-4">
                                 <div class="mt-1">
                                     <div>
-                                        <h3 class="mb-1">
+                                        <div class="mb-1 fw-bolder">
                                             {{ item.title }}
-                                        </h3>
+                                        </div>
                                         <div>
                                             <span class="text-dark fw-medium">
                                                 {{ item.mineTmCount }} / {{ item.tmCount }} 道题
@@ -85,16 +84,10 @@
             <small v-else>没有更多了</small>
         </div>
     </div>
-    <div class="pt-10" v-else>
-        <el-empty image="/sitefiles/assets/images/nodata.svg" description="暂无练习"></el-empty>
-    </div>
+    <div class="py-8"></div>
 </div>
-<div class="py-8"></div>
-<div class="py-8"></div>
-<div style="position:fixed;left:0;bottom:68px;width:100%;" class="text-center mb-5 animate__animated animate__fadeInUp">
-    <el-button-group class="rounded-0">
-        <el-button class="rounded-0" icon="el-icon-s-promotion" type="primary" v-on:click="btnCreateClick('Create')">快速开始</el-button>
-    </el-button-group>
+<div class="pt-8" v-else>
+    <el-empty :image-size="88"></el-empty>
 </div>
 @section Scripts{
     <script src="/sitefiles/assets/js/app/exam/examPractice.js" type="text/javascript"></script>

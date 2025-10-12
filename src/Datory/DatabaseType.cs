@@ -14,5 +14,6 @@ namespace Datory
         [DataEnum(DisplayName = "人大金仓")] KingbaseES,
         [DataEnum(DisplayName = "达梦")] Dm,
         [DataEnum(DisplayName = "OceanBase")] OceanBase,
+        [DataEnum(DisplayName = "MariaDB")] MariaDB
     }
 }

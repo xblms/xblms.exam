@@ -1,4 +1,4 @@
-var $url = '/loading';
+﻿var $url = '/loading';
 var $redirectUrl = utils.getQueryString('redirectUrl');
 
 var data = {

@@ -15,13 +15,9 @@ namespace XBLMS.Web.Controllers.Admin
         [HttpGet, Route(Route)]
         public async Task<ActionResult<GetLogResult>> GetLog([FromQuery] GetLogRequest request)
         {
-            var admin = await _authManager.GetAdminAsync();
-            var adminId = admin.Id;
-            if (admin.Auth == AuthorityType.Admin)
-            {
-                adminId = 0;
-            }
-            var (total, list) = await _statLogRepository.GetListAsync(null, null, adminId, request.PageIndex, request.PageSize);
+            var adminAuth = await _authManager.GetAdminAuth();
+
+            var (total, list) = await _statLogRepository.GetListAsync(adminAuth, request.PageIndex, request.PageSize);
             if (total > 0)
             {
                 foreach (var item in list)
@@ -38,13 +34,20 @@ namespace XBLMS.Web.Controllers.Admin
                     if (item.StatType.GetValue().Contains("Export"))
                     {
                         color = "primary";
-                        var entity = TranslateUtils.JsonDeserialize<StringResult>(item.LastEntity);
-                        item.Set("Url", entity.Value);
+                        try
+                        {
+                            var entity = TranslateUtils.JsonDeserialize<StringResult>(item.LastEntity);
+                            item.Set("Url", entity.Value);
+                        }
+                        catch
+                        {
+                            item.Set("Url", "");
+                        }
                     }
                     item.Set("Color", color);
 
                     var adminName = "我";
-                    if (item.AdminId != admin.Id)
+                    if (item.AdminId != adminAuth.AdminId)
                     {
                         var otherAdmin = await _administratorRepository.GetByUserIdAsync(item.AdminId);
                         if (otherAdmin != null)
@@ -64,6 +67,73 @@ namespace XBLMS.Web.Controllers.Admin
 
                     var isView = false;
                     var isEdit = false;
+
+
+                    var isGift = false;
+                    if (item.StatType == StatType.GiftAdd || item.StatType == StatType.GiftUpdate)
+                    {
+                        isGift = true;
+                        if (await _databaseManager.PointShopRepository.ExistsAsync(item.ObjectId))
+                        {
+                            isEdit = true;
+                        }
+                        else
+                        {
+                            name = $"{name}(已删除)";
+                        }
+                    }
+                    item.Set("IsGift", isGift);
+
+                    var isPlan = false;
+                    if (item.StatType == StatType.StudyPlanAdd || item.StatType == StatType.StudyPlanUpdate)
+                    {
+                        isPlan = true;
+                        if (await _databaseManager.StudyPlanRepository.ExistsAsync(item.ObjectId))
+                        {
+                            isView = true;
+                            isEdit = true;
+                        }
+                        else
+                        {
+                            name = $"{name}(已删除)";
+                        }
+                    }
+                    item.Set("IsPlan", isPlan);
+
+                    var isCourse = false;
+                    var isFace = false;
+                    if (item.StatType == StatType.StudyCourseAdd || item.StatType == StatType.StudyCourseUpdate)
+                    {
+                        isCourse = true;
+                        if (await _databaseManager.StudyCourseRepository.ExistsAsync(item.ObjectId))
+                        {
+                            var course = await _databaseManager.StudyCourseRepository.GetAsync(item.ObjectId);
+                            isFace = course.OffLine;
+                            isView = true;
+                            isEdit = true;
+                        }
+                        else
+                        {
+                            name = $"{name}(已删除)";
+                        }
+                    }
+                    item.Set("IsFace", isFace);
+                    item.Set("IsCourse", isCourse);
+
+                    var isFile = false;
+                    if (item.StatType == StatType.StudyFileAdd || item.StatType == StatType.StudyFileUpdate)
+                    {
+                        isFile = true;
+                        if (await _databaseManager.StudyCourseFilesRepository.ExistsAsync(item.ObjectId))
+                        {
+                            isView = true;
+                        }
+                        else
+                        {
+                            name = $"{name}(已删除)";
+                        }
+                    }
+                    item.Set("IsFile", isFile);
 
                     var isTm = false;
                     if (item.StatType == StatType.ExamTmAdd || item.StatType == StatType.ExamTmUpdate)
@@ -130,7 +200,7 @@ namespace XBLMS.Web.Controllers.Admin
                         if (examPaper != null)
                         {
                             isEdit = true;
-                            if (examPaper.TmRandomType != ExamPaperTmRandomType.RandomExaming && examPaper.SubmitType==SubmitType.Submit)
+                            if (examPaper.TmRandomType != ExamPaperTmRandomType.RandomExaming && examPaper.SubmitType == SubmitType.Submit)
                             {
                                 isView = true;
                             }
@@ -239,89 +309,156 @@ namespace XBLMS.Web.Controllers.Admin
         [HttpGet, Route(RouteGetData)]
         public async Task<ActionResult<GetDataResult>> GetData()
         {
-            var admin = await _authManager.GetAdminAsync();
+            var adminAuth = await _authManager.GetAdminAuth();
+            var config = await _configRepository.GetAsync();
+
+            var o1 = 0; var o2 = 0; var o3 = 0; var o4 = 0; var o5 = 0;
+            var admin1 = 0; var admin2 = 0; var admin3 = 0; var admin4 = 0; var admin5 = 0;
+            var user1 = 0; var user2 = 0; var user3 = 0; var user4 = 0; var user5 = 0;
 
 
-            var (c1, c2, c3, c4, c5) = await _databaseManager.OrganCompanyRepository.GetDataCount();
-            var (d1, d2, d3, d4, d5) = await _databaseManager.OrganDepartmentRepository.GetDataCount();
-            var (g1, g2, g3, g4, g5) = await _databaseManager.OrganDutyRepository.GetDataCount();
-            c3 = await _statRepository.SumAsync(StatType.CompanyDelete);
-            d3 = await _statRepository.SumAsync(StatType.DepartmentDelete);
-            g3 = await _statRepository.SumAsync(StatType.DutyDelete);
-            var o1 = c1 + d1 + g1;
-            var o3 = c3 + d3 + g3;
-            var o4 = c4 + d4 + g4;
-            var o5 = c5 + d5 + g5;
-            var o2 = o1 + o3;
+            var (c1, c2, c3, c4, c5) = await _databaseManager.OrganCompanyRepository.GetDataCount(adminAuth);
+            var (d1, d2, d3, d4, d5) = await _databaseManager.OrganDepartmentRepository.GetDataCount(adminAuth);
+            c3 = await _statRepository.SumAsync(StatType.CompanyDelete, adminAuth);
+            d3 = await _statRepository.SumAsync(StatType.DepartmentDelete, adminAuth);
+            o1 = c1 + d1;
+            o3 = c3 + d3;
+            o4 = c4 + d4;
+            o5 = c5 + d5;
+            o2 = o1 + o3;
 
 
-
-            var (admin1, admin2, admin3, admin4, admin5) = await _databaseManager.AdministratorRepository.GetDataCount();
-            admin3 = await _statRepository.SumAsync(StatType.AdminDelete);
+            var (a1, a2, a3, a4, a5) = await _databaseManager.AdministratorRepository.GetDataCount(adminAuth);
+            admin1 = a1; admin2 = a2; admin3 = a3; admin4 = a4; admin5 = a5;
+            admin3 = await _statRepository.SumAsync(StatType.AdminDelete, adminAuth);
             admin2 = admin1 + admin3;
 
-            var (user1, user2, user3, user4, user5) = await _databaseManager.UserRepository.GetDataCount();
-            user3 = await _statRepository.SumAsync(StatType.UserDelete);
+            var (u1, u2, u3, u4, u5) = await _databaseManager.UserRepository.GetDataCount(adminAuth);
+            user1 = u1; user2 = u2; user3 = u3; user4 = u4; user5 = u5;
+            user3 = await _statRepository.SumAsync(StatType.UserDelete, adminAuth);
             user2 = user1 + user3;
 
-            var (e1, e2, e3, e4, e5) = await _databaseManager.ExamPaperRepository.GetDataCount();
-            e3 = await _statRepository.SumAsync(StatType.ExamDelete);
+
+            var (e1, e2, e3, e4, e5) = await _databaseManager.ExamPaperRepository.GetDataCount(adminAuth);
+            e3 = await _statRepository.SumAsync(StatType.ExamDelete, adminAuth);
             e2 = e1 + e3;
 
-            var (m1, m2, m3, m4, m5) = await _databaseManager.ExamPaperRepository.GetDataCountMoni();
+            var (m1, m2, m3, m4, m5) = await _databaseManager.ExamPaperRepository.GetDataCountMoni(adminAuth);
 
-            var (q1, q2, q3, q4, q5) = await _databaseManager.ExamQuestionnaireRepository.GetDataCount();
-            q3 = await _statRepository.SumAsync(StatType.ExamQDelete);
+            var (q1, q2, q3, q4, q5) = await _databaseManager.ExamQuestionnaireRepository.GetDataCount(adminAuth);
+            q3 = await _statRepository.SumAsync(StatType.ExamQDelete, adminAuth);
             q2 = q1 + q3;
 
-            var (s1, s2, s3, s4, s5) = await _databaseManager.ExamAssessmentRepository.GetDataCount();
-            s3 = await _statRepository.SumAsync(StatType.ExamAssDelete);
+            var (s1, s2, s3, s4, s5) = await _databaseManager.ExamAssessmentRepository.GetDataCount(adminAuth);
+            s3 = await _statRepository.SumAsync(StatType.ExamAssDelete, adminAuth);
             s2 = s1 + s3;
 
-            var (p1, p2, p3, p4, p5) = await _databaseManager.ExamPkRepository.GetDataCount();
-            p3 = await _statRepository.SumAsync(StatType.ExamPkDelete);
+            var (p1, p2, p3, p4, p5) = await _databaseManager.ExamPkRepository.GetDataCount(adminAuth);
+            p3 = await _statRepository.SumAsync(StatType.ExamPkDelete, adminAuth);
             p2 = p1 + p3;
 
-            var (cer1, cer2, cer3, cer4, cer5) = await _databaseManager.ExamCerRepository.GetDataCount();
-            cer3 = await _statRepository.SumAsync(StatType.ExamCerDelete);
+            var (cer1, cer2, cer3, cer4, cer5) = await _databaseManager.ExamCerRepository.GetDataCount(adminAuth);
+            cer3 = await _statRepository.SumAsync(StatType.ExamCerDelete, adminAuth);
             cer2 = cer1 + cer3;
 
-            var (t1, t2, t3, t4, t5) = await _databaseManager.ExamTmRepository.GetDataCount();
-            t3 = await _statRepository.SumAsync(StatType.ExamTmDelete);
+            var (t1, t2, t3, t4, t5) = await _databaseManager.ExamTmRepository.GetDataCount(adminAuth);
+            t3 = await _statRepository.SumAsync(StatType.ExamTmDelete, adminAuth);
             t2 = t1 + t3;
 
-            var (k1, k2, k3, k4, k5) = await _databaseManager.KnowlegesRepository.GetDataCount();
-            k3 = await _statRepository.SumAsync(StatType.KnowledgesDelete);
+            var (k1, k2, k3, k4, k5) = await _databaseManager.KnowlegesRepository.GetDataCount(adminAuth);
+            k3 = await _statRepository.SumAsync(StatType.KnowledgesDelete, adminAuth);
             k2 = k1 + k3;
 
+
+            var (plan1, plan2, plan3, plan4, plan5) = await _databaseManager.StudyPlanRepository.GetDataCount(adminAuth);
+            plan3 = await _statRepository.SumAsync(StatType.StudyPlanDelete, adminAuth);
+            plan2 = plan1 + plan3;
+
+            var (course1, course2, course3, course4, course5) = await _databaseManager.StudyCourseRepository.GetDataCount(adminAuth);
+            course3 = await _statRepository.SumAsync(StatType.StudyCourseDelete, adminAuth);
+            course2 = course1 + course3;
+
+            var (file1, file2, file3, file4, file5) = await _databaseManager.StudyCourseFilesRepository.GetDataCount(adminAuth);
+            file3 = await _statRepository.SumAsync(StatType.StudyFileDelete, adminAuth);
+            file2 = file1 + file3;
+
+            var (gift1, gift2, gift3, gift4, gift5) = await _databaseManager.PointShopRepository.GetDataCount(adminAuth);
+            gift3 = await _statRepository.SumAsync(StatType.GiftDelete, adminAuth);
+            gift2 = gift1 + gift3;
+
             var dataList = new List<GetDataInfo>
+                {
+                    new() {
+                        Name = "全部",
+                        Data =config.SystemCode==SystemCode.Exam? [o1, admin1, user1,file1, t1, cer1, e1, m1, q1, s1, p1,k1,gift1]:[o1, admin1, user1,plan1,course1,file1, t1, cer1, e1, m1, q1, s1, p1,k1,gift1]
+                    },
+                    new() {
+                        Name = "新增",
+                        Data = config.SystemCode==SystemCode.Exam?[o2, admin2, user2, file2, t2, cer2, e2, m2, q2, s2, p2,k2, gift2]:[o2, admin2, user2, plan2, course2, file2, t2, cer2, e2, m2, q2, s2, p2,k2, gift2]
+                    },
+                    new() {
+                        Name = "删除",
+                        Data = config.SystemCode==SystemCode.Exam?[o3, admin3, user3, file3, t3, cer3, e3, m3, q3, s3, p3,k3, gift3]:[o3, admin3, user3, plan3, course3, file3, t3, cer3, e3, m3, q3, s3, p3,k3, gift3]
+                    },
+                    new() {
+                        Name = "停用",
+                        Data = config.SystemCode==SystemCode.Exam?[o4, admin4, user4, file4, t4, cer4, e4, m4, q4, s4, p4,k4, gift4]:[o4, admin4, user4, plan4, course4, file4, t4, cer4, e4, m4, q4, s4, p4,k4, gift4]
+                    },
+                    new() {
+                        Name = "启用",
+                        Data =  config.SystemCode==SystemCode.Exam?[o5, admin5, user5, file5, t5, cer5, e5, m5, q5, s5, p5,k5, gift5]:[o5, admin5, user5, plan5, course5, file5, t5, cer5, e5, m5, q5, s5, p5,k5, gift5]
+                    }
+                };
+
+            var dataTitleList = new List<string>() { "组织", "管理员账号", "用户账号", "学习任务", "课程", "课件", "题目", "证书", "考试", "模拟", "问卷调查", "测评", "竞赛", "知识库", "商品" };
+            if (config.SystemCode == SystemCode.Exam)
             {
-                new() {
-                    Name = "全部",
-                    Data = [o1, admin1, user1, t1, cer1, e1, m1, q1, s1, p1,k1]
-                },
-                new() {
-                    Name = "新增",
-                    Data = [o2, admin2, user2, t2, cer2, e2, m2, q2, s2, p2,k2]
-                },
-                new() {
-                    Name = "删除",
-                    Data = [o3, admin3, user3, t3, cer3, e3, m3, q3, s3, p3,k3]
-                },
-                new() {
-                    Name = "停用",
-                    Data = new List<int> { o4, admin4, user4, t4, cer4, e4, m4, q4, s4, p4,k4 }
-                },
-                new() {
-                    Name = "启用",
-                    Data = [o5, admin5, user5, t5, cer5, e5, m5, q5, s5, p5,k5]
+                dataTitleList = new List<string>() { "组织", "管理员账号", "用户账号", "文档", "题目", "证书", "考试", "模拟", "问卷调查", "测评", "竞赛", "知识库", "商品" };
+            }
+
+            var (todayTotal, tlist) = await _examPaperRepository.GetListByDateAsync(adminAuth, "today");
+            var (weekTotal, twlist) = await _examPaperRepository.GetListByDateAsync(adminAuth, "week");
+
+            var (planMonthCreateTotal, planMonthCreateList) = await _databaseManager.StudyPlanRepository.GetListByCreateMAsync(adminAuth);
+            var (planMonthOverTotal, planMonthOverList) = await _databaseManager.StudyPlanRepository.GetListByOverMAsync(adminAuth);
+
+            var (offTrainTotal, offTrainList) = await _databaseManager.StudyCourseRepository.GetOffTrinListByWeekAsync(adminAuth);
+            var (planoffTrainTotal, planoffTrainList) = await _databaseManager.StudyPlanCourseRepository.GetOffTrinListByWeekAsync(adminAuth);
+            if (planoffTrainTotal > 0)
+            {
+                DateTime today = DateTime.Now;
+                DateTime startOfWeek = today;
+                DateTime endOfWeek = today;
+                int dayOfWeek = (int)today.DayOfWeek;
+                if (dayOfWeek == 0)
+                {
+                    startOfWeek = today.AddDays(-6);
                 }
-            };
+                else
+                {
+                    startOfWeek = today.AddDays(1 - dayOfWeek);
+                }
+                endOfWeek = startOfWeek.AddDays(6);
+                foreach (var item in planoffTrainList)
+                {
+                    var offTrain = await _databaseManager.StudyCourseRepository.GetAsync(item.CourseId);
+                    if (offTrain != null && offTrain.OfflineBeginDateTime.Value >= startOfWeek && offTrain.OfflineBeginDateTime <= endOfWeek)
+                    {
+                        offTrainTotal++;
+                    }
+                }
+            }
 
             return new GetDataResult
             {
                 DataList = dataList,
-                DataTitleList = new List<string> { "组织", "管理员账号", "用户账号", "题目", "证书", "考试", "模拟", "问卷调查", "测评", "竞赛", "知识库" }
+                DataTitleList = dataTitleList,
+                ExamTotalToday = todayTotal,
+                ExamTotalWeek = weekTotal,
+                PlanCreateTotal = planMonthCreateTotal,
+                PlanOverTotal = planMonthOverTotal,
+                OffTrainTotal = offTrainTotal,
+                SystemCode = config.SystemCode
             };
         }
     }

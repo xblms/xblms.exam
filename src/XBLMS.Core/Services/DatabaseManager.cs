@@ -15,6 +15,8 @@ namespace XBLMS.Core.Services
     public partial class DatabaseManager : IDatabaseManager
     {
         private readonly ISettingsManager _settingsManager;
+
+        public ITableStyleRepository TableStyleRepository { get; }
         public IAdministratorRepository AdministratorRepository { get; }
         public IAdministratorsInRolesRepository AdministratorsInRolesRepository { get; }
         public IConfigRepository ConfigRepository { get; }
@@ -29,17 +31,15 @@ namespace XBLMS.Core.Services
         public IUserRepository UserRepository { get; }
         public IOrganCompanyRepository OrganCompanyRepository { get; }
         public IOrganDepartmentRepository OrganDepartmentRepository { get; }
-        public IOrganDutyRepository OrganDutyRepository { get; }
         public IBlockRuleRepository BlockRuleRepository { get; }
         public IBlockAnalysisRepository BlockAnalysisRepository { get; }
         public IDbBackupRepository DbBackupRepository { get; }
         public IDbRecoverRepository DbRecoverRepository { get; }
-        public ICrudDemoRepository CrudDemoRepository { get; }
+        public IScheduledTaskRepository ScheduledTaskRepository { get; }
 
         public IExamTxRepository ExamTxRepository { get; }
         public IExamTmTreeRepository ExamTmTreeRepository { get; }
         public IExamTmRepository ExamTmRepository { get; }
-        public IExamTmSmallRepository ExamTmSmallRepository { get; }
         public IExamTmAnalysisRepository ExamTmAnalysisRepository { get; }
         public IExamTmAnalysisTmRepository ExamTmAnalysisTmRepository { get; }
         public IExamCerUserRepository ExamCerUserRepository { get; }
@@ -49,17 +49,14 @@ namespace XBLMS.Core.Services
         public IExamTmGroupRepository ExamTmGroupRepository { get; }
         public IExamPaperRandomRepository ExamPaperRandomRepository { get; }
         public IExamPaperRandomTmRepository ExamPaperRandomTmRepository { get; }
-        public IExamPaperRandomTmSmallRepository ExamPaperRandomTmSmallRepository { get; }
         public IExamPaperRandomConfigRepository ExamPaperRandomConfigRepository { get; }
         public IExamPaperUserRepository ExamPaperUserRepository { get; }
         public IExamPaperStartRepository ExamPaperStartRepository { get; }
         public IExamPaperAnswerRepository ExamPaperAnswerRepository { get; }
-        public IExamPaperAnswerSmallRepository ExamPaperAnswerSmallRepository { get; }
 
 
         public IExamPracticeRepository ExamPracticeRepository { get; }
         public IExamPracticeAnswerRepository ExamPracticeAnswerRepository { get; }
-        public IExamPracticeAnswerSmallRepository ExamPracticeAnswerSmallRepository { get; }
         public IExamPracticeCollectRepository ExamPracticeCollectRepository { get; }
         public IExamPracticeWrongRepository ExamPracticeWrongRepository { get; }
 
@@ -80,12 +77,36 @@ namespace XBLMS.Core.Services
         public IExamAssessmentConfigRepository ExamAssessmentConfigRepository { get; }
         public IExamAssessmentConfigSetRepository ExamAssessmentConfigSetRepository { get; }
 
+        public IExamPaperAnswerSmallRepository ExamPaperAnswerSmallRepository { get; }
+        public IExamPaperRandomTmSmallRepository ExamPaperRandomTmSmallRepository { get; }
+        public IExamPracticeAnswerSmallRepository ExamPracticeAnswerSmallRepository { get; }
+        public IExamTmSmallRepository ExamTmSmallRepository { get; }
+
         public IKnowlegesRepository KnowlegesRepository { get; }
         public IKnowlegesTreeRepository KnowlegesTreeRepository { get; }
 
+        public IStudyCourseFilesRepository StudyCourseFilesRepository { get; }
+        public IStudyCourseFilesGroupRepository StudyCourseFilesGroupRepository { get; }
+        public IStudyCourseEvaluationItemRepository StudyCourseEvaluationItemRepository { get; }
+        public IStudyCourseEvaluationItemUserRepository StudyCourseEvaluationItemUserRepository { get; }
+        public IStudyCourseEvaluationRepository StudyCourseEvaluationRepository { get; }
+        public IStudyCourseEvaluationUserRepository StudyCourseEvaluationUserRepository { get; }
+
+        public IStudyPlanRepository StudyPlanRepository { get; }
+        public IStudyPlanCourseRepository StudyPlanCourseRepository { get; }
+        public IStudyPlanUserRepository StudyPlanUserRepository { get; }
+        public IStudyCourseUserRepository StudyCourseUserRepository { get; }
+        public IStudyCourseWareUserRepository StudyCourseWareUserRepository { get; }
+        public IStudyCourseTreeRepository StudyCourseTreeRepository { get; }
+        public IStudyCourseRepository StudyCourseRepository { get; }
+        public IStudyCourseWareRepository StudyCourseWareRepository { get; }
+        public IPointShopRepository PointShopRepository { get; }
+        public IPointShopUserRepository PointShopUserRepository { get; }
+        public IPointLogRepository PointLogRepository { get; }
 
         public DatabaseManager(
             ISettingsManager settingsManager,
+            ITableStyleRepository tableStyleRepository,
             IAdministratorRepository administratorRepository,
             IAdministratorsInRolesRepository administratorsInRolesRepository,
             IConfigRepository configRepository,
@@ -100,16 +121,14 @@ namespace XBLMS.Core.Services
             IUserRepository userRepository,
             IOrganCompanyRepository organCompanyRepository,
             IOrganDepartmentRepository organDepartmentRepository,
-            IOrganDutyRepository organDutyRepository,
             IBlockAnalysisRepository blockAnalysisRepository,
             IBlockRuleRepository blockRuleRepository,
             IDbRecoverRepository dbRecoverRepository,
             IDbBackupRepository dbBackupRepository,
-            ICrudDemoRepository crudDemoRepository,
+            IScheduledTaskRepository scheduledTaskRepository,
             IExamTxRepository examTxRepository,
             IExamTmTreeRepository examTmTreeRepository,
             IExamTmRepository examTmRepository,
-            IExamTmSmallRepository examTmSmallRepository,
             IExamTmAnalysisRepository examTmAnalysisRepository,
             IExamTmAnalysisTmRepository examTmAnalysisTmRepository,
             IExamCerUserRepository examCerUserRepository,
@@ -119,15 +138,12 @@ namespace XBLMS.Core.Services
             IExamTmGroupRepository examTmGroupRepository,
             IExamPaperRandomRepository examPaperRandomRepository,
             IExamPaperRandomTmRepository examPaperRandomTmRepository,
-            IExamPaperRandomTmSmallRepository examPaperRandomTmSmallRepository,
             IExamPaperRandomConfigRepository examPaperRandomConfigRepository,
             IExamPaperUserRepository examPaperUserRepository,
             IExamPaperStartRepository examPaperStartRepository,
             IExamPaperAnswerRepository examPaperAnswerRepository,
-            IExamPaperAnswerSmallRepository examPaperAnswerSmallRepository,
             IExamPracticeRepository examPracticeRepository,
             IExamPracticeAnswerRepository examPracticeAnswerRepository,
-            IExamPracticeAnswerSmallRepository examPracticeAnswerSmallRepository,
             IExamPracticeCollectRepository examPracticeCollectRepository,
             IExamPracticeWrongRepository examPracticeWrongRepository,
             IExamQuestionnaireAnswerRepository examQuestionnaireAnswerRepository,
@@ -144,10 +160,32 @@ namespace XBLMS.Core.Services
             IExamAssessmentAnswerRepository examAssessmentAnswerRepository,
             IExamAssessmentConfigRepository examAssessmentConfigRepository,
             IExamAssessmentConfigSetRepository examAssessmentConfigSetRepository,
+            IExamPaperAnswerSmallRepository examPaperAnswerSmallRepository,
+            IExamPaperRandomTmSmallRepository examPaperRandomTmSmallRepository,
+            IExamPracticeAnswerSmallRepository examPracticeAnswerSmallRepository,
+            IExamTmSmallRepository examTmSmallRepository,
             IKnowlegesRepository knowlegesRepository,
-            IKnowlegesTreeRepository knowlegesTreeRepository)
+            IKnowlegesTreeRepository knowlegesTreeRepository,
+            IStudyCourseFilesRepository studyCourseFilesRepository,
+            IStudyCourseFilesGroupRepository studyCourseFilesGroupRepository,
+            IStudyCourseEvaluationItemRepository studyCourseEvaluationItemRepository,
+            IStudyCourseEvaluationItemUserRepository studyCourseEvaluationItemUserRepository,
+            IStudyCourseEvaluationRepository studyCourseEvaluationRepository,
+            IStudyCourseEvaluationUserRepository studyCourseEvaluationUserRepository,
+            IStudyPlanRepository studyPlanRepository,
+            IStudyPlanCourseRepository studyPlanCourseRepository,
+            IStudyPlanUserRepository studyPlanUserRepository,
+            IStudyCourseUserRepository studyCourseUserRepository,
+            IStudyCourseWareUserRepository studyCourseWareUserRepository,
+            IStudyCourseTreeRepository studyCourseTreeRepository,
+            IStudyCourseRepository studyCourseRepository,
+            IStudyCourseWareRepository studyCourseWareRepository,
+            IPointShopRepository pointShopRepository,
+            IPointShopUserRepository pointShopUserRepository,
+            IPointLogRepository pointLogRepository)
         {
             _settingsManager = settingsManager;
+            TableStyleRepository = tableStyleRepository;
             AdministratorRepository = administratorRepository;
             AdministratorsInRolesRepository = administratorsInRolesRepository;
             ConfigRepository = configRepository;
@@ -162,16 +200,14 @@ namespace XBLMS.Core.Services
             UserRepository = userRepository;
             OrganCompanyRepository = organCompanyRepository;
             OrganDepartmentRepository = organDepartmentRepository;
-            OrganDutyRepository = organDutyRepository;
             BlockAnalysisRepository = blockAnalysisRepository;
             BlockRuleRepository = blockRuleRepository;
             DbRecoverRepository = dbRecoverRepository;
             DbBackupRepository = dbBackupRepository;
-            CrudDemoRepository = crudDemoRepository;
+            ScheduledTaskRepository = scheduledTaskRepository;
             ExamTxRepository = examTxRepository;
             ExamTmTreeRepository = examTmTreeRepository;
             ExamTmRepository = examTmRepository;
-            ExamTmSmallRepository = examTmSmallRepository;
             ExamTmAnalysisRepository = examTmAnalysisRepository;
             ExamTmAnalysisTmRepository = examTmAnalysisTmRepository;
             ExamCerUserRepository = examCerUserRepository;
@@ -181,15 +217,12 @@ namespace XBLMS.Core.Services
             ExamTmGroupRepository = examTmGroupRepository;
             ExamPaperRandomRepository = examPaperRandomRepository;
             ExamPaperRandomTmRepository = examPaperRandomTmRepository;
-            ExamPaperRandomTmSmallRepository = examPaperRandomTmSmallRepository;
             ExamPaperRandomConfigRepository = examPaperRandomConfigRepository;
             ExamPaperUserRepository = examPaperUserRepository;
             ExamPaperStartRepository = examPaperStartRepository;
             ExamPaperAnswerRepository = examPaperAnswerRepository;
-            ExamPaperAnswerSmallRepository = examPaperAnswerSmallRepository;
             ExamPracticeRepository = examPracticeRepository;
             ExamPracticeAnswerRepository = examPracticeAnswerRepository;
-            ExamPracticeAnswerSmallRepository = examPracticeAnswerSmallRepository;
             ExamPracticeCollectRepository = examPracticeCollectRepository;
             ExamPracticeWrongRepository = examPracticeWrongRepository;
             ExamQuestionnaireAnswerRepository = examQuestionnaireAnswerRepository;
@@ -206,8 +239,29 @@ namespace XBLMS.Core.Services
             ExamAssessmentAnswerRepository = examAssessmentAnswerRepository;
             ExamAssessmentConfigRepository = examAssessmentConfigRepository;
             ExamAssessmentConfigSetRepository = examAssessmentConfigSetRepository;
+            ExamPaperAnswerSmallRepository = examPaperAnswerSmallRepository;
+            ExamPaperRandomTmSmallRepository = examPaperRandomTmSmallRepository;
+            ExamPracticeAnswerSmallRepository = examPracticeAnswerSmallRepository;
+            ExamTmSmallRepository = examTmSmallRepository;
             KnowlegesRepository = knowlegesRepository;
             KnowlegesTreeRepository = knowlegesTreeRepository;
+            StudyCourseFilesRepository = studyCourseFilesRepository;
+            StudyCourseFilesGroupRepository = studyCourseFilesGroupRepository;
+            StudyCourseEvaluationItemRepository = studyCourseEvaluationItemRepository;
+            StudyCourseEvaluationItemUserRepository = studyCourseEvaluationItemUserRepository;
+            StudyCourseEvaluationRepository = studyCourseEvaluationRepository;
+            StudyCourseEvaluationUserRepository = studyCourseEvaluationUserRepository;
+            StudyPlanRepository = studyPlanRepository;
+            StudyPlanCourseRepository = studyPlanCourseRepository;
+            StudyPlanUserRepository = studyPlanUserRepository;
+            StudyCourseUserRepository = studyCourseUserRepository;
+            StudyCourseWareUserRepository = studyCourseWareUserRepository;
+            StudyCourseTreeRepository = studyCourseTreeRepository;
+            StudyCourseRepository = studyCourseRepository;
+            StudyCourseWareRepository = studyCourseWareRepository;
+            PointShopRepository = pointShopRepository;
+            PointShopUserRepository = pointShopUserRepository;
+            PointLogRepository = pointLogRepository;
         }
 
         public List<IRepository> GetAllRepositories()
@@ -215,12 +269,12 @@ namespace XBLMS.Core.Services
             var list = new List<IRepository>
             {
                 ConfigRepository,
+                TableStyleRepository,
                 AdministratorRepository,
                 AdministratorsInRolesRepository,
                 RoleRepository,
                 OrganCompanyRepository,
                 OrganDepartmentRepository,
-                OrganDutyRepository,
                 DbCacheRepository,
                 ErrorLogRepository,
                 LogRepository,
@@ -233,11 +287,10 @@ namespace XBLMS.Core.Services
                 BlockAnalysisRepository,
                 DbBackupRepository,
                 DbRecoverRepository,
-                CrudDemoRepository,
+                ScheduledTaskRepository,
                 ExamTxRepository,
                 ExamTmTreeRepository,
                 ExamTmRepository,
-                ExamTmSmallRepository,
                 ExamTmAnalysisRepository,
                 ExamTmAnalysisTmRepository,
                 ExamCerRepository,
@@ -247,16 +300,13 @@ namespace XBLMS.Core.Services
                 ExamTmGroupRepository,
                 ExamPaperRandomRepository,
                 ExamPaperRandomTmRepository,
-                ExamPaperRandomTmSmallRepository,
                 ExamPaperRandomConfigRepository,
                 ExamPaperUserRepository,
                 ExamPaperStartRepository,
                 ExamPaperAnswerRepository,
-                ExamPaperAnswerSmallRepository,
                 ExamPracticeRepository,
                 ExamPracticeWrongRepository,
                 ExamPracticeAnswerRepository,
-                ExamPracticeAnswerSmallRepository,
                 ExamPracticeCollectRepository,
                 ExamQuestionnaireUserRepository,
                 ExamQuestionnaireTmRepository,
@@ -272,8 +322,29 @@ namespace XBLMS.Core.Services
                 ExamAssessmentAnswerRepository,
                 ExamAssessmentConfigRepository,
                 ExamAssessmentConfigSetRepository,
+                ExamPaperAnswerSmallRepository,
+                ExamPracticeAnswerSmallRepository,
+                ExamPaperRandomTmSmallRepository,
+                ExamTmSmallRepository,
                 KnowlegesRepository,
-                KnowlegesTreeRepository
+                KnowlegesTreeRepository,
+                StudyCourseFilesRepository,
+                StudyCourseFilesGroupRepository,
+                StudyCourseEvaluationItemRepository,
+                StudyCourseEvaluationItemUserRepository,
+                StudyCourseEvaluationRepository,
+                StudyCourseEvaluationUserRepository,
+                StudyPlanRepository,
+                StudyPlanUserRepository,
+                StudyPlanCourseRepository,
+                StudyCourseUserRepository,
+                StudyCourseWareUserRepository,
+                StudyCourseTreeRepository,
+                StudyCourseRepository,
+                StudyCourseWareRepository,
+                PointShopRepository,
+                PointShopUserRepository,
+                PointLogRepository
             };
 
             return list;

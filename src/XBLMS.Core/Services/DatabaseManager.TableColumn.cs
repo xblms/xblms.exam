@@ -93,6 +93,14 @@ namespace XBLMS.Core.Services
 
             return toReturn;
         }
+
+        public async Task<int> ExecuteAsync(string query)
+        {
+            using (var connection = _settingsManager.Database.GetConnection())
+            {
+                return await connection.ExecuteAsync(query);
+            }
+        }
     }
 
 }

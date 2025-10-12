@@ -1,0 +1,85 @@
+﻿@page
+@{ Layout = "_Layout"; }
+@section Styles{
+    <link href="/sitefiles/assets/lib/geeks/css/theme.min.css" rel="stylesheet" type="text/css" />
+}
+
+<el-row :gutter="8" class="mx-3 mt-8">
+    <el-col :span="6" class="text-center">
+        <apexchart type="radialBar" :options="passChartOptions" :series="passSeries" height="310"></apexchart>
+    </el-col>
+    <el-col :span="18">
+        <el-card class="bg-light p-5">
+            <div>
+                <el-row :gutter="18">
+                    <el-col :span="8">
+                         <el-card class="rounded-pill card-lift fw-bolder">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>学分</span>
+                                <span class="fw-bold">{{ course.credit }}</span>
+                            </div>
+                        </el-card>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-card class="rounded-pill card-lift fw-bolder">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>课时</span>
+                                <span class="fw-bold">{{ course.studyHour }}</span>
+                            </div>
+                        </el-card>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-card class="rounded-pill card-lift fw-bolder">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>学时</span>
+                                <span class="fw-bold">{{ utils.formatDuration(course.duration) }}</span>
+                            </div>
+                        </el-card>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="18" class="mt-5">
+                    <el-col :span="12">
+                        <el-card class="rounded-pill card-lift fw-bolder bg-primary text-white">
+                            <div class="d-flex justify-content-between align-items-center px-3">
+                                <span>学习人数</span>
+                                <span class="fw-bold fs-1">{{ course.totalUser }}</span>
+                            </div>
+                        </el-card>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-card class="rounded-pill card-lift fw-bolder bg-success text-white">
+                            <div class="d-flex justify-content-between align-items-center px-3">
+                                <span>完成人数</span>
+                                <span class="fw-bold fs-1">{{ course.totalPassUser }}</span>
+                            </div>
+                        </el-card>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="18" class="mt-5">
+                    <el-col :span="12">
+                        <el-card class="rounded-pill card-lift fw-bolder">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>课程评价</span>
+                                <span class="fw-bold">{{ course.evaluationAvg }} <i class="el-icon-star-on text-warning"></i></span>
+                            </div>
+                        </el-card>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-card class="rounded-pill card-lift fw-bolder">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>评价人数</span>
+                                <span class="fw-bold">{{ course.evaluationUser }}</span>
+                            </div>
+                        </el-card>
+                    </el-col>
+                </el-row>
+            </div>
+        </el-card>
+    </el-col>
+</el-row>
+
+@section Scripts{
+    <script src="/sitefiles/assets/lib/apexcharts/apexcharts.js" type="text/javascript"></script>
+    <script src="/sitefiles/assets/lib/apexcharts/vue-apexcharts.js" type="text/javascript"></script>
+    <script src="/sitefiles/assets/js/admin/study/studyCourseManagerAnalysis.js" type="text/javascript"></script>
+}

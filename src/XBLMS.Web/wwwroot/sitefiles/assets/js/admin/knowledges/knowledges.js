@@ -18,7 +18,7 @@ var data = utils.init({
   },
   list: null,
   total: 0,
-
+  isAdmin: false,
 
   //tree
   treeItems: null,
@@ -50,6 +50,7 @@ var methods = {
     $api.get($url, { params: $this.formInline }).then(function (response) {
       var res = response.data;
 
+      $this.isAdmin = res.isAdmin;
       $this.list = res.list;
       $this.total = res.total;
 
@@ -91,6 +92,7 @@ var methods = {
       utils.error(error);
     }).then(function () {
       utils.loading($this, false);
+      $this.apiGetTree();
       $this.btnSearchClick();
     });
   },
@@ -154,7 +156,8 @@ var methods = {
         width: "99%",
         height: "99%",
         end: function () {
-          $this.apiGet();
+          $this.apiGetTree();
+          $this.btnSearchClick();
         }
       });
     }
@@ -163,13 +166,12 @@ var methods = {
     }
   },
   btnViewClick: function (row) {
-    var $this = this;
     top.utils.openLayer({
       title: false,
       closebtn: 0,
-      url: utils.getKnowledgesUrl("knowledgesView", { url: row.url }),
-      width: "88%",
-      height: "99%"
+      url: utils.getStudyUrl('studyCourseFileLayerView', { id: row.fileId }),
+      width: "58%",
+      height: "99%",
     });
   },
 

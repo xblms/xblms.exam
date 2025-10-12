@@ -1,7 +1,8 @@
 ﻿var $url = '/settings/usersGroupRange';
 var $urlOtherData = $url + '/actions/otherData';
 var $urlRange = $url + '/actions/range';
-var $urlExport = $url + '/actions/export';
+
+var $urlTreeLazy = '/settings/organs/lazy';
 
 var data = utils.init({
   items: null,
@@ -13,11 +14,12 @@ var data = utils.init({
     order: '',
     lastActivityDate: 0,
     keyword: '',
-    currentPage: 1,
     rangeUserIds: [],
     rangeAll: false,
-    offset: 0,
-    limit: PER_PAGE
+    organId: 0,
+    organType:'company',
+    pageIndex: 1,
+    pageSize: PER_PAGE
   },
   defaultProps: {
     children: 'children',
@@ -27,25 +29,58 @@ var data = utils.init({
   curOrganId: '',
   groupName: null,
   multipleSelection: [],
-  pageSizes: [PER_PAGE, 50, 300, 500, 1000]
+  pageSizes: [PER_PAGE, 50, 300, 500, 1000],
+  treeParentId: 0,
+  treeOrganType: 'company',
+  treeLoading: false,
+  topNode: null,
+  topResolve: null
 });
 
 var methods = {
-  apiGetOtherData: function () {
-    var $this = this;
+  loadTree(node, resolve) {
+    if (node.level !== 0) {
+      let tree = node.data;
+      this.treeParentId = tree.id;
+      this.treeOrganType = tree.organType;
+    }
+    else {
+      this.topNode = node;
+      this.topResolve = resolve;
 
-    $api.get($urlOtherData).then(function (response) {
+    }
+    var $this = this;
+    $this.treeLoading = true;
+
+    var organParams = {
+      keyWords: this.filterText,
+      parentId: this.treeParentId,
+      organType: this.treeOrganType,
+      showAdminTotal: false,
+      showUserTotal: true
+    };
+
+    $api.get($urlTreeLazy, { params: organParams }).then(function (response) {
       var res = response.data;
-      $this.organs = res.organs;
+      resolve(res.organs)
     }).catch(function (error) {
-      utils.error(error, { layer: true });
+      utils.error(error);
     }).then(function () {
-      utils.loading($this, false);
-      $this.apiGet();
+      $this.treeLoading = false;
     });
+
+  },
+  loadTreeSearch: function () {
+    var $this = this;
+    this.treeParentId = 0;
+    this.treeOrganType = "company";
+    $this.topNode.childNodes = [];
+    $this.loadTree($this.topNode, $this.topResolve);
   },
   apiGet: function () {
     var $this = this;
+
+    utils.loading(this, true);
 
     $api.get($url, {
       params: this.formInline
@@ -132,7 +167,7 @@ var methods = {
         $this.formInline.rangeAll = false;
 
 
-        $this.apiGet();
+        $this.btnSearchClick();
       }
 
     }).catch(function (error) {
@@ -141,39 +176,27 @@ var methods = {
       utils.loading($this, false);
     });
   },
+
+  rowClick(row, column, event) {
+    this.$refs.userTable.toggleRowSelection(row);
+  },
   btnViewClick: function (user) {
     utils.openUserView(user.id);
   },
 
-  btnExportClick: function () {
-    var $this = this;
-
-    utils.loading(this, true);
-    $api.post($urlExport, this.formInline).then(function (response) {
-      var res = response.data;
-
-      window.open(res.value);
-    }).catch(function (error) {
-      utils.error(error);
-    }).then(function () {
-      utils.loading($this, false);
-    });
-  },
-
   btnSearchClick() {
+    this.formInline.pageIndex = 1;
     this.apiGet();
   },
   handleSizeChange: function (val) {
-    this.formInline.currentValue = 1;
-    this.formInline.limit = val;
+    this.formInline.pageIndex = 1;
+    this.formInline.pageSize = val;
 
-    this.btnSearchClick();
+    this.apiGet();
   },
   handleCurrentChange: function (val) {
-    this.formInline.currentValue = val;
-    this.formInline.offset = this.formInline.limit * (val - 1);
-
-    this.btnSearchClick();
+    this.formInline.pageIndex = val;
+    this.apiGet();
   },
 
   filterNode(value, data) {
@@ -192,12 +215,7 @@ var $vue = new Vue({
   el: '#main',
   data: data,
   methods: methods,
-  watch: {
-    filterText(val) {
-      this.$refs.tree.filter(val);
-    }
-  },
   created: function () {
-    this.apiGetOtherData();
+    this.apiGet();
   }
 });

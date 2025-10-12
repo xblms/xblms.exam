@@ -25,8 +25,6 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
             var fileName = PathUtils.GetFileName(file.FileName);
 
-            var errors = new List<string>();
-
             var sExt = PathUtils.GetExtension(fileName);
             if (!StringUtils.EqualsIgnoreCase(sExt, ".xlsx"))
             {

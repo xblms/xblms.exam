@@ -1,21 +1,30 @@
 var $url = '/index';
-
+var $urlResses = $url + '/resses';
 
 var data = utils.init({
+  sessionId: sessionStorage.getItem(SESSION_ID_NAME),
   openMenus: [],
   appMenuActive: "index",
-  rightUrl: utils.getRootUrl('dashboard')
+  rightUrl: utils.getRootUrl('dashboard'),
+  systemCode: null
 });
 
 var methods = {
   apiGet: function () {
     var $this = this;
-    $api.get($url).then(function (response) {
+    $api.get($url, {
+      params: {
+        sessionId: this.sessionId
+      }
+    }).then(function (response) {
       var res = response.data;
-      if (res.user) {
-        $this.openMenus = res.openMenus;
+      if (res.value) {
 
+        $this.systemCode = res.systemCode;
+        top.utils.pointNotice(res.pointNotice);
         $this.btnAppMenuClick("index");
+
+        setInterval($this.apiReSession, 5000);
       } else {
         location.href = utils.getRootUrl('login');
       }
@@ -25,6 +34,16 @@ var methods = {
       utils.loading($this, false);
     });
   },
+  apiReSession: function () {
+    $api.get($urlResses, {
+      params: {
+        sessionId: this.sessionId
+      }
+    }).then(function () {
+    }).catch(function (error) {
+      utils.error(error);
+    });
+  },
   btnAppMenuClick: function (common) {
 
     var $this = this;
@@ -32,30 +51,25 @@ var methods = {
     $this.appMenuActive = common;
 
     if (common === 'index') {
-      document.title = '首页';
-      $this.rightUrl = utils.getRootUrl("dashboard");
+      document.title = '待办';
+      $this.rightUrl = utils.getRootUrl("dotask");
     }
     if (common === 'exam') {
       document.title = '考试中心';
       $this.rightUrl = utils.getExamUrl("examPaper");
     }
-    if (common === 'moni') {
-      document.title = '模拟考试中心';
-      $this.rightUrl = utils.getExamUrl("examPaperMoni");
+    if (common === 'studyPlan') {
+      document.title = '学习任务';
+      $this.rightUrl = utils.getStudyUrl("studyIndex");
     }
-    if (common === 'shuati') {
-      document.title = '刷题练习';
-      $this.rightUrl = utils.getExamUrl("examPractice");
+    if (common === 'more') {
+      document.title = '更多';
+      $this.rightUrl = utils.getRootUrl("moreIndex");
     }
     if (common === 'mine') {
-      document.title = '首页';
+      document.title = '我的';
       $this.rightUrl = utils.getRootUrl('mine');
     }
-
-    $this.$nextTick(() => {
-      $this.$refs.homeRightIframe.src = $this.rightUrl;
-    })
-
   }
 };
 
@@ -64,7 +78,6 @@ var $vue = new Vue({
   data: data,
   methods: methods,
   created: function () {
-    document.title = '首页';
     this.apiGet();
   }
 });

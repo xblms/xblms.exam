@@ -1,0 +1,28 @@
+﻿@page
+@{ Layout = "_Layout"; }
+
+<el-card>
+    <div slot="header" class="clearfix">
+        <span>{{ item.title }}-评价项预览</span>
+        <el-button style="float: right;padding:3px 0;" type="text" v-on:click="utils.closeLayerSelf"><i class="el-icon-close"></i></el-button>
+    </div>
+    <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-180) + 'px' }">
+        <div v-if="itemList && itemList.length>0">
+            <el-form status-icon label-width="100px" label-position="top">
+                <el-form-item :label="iteminfo.title" v-for="iteminfo in itemList">
+                    <el-input type="textarea" rows="2" v-if="iteminfo.textContent"></el-input>
+                    <el-rate show-score v-model="iteminfo.score" :max="item.maxStar" v-else></el-rate>
+                </el-form-item>
+            </el-form>
+        </div>
+    </el-scrollbar>
+</el-card>
+<el-row align="center" style="margin-top:18px;">
+    <el-col :span="24" align="center">
+        <el-button icon="el-icon-close" :size="euiSize" v-on:click="utils.closeLayerSelf">关 闭</el-button>
+    </el-col>
+</el-row>
+
+@section Scripts{
+<script src="/sitefiles/assets/js/admin/study/studyCourseEvaluationLayerView.js" type="text/javascript"></script>
+}

@@ -9,7 +9,9 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         [HttpGet, Route(Route)]
         public async Task<ActionResult<GetResult>> GetManage([FromQuery] GetRequest request)
         {
-            var (total, list) = await _examQuestionnaireRepository.GetListAsync(request.Keyword, request.PageIndex, request.PageSize);
+            var adminAuth = await _authManager.GetAdminAuth();
+
+            var (total, list) = await _examQuestionnaireRepository.GetListAsync(adminAuth, request.Keyword, request.PageIndex, request.PageSize);
 
             if (total > 0)
             {
@@ -17,6 +19,9 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 {
                     item.Set("ExamBeginDateTimeStr", item.ExamBeginDateTime.Value.ToString(DateUtils.FormatStringDateTimeCN));
                     item.Set("ExamEndDateTimeStr", item.ExamEndDateTime.Value.ToString(DateUtils.FormatStringDateTimeCN));
+
+                    var useCount = await _studyManager.GetUseCountByPaperQId(item.Id);
+                    item.Set("UseCount", useCount);
                 }
             }
             return new GetResult

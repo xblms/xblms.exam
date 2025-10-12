@@ -8,17 +8,20 @@ var data = utils.init({
   list: [],
   pageIndex: 1,
   pageSize: PER_PAGE,
-  loadMoreLoading: false
+  loadMoreLoading: false,
+  examTotalToday: 0,
+  examTotalWeek: 0,
+  offTrainTotal: 0,
+  planCreateTotal: 0,
+  planOverTotal: 0,
+  taskExamTotal: 0,
+  taskStudyTotal: 0,
+  systemCode: null
 });
 
 var methods = {
   apiGetLog: function () {
     var $this = this;
-
-    if (this.total === 0) {
-      utils.loading(this, true);
-    }
-
     $api.get($url, { params: { pageIndex: this.pageIndex, pageSize: this.pageSize } }).then(function (response) {
       var res = response.data;
       $this.total = res.total;
@@ -38,10 +41,19 @@ var methods = {
   },
   apiGetData: function () {
     var $this = this;
-    utils.loading(this, true);
 
     $api.get($urlData).then(function (response) {
       var res = response.data;
+
+      $this.systemCode = res.systemCode;
+      $this.examTotalToday = res.examTotalToday;
+      $this.examTotalWeek = res.examTotalWeek;
+      $this.planCreateTotal = res.planCreateTotal;
+      $this.planOverTotal = res.planOverTotal;
+      $this.offTrainTotal = res.offTrainTotal;
+
+      $this.taskExamTotal = $this.examTotalToday + $this.examTotalWeek;
+      $this.taskStudyTotal = $this.planCreateTotal + $this.planOverTotal + $this.offTrainTotal;
 
       $this.series = res.dataList;
       $this.chartOptions = {
@@ -68,7 +80,7 @@ var methods = {
         fill: {
           opacity: 1,
         },
-        colors: ['#409EFF', '#FF7F50', '#F56C6C', '#FF0000', '#67C23A'],
+        colors: ['#6600FF', '#FF7F50', '#F56C6C', '#FF0000', '#67C23A'],
         legend: {
           position: 'top',
           horizontalAlign: 'left'
@@ -77,7 +89,7 @@ var methods = {
     }).catch(function (error) {
       utils.error(error);
     }).then(function () {
-      utils.loading($this, false);
+      $this.apiGetLog();
     });
   },
   btnLoadMoreClick: function () {
@@ -92,6 +104,21 @@ var methods = {
     }
     else if (log.isUser) {
       utils.openUserView(log.objectId);
+    }
+    else if (log.isPlan) {
+      utils.openTopLeft(log.objectName, utils.getStudyUrl("studyPlanManagerAnalysis", { id: log.objectId }));
+    }
+    else if (log.isCourse) {
+      utils.openTopLeft(log.objectName, utils.getStudyUrl("studyCourseManagerAnalysis", { id: log.objectId }));
+    }
+    else if (log.isFile) {
+      top.utils.openLayer({
+        title: false,
+        closebtn: 0,
+        url: utils.getStudyUrl('studyCourseFileLayerView', { id: log.objectId }),
+        width: "68%",
+        height: "98%"
+      });
     }
     else if (log.isDeleteTm) {
       top.utils.openLayer({
@@ -136,6 +163,45 @@ var methods = {
       });
     }
   },
+
+  btnTaskStudy: function () {
+    if (this.planCreateTotal > 0) {
+      this.btnCreatePlan();
+    }
+    else if (this.planOverTotal > 0) {
+      this.btnOverPlan();
+    }
+    else {
+      this.btnWeekOfftrain();
+    }
+  },
+  btnTaskExam: function () {
+    if (this.examTotalToday > 0) {
+      this.btnTodayExam('today');
+    }
+    else {
+      this.btnTodayExam('week');
+    }
+  },
+  btnTodayExam: function (dateType) {
+    var rightTitle = dateType === 'today' ? "今日考试安排" : "本周考试安排";
+    utils.openTopRight(rightTitle, utils.getExamUrl("examPaperToday", { dateType: dateType }), 40);
+  },
+  btnCreatePlan: function () {
+    var rightTitle = "本月发布计划";
+    utils.openTopRight(rightTitle, utils.getStudyUrl("studyPlanMonth", { isOver: false }), 40);
+  },
+  btnOverPlan: function (dateType) {
+    var rightTitle = "本月将完成计划";
+    utils.openTopRight(rightTitle, utils.getStudyUrl("studyPlanMonth", { isOver: true }), 40);
+  },
+  btnWeekOfftrain: function () {
+    var rightTitle = "本周面授课";
+    utils.openTopRight(rightTitle, utils.getStudyUrl("studyOffCourseWeek"), 40);
+  },
+  btnDoc: function () {
+    utils.openTopLeft(this.systemCode==='Exam'?'考试档案':'学习档案', utils.getSettingsUrl("usersDoc"), 98);
+  },
   btnEditClick: function (log) {
     var $this = this;
     if (log.isAdmin) {
@@ -147,6 +213,15 @@ var methods = {
         height: "88%"
       });
     }
+    else if (log.isGift) {
+      top.utils.openLayer({
+        title: false,
+        closebtn: 0,
+        url: utils.getPointsUrl('giftsEdit', { id: log.objectId }),
+        width: "60%",
+        height: "88%",
+      });
+    }
     else if (log.isUser) {
       top.utils.openLayer({
         title: false,
@@ -154,6 +229,32 @@ var methods = {
         url: utils.getSettingsUrl('usersLayerProfile', { userId: log.objectId }),
         width: "60%",
         height: "88%"
+      });
+    }
+    else if (log.isPlan) {
+      top.utils.openLayer({
+        title: false,
+        closebtn: 0,
+        url: utils.getStudyUrl('studyPlanEdit', { id: log.objectId }),
+        width: "98%",
+        height: "98%"
+      });
+    }
+    else if (log.isCourse) {
+      var layerWidth = "68%";
+
+      var url = utils.getStudyUrl('studyCourseFaceEdit', { id: log.objectId, face: log.isFace });
+      if (!log.isFace) {
+        layerWidth = "98%";
+        url = utils.getStudyUrl('studyCourseEdit', { id: log.objectId, face: log.isFace });
+      }
+
+      top.utils.openLayer({
+        title: false,
+        closebtn: 0,
+        url: url,
+        width: layerWidth,
+        height: "98%"
       });
     }
     else if (log.isTm) {
@@ -221,7 +322,6 @@ var $vue = new Vue({
   data: data,
   methods: methods,
   created: function () {
-    this.apiGetLog();
     this.apiGetData();
   },
 });

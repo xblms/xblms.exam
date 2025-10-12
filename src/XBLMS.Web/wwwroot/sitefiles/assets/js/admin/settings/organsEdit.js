@@ -8,7 +8,7 @@ var data = utils.init({
   companyId: utils.getQueryInt("companyId"),
   departmentId: utils.getQueryInt("departmentId"),
   parentType:utils.getQueryString("parentType"),
-  form: { name:'' }
+  form: { name:'',fullName:'' }
 });
 
 var methods = {
@@ -51,7 +51,7 @@ var methods = {
       departmentId: this.departmentId,
       parentType:this.parentType
     }).then(function (response) {
-      utils.success('操作成功！');
+      utils.success("操作成功");
       utils.closeLayer(false);
     }).catch(function (error) {
       utils.error(error, { layer: true });
@@ -68,7 +68,14 @@ var methods = {
       }
     });
   },
-
+  btnInsertDemoClick: function () {
+    if (this.type === 'company') {
+      this.form.name = "一级单位\n-二级单位\n--三级单位\n---四级单位\n----五级单位\n";
+    }
+    else {
+      this.form.name = "一级部门\n-二级部门\n--三级部门\n---四级部门\n----五级部门\n";
+    }
+  },
   btnCancelClick: function () {
     utils.closeLayer();
   }

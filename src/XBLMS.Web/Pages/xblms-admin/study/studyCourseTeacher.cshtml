@@ -1,0 +1,84 @@
+﻿@page
+@{ Layout = "_Layout"; }
+
+<el-card>
+    <el-form v-on:submit.native.prevent :inline="true" :size="euiSize">
+        <el-form-item label="课程">
+            <el-input v-model="form.keyword" placeholder="名称，标签 关键字" prefix-icon="el-icon-search" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="">
+            <el-select v-model="form.type" placeholder="" v-on:change="btnSearchClick" clearable>
+                <el-option label="学习任务" value="plan"></el-option>
+                <el-option label="公共课" value="public"></el-option>
+            </el-select>
+        </el-form-item>
+        <el-form-item>
+            <el-button icon="el-icon-search" type="primary" v-on:click="btnSearchClick">查 询</el-button>
+        </el-form-item>
+        <el-form-item>
+            <el-tooltip placement="top">
+                <div slot="content">
+                    如果发布课程为线下课并且配置了上课老师，上课老师在这里可以进行课程管理，如果上课老师为普通管理员，记得分配角色。
+                </div>
+                <i class="el-icon-info"></i>
+            </el-tooltip>
+        </el-form-item>
+    </el-form>
+    <el-table ref="table" :data="list" :size="euiSize"
+              style="width: 100%" :height="$(window).height()-152">
+        <el-table-column label="#"
+                         type="index"
+                         width="60"
+                         align="left">
+            <template scope="scope">
+                <span>{{(form.pageIndex - 1) * form.pageSize + scope.$index + 1}}</span>
+            </template>
+        </el-table-column>
+        <el-table-column label="课程名称" show-overflow-tooltip prop="name">
+        </el-table-column>
+        <el-table-column label="类型" show-overflow-tooltip prop="plan">
+        </el-table-column>
+        <el-table-column label="课时" width="85" prop="studyHour">
+        </el-table-column>
+        <el-table-column label="学分" prop="credit" width="85">
+        </el-table-column>
+        <el-table-column label="上课时间" width="222">
+            <template slot-scope="scope">
+                {{ scope.row.offlineBeginDateTimeStr }} / {{ scope.row.offlineEndDateTimeStr }}
+            </template>
+        </el-table-column>
+        <el-table-column label="培训人数" prop="studyUser" width="85">
+        </el-table-column>
+        <el-table-column label="完成人数" prop="overUser" width="85">
+        </el-table-column>
+        <el-table-column width="100" align="right">
+            <template slot-scope="scope">
+                <el-dropdown :show-timeout="0" placement="left">
+                    <el-button icon="el-icon-arrow-left" size="mini" v-on:click.stop="return false">
+                        操作
+                    </el-button>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item icon="el-icon-s-data" v-on:click.native="btnCourseManagerAnalysisClick(scope.row)">综合统计</el-dropdown-item>
+                        <el-dropdown-item icon="el-icon-user" v-on:click.native="btnManagerUserClick(scope.row)">学员管理</el-dropdown-item>
+                        <el-dropdown-item icon="el-icon-s-order" v-on:click.native="btnManagerScoreClick(scope.row)" v-if="scope.row.examId>0">考试成绩</el-dropdown-item>
+                        <el-dropdown-item icon="el-icon-document" v-on:click.native="btnManagerQClick(scope.row)" v-if="scope.row.examQuestionnaireId>0">调查结果</el-dropdown-item>
+                        <el-dropdown-item icon="el-icon-star-off" v-on:click.native="btnManagerEvaluationClick(scope.row)" v-if="scope.row.studyCourseEvaluationId>0">课程评价</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+            </template>
+        </el-table-column>
+        @await Html.PartialAsync("_PartialTableEmpty")
+    </el-table>
+    <div style="text-align: center; margin-top: 10px;">
+        <el-pagination v-on:current-change="handleCurrentChange" background
+                       :current-page="form.pageIndex"
+                       :page-size="form.pageSize"
+                       layout="total, prev, pager, next, jumper"
+                       :total="total">
+        </el-pagination>
+    </div>
+</el-card>
+
+@section Scripts{
+    <script src="/sitefiles/assets/js/admin/study/studyCourseTeacher.js" type="text/javascript"></script>
+}

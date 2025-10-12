@@ -28,5 +28,16 @@ namespace XBLMS.Core.Repositories
             )).ToList();
             return list;
         }
+        public async Task<List<int>> GetIdsAsync(bool onlyObjective)
+        {
+            var list = await GetListAsync();
+
+            if (list != null)
+            {
+                list = list.Where(tx => tx.ExamTxBase == Enums.ExamTxBase.Danxuanti || tx.ExamTxBase == Enums.ExamTxBase.Duoxuanti || tx.ExamTxBase == Enums.ExamTxBase.Panduanti).ToList();
+            }
+
+            return list.Select(tx => tx.Id).ToList();
+        }
     }
 }

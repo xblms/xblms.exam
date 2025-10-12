@@ -1,4 +1,4 @@
-var $url = "/error";
+﻿var $url = "/error";
 
 var data = utils.init({
   logId: utils.getQueryInt('logId'),
@@ -36,7 +36,7 @@ var $vue = new Vue({
   data: data,
   methods: methods,
   created: function () {
-    document.title = DOCUMENTTITLE_ERROR;
+    document.title = "系统错误";
     if (this.logId > 0) {
       this.apiGet();
     } else if (this.uuid) {

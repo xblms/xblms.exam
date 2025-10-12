@@ -6,6 +6,8 @@ namespace XBLMS.Services
 {
     public partial interface IDatabaseManager
     {
+        ITableStyleRepository TableStyleRepository { get; }
+
         IAdministratorRepository AdministratorRepository { get; }
         IAdministratorsInRolesRepository AdministratorsInRolesRepository { get; }
         IConfigRepository ConfigRepository { get; }
@@ -20,17 +22,15 @@ namespace XBLMS.Services
         IUserRepository UserRepository { get; }
         IOrganCompanyRepository OrganCompanyRepository { get; }
         IOrganDepartmentRepository OrganDepartmentRepository { get; }
-        IOrganDutyRepository OrganDutyRepository { get; }
         IBlockAnalysisRepository BlockAnalysisRepository { get; }
         IBlockRuleRepository BlockRuleRepository { get; }
         IDbBackupRepository DbBackupRepository { get; }
         IDbRecoverRepository DbRecoverRepository { get; }
-        ICrudDemoRepository CrudDemoRepository { get; }
+        IScheduledTaskRepository ScheduledTaskRepository { get; }
 
         IExamTxRepository ExamTxRepository { get; }
         IExamTmTreeRepository ExamTmTreeRepository { get; }
         IExamTmRepository ExamTmRepository { get; }
-        IExamTmSmallRepository ExamTmSmallRepository { get; }
         IExamTmAnalysisRepository ExamTmAnalysisRepository { get; }
         IExamTmAnalysisTmRepository ExamTmAnalysisTmRepository { get; }
         IExamCerRepository ExamCerRepository { get; }
@@ -41,19 +41,16 @@ namespace XBLMS.Services
         IExamTmGroupRepository ExamTmGroupRepository { get; }
         IExamPaperRandomRepository ExamPaperRandomRepository { get; }
         IExamPaperRandomTmRepository ExamPaperRandomTmRepository { get; }
-        IExamPaperRandomTmSmallRepository ExamPaperRandomTmSmallRepository { get; }
         IExamPaperRandomConfigRepository ExamPaperRandomConfigRepository { get; }
 
         IExamPaperUserRepository ExamPaperUserRepository { get; }
         IExamPaperStartRepository ExamPaperStartRepository { get; }
         IExamPaperAnswerRepository ExamPaperAnswerRepository { get; }
-        IExamPaperAnswerSmallRepository ExamPaperAnswerSmallRepository { get; }
 
         IExamPracticeRepository ExamPracticeRepository { get; }
         IExamPracticeWrongRepository ExamPracticeWrongRepository { get; }
         IExamPracticeCollectRepository ExamPracticeCollectRepository { get; }
         IExamPracticeAnswerRepository ExamPracticeAnswerRepository { get; }
-        IExamPracticeAnswerSmallRepository ExamPracticeAnswerSmallRepository { get; }
 
         IExamQuestionnaireAnswerRepository ExamQuestionnaireAnswerRepository { get; }
         IExamQuestionnaireRepository ExamQuestionnaireRepository { get; }
@@ -72,8 +69,33 @@ namespace XBLMS.Services
         IExamAssessmentConfigRepository ExamAssessmentConfigRepository { get; }
         IExamAssessmentConfigSetRepository ExamAssessmentConfigSetRepository { get; }
 
+        IExamPaperAnswerSmallRepository ExamPaperAnswerSmallRepository { get; }
+        IExamPaperRandomTmSmallRepository ExamPaperRandomTmSmallRepository { get; }
+        IExamPracticeAnswerSmallRepository ExamPracticeAnswerSmallRepository { get; }
+        IExamTmSmallRepository ExamTmSmallRepository { get; }
+
         IKnowlegesRepository KnowlegesRepository { get; }
         IKnowlegesTreeRepository KnowlegesTreeRepository { get; }
+
+        IStudyCourseFilesRepository StudyCourseFilesRepository { get; }
+        IStudyCourseFilesGroupRepository StudyCourseFilesGroupRepository { get; }
+
+        IStudyCourseEvaluationItemRepository StudyCourseEvaluationItemRepository { get; }
+        IStudyCourseEvaluationItemUserRepository StudyCourseEvaluationItemUserRepository { get; }
+        IStudyCourseEvaluationRepository StudyCourseEvaluationRepository { get; }
+        IStudyCourseEvaluationUserRepository StudyCourseEvaluationUserRepository { get; }
+
+        IStudyPlanRepository StudyPlanRepository { get; }
+        IStudyPlanUserRepository StudyPlanUserRepository { get; }
+        IStudyPlanCourseRepository StudyPlanCourseRepository { get; }
+        IStudyCourseUserRepository StudyCourseUserRepository { get; }
+        IStudyCourseWareUserRepository StudyCourseWareUserRepository { get; }
+        IStudyCourseTreeRepository StudyCourseTreeRepository { get; }
+        IStudyCourseRepository StudyCourseRepository { get; }
+        IStudyCourseWareRepository StudyCourseWareRepository { get; }
+        IPointShopRepository PointShopRepository { get; }
+        IPointShopUserRepository PointShopUserRepository { get; }
+        IPointLogRepository PointLogRepository { get; }
 
         List<IRepository> GetAllRepositories();
 

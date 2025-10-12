@@ -1,0 +1,64 @@
+﻿@page
+@{ Layout = "_Layout"; }
+
+<el-card>
+    <div slot="header" class="clearfix">
+        <span>批量添加题目</span>
+        <el-button style="float: right;padding:3px 0;" type="text" v-on:click="utils.closeLayerSelf"><i class="el-icon-close"></i></el-button>
+    </div>
+    <textarea :id="attributeName"
+              :name="attributeName"
+              v-html="editContent"
+              style="width: 100%;">
+    </textarea>
+    <div style="height:9px;"></div>
+    <el-link :size="euiSize" type="warning" v-on:click="btnInsertExampleClick">插入示例题目</el-link>
+    <el-divider direction="vertical"></el-divider>
+    <el-link :size="euiSize" type="warning" v-on:click="btnCheckClick">检查（建议先检查再提交）</el-link>
+    <el-divider direction="vertical"></el-divider>
+    <el-link :size="euiSize" type="success" v-on:click="btnImportWordClick">导入word</el-link>
+    <el-divider direction="vertical"></el-divider>
+    <el-link :size="euiSize" type="success" v-on:click="btnViewDemo">查看格式</el-link>
+    <el-tooltip placement="top">
+        <div slot="content">
+            如果有自定义字段并且是启用状态，请按照顺序加入题目注释尾部并用竖线“|”隔开。
+        </div>
+        <span><i class="el-icon-info"></i></span>
+    </el-tooltip>
+</el-card>
+<el-row align="center" style="margin-top:18px;">
+    <el-col :span="24" align="center">
+        <el-button icon="el-icon-check" :size="euiSize" type="primary" v-on:click="btnSaveClick">提 交</el-button>
+        <el-button icon="el-icon-close" :size="euiSize" v-on:click="utils.closeLayerSelf">取 消</el-button>
+    </el-col>
+</el-row>
+<template>
+    <el-dialog title="检查结果"
+               :visible.sync="checkDialogVisible"
+               width="50%"
+               center>
+        <div>
+            <el-card class="box-card">
+                <div slot="header" class="clearfix">
+                    共<span style="padding:0 10px;">{{ tmTotal }}</span>道题
+                </div>
+                <div>
+                    <el-tag type="success">正确：{{ tmSuccessTotal }}</el-tag>
+                    <el-divider></el-divider>
+                    <el-tag type="danger">错误：{{ tmErrorTotal }}<span v-if="tmErrorTotal>0">，已在内容中标注，请核对。</span></el-tag>
+                </div>
+            </el-card>
+        </div>
+        <span slot="footer" class="dialog-footer">
+            <el-button :size="euiSize" icon="el-icon-close" type="primary" v-on:click="checkDialogVisible = false">关 闭</el-button>
+        </span>
+    </el-dialog>
+</template>
+@section Scripts{
+<script src="/sitefiles/assets/lib/ueditor/editor_config.js" type="text/javascript"></script>
+<script src="/sitefiles/assets/lib/ueditor/ueditor.all.js" type="text/javascript"></script>
+<script src="/sitefiles/assets/lib/ueditor/kityformula-plugin/addKityFormulaDialog.js" type="text/javascript"></script>
+<script src="/sitefiles/assets/lib/ueditor/kityformula-plugin/defaultFilterFix.js" type="text/javascript"></script>
+<script src="/sitefiles/assets/lib/ueditor/kityformula-plugin/getKfContent.js" type="text/javascript"></script>
+<script src="/sitefiles/assets/js/admin/common/editorTmWordOpenLayer.js" type="text/javascript"></script>
+}

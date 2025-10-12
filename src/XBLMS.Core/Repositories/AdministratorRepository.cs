@@ -1,4 +1,5 @@
 ﻿using Datory;
+using SqlKata;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using XBLMS.Core.Utils;
+using XBLMS.Dto;
 using XBLMS.Enums;
 using XBLMS.Models;
 using XBLMS.Repositories;
@@ -36,6 +38,61 @@ namespace XBLMS.Core.Repositories
 
         public List<TableColumn> TableColumns => _repository.TableColumns;
 
+        public async Task UpdateAuthAsync(Administrator administrator)
+        {
+            if (administrator == null) return;
+
+            var cacheKeys = GetCacheKeys(administrator);
+
+            await _repository.UpdateAsync(Q
+                .Set(nameof(Administrator.Auth), AuthorityType.AdminNormal)
+                .Where(q => {
+                    q
+                    .Where(nameof(Administrator.Auth), "AdminSelf")
+                    .OrWhere(nameof(Administrator.Auth), "AdminDepartment");
+                    return q;
+                })
+                .Where(nameof(Administrator.Id), administrator.Id)
+                .CachingRemove(cacheKeys.ToArray())
+            );
+        }
+        public async Task UpdateAuthDataAsync(Administrator administrator)
+        {
+            if (administrator == null) return;
+
+            var cacheKeys = GetCacheKeys(administrator);
+
+            await _repository.UpdateAsync(Q
+                .Set(nameof(Administrator.AuthData), AuthorityDataType.DataAll)
+                .Where(nameof(Administrator.Id), administrator.Id)
+                .CachingRemove(cacheKeys.ToArray())
+            );
+        }
+
+        public async Task UpdateCurrentOragnAsync(Administrator administrator)
+        {
+            if (administrator == null) return;
+
+            var cacheKeys = GetCacheKeys(administrator);
+
+            await _repository.UpdateAsync(Q
+                .Set(nameof(Administrator.AuthDataCurrentOrganId), administrator.AuthDataCurrentOrganId)
+                .Where(nameof(Administrator.Id), administrator.Id)
+                .CachingRemove(cacheKeys.ToArray())
+            );
+        }
+        public async Task UpdateAuthDataShowAllAsync(Administrator administrator)
+        {
+            if (administrator == null) return;
+
+            var cacheKeys = GetCacheKeys(administrator);
+
+            await _repository.UpdateAsync(Q
+                .Set(nameof(Administrator.AuthDataShowAll), administrator.AuthDataShowAll)
+                .Where(nameof(Administrator.Id), administrator.Id)
+                .CachingRemove(cacheKeys.ToArray())
+            );
+        }
         public async Task UpdateLastActivityDateAndCountOfFailedLoginAsync(Administrator administrator)
         {
             if (administrator == null) return;
@@ -135,7 +192,7 @@ namespace XBLMS.Core.Repositories
                 .CachingRemove(cacheKeys.ToArray())
             );
         }
-        public async Task<int> GetCountAsync(int companyId, int departmentId, int dutyId)
+        public async Task<int> GetCountAsync(int companyId, int departmentId)
         {
             var query = Q.NewQuery();
             if (companyId > 0)
@@ -146,14 +203,10 @@ namespace XBLMS.Core.Repositories
             {
                 query.Where(nameof(Administrator.DepartmentId), departmentId);
             }
-            if (dutyId > 0)
-            {
-                query.Where(nameof(Administrator.DutyId), dutyId);
-            }
 
             return await _repository.CountAsync(query);
         }
-        public async Task<int> GetCountAsync(List<int> companyIds, List<int> departmentIds, List<int> dutyIds)
+        public async Task<int> GetCountAsync(List<int> companyIds, List<int> departmentIds)
         {
             var query = Q.NewQuery();
             if (companyIds != null && companyIds.Count > 0)
@@ -164,27 +217,73 @@ namespace XBLMS.Core.Repositories
             {
                 query.WhereIn(nameof(Administrator.DepartmentId), departmentIds);
             }
-            if (dutyIds != null && dutyIds.Count > 0)
-            {
-                query.WhereIn(nameof(Administrator.DutyId), dutyIds);
-            }
 
             return await _repository.CountAsync(query);
         }
-        public async Task<int> GetCountAsync(List<int> companyIds, List<int> departmentIds, List<int> dutyIds, string role, int lastActivityDate, string keyword)
+
+        public async Task<List<Administrator>> GetListAsync()
         {
             var query = Q.NewQuery();
-            if (companyIds != null && companyIds.Count > 0)
+
+            query.WhereNullOrFalse(nameof(Administrator.Locked));
+            query.OrderByDesc(nameof(Administrator.Id));
+
+            var dbs = await _repository.GetAllAsync(query);
+            var list = new List<Administrator>();
+
+            if (dbs != null)
             {
-                query.WhereIn(nameof(Administrator.CompanyId), companyIds);
+                foreach (var admin in dbs)
+                {
+                    if (admin != null)
+                    {
+                        list.Add(admin);
+                    }
+                }
             }
-            if (departmentIds != null && departmentIds.Count > 0)
+
+            return list;
+        }
+        public async Task<List<Administrator>> GetAllAsync()
+        {
+            return await _repository.GetAllAsync();
+        }
+        private Query GetQueryByAuth(Query query, AdminAuth auth)
+        {
+            if (auth.AuthDataType == AuthorityDataType.DataCreator)
             {
-                query.WhereIn(nameof(Administrator.DepartmentId), departmentIds);
+                query.Where(nameof(Administrator.CreatorId), auth.AdminId);
             }
-            if (dutyIds != null && dutyIds.Count > 0)
+            else
             {
-                query.WhereIn(nameof(Administrator.DutyId), dutyIds);
+                if (auth.AuthDataShowAll)
+                {
+                    if (auth.CurCompanyId != 1)
+                    {
+                        query.WhereLike(nameof(Administrator.CompanyParentPath), $"%'{auth.CurCompanyId}'%");
+                    }
+                }
+                else
+                {
+                    query.Where(nameof(Administrator.CompanyId), auth.CurCompanyId);
+                }
+            }
+   
+            return query;
+        }
+        public async Task<int> GetCountAsync(AdminAuth auth, int organId, string organType, string role, int lastActivityDate, string keyword)
+        {
+            var query = Q.NewQuery();
+            if (organId > 0)
+            {
+                if (organType == "company")
+                {
+                    query.WhereLike(nameof(Administrator.CompanyParentPath), $"%'{organId}'%");
+                }
+                if (organType == "department")
+                {
+                    query.WhereLike(nameof(Administrator.DepartmentParentPath), $"%'{organId}'%");
+                }
             }
             if (lastActivityDate > 0)
             {
@@ -212,44 +311,22 @@ namespace XBLMS.Core.Repositories
 
             return await _repository.CountAsync(query);
         }
-        public async Task<List<Administrator>> GetListAsync()
+        public async Task<(int total, List<Administrator> list)> GetAdministratorsAsync(AdminAuth auth, int organId, string organType, string role, string order, int lastActivityDate, string keyword, int offset, int limit)
         {
             var query = Q.NewQuery();
-
-            query.WhereNullOrFalse(nameof(Administrator.Locked));
-            query.OrderByDesc(nameof(Administrator.Id));
-
-            var dbs = await _repository.GetAllAsync(query);
-            var list = new List<Administrator>();
-
-            if (dbs != null)
+            query = GetQueryByAuth(query, auth);
+            if (organId > 0)
             {
-                foreach (var admin in dbs)
+                if (organType == "company")
                 {
-                    if (admin != null)
-                    {
-                        list.Add(admin);
-                    }
+                    query.WhereLike(nameof(Administrator.CompanyParentPath), $"%'{organId}'%");
+                }
+                if (organType == "department")
+                {
+                    query.WhereLike(nameof(Administrator.DepartmentParentPath), $"%'{organId}'%");
                 }
             }
 
-            return list;
-        }
-        public async Task<List<Administrator>> GetAdministratorsAsync(List<int> companyIds, List<int> departmentIds, List<int> dutyIds, string role, string order, int lastActivityDate, string keyword, int offset, int limit)
-        {
-            var query = Q.NewQuery();
-            if (companyIds.Count > 0)
-            {
-                query.WhereIn(nameof(Administrator.CompanyId), companyIds);
-            }
-            if (departmentIds.Count > 0)
-            {
-                query.WhereIn(nameof(Administrator.DepartmentId), departmentIds);
-            }
-            if (dutyIds.Count > 0)
-            {
-                query.WhereIn(nameof(Administrator.DutyId), dutyIds);
-            }
             if (lastActivityDate > 0)
             {
                 var dateTime = DateTime.Now.AddDays(-lastActivityDate);
@@ -269,6 +346,8 @@ namespace XBLMS.Core.Repositories
             {
                 query.Where(nameof(Administrator.Auth), role);
             }
+
+            var total = await _repository.CountAsync(query);
 
             if (!string.IsNullOrEmpty(order))
             {
@@ -302,7 +381,7 @@ namespace XBLMS.Core.Repositories
                 }
             }
 
-            return list;
+            return (total, list);
         }
 
         public async Task<List<int>> GetAdministratorIdsAsync(string keyword)
@@ -367,25 +446,13 @@ namespace XBLMS.Core.Repositories
             else if (passwordFormat == PasswordFormat.Encrypted)
             {
                 passwordSalt = GenerateSalt();
-
-                retVal = TranslateUtils.EncryptStringBySecretKey(password, passwordSalt);
-
-                //var des = new DesEncryptor
-                //{
-                //    InputString = password,
-                //    EncryptKey = passwordSalt
-                //};
-                //des.DesEncrypt();
-
-                //retVal = des.OutString;
+                retVal = DesEncryptor.EncryptStringBySecretKey(password, passwordSalt);
             }
             return retVal;
         }
 
         private static string GenerateSalt()
         {
-            // var data = new byte[0x10];
-            // new RNGCryptoServiceProvider().GetBytes(data);
             var data = new byte[0x10];
             var rand = RandomNumberGenerator.Create();
             rand.GetBytes(data);
@@ -517,9 +584,12 @@ namespace XBLMS.Core.Repositories
                 .Set(nameof(Administrator.AvatarUrl), administrator.AvatarUrl)
                 .Set(nameof(Administrator.UserName), administrator.UserName)
                 .Set(nameof(Administrator.Auth), administrator.Auth)
+                .Set(nameof(Administrator.AuthData), administrator.AuthData)
                 .Set(nameof(Administrator.CompanyId), administrator.CompanyId)
                 .Set(nameof(Administrator.DepartmentId), administrator.DepartmentId)
-                .Set(nameof(Administrator.DutyId), administrator.DutyId)
+                .Set(nameof(Administrator.CompanyParentPath), administrator.CompanyParentPath)
+                .Set(nameof(Administrator.DepartmentParentPath), administrator.DepartmentParentPath)
+                .Set(nameof(Administrator.AuthDataCurrentOrganId), administrator.AuthDataCurrentOrganId)
                 .Where(nameof(Administrator.Id), administrator.Id)
                 .CachingRemove(cacheKeys.ToArray())
             );
@@ -649,16 +719,7 @@ namespace XBLMS.Core.Repositories
             }
             else if (passwordFormat == PasswordFormat.Encrypted)
             {
-                retVal = TranslateUtils.DecryptStringBySecretKey(password, passwordSalt);
-
-                //var des = new DesEncryptor
-                //{
-                //    InputString = password,
-                //    DecryptKey = passwordSalt
-                //};
-                //des.DesDecrypt();
-
-                //retVal = des.OutString;
+                retVal = DesEncryptor.DecryptStringBySecretKey(password, passwordSalt);
             }
             return retVal;
         }
@@ -671,6 +732,34 @@ namespace XBLMS.Core.Repositories
             await _repository.DeleteAsync(id, Q.CachingRemove(cacheKeys.ToArray()));
 
             return admin;
+        }
+
+
+        public async Task<(int total, int count)> GetCountByCompanyAsync(AdminAuth auth, int companyId)
+        {
+            var queryCount = Q.NewQuery();
+            var queryTotal = Q.NewQuery();
+            if (auth.AuthDataType == AuthorityDataType.DataCreator)
+            {
+                queryCount.Where(nameof(Administrator.CreatorId), auth.AdminId);
+                queryTotal.Where(nameof(Administrator.CreatorId), auth.AdminId);
+            }
+            var count = await _repository.CountAsync(queryCount.Where(nameof(Administrator.CompanyId), companyId));
+            var total = await _repository.CountAsync(queryTotal.WhereLike(nameof(Administrator.CompanyParentPath), $"%'{companyId}'%"));
+            return (total, count);
+        }
+        public async Task<(int total, int count)> GetCountByDepartmentAsync(AdminAuth auth, int departmentId)
+        {
+            var queryCount = Q.NewQuery();
+            var queryTotal = Q.NewQuery();
+            if (auth.AuthDataType == AuthorityDataType.DataCreator)
+            {
+                queryCount.Where(nameof(Administrator.CreatorId), auth.AdminId);
+                queryTotal.Where(nameof(Administrator.CreatorId), auth.AdminId);
+            }
+            var count = await _repository.CountAsync(queryCount.Where(nameof(Administrator.DepartmentId), departmentId));
+            var total = await _repository.CountAsync(queryTotal.WhereLike(nameof(Administrator.DepartmentParentPath), $"%'{departmentId}'%"));
+            return (total, count);
         }
     }
 }

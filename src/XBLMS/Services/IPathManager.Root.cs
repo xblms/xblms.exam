@@ -5,6 +5,12 @@ namespace XBLMS.Services
 {
     public partial interface IPathManager
     {
+        string DefaultBookCoverUrl { get; }
+        string DefaultAvatarUrl { get; }
+        string DefaultCourseCoverUrl { get; }
+        string DefaultCourseFaceCoverUrl { get; }
+        string DefaultCoursePlanCoverUrl { get; }
+
         string GetRootUrl(params string[] paths);
 
         string GetRootUrlByPath(string physicalPath);
@@ -49,10 +55,6 @@ namespace XBLMS.Services
         string GetUserUploadUrl(int userId, string relatedUrl);
 
         string GetUserAvatarUrl(User user);
-
-        string DefaultAvatarUrl { get; }
-        string DefaultBookCoverUrl { get; }
-
         string GetCoverUploadPath(params string[] paths);
         string GetCoverUploadUrl(params string[] paths);
 

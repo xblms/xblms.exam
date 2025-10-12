@@ -1,25 +1,97 @@
 ﻿var $url = '/settings/organs';
+var $urlLazy = $url + '/lazy';
 var $urlDelete = $url + '/info/del';
 
 var data = utils.init({
-  companys: null,
+  organs: null,
   expandRowKeys: [],
-  defaultExpandAll:false,
-  search: ''
+  defaultExpandAll: false,
+  treeMaps: new Map(),
+  search: '',
+  parentId: 0,
+  organType: 'company',
+  searchLoading: false,
+  isSearch: false,
+  operate: true
 });
 
 var methods = {
   apiGet: function () {
     var $this = this;
-    $api.get($url, { params: { keyWord: this.search } }).then(function (response) {
+
+    this.searchLoading = true;
+    utils.loading(this, true);
+    this.organs = null;
+    this.parentId = 0;
+    this.organType = 'company';
+
+    var organParams = {
+      keyWords: this.search,
+      parentId: this.parentId,
+      organType: this.organType,
+      showAdminTotal: true,
+      showUserTotal: true
+    };
+
+    $api.get($urlLazy, { params: organParams }).then(function (response) {
       var res = response.data;
-      $this.companys = res.organs;
+      $this.organs = res.organs;
+      $this.operate = res.operate;
+
+    }).catch(function (error) {
+      utils.error(error);
+    }).then(function () {
+      utils.loading($this, false);
+      $this.searchLoading = false;
+    });
+  },
+  loadTree(tree, treeNode, resolve) {
+    var $this = this;
+    this.parentId = tree.id;
+    this.organType = tree.organType;
+    this.treeMaps.set(tree.guid, { tree, treeNode, resolve });
+
+    var organParams = {
+      keyWords: this.search,
+      parentId: this.parentId,
+      organType: this.organType,
+      showAdminTotal: true,
+      showUserTotal: true
+    };
+
+    $api.get($urlLazy, { params: organParams }).then(function (response) {
+      var res = response.data;
+
+      if (res.organs && res.organs.length > 0) {
+        resolve(res.organs)
+      }
+      else {
+        tree.hasChildren = false;
+        $this.$set($this.$refs.organTable.store.states.lazyTreeNodeMap, tree.guid, []);
+      }
 
     }).catch(function (error) {
       utils.error(error);
     }).then(function () {
       utils.loading($this, false);
     });
+
+  },
+  reLoadTree: function (row, isAdd) {
+    if (row.parentGuid === '') {
+      this.apiGet();
+    }
+    else {
+      let lazyGuid = row.parentGuid;
+      if (isAdd && row.hasChildren) {
+        lazyGuid = row.guid;
+      }
+      let currentTree = this.treeMaps.get(lazyGuid);
+      if (currentTree) {
+        utils.loading(this, true);
+        this.loadTree(currentTree.tree, currentTree.treeNode, currentTree.resolve);
+      }
+    }
   },
   btnEdit: function (row, isAdd, type) {
     var $this = this;
@@ -32,17 +104,24 @@ var methods = {
         parentId: row.id,
         parentType: row.organType,
       }),
-      width: "38%",
-      height: "38%",
+      width: "48%",
+      height: "68%",
       end: function () {
-        $this.apiGet();
+        $this.reLoadTree(row, isAdd);
       }
     });
   },
-  btnSearch: function () {
+  btnSearchClick: function () {
+    if (this.search.length > 0) {
+      this.isSearch = true;
+    }
+    else {
+      this.isSearch = false;
+    }
     this.apiGet();
   },
   btnDelete: function (row) {
+
     var noDelete = row.adminAllCount > 0 || row.userAllCount > 0;
     if (noDelete) {
       utils.error("该组织下面存在账号数据，不能做删除操作");
@@ -68,89 +147,26 @@ var methods = {
       organs: item
     }).then(function (response) {
       var res = response.data;
-
-      $this.apiGet();
+      $this.reLoadTree(item);
+      utils.success("操作成功");
     }).catch(function (error) {
-      top.utils.error(error);
+      utils.error(error);
     }).then(function () {
       utils.loading($this, false);
     });
   },
-  rowClick: function (row, column, event) {
-    this.$refs.companysTable.toggleRowExpansion(row);
-  },
-
-  //  树形表格过滤
-  handleTreeData(treeData, searchValue) {
-    if (!treeData || treeData.length === 0) {
-      return [];
-    }
-    const array = [];
-    for (let i = 0; i < treeData.length; i += 1) {
-      let match = false;
-      for (let pro in treeData[i]) {
-        if (typeof (treeData[i][pro]) == 'string') {
-          match |= treeData[i].name.includes(searchValue);
-          if (match) break;
-        }
-      }
-      if (this.handleTreeData(treeData[i].children, searchValue).length > 0 || match) {
-        array.push({
-          ...treeData[i],
-          children: this.handleTreeData(treeData[i].children, searchValue),
-        });
-      }
-    }
-    return array;
-  },
-  // 将过滤好的树形数据展开
-  setExpandRow(handleTreeData) {
-    if (handleTreeData.length) {
-      for (let i of handleTreeData) {
-        this.expandRowKeys.push(i.guid)
-        if (i.children.length) {
-          this.setExpandRow(i.children)
-        }
-      }
+  rowClick(row, column, event) {
+    const expandBtn = event.currentTarget.querySelector('.el-table__expand-icon');
+    if (expandBtn) {
+      expandBtn.click();
     }
   },
-  btnExpand: function () {
-    var $this = this;
-    this.defaultExpandAll = !this.defaultExpandAll;
-    this.companys.forEach(c => {
-      $this.treeExpand(c,$this.defaultExpandAll);
-    });
-  },
-  treeExpand: function (row,status) {
-    var $this = this;
-    this.$refs.companysTable.toggleRowExpansion(row, status);
-    if (row.children && row.children.length > 0) {
-      row.children.forEach(c => {
-        $this.$refs.companysTable.toggleRowExpansion(c, status);
-        $this.treeExpand(c, status);
-      });
-    }
-  }
 };
 
 var $vue = new Vue({
   el: '#main',
   data: data,
   methods: methods,
-  computed: {
-    treeTable: function () {
-      var searchValue = this.search;
-      if (searchValue) {
-        let treeData = this.companys;
-        let handleTreeData = this.handleTreeData(treeData, searchValue);
-        this.defaultExpandAll = true;
-        this.setExpandRow(handleTreeData);
-        return handleTreeData;
-      }
-      this.expandRowKeys.push(this.companys[0].guid);
-      return this.companys;
-    }
-  },
   created: function () {
     this.apiGet();
   }

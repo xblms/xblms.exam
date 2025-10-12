@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using XBLMS.Dto;
 using XBLMS.Enums;
 using XBLMS.Models;
 
@@ -9,17 +10,14 @@ namespace XBLMS.Repositories
 {
     public interface IStatRepository : IRepository
     {
-        Task AddCountAsync(StatType statType);
+        Task AddUserCountAsync(User user, StatType statType);
+        Task AddCountAsync(Administrator admin, StatType statType);
 
-        Task AddCountAsync(StatType statType, int adminId);
-
+        Task<List<Stat>> GetStatsAsync(AdminAuth auth, DateTime lowerDate, DateTime higherDate, StatType statType);
         Task<List<Stat>> GetStatsAsync(DateTime lowerDate, DateTime higherDate,
             StatType statType);
 
-        Task<List<Stat>> GetStatsAsync(DateTime lowerDate, DateTime higherDate,
-            StatType statType, int adminId);
-
-        Task DeleteAllAsync();
         Task<int> SumAsync(StatType statType);
+        Task<int> SumAsync(StatType statType, AdminAuth auth);
     }
 }

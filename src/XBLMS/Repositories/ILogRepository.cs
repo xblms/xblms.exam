@@ -1,6 +1,7 @@
 ﻿using Datory;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using XBLMS.Dto;
 using XBLMS.Models;
 
 namespace XBLMS.Repositories
@@ -13,17 +14,14 @@ namespace XBLMS.Repositories
 
         Task DeleteIfThresholdAsync();
 
-        Task DeleteAllAdminLogsAsync();
+        Task DeleteAllAdminLogsAsync(AdminAuth auth);
 
-        Task DeleteAllUserLogsAsync();
+        Task DeleteAllUserLogsAsync(AdminAuth auth);
 
+        Task<(int total, List<Log> list)> GetUserLogsAsync(AdminAuth auth, int userId, string keyword, string dateFrom, string dateTo, int offset, int limit);
 
-        Task<int> GetUserLogsCountAsync(int userId, string keyword, string dateFrom, string dateTo);
-
-        Task<List<Log>> GetUserLogsAsync(int userId, string keyword, string dateFrom, string dateTo, int offset, int limit);
-
-        Task<int> GetAdminLogsCountAsync(List<int> adminIds, string keyword, string dateFrom, string dateTo);
-
-        Task<List<Log>> GetAdminLogsAsync(List<int> adminIds, string keyword, string dateFrom, string dateTo, int offset, int limit);
+        Task<(int total, List<Log> list)> GetAdminLogsAsync(AdminAuth auth, List<int> adminIds, string keyword, string dateFrom, string dateTo, int offset, int limit);
+        Task<(int total, List<Log> list)> Analysis_GetListAsync(int userId, string dateFrom, string dateTo, int pageIndex, int pageSize);
+        Task<int> Analysis_GetTotalAsync(int userId, string dateFrom, string dateTo);
     }
 }

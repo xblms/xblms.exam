@@ -3,9 +3,9 @@
     <TargetFramework>net8.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <PackageId>Datory</PackageId>
-    <Version>8.1.8</Version>
-    <Authors>xblms</Authors>
-    <Company>xblms</Company>
+    <Version>8.2</Version>
+    <Authors>xblm</Authors>
+    <Company>xblms.exam</Company>
 	<Description></Description>
 	<PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
 	<RepositoryUrl></RepositoryUrl>

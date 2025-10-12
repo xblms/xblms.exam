@@ -5,11 +5,13 @@ var data = utils.init({
   id: utils.getQueryInt('id'),
   copyId: utils.getQueryInt('copyId'),
   treeId: utils.getQueryInt('treeId'),
+  isCourseUse: utils.getQueryBoolean('isCourseUse'),
+  isSelect: false,
   item: null,
   userGroupList: null,
   tmGroupList: null,
-  tmAllGroupList:null,
-  tmFixedGroupList:null,
+  tmAllGroupList: null,
+  tmFixedGroupList: null,
   paperTree: null,
   cerList: null,
   txList: null,
@@ -17,17 +19,21 @@ var data = utils.init({
   selectTms: null,
   form: null,
   txTotalScore: 0,
+  tmTotal: 0,
   submitDialogVisible: false,
   submitSubmitType: 'Save',
   submitSubmitIsClear: false,
   tmConfigDialogVisible: false,
   isUpdateDateTime: false,
-  isUpdateExamTimes:false,
+  isUpdateExamTimes: false,
+  systemCode: null
 });
 
 var methods = {
   apiGet: function () {
     var $this = this;
+
+    this.isSelect = this.isCourseUse;
 
     utils.loading(this, true);
     $api.get($url, { params: { id: this.id } }).then(function (response) {
@@ -39,9 +45,9 @@ var methods = {
       $this.userGroupList = res.userGroupList;
       $this.paperTree = res.paperTree;
       $this.cerList = res.cerList;
+      $this.systemCode = res.systemCode;
 
       $this.tmGroupList = $this.tmAllGroupList;
-
 
       $this.form = _.assign({}, res.item);
       if ($this.id > 0) {
@@ -55,22 +61,19 @@ var methods = {
           $this.form.submitType = "Save";
         }
       }
-      else
-      {
+      else {
         if ($this.treeId > 0) {
           $this.form.treeId = $this.treeId;
         }
         else {
           $this.form.treeId = null;
         }
+        $this.form.isCourseUse = $this.isCourseUse;
 
         $this.$nextTick(() => {
           $this.apiGetConfig();
         })
-
       }
-
-
       if ($this.form.cerId === 0) {
         $this.form.cerId = null;
       }
@@ -157,7 +160,7 @@ var methods = {
         }
       }
     });
- 
+
   },
   btnSubmit: function () {
     this.submitSubmitIsClear = false;
@@ -168,14 +171,14 @@ var methods = {
     top.utils.alertWarning({
       title: '重新发布提醒',
       text: '确定清空后发布吗？',
-      confirmButtonText:'重新发布',
-      showCancelButton:true,
+      confirmButtonText: '重新发布',
+      showCancelButton: true,
       callback: function () {
         $this.submitSubmitIsClear = true;
         $this.apiSubmit();
       }
     });
-  
+
   },
   apiSubmit: function () {
 
@@ -192,13 +195,13 @@ var methods = {
       var res = response.data;
       if (res.value) {
         utils.success("操作成功");
+        utils.closeLayerSelf();
       }
 
     }).catch(function (error) {
       utils.error(error);
     }).then(function () {
       utils.loading($this, false);
-      utils.closeLayerSelf();
     });
   },
   submitValid: function () {
@@ -212,6 +215,13 @@ var methods = {
         return false;
       }
     }
+    else {
+      if (this.tmTotal === 0 && this.submitSubmitType === 'Submit') {
+        utils.error('没有配置任何题目', { layer: true });
+        return false;
+      }
+    }
+
     return true;
   },
   getSummaries(param) {
@@ -233,6 +243,7 @@ var methods = {
             totalCount += (item.nandu1TmCount + item.nandu2TmCount + item.nandu3TmCount + item.nandu4TmCount + item.nandu5TmCount);
           })
 
+          this.tmTotal = totalCount;
           sums[index] = '共 ' + totalCount + ' 道题';
         }
         if (index === 2) {
@@ -248,7 +259,7 @@ var methods = {
           else {
             sums[index] = '题型总分 ' + totalScore + ' 分';
           }
-        
+
 
           this.txTotalScore = totalScore;
 

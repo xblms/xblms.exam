@@ -1,0 +1,100 @@
+﻿@page
+@{ Layout = "_Layout"; }
+@section Styles{
+<style>
+    .el-form-item--mini.el-form-item, .el-form-item--small.el-form-item {
+        margin: 0;
+    }
+    .el-table th.el-table__cell>.cell
+    {
+        padding-right:15px;
+    }
+</style>
+}
+<el-card>
+    <div slot="header" class="clearfix">
+        <span>选择文件</span>
+        <el-button style="float: right;padding:3px 0;" type="text" v-on:click="utils.closeLayerSelf"><i class="el-icon-close"></i></el-button>
+    </div>
+    <el-form v-on:submit.native.prevent :inline="true" :model="form" :size="euiSize">
+        <el-form-item label="">
+            <el-input v-model="form.keyword" placeholder="搜索文件" prefix-icon="el-icon-search" clearable></el-input>
+        </el-form-item>
+        <el-form-item>
+            <el-button-group>
+                <el-button icon="el-icon-search" type="primary" v-on:click="btnSearchClick">查询</el-button>
+            </el-button-group>
+        </el-form-item>
+    </el-form>
+    <div style="height:18px;"></div>
+    <el-table ref="fileTable"
+              :data="list"
+              :size="euiSize"
+              border
+              :height="$(window).height()-223"
+              v-on:cell-mouse-enter="mouseoverShowIn"
+              v-on:cell-mouse-leave="mouseoverShowOut">
+        <el-table-column>
+            <template slot="header" slot-scope="scope">
+                <el-breadcrumb separator-class="el-icon-arrow-right">
+                    <el-breadcrumb-item v-for="path in paths" :to="{  }" v-on:click.native="breadcrumbPath(path.id)">{{path.name}}</el-breadcrumb-item>
+                </el-breadcrumb>
+            </template>
+            <el-table-column type="selection" align="center" :selectable="fileTableBySelectable"
+                             width="60">
+            </el-table-column>
+            <el-table-column type="index" label="#" align="left"
+                             width="60">
+            </el-table-column>
+            <el-table-column label="文件夹/文件" sortable sort-by="name">
+                <template slot-scope="scope">
+                    <el-link :underline="false" v-if="scope.row.type==='Group'" v-on:click="btnTitleClick(scope.row)" type="primary" icon="el-icon-folder-opened">{{ scope.row.name }}</el-link>
+                    <span v-else>
+                        <span class="margin-left:9px;">{{ scope.row.name }}</span>
+                    </span>
+                    <div style="float:right;" v-if="scope.row.id===curMouseoverId && scope.row.type===curFileType">
+                        <template v-if="scope.row.type!=='Group'">
+                            <el-tooltip placement="left">
+                                <div slot="content"><img :src="scope.row.coverView" width="158" /></div>
+                                <el-link :underline="false" v-on:click.stop="btnView(scope.row)" type="primary" size="mini" icon="el-icon-view" style="font-size:12px;">预览</el-link>
+                            </el-tooltip>
+                        </template>
+                    </div>
+                </template>
+            </el-table-column>
+            <el-table-column prop="fileType" sortable
+                             label="类型"
+                             width="120">
+            </el-table-column>
+            <el-table-column prop="duration" sortable
+                             label="长度"
+                             width="120">
+                <template slot-scope="scope">
+                    <span v-if="scope.row.type==='File'">
+                        <span v-if="scope.row.fileType==='PDF'">{{ scope.row.duration }}P</span>
+                        <span v-else>{{ utils.formatDuration(scope.row.duration) }}</span>
+                    </span>
+                </template>
+            </el-table-column>
+            <el-table-column prop="size" sortable
+                             label="大小"
+                             width="120">
+                <template slot-scope="scope">{{ utils.formatFileSize(scope.row.size) }}</template>
+            </el-table-column>
+            <el-table-column prop="dateTimeStr" sortable align="right"
+                             label="修改时间"
+                             width="150">
+            </el-table-column>
+        </el-table-column>
+        @await Html.PartialAsync("_PartialTableEmpty")
+    </el-table>
+</el-card>
+<el-row align="center" style="margin-top:18px;">
+    <el-col :span="24" align="center">
+        <el-button icon="el-icon-check" :size="euiSize" type="primary" v-on:click="btnSelectClick">确 定</el-button>
+        <el-button icon="el-icon-close" :size="euiSize" v-on:click="utils.closeLayerSelf">取 消</el-button>
+    </el-col>
+</el-row>
+@section Scripts{
+<script src="/sitefiles/assets/js/admin/study/studyCourseFilesSelect.js" type="text/javascript"></script>
+ }

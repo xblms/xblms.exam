@@ -29,6 +29,9 @@ var methods = {
         });
       }
       $this.total = res.total;
+      if ($this.total === 0) {
+        location.href = utils.getRootUrl("empty");
+      }
 
     }).catch(function (error) {
       utils.error(error);
@@ -48,7 +51,7 @@ var methods = {
       });
 
       $this.$set($this.list, pIndex, res.item);
-
+      top.utils.pointNotice(res.pointNotice);
 
     }).catch(function (error) {
     }).then(function () {
@@ -70,7 +73,7 @@ var methods = {
       utils.success("已提交")
     }
     else if (!paper.state) {
-      utils.success("不在有效期内！")
+      utils.warning("不在有效期内！")
     }
     else {
       var $this = this;
@@ -78,7 +81,7 @@ var methods = {
         title: false,
         closebtn: 0,
         url: utils.getExamUrl('examAssessmenting', { id: paper.id }),
-        width: "100%",
+        width: "68%",
         height: "100%",
         end: function () {
           $this.apiGetItem(paper.id);

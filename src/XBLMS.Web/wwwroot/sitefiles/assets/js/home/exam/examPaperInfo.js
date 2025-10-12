@@ -5,6 +5,8 @@ var $urlClientExamStatus = $url + "/clientExamStatus";
 
 var data = utils.init({
   id: utils.getQueryInt("id"),
+  planId: utils.getQueryInt("planId"),
+  courseId: utils.getQueryInt("courseId"),
   cjList: [],
   item: null,
   startLoading: false,
@@ -21,10 +23,11 @@ var methods = {
       utils.loading(this, true);
     }
 
-    $api.get($url, { params: { id: $this.id } }).then(function (response) {
+    $api.get($url, { params: { id: $this.id, planId: $this.planId, courseId: $this.courseId } }).then(function (response) {
       var res = response.data;
 
       $this.item = res.item;
+      top.utils.pointNotice(res.pointNotice);
 
       if ($this.item.examStartDateTimeLong > 0) {
         $this.isStart = false;
@@ -68,7 +71,7 @@ var methods = {
     top.utils.openLayer({
       title: false,
       closebtn: 0,
-      url: utils.getExamUrl('examPaperExaming', { id: this.id }),
+      url: utils.getExamUrl('examPaperExaming', { id: this.id, planId: this.planId, courseId: this.courseId }),
       width: "100%",
       height: "100%",
       end: function () {
@@ -88,8 +91,7 @@ var methods = {
         $this.isClientRead = true;
         utils.success("已成功安装客户端程序，点击启动客户端进入考试", { layer: true });
       }
-      else
-      {
+      else {
         utils.error(res.msg, { layer: true });
       }
     }).catch(function (error) {
@@ -111,14 +113,8 @@ var methods = {
     });
   },
   btnViewClick: function (id) {
-    var $this = this;
-    top.utils.openLayer({
-      title: false,
-      closebtn: 0,
-      url: utils.getExamUrl('examPaperView', { id: id }),
-      width: "100%",
-      height: "100%"
-    });
+    utils.closeLayerSelf();
+    top.utils.openTopLeft(this.item.title, utils.getExamUrl("examPaperView", { id: id }));
   },
   timingFinish: function () {
     utils.success("倒计时结束，可以进入考试", { layer: true });

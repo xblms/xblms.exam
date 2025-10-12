@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using System.Collections.Generic;
 using XBLMS.Configuration;
+using XBLMS.Dto;
 using XBLMS.Models;
 using XBLMS.Repositories;
 using XBLMS.Services;
@@ -45,6 +46,12 @@ namespace XBLMS.Web.Controllers.Home.Exam
         {
             public List<ExamQuestionnaire> List { get; set; }
             public int Total { get; set; }
+        }
+
+        public class GetItemResult
+        {
+            public ExamQuestionnaire Item { get; set; }
+            public PointNotice PointNotice { get; set; }
         }
     }
 }

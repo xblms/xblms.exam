@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using XBLMS.Dto;
-using XBLMS.Enums;
 using XBLMS.Models;
 using XBLMS.Utils;
 
@@ -29,10 +28,14 @@ namespace XBLMS.Web.Controllers.Home.Exam
                     tmList.Add(tm);
                 }
             }
+
+            var (aesKey, aesIV, aesSalt) = AesEncryptor.GetKey();
+
             return new GetViewResult
             {
                 Item = practice,
-                TmList = tmList
+                TmList = AesEncryptor.Encrypt(TranslateUtils.JsonSerialize(tmList), aesKey, aesIV),
+                Salt = aesSalt
             };
         }
     }

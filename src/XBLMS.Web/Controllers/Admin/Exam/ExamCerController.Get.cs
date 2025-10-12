@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace XBLMS.Web.Controllers.Admin.Exam
@@ -9,11 +8,10 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         [HttpGet, Route(Route)]
         public async Task<ActionResult<GetResult>> Get([FromQuery] GetRequest reqeust)
         {
-            var list = await _examCerRepository.GetListAsync();
-            if (!string.IsNullOrEmpty(reqeust.Title))
-            {
-                list = list.FindAll(cer => cer.Name.Contains(reqeust.Title)).ToList();
-            }
+            var adminAuth = await _authManager.GetAdminAuth();
+
+            var list = await _examCerRepository.GetListAsync(adminAuth, reqeust.Title);
+
             if (list != null && list.Count > 0)
             {
                 foreach (var item in list)

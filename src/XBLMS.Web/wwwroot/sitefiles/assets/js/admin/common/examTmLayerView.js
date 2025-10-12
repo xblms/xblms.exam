@@ -2,7 +2,8 @@
 
 var data = utils.init({
   id: utils.getQueryInt('id'),
-  tm: null
+  tm: null,
+  tmStyles:null
 });
 
 var methods = {
@@ -18,6 +19,7 @@ var methods = {
       var res = response.data;
 
       $this.tm = res.item;
+      $this.tmStyles = res.styles;
     }).catch(function (error) {
       utils.error(error, { layer:true });
     }).then(function () {

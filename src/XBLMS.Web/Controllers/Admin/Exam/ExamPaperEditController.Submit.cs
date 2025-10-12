@@ -29,9 +29,15 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 }
             }
 
-
-            var admin = await _authManager.GetAdminAsync();
+            var adminAuth = await _authManager.GetAdminAuth();
+            var admin = adminAuth.Admin;
             var paper = request.Item;
+
+            var tree = await _examPaperTreeRepository.GetAsync(paper.TreeId);
+            if (tree != null)
+            {
+                paper.TreeParentPath = tree.ParentPath;
+            }
 
             if (paper.TmRandomType != ExamPaperTmRandomType.RandomExaming)
             {
@@ -51,9 +57,10 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                     await SetRandomConfigs(request.ConfigList, paper);
 
                     await _examManager.PaperRandomSet(paper);
-                    await _examManager.Arrange(paper);
                     await _authManager.AddAdminLogAsync("重新发布试卷", $"{paper.Title}");
                     await _authManager.AddStatLogAsync(StatType.ExamUpdate, "重新发布试卷", paper.Id, paper.Title, oldPaper);
+
+                    _examManager.ArrangeExamTask(paper.Id);
                 }
                 else
                 {
@@ -88,9 +95,11 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             else
             {
                 paper.SubmitType = request.SubmitType;
-                paper.CompanyId = admin.CompanyId;
+                paper.CompanyId = adminAuth.CurCompanyId;
                 paper.CreatorId = admin.Id;
                 paper.DepartmentId = admin.DepartmentId;
+                paper.CompanyParentPath = adminAuth.CompanyParentPath;
+                paper.DepartmentParentPath = admin.DepartmentParentPath;
 
                 var paperId = await _examPaperRepository.InsertAsync(paper);
 
@@ -105,23 +114,28 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                     await _examPaperRandomTmRepository.CreateSeparateStorageAsync(paper.Id);
                 }
 
-
                 await SetRandomConfigs(request.ConfigList, paper);
 
 
                 if (request.SubmitType == SubmitType.Submit)
                 {
                     await _examManager.PaperRandomSet(paper);
-                    await _examManager.Arrange(paper);
                     await _authManager.AddAdminLogAsync("发布试卷", $"{paper.Title}");
                     await _authManager.AddStatLogAsync(StatType.ExamAdd, "发布试卷", paper.Id, paper.Title);
                     await _authManager.AddStatCount(StatType.ExamAdd);
+
+                    _examManager.ArrangeExamTask(paper.Id);
                 }
                 else
                 {
                     await _authManager.AddAdminLogAsync("保存试卷", $"{paper.Title}");
                     await _authManager.AddStatLogAsync(StatType.ExamAdd, "保存试卷", paper.Id, paper.Title);
                     await _authManager.AddStatCount(StatType.ExamAdd);
+                }
+
+                if (tree != null)
+                {
+                    paper.TreeParentPath = tree.ParentPath;
                 }
                 await _examPaperRepository.UpdateAsync(paper);
             }

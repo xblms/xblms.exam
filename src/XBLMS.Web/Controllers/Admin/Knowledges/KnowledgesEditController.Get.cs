@@ -23,6 +23,7 @@ namespace XBLMS.Web.Controllers.Admin.Knowledges
                     Id=item.Id,
                     Name = item.Name,
                     CoverImgUrl = item.CoverImgUrl,
+                    OnlyCompany = item.OnlyCompany,
                 },
             };
         }

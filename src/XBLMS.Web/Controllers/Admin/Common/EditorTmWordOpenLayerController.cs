@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using XBLMS.Configuration;
 using XBLMS.Core.Utils;
+using XBLMS.Dto;
 using XBLMS.Enums;
 using XBLMS.Models;
 using XBLMS.Repositories;
@@ -29,14 +30,18 @@ namespace XBLMS.Web.Controllers.Admin.Common
         private readonly IExamTmRepository _examTmRepository;
         private readonly IExamTxRepository _examTxRepository;
         private readonly IStatRepository _statRepository;
+        private readonly IExamTmTreeRepository _examTmTreeRepository;
+        private readonly ITableStyleRepository _tableStyleRepository;
 
-        public EditorTmWordOpenLayerController(IHttpContextAccessor context, IAuthManager authManager, IExamTmRepository examTmRepository, IExamTxRepository examTxRepository, IStatRepository statRepository)
+        public EditorTmWordOpenLayerController(IHttpContextAccessor context, IAuthManager authManager, IExamTmRepository examTmRepository, IExamTxRepository examTxRepository, IStatRepository statRepository, IExamTmTreeRepository examTmTreeRepository, ITableStyleRepository tableStyleRepository)
         {
             _context = context;
             _authManager = authManager;
             _examTmRepository = examTmRepository;
             _examTxRepository = examTxRepository;
             _statRepository = statRepository;
+            _examTmTreeRepository = examTmTreeRepository;
+            _tableStyleRepository = tableStyleRepository;
         }
 
         public class GetResult
@@ -64,7 +69,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
         }
 
 
-        public async Task<(int total, int successTotal, int errorTotal, List<ExamTm> successTmList, string resultTmHtml)> Check(string tmHtml, int treeId, Administrator admin)
+        public async Task<(int total, int successTotal, int errorTotal, List<ExamTm> successTmList, string resultTmHtml)> Check(string tmHtml, int treeId, Administrator admin, AdminAuth adminAuth)
         {
             var total = 0;
             var successTotal = 0;
@@ -76,19 +81,26 @@ namespace XBLMS.Web.Controllers.Admin.Common
 
             var regFront = @"<xblm>(.*?)</xblm>";
             tmHtml = Regex.Replace(tmHtml, regFront, string.Empty, RegexOptions.IgnoreCase);
+            tmHtml = HtmlUtils.ClearFormat(tmHtml);//清理样式和p之外的标签
+            tmHtml = StringUtils.StripBlank(tmHtml);//清理多余的空格
 
             var resultTmHtml = string.Empty;
+
+            var styles = await _tableStyleRepository.GetExamTmStylesAsync(false);
+            var styleCount = styles?.Count ?? 0;
 
             if (!string.IsNullOrEmpty(tmHtml))
             {
                 var tmhtmlList = ListUtils.GetStringList(tmHtml, "<p><br/></p>");
                 ListUtils.RemoveIgnoreCase(tmhtmlList, "");
+                ListUtils.RemoveIgnoreCase(tmhtmlList, "<p><br/></p>");
 
                 if (tmhtmlList != null && tmhtmlList.Count > 0)
                 {
                     foreach (var tmhtml in tmhtmlList)
                     {
-                        if (!string.IsNullOrEmpty(tmhtml))
+                        var testTmHtml = StringUtils.StripTags(tmhtml);
+                        if (!string.IsNullOrEmpty(tmhtml) && !string.IsNullOrEmpty(testTmHtml))
                         {
                             total++;
 
@@ -98,26 +110,30 @@ namespace XBLMS.Web.Controllers.Admin.Common
 
                             if (tmhtml.Contains("题目注释"))
                             {
-                                var tmContentAndRemarkList = ListUtils.GetStringList(tmhtml, "题目注释");
-                                ListUtils.RemoveIgnoreCase(tmContentAndRemarkList, "");
+                                var newTmHtml = StringUtils.ReplaceEndsWithIgnoreCase(tmhtml, "<p></p>", string.Empty);
+                                newTmHtml = StringUtils.ReplaceIgnoreCase(newTmHtml, "</p><p>", "</p>xblm<p>");//把每道题用xblm分割
+                                var tmTitle_option_remark_list = ListUtils.GetStringList(newTmHtml, "xblm");
 
-                                if (tmContentAndRemarkList != null && tmContentAndRemarkList.Count == 2)
+
+                                if (tmTitle_option_remark_list.Count >= 2)
                                 {
-                                    var tmContentHtml = tmContentAndRemarkList[0];
-                                    var tmRemarkHtml = HtmlUtils.ClearElementAttributes(tmContentAndRemarkList[1], "p");
+                                    var tmTitle = tmTitle_option_remark_list[0];
+                                    tmTitle = StringUtils.StripTags(tmTitle);
 
-                                    var tmRemarkList = ListUtils.GetStringList(tmRemarkHtml, "|");
-                                    ListUtils.RemoveIgnoreCase(tmRemarkList, "");
+                                    var tmRemark = tmTitle_option_remark_list[tmTitle_option_remark_list.Count - 1];
+                                    tmRemark = StringUtils.StripTags(tmRemark);
+                                    var tmRemarkList = ListUtils.GetStringList(tmRemark, "|");
 
-                                    if (tmRemarkList != null && tmRemarkList.Count == 6)
+                                    if (tmRemarkList != null && tmRemarkList.Count >= 7)
                                     {
-                                        var htmlTitle = "";
-                                        var htmlTx = StringUtils.Trim(tmRemarkList[0]);
-                                        var htmlAnswer = tmRemarkList[1].Trim();
-                                        var htmlScore = tmRemarkList[2].Trim();
-                                        var htmlNd = tmRemarkList[3].Trim();
-                                        var htmlZsd = tmRemarkList[4].Trim();
-                                        var htmlJx = tmRemarkList[5].Trim();
+                                        var htmlTx = tmRemarkList[1];
+                                        var htmlAnswer = tmRemarkList[2];
+                                        var htmlScore = tmRemarkList[3];
+                                        var htmlNd = tmRemarkList[4];
+                                        var htmlZsd = tmRemarkList[5];
+                                        var htmlJx = tmRemarkList[6];
+
+
                                         var options = new List<string>();
                                         var answers = new List<string>();
 
@@ -129,14 +145,13 @@ namespace XBLMS.Web.Controllers.Admin.Common
                                         }
                                         else
                                         {
-                                            bool checkTitankongti = true;
+                                            var checkOptions = true;
+                                            var checkTitankongti = true;
                                             if (tx.ExamTxBase == ExamTxBase.Tiankongti || tx.ExamTxBase == ExamTxBase.Jiandati)
                                             {
-                                                htmlTitle = tmContentHtml;
-
                                                 if (tx.ExamTxBase == ExamTxBase.Tiankongti)
                                                 {
-                                                    if (!StringUtils.Contains(htmlTitle, "___"))
+                                                    if (!StringUtils.Contains(tmTitle, "___"))
                                                     {
                                                         errorTotal++;
                                                         errorTm.ErrorMsg.Add("填空题需要包含___");
@@ -147,52 +162,35 @@ namespace XBLMS.Web.Controllers.Admin.Common
                                             else
                                             {
                                                 htmlAnswer = htmlAnswer.ToUpper();
-
-                                                var tmRowHtmlList = ListUtils.GetStringList(tmContentHtml, "</p><p>");
-                                                ListUtils.RemoveIgnoreCase(tmRowHtmlList, "");
-
-                                                if (tmRowHtmlList != null && tmRowHtmlList.Count > 1)
+                                                if (tmTitle_option_remark_list.Count >= 4)
                                                 {
-                                                    htmlTitle = tmRowHtmlList[0];
-
-                                                    for (var i = 1; i < tmRowHtmlList.Count; i++)
+                                                    for (var i = 1; i < tmTitle_option_remark_list.Count - 1; i++)
                                                     {
-                                                        var option = HtmlUtils.ClearElementAttributes(tmRowHtmlList[i], "p");
+                                                        var option = tmTitle_option_remark_list[i];
+                                                        option = StringUtils.StripTags(option);
+
                                                         options.Add(option);
                                                         answers.Add(StringUtils.GetABC()[i - 1]);
                                                     }
                                                 }
-                                            }
-
-                                            htmlTitle = HtmlUtils.ClearElementAttributes(htmlTitle, "p");
-
-                                            var nd = 1;
-                                            try
-                                            {
-                                                nd = TranslateUtils.ToInt(htmlNd);
-                                            }
-                                            catch { }
-                                            decimal score = 0;
-                                            try
-                                            {
-                                                score = TranslateUtils.ToDecimal(htmlScore);
-                                            }
-                                            catch { }
-
-                                            if (answers.Count > 0)
-                                            {
-                                                for (int answerIndex = 0; answerIndex < answers.Count; answerIndex++)
+                                                else
                                                 {
-                                                    if (!htmlAnswer.Contains(answers[answerIndex]))
+                                                    checkOptions = false;
+                                                    errorTotal++;
+                                                    errorTm.ErrorMsg.Add("请检查候选项");
+                                                }
+
+
+                                                if (answers.Count > 0)
+                                                {
+                                                    for (int answerIndex = 0; answerIndex < answers.Count; answerIndex++)
                                                     {
-                                                        answers[answerIndex] = "";
+                                                        if (!htmlAnswer.Contains(answers[answerIndex]))
+                                                        {
+                                                            answers[answerIndex] = string.Empty;
+                                                        }
                                                     }
                                                 }
-                                            }
-
-                                            var checkOptions = true;
-                                            if (tx.ExamTxBase != ExamTxBase.Tiankongti && tx.ExamTxBase != ExamTxBase.Jiandati)
-                                            {
                                                 if (options.Count > 0 && answers.Count > 0)
                                                 {
                                                     var hasAnswer = false;
@@ -216,9 +214,25 @@ namespace XBLMS.Web.Controllers.Admin.Common
                                                     errorTotal++;
                                                     errorTm.ErrorMsg.Add("请检查题目候选项");
                                                 }
+
                                             }
 
-                                            if (await _examTmRepository.ExistsAsync(htmlTitle, tx.Id))
+
+                                            var nd = 1;
+                                            try
+                                            {
+                                                nd = TranslateUtils.ToInt(htmlNd);
+                                            }
+                                            catch { }
+                                            decimal score = 0;
+                                            try
+                                            {
+                                                score = TranslateUtils.ToDecimal(htmlScore);
+                                            }
+                                            catch { }
+
+
+                                            if (await _examTmRepository.ExistsAsync(tmTitle, tx.Id))
                                             {
                                                 errorTotal++;
                                                 errorTm.ErrorMsg.Add("题库中已存在相同题型的题目");
@@ -227,22 +241,36 @@ namespace XBLMS.Web.Controllers.Admin.Common
                                             {
                                                 if (checkOptions && checkTitankongti)
                                                 {
-                                                    var info = new ExamTm();
-                                                    info.TreeId = treeId;
-                                                    info.TxId = tx.Id;
-                                                    info.Answer = htmlAnswer;
-                                                    info.Title = htmlTitle;
-                                                    info.Score = score;
-                                                    info.Nandu = nd;
-                                                    info.Zhishidian = htmlZsd;
-                                                    info.Jiexi = htmlJx;
 
-                                                    info.CompanyId = admin.CompanyId;
-                                                    info.DepartmentId = admin.DepartmentId;
-                                                    info.CreatorId = admin.Id;
+                                                    var info = new ExamTm
+                                                    {
+                                                        TreeId = treeId,
+                                                        TxId = tx.Id,
+                                                        Answer = htmlAnswer,
+                                                        Title = tmTitle,
+                                                        Score = score,
+                                                        Nandu = nd,
+                                                        Zhishidian = htmlZsd,
+                                                        Jiexi = htmlJx,
+
+                                                        CompanyId = adminAuth.CurCompanyId,
+                                                        DepartmentId = admin.DepartmentId,
+                                                        CreatorId = admin.Id,
+                                                        CompanyParentPath = adminAuth.CompanyParentPath,
+                                                        DepartmentParentPath = admin.DepartmentParentPath,
+                                                    };
 
                                                     info.Set("options", options);
                                                     info.Set("optionsValues", answers);
+
+
+                                                    if (styleCount > 0 && tmRemarkList.Count > 6)
+                                                    {
+                                                        foreach (var style in styles)
+                                                        {
+                                                            info.Set(style.AttributeName, style.Get($"{style.AttributeName}Value"));
+                                                        }
+                                                    }
 
                                                     successTotal++;
                                                     successTmList.Add(info);
@@ -256,13 +284,13 @@ namespace XBLMS.Web.Controllers.Admin.Common
                                     else
                                     {
                                         errorTotal++;
-                                        errorTm.ErrorMsg.Add("请检查题目注释是否有多余的内容");
+                                        errorTm.ErrorMsg.Add("题目注释不完整");
                                     }
                                 }
                                 else
                                 {
                                     errorTotal++;
-                                    errorTm.ErrorMsg.Add("请检查题目内部是否有多余的换行");
+                                    errorTm.ErrorMsg.Add("题目不完整，没有题目内容或者题目注释");
                                 }
                             }
                             else
@@ -279,14 +307,14 @@ namespace XBLMS.Web.Controllers.Admin.Common
 
             foreach (var error in errorTms)
             {
-                var tmhtml = StringUtils.ReplaceEndsWithIgnoreCase(error.TmHtml, "<p><br/></p>", string.Empty);
-                tmhtml = StringUtils.ReplaceEndsWithIgnoreCase(error.TmHtml, "<p></p>", string.Empty);
-
                 if (error.ErrorMsg != null && error.ErrorMsg.Count > 0)
                 {
-                    tmhtml = tmhtml.Replace(tmhtml, $"{tmhtml}<xblm><p style='color:red;'>{ListUtils.ToString(error.ErrorMsg, "，")}</p></xblm>");
+                    error.TmHtml = StringUtils.ReplaceEndsWithIgnoreCase(error.TmHtml, "<p></p>", string.Empty);
+                    error.TmHtml = StringUtils.ReplaceEndsWithIgnoreCase(error.TmHtml, "<p><br/></p>", string.Empty);
+                    error.TmHtml = error.TmHtml.Replace(error.TmHtml, $"{error.TmHtml}<xblm><p style='color:red;'>{ListUtils.ToString(error.ErrorMsg, "，")}</p></xblm>");
                 }
-                resultTmHtml += $"{tmhtml}<p><br/></p>";
+
+                resultTmHtml += $"{error.TmHtml}<p><br/></p>";
             }
 
 

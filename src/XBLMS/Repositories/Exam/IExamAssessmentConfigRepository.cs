@@ -1,6 +1,7 @@
 ﻿using Datory;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using XBLMS.Dto;
 using XBLMS.Models;
 
 namespace XBLMS.Repositories
@@ -12,7 +13,7 @@ namespace XBLMS.Repositories
         Task<bool> DeleteAsync(int id);
         Task<ExamAssessmentConfig> GetAsync(int id);
         Task<int> MaxAsync();
-        Task<List<ExamAssessmentConfig>> GetListWithoutLockedAsync();
-        Task<(int total, List<ExamAssessmentConfig> list)> GetListAsync(string keyWords, int pageIndex, int pageSize);
+        Task<List<ExamAssessmentConfig>> GetListWithoutLockedAsync(AdminAuth auth);
+        Task<(int total, List<ExamAssessmentConfig> list)> GetListAsync(AdminAuth auth, string keyWords, int pageIndex, int pageSize);
     }
 }

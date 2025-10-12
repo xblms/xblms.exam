@@ -1,4 +1,4 @@
-var $url = "/exam/examPaperSubmitResult";
+﻿var $url = "/exam/examPaperSubmitResult";
 
 var data = utils.init({
   id: utils.getQueryInt("id"),

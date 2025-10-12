@@ -1,0 +1,45 @@
+@page
+@{ Layout = "_LayoutHome"; }
+@section Styles{
+    <style>
+        body, html {
+            padding: 0;
+            margin: 0;
+            background: #ffffff;
+            overflow: hidden;
+        }
+    </style>
+}
+<div style="width:238px;position:fixed;" class="bg-white" :style="{height: (winHeight) + 'px'}">
+    <div class="rounded-0 shadow p-3">
+        <div class="row align-items-center">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-12 text-center fw-bolder">
+                <i class="bi bi-person-fill me-2"></i>任务中心
+            </div>
+        </div>
+    </div>
+    <div class="p-5">
+        <button type="button" class="btn w-100 rounded-pill border-0 fw-normal" :class="rightIndex===0?'btn-dark button-fa':'btn-outline-dark'" v-on:click="btnMenu(0)">
+            <div class="d-flex align-items-end justify-content-between">
+                <div>
+                    待 办
+                </div>
+                <div><i class="el-icon-caret-right"></i></div>
+            </div>
+        </button>
+        <button type="button" class="btn w-100 rounded-pill border-0 fw-normal mt-2" :class="rightIndex===1?'btn-dark button-fa':'btn-outline-dark'" v-on:click="btnMenu(1)">
+            <div class="d-flex align-items-end justify-content-between">
+                <div>
+                    日 程
+                </div>
+                <div><i class="el-icon-caret-right"></i></div>
+            </div>
+        </button>
+    </div>
+</div>
+<div style="margin-left:238px;height:100%;">
+    <iframe id="mineFrame" ref="mineFrame" :src="rightUrl" style="width: 100%;height:100%; border: none;" :style="{height: (winHeight) + 'px'}"></iframe>
+</div>
+@section Scripts{
+    <script src="/sitefiles/assets/js/home/dotaskindex.js" type="text/javascript"></script>
+}

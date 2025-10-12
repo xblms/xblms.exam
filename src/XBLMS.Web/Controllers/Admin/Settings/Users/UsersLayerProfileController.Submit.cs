@@ -49,27 +49,25 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
             user.Mobile = request.Mobile;
             user.Email = request.Email;
             user.Locked = request.Locked;
+            user.DutyName = request.DutyName;
 
-            var company = await _organManager.GetCompanyByGuidAsync(request.OrganId);
-            var department = await _organManager.GetDepartmentByGuidAsync(request.OrganId);
-            var duty = await _organManager.GetDutyByGuidAsync(request.OrganId);
-            if (company != null)
+            if (request.OrganType == "company")
             {
+                var company = await _organManager.GetCompanyAsync(request.OrganId);
                 user.CompanyId = company.Id;
                 user.DepartmentId = 0;
-                user.DutyId = 0;
+                user.DepartmentParentPath = null;
+                user.CompanyParentPath = company.CompanyParentPath;
             }
-            if (department != null)
+            else
             {
+                var department = await _organManager.GetDepartmentAsync(request.OrganId);
                 user.CompanyId = department.CompanyId;
                 user.DepartmentId = department.Id;
-                user.DutyId = 0;
-            }
-            if (duty != null)
-            {
-                user.CompanyId = duty.CompanyId;
-                user.DepartmentId = duty.DepartmentId;
-                user.DutyId = duty.Id;
+                user.DepartmentParentPath = department.DepartmentParentPath;
+
+                var company = await _organManager.GetCompanyAsync(department.CompanyId);
+                user.CompanyParentPath = company.CompanyParentPath;
             }
 
             if (request.UserId == 0)

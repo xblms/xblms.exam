@@ -37,6 +37,8 @@ namespace XBLMS.Web.Controllers.Admin
             {
                 return Unauthorized();
             }
+            var adminAuth = await _authManager.GetAdminAuth();
+
             var cacheKey = Constants.GetSessionIdCacheKey(admin.Id);
             var sessionId = await _dbCacheRepository.GetValueAsync(cacheKey);
             if (string.IsNullOrEmpty(request.SessionId) || sessionId != request.SessionId)
@@ -68,13 +70,28 @@ namespace XBLMS.Web.Controllers.Admin
 
             var version = _settingsManager.Version;
 
+            var curOrganName = string.Empty;
+            if (admin.AuthDataCurrentOrganId > 0)
+            {
+                var company = await _organCompanyRepository.GetAsync(admin.AuthDataCurrentOrganId);
+                if (company != null)
+                {
+                    curOrganName = company.Name;
+                }
+            }
+
+            var adminEnforceLogoutMinutes = config.IsAdminEnforceLogout && config.AdminEnforceLogoutMinutes > 0 ? config.AdminEnforceLogoutMinutes : 0;
+
             return new GetResult
             {
                 Version = version,
+                VersionName = _settingsManager.VersionName,
+                SystemCodeName = config.SystemCodeName,
                 IsSafeMode = _settingsManager.IsSafeMode,
                 Value = true,
                 Menus = allMenus,
                 IsEnforcePasswordChange = isEnforcePasswordChange,
+                AdminEnforceLogoutMinutes = adminEnforceLogoutMinutes,
                 Local = new Local
                 {
                     UserId = admin.Id,
@@ -82,9 +99,11 @@ namespace XBLMS.Web.Controllers.Admin
                     UserName = admin.UserName,
                     DisplayName = admin.DisplayName,
                     AvatarUrl = admin.AvatarUrl,
-                    Auth = admin.Auth.GetDisplayName()
+                    Auth = admin.Auth.GetDisplayName(),
+                    AuthCurrentOrganName = curOrganName,
+                    AuthDataShowAll = admin.AuthDataShowAll,
+                    AuthOrganChange = adminAuth.AuthDataType != Enums.AuthorityDataType.DataCreator
                 }
-
             };
         }
     }

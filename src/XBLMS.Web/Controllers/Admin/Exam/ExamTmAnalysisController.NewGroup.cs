@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using XBLMS.Dto;
 using XBLMS.Enums;
@@ -17,18 +17,34 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 return this.NoAuth();
             }
 
-            var admin = await _authManager.GetAdminAsync();
+            var adminAuth = await _authManager.GetAdminAuth();
+            var admin = adminAuth.Admin;
 
-            await _examTmGroupRepository.InsertAsync(new ExamTmGroup
+            var groupId = await _examTmGroupRepository.InsertAsync(new ExamTmGroup
             {
                 GroupName = request.GroupName,
                 GroupType = TmGroupType.Fixed,
-                TmIds = request.TmIdList,
                 TmTotal = request.TmIdList.Count,
                 CreatorId = admin.Id,
-                CompanyId = admin.CompanyId,
+                CompanyId = adminAuth.CurCompanyId,
                 DepartmentId = admin.DepartmentId,
+                CompanyParentPath = adminAuth.CompanyParentPath,
+                DepartmentParentPath = admin.DepartmentParentPath,
             });
+
+            foreach (var tmId in request.TmIdList)
+            {
+                var tm = await _examTmRepository.GetAsync(tmId);
+                if (tm.TmGroupIds != null)
+                {
+                    tm.TmGroupIds.Add($"'{groupId}'");
+                }
+                else
+                {
+                    tm.TmGroupIds = [$"'{groupId}'"];
+                }
+                await _examTmRepository.UpdateTmGroupIdsAsync(tm);
+            }
 
             return new BoolResult
             {

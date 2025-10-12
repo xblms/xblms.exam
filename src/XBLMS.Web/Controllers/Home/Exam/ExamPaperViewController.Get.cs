@@ -31,9 +31,11 @@ namespace XBLMS.Web.Controllers.Home.Exam
             var paperTmTotal = 0;
 
             var tmIndex = 1;
+            var txIndex = 1;
             foreach (var config in configs)
             {
-                var tms = await _examPaperRandomTmRepository.GetListAsync(randomId, config.TxId, config.ExamPaperId);
+                decimal txTotalScore = 0;
+                var tms = await _examPaperRandomTmRepository.GetListAsync(randomId, config.TxId, paper.Id);
                 if (tms != null && tms.Count > 0)
                 {
                     paperTmTotal += tms.Count;
@@ -43,9 +45,15 @@ namespace XBLMS.Web.Controllers.Home.Exam
                         await _examManager.GetTmInfoByPaperUser(item, paper, startId, true);
                         item.Set("TmIndex", tmIndex);
                         tmIndex++;
+
+                        var answer = await _examPaperAnswerRepository.GetAsync(item.Id, start.Id, paper.Id);
+                        txTotalScore += answer.Score;
                     }
                     config.Set("TmList", tms);
                 }
+                config.Set("TxTotalScore", txTotalScore);
+                config.Set("TxIndexCN", StringUtils.ParseNumberToChinese(txIndex));
+                txIndex++;
             }
 
             paper.Set("TmTotal", paperTmTotal);
@@ -56,12 +64,17 @@ namespace XBLMS.Web.Controllers.Home.Exam
 
             paper.Set("UseTime", DateUtils.SecondToHms(start.ExamTimeSeconds));
             paper.Set("UserScore", start.Score);
+            paper.Set("UserOScore", start.ObjectiveScore);
+            paper.Set("UserSScore", start.SubjectiveScore);
+
+            var (aesKey, aesIV, aesSalt) = AesEncryptor.GetKey();
 
             return new GetResult
             {
                 Watermark = await _authManager.GetWatermark(),
                 Item = paper,
-                TxList = configs
+                TxList = AesEncryptor.Encrypt(TranslateUtils.JsonSerialize(configs), aesKey, aesIV),
+                Salt = aesSalt
             };
         }
     }

@@ -32,7 +32,7 @@ var methods = {
       $this.total = res.total;
 
     }).catch(function (error) {
-      utils.error(error);
+      utils.error(error, { layer: true });
     }).then(function () {
       utils.loading($this, false);
       $this.loadMoreLoading = false;
@@ -49,7 +49,7 @@ var methods = {
       });
 
       $this.$set($this.list, pIndex, res.item);
-
+      top.utils.pointNotice(res.pointNotice);
 
     }).catch(function (error) {
     }).then(function () {
@@ -68,10 +68,10 @@ var methods = {
   btnViewClick: function (paper) {
 
     if (paper.submitType === 'Submit') {
-      utils.success("已提交")
+      utils.success("已提交", { layer: true })
     }
     else if (!paper.state) {
-      utils.success("不在有效期内！")
+      utils.warning("不在有效期内！", { layer: true })
     }
     else {
       var $this = this;
@@ -94,7 +94,7 @@ var $vue = new Vue({
   data: data,
   methods: methods,
   created: function () {
-    document.title = "测评中心";
+    top.document.title = "测评中心";
     this.apiGet();
   },
 });

@@ -20,7 +20,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
             var success = true;
             var error = "";
 
-            var tmGroups = await _examTmGroupRepository.GetListWithoutLockedAsync();
+            var tmGroups = await _examTmGroupRepository.GetListAsync(new Dto.AdminAuth());
 
             if (request.PracticeType == PracticeType.Group)
             {

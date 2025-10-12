@@ -1,7 +1,9 @@
 ﻿using Datory;
+using SqlKata;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using XBLMS.Dto;
 using XBLMS.Enums;
 using XBLMS.Models;
 using XBLMS.Repositories;
@@ -24,13 +26,7 @@ namespace XBLMS.Core.Repositories
 
         public List<TableColumn> TableColumns => _repository.TableColumns;
 
-        public async Task AddCountAsync(StatType statType)
-        {
-            await AddCountAsync(statType, 0);
-        }
-
-
-        public async Task AddCountAsync(StatType statType, int adminId)
+        public async Task AddCountAsync(Administrator admin, StatType statType)
         {
             var lowerDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
             var higherDate = lowerDate.AddDays(1);
@@ -39,9 +35,13 @@ namespace XBLMS.Core.Repositories
                 .Where(nameof(Stat.StatType), statType.GetValue())
                 .WhereBetween(nameof(Stat.CreatedDate), lowerDate, higherDate);
 
-            if (adminId > 0)
+            if (admin != null)
             {
-                query.Where(nameof(Stat.AdminId), adminId);
+                query.Where(nameof(Stat.AdminId), admin.Id);
+            }
+            else
+            {
+                admin = new Administrator();
             }
 
             if (await _repository.ExistsAsync(query))
@@ -53,7 +53,49 @@ namespace XBLMS.Core.Repositories
                 await _repository.InsertAsync(new Stat
                 {
                     StatType = statType,
-                    AdminId = adminId,
+                    AdminId = admin.Id,
+                    CreatorId = admin.Id,
+                    CompanyId = admin.CompanyId,
+                    DepartmentId = admin.DepartmentId,
+                    CompanyParentPath = admin.CompanyParentPath,
+                    DepartmentParentPath = admin.DepartmentParentPath,
+                    Count = 1
+                });
+            }
+        }
+        public async Task AddUserCountAsync(User user, StatType statType)
+        {
+            var lowerDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+            var higherDate = lowerDate.AddDays(1);
+
+            var query = Q
+                .Where(nameof(Stat.StatType), statType.GetValue())
+                .WhereBetween(nameof(Stat.CreatedDate), lowerDate, higherDate);
+
+            if (user != null)
+            {
+                query.Where(nameof(Stat.AdminId), user.Id);
+            }
+            else
+            {
+                user = new User();
+            }
+
+            if (await _repository.ExistsAsync(query))
+            {
+                await _repository.IncrementAsync(nameof(Stat.Count), query);
+            }
+            else
+            {
+                await _repository.InsertAsync(new Stat
+                {
+                    StatType = statType,
+                    AdminId = user.Id,
+                    CreatorId = user.Id,
+                    CompanyId = user.CompanyId,
+                    DepartmentId = user.DepartmentId,
+                    CompanyParentPath = user.CompanyParentPath,
+                    DepartmentParentPath = user.DepartmentParentPath,
                     Count = 1
                 });
             }
@@ -61,19 +103,19 @@ namespace XBLMS.Core.Repositories
 
         public async Task<List<Stat>> GetStatsAsync(DateTime lowerDate, DateTime higherDate, StatType statType)
         {
-            return await GetStatsAsync(lowerDate, higherDate, statType, 0);
-        }
-
-        public async Task<List<Stat>> GetStatsAsync(DateTime lowerDate, DateTime higherDate, StatType statType, int adminId)
-        {
             var query = Q
                 .Where(nameof(Stat.StatType), statType.GetValue())
                 .WhereBetween(nameof(Stat.CreatedDate), lowerDate, higherDate.AddDays(1));
 
-            if (adminId > 0)
-            {
-                query.Where(nameof(Stat.AdminId), adminId);
-            }
+            return await _repository.GetAllAsync(query);
+        }
+        public async Task<List<Stat>> GetStatsAsync(AdminAuth auth, DateTime lowerDate, DateTime higherDate, StatType statType)
+        {
+            var query = Q
+                .Where(nameof(Stat.StatType), statType.GetValue())
+               .WhereBetween(nameof(Stat.CreatedDate), lowerDate, higherDate.AddDays(1));
+
+            query = GetQueryByAuth(query, auth);
 
             return await _repository.GetAllAsync(query);
         }
@@ -85,18 +127,44 @@ namespace XBLMS.Core.Repositories
                 .WhereNot(nameof(Stat.AdminId), 0)
                 .WhereBetween(nameof(Stat.CreatedDate), lowerDate, higherDate.AddDays(1));
 
-
             return await _repository.GetAllAsync(query);
-        }
-
-        public async Task DeleteAllAsync()
-        {
-            await _repository.DeleteAsync();
         }
 
         public async Task<int> SumAsync(StatType statType)
         {
             return await _repository.SumAsync(nameof(Stat.Count), Q.Where(nameof(Stat.StatType), statType.GetValue()));
+        }
+        public async Task<int> SumAsync(StatType statType, AdminAuth auth)
+        {
+            var query = Q.Where(nameof(Stat.StatType), statType.GetValue());
+
+            query = GetQueryByAuth(query, auth);
+
+            return await _repository.SumAsync(nameof(Stat.Count), query);
+        }
+
+        private Query GetQueryByAuth(Query query, AdminAuth auth)
+        {
+            if (auth.AuthDataType == AuthorityDataType.DataCreator)
+            {
+                query.Where(nameof(Stat.AdminId), auth.AdminId);
+            }
+            else
+            {
+                if (auth.AuthDataShowAll)
+                {
+                    if (auth.CurCompanyId != 1)
+                    {
+                        query.WhereLike(nameof(Stat.CompanyParentPath), $"%'{auth.CurCompanyId}'%");
+                    }
+                }
+                else
+                {
+                    query.Where(nameof(Stat.CompanyId), auth.CurCompanyId);
+                }
+            }
+
+            return query;
         }
     }
 }

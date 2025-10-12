@@ -1,0 +1,162 @@
+﻿@page
+@{ Layout = "_Layout"; }
+
+@section Styles{
+    <style>
+        .el-form-item{
+            margin:0 !important;
+        }
+    </style>
+}
+
+<el-card>
+    <el-scrollbar class="scrollbar" :style="{height: ($(window).height() - 110) + 'px'}">
+        <div style="margin-right:19px;">
+            <el-form v-on:submit.native.prevent ref="form" :model="form" :size="euiSize">
+                <el-descriptions title="积分配置" :column="4" border>
+                    <template v-if="systemCode==='Elearning'">
+                        <el-descriptions-item label="完成计划奖励积分">
+                            <el-form-item>
+                                <el-input-number v-model="form.pointPlanOver" :min="0"></el-input-number>
+                            </el-form-item>
+                        </el-descriptions-item>
+                        <el-descriptions-item label="每日上限">
+                            <el-form-item>
+                                <el-input-number v-model="form.pointPlanOverDayMax" :min="0"></el-input-number>
+                            </el-form-item>
+                        </el-descriptions-item>
+                        <el-descriptions-item label="完成课程奖励积分">
+                            <el-form-item>
+                                <el-input-number v-model="form.pointCourseOver" :min="0"></el-input-number>
+                            </el-form-item>
+                        </el-descriptions-item>
+                        <el-descriptions-item label="每日上限">
+                            <el-form-item>
+                                <el-input-number v-model="form.pointCourseOverDayMax" :min="0"></el-input-number>
+                            </el-form-item>
+                        </el-descriptions-item>
+                        <el-descriptions-item label="课程评价奖励积分">
+                            <el-form-item>
+                                <el-input-number v-model="form.pointEvaluation" :min="0"></el-input-number>
+                            </el-form-item>
+                        </el-descriptions-item>
+                        <el-descriptions-item label="每日上限">
+                            <el-form-item>
+                                <el-input-number v-model="form.pointEvaluationDayMax" :min="0"></el-input-number>
+                            </el-form-item>
+                        </el-descriptions-item>
+                        <el-descriptions-item label="看视频奖励积分">
+                            <el-form-item>
+                                <el-input-number v-model="form.pointVideo" :min="0"></el-input-number>
+                            </el-form-item>
+                        </el-descriptions-item>
+                        <el-descriptions-item label="每日上限">
+                            <el-form-item>
+                                <el-input-number v-model="form.pointVideoDayMax" :min="0"></el-input-number>
+                            </el-form-item>
+                        </el-descriptions-item>
+                    </template>
+                    <el-descriptions-item label="登录奖励积分">
+                        <el-form-item>
+                            <el-input-number v-model="form.pointLogin" :min="0"></el-input-number>
+                        </el-form-item>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="每日上限">
+                        <el-form-item>
+                            <el-input-number v-model="form.pointLoginDayMax" :min="0"></el-input-number>
+                        </el-form-item>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="看文档奖励积分">
+                        <el-form-item>
+                            <el-input-number v-model="form.pointDocument" :min="0"></el-input-number>
+                        </el-form-item>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="每日上限">
+                        <el-form-item>
+                            <el-input-number v-model="form.pointDocumentDayMax" :min="0"></el-input-number>
+                        </el-form-item>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="参加考试奖励积分">
+                        <el-form-item>
+                            <el-input-number v-model="form.pointExam" :min="0"></el-input-number>
+                        </el-form-item>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="每日上限">
+                        <el-form-item>
+                            <el-input-number v-model="form.pointExamDayMax" :min="0"></el-input-number>
+                        </el-form-item>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="考试及格奖励积分">
+                        <el-form-item>
+                            <el-input-number v-model="form.pointExamPass" :min="0"></el-input-number>
+                        </el-form-item>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="每日上限">
+                        <el-form-item>
+                            <el-input-number v-model="form.pointExamPassDayMax" :min="0"></el-input-number>
+                        </el-form-item>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="考试满分奖励积分">
+                        <el-form-item>
+                            <el-input-number v-model="form.pointExamFull" :min="0"></el-input-number>
+                        </el-form-item>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="每日上限">
+                        <el-form-item>
+                            <el-input-number v-model="form.pointExamFullDayMax" :min="0"></el-input-number>
+                        </el-form-item>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="参与问卷奖励积分">
+                        <el-form-item>
+                            <el-input-number v-model="form.pointExamQ" :min="0"></el-input-number>
+                        </el-form-item>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="每日上限">
+                        <el-form-item>
+                            <el-input-number v-model="form.pointExamQDayMax" :min="0"></el-input-number>
+                        </el-form-item>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="参与测评奖励积分">
+                        <el-form-item>
+                            <el-input-number v-model="form.pointExamAss" :min="0"></el-input-number>
+                        </el-form-item>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="每日上限">
+                        <el-form-item>
+                            <el-input-number v-model="form.pointExamAssDayMax" :min="0"></el-input-number>
+                        </el-form-item>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="刷题奖励积分">
+                        <el-form-item>
+                            <el-input-number v-model="form.pointExamPractice" :min="0"></el-input-number>
+                        </el-form-item>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="每日上限">
+                        <el-form-item>
+                            <el-input-number v-model="form.pointExamPracticeDayMax" :min="0"></el-input-number>
+                        </el-form-item>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="刷题正确奖励积分">
+                        <el-form-item>
+                            <el-input-number v-model="form.pointExamPracticeRight" :min="0"></el-input-number>
+                        </el-form-item>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="每日上限">
+                        <el-form-item>
+                            <el-input-number v-model="form.pointExamPracticeRightDayMax" :min="0"></el-input-number>
+                        </el-form-item>
+                    </el-descriptions-item>
+                </el-descriptions>
+            </el-form>
+        </div>
+    </el-scrollbar>
+    <div style="height: 10px"></div>
+    <el-row>
+        <el-col :span="24" align="center">
+            <el-button icon="el-icon-check" type="primary" v-on:click="btnSubmitClick" :size="euiSize">保 存</el-button>
+        </el-col>
+    </el-row>
+</el-card>
+
+@section Scripts{
+<script src="/sitefiles/assets/js/admin/points/giftPointConfig.js" type="text/javascript"></script> }

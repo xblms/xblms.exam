@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Datory;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using XBLMS.Dto;
 using XBLMS.Enums;
@@ -18,26 +20,56 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
                 return this.NoAuth();
             }
 
+            var adminAuth = await _authManager.GetAdminAuth();
 
-            var group = new UserGroup();
+            var group = new UserGroup()
+            {
+                GroupType = UsersGroupType.All
+            };
+
+            var groupTypeSelects = ListUtils.GetSelects<UsersGroupType>();
+            if (adminAuth.AuthType != AuthorityType.Admin)
+            {
+                group.GroupType = UsersGroupType.Range;
+                groupTypeSelects = groupTypeSelects.Where(g => g.Value != UsersGroupType.All.GetValue()).ToList();
+            }
+
             var selectOrganIds = new List<string>();
+            var organs = new List<SelectOrgans>();
             if (request.Id > 0)
             {
                 group = await _userGroupRepository.GetAsync(request.Id);
                 if (group != null && group.GroupType == UsersGroupType.Range)
                 {
-                    var companyGuids = await _organManager.GetCompanyGuidsAsync(group.CompanyIds);
-                    if (companyGuids != null && companyGuids.Count > 0) { selectOrganIds.AddRange(companyGuids); }
+                    if (group.CompanyIds != null && group.CompanyIds.Count > 0)
+                    {
+                        foreach (var companyId in group.CompanyIds)
+                        {
+                            var company = await _organManager.GetCompanyAsync(companyId);
+                            organs.Add(new SelectOrgans
+                            {
+                                Id = companyId,
+                                Name = company.Name,
+                                Type = "company"
+                            });
 
-                    var departmentGuids = await _organManager.GetDepartmentGuidsAsync(group.DepartmentIds);
-                    if (departmentGuids != null && departmentGuids.Count > 0) { selectOrganIds.AddRange(departmentGuids); }
-
-                    var dutyGuids = await _organManager.GetDutyGuidsAsync(group.DutyIds);
-                    if (dutyGuids != null && dutyGuids.Count > 0) { selectOrganIds.AddRange(dutyGuids); }
+                        }
+                    }
+                    if (group.DepartmentIds != null && group.DepartmentIds.Count > 0)
+                    {
+                        foreach (var departmentId in group.DepartmentIds)
+                        {
+                            var department = await _organManager.GetDepartmentAsync(departmentId);
+                            organs.Add(new SelectOrgans
+                            {
+                                Id = department.Id,
+                                Name = department.Name,
+                                Type = "department"
+                            });
+                        }
+                    }
                 }
             }
-            var organs = await _organManager.GetOrganTreeTableDataAsync();
-            var groupTypeSelects = ListUtils.GetSelects<UsersGroupType>();
 
             return new GetEditResult
             {
@@ -67,7 +99,6 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
                 }
             }
 
-
             var admin = await _authManager.GetAdminAsync();
 
             if (request.Group.GroupType == UsersGroupType.Range)
@@ -95,18 +126,22 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
                 }
                 request.Group.CompanyIds = companyIds;
                 request.Group.DepartmentIds = departmentIds;
-                request.Group.DutyIds = dutyIds;
             }
             else
             {
                 request.Group.CompanyIds = null;
                 request.Group.DepartmentIds = null;
-                request.Group.DutyIds = null;
             }
-
+            var exists = await _userGroupRepository.ExistsAsync(request.Group.GroupName, admin.CompanyId);
             if (request.Group.Id > 0)
             {
                 var group = await _userGroupRepository.GetAsync(request.Group.Id);
+
+                if (exists && !StringUtils.Equals(group.GroupName, request.Group.GroupName))
+                {
+                    return this.Error("已存在相同名称的用户组");
+                }
+
                 await _userGroupRepository.UpdateAsync(request.Group);
                 await _authManager.AddAdminLogAsync("修改用户组", $"{group.GroupName}");
 
@@ -114,9 +149,16 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
             }
             else
             {
+                if (exists)
+                {
+                    return this.Error("已存在相同名称的用户组");
+                }
+
                 request.Group.CreatorId = admin.Id;
                 request.Group.CompanyId = admin.CompanyId;
                 request.Group.DepartmentId = admin.DepartmentId;
+                request.Group.CompanyParentPath = admin.CompanyParentPath;
+                request.Group.DepartmentParentPath = admin.DepartmentParentPath;
 
                 var groupId = await _userGroupRepository.InsertAsync(request.Group);
                 await _authManager.AddAdminLogAsync("新增用户组", $"{request.Group.GroupName}");

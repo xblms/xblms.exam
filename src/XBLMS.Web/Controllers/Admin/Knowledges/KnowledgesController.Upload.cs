@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 using XBLMS.Configuration;
-using XBLMS.Core.Utils.Office;
 using XBLMS.Utils;
+using XLMS.Core.Utils.Office;
 
 namespace XBLMS.Web.Controllers.Admin.Knowledges
 {
@@ -17,47 +18,46 @@ namespace XBLMS.Web.Controllers.Admin.Knowledges
             {
                 return new GetUploadResult { Success = false, Msg = Constants.ErrorSafe };
             }
-            var fileName = PathUtils.GetFileName(file.FileName);
-
-            var fileType = PathUtils.GetExtension(fileName);
-
-            if (!FileUtils.IsPDF(fileType))
-            {
-                return new GetUploadResult { Success = false, Msg = Constants.ErrorUpload };
-            }
-
-
-            var realFileName = PathUtils.GetFileNameWithoutExtension(fileName);
-
-
-            var path = _pathManager.GetKnowledgesUploadFilesPath();
-            var filePath = PathUtils.Combine(path, fileName);
-
-            await _pathManager.UploadAsync(file, filePath);
-
-            var url = _pathManager.GetRootUrlByPath(filePath);
-
-            var firstImgPath = PathUtils.Combine(path, $"{StringUtils.GetShortGuid()}.jpg");
-            var firstImgUrl = string.Empty;
 
             try
             {
-                PdfManager.GetFirstImg(filePath, firstImgPath);
-                firstImgUrl = _pathManager.GetRootUrlByPath(firstImgPath);
+                var fileName = PathUtils.GetFileName(file.FileName);
+
+                var fileType = PathUtils.GetExtension(fileName);
+
+                if (!FileUtils.IsPDF(fileType))
+                {
+                    return new GetUploadResult { Success = false, Msg = Constants.ErrorUpload };
+                }
+
+
+                var realFileName = PathUtils.GetFileNameWithoutExtension(fileName);
+
+
+                var path = _pathManager.GetKnowledgesUploadFilesPath();
+                var filePath = PathUtils.Combine(path, fileName);
+
+                await _pathManager.UploadAsync(file, filePath);
+
+                var url = _pathManager.GetRootUrlByPath(filePath);
+
+                var firstImgPath = PathUtils.Combine(path, $"{StringUtils.GetShortGuid()}.jpg");
+                AsposePdfObject.GetFirstImg(filePath, firstImgPath);
+
+                var firstImgUrl = _pathManager.GetRootUrlByPath(firstImgPath);
+
+                return new GetUploadResult
+                {
+                    Success = true,
+                    FileName = realFileName,
+                    FilePath = url,
+                    CoverImagePath = firstImgUrl
+                };
             }
-            catch
+            catch (Exception ex)
             {
-                firstImgUrl = _pathManager.DefaultBookCoverUrl;
+                return new GetUploadResult { Success = false, Msg = ex.Message };
             }
-     
-            return new GetUploadResult
-            {
-                Success = true,
-                FileName = realFileName,
-                FilePath = url,
-                CoverImagePath = firstImgUrl
-            };
-       
 
         }
     }

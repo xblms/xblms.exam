@@ -1,7 +1,11 @@
 using Datory;
 using SqlKata;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using XBLMS.Core.Utils;
+using XBLMS.Dto;
+using XBLMS.Enums;
 using XBLMS.Models;
 using XBLMS.Repositories;
 using XBLMS.Services;
@@ -23,7 +27,10 @@ namespace XBLMS.Core.Repositories
         public string TableName => _repository.TableName;
 
         public List<TableColumn> TableColumns => _repository.TableColumns;
-
+        public async Task<List<ExamPaper>> GetAllAsync()
+        {
+            return await _repository.GetAllAsync();
+        }
         public async Task<int> InsertAsync(ExamPaper item)
         {
             return await _repository.InsertAsync(item);
@@ -41,9 +48,11 @@ namespace XBLMS.Core.Repositories
         {
             return await _repository.UpdateAsync(item, Q.CachingRemove(GetCacheKey(item.Id)));
         }
-        public async Task<List<ExamPaper>> GetListAsync(string keyword)
+        public async Task<List<ExamPaper>> GetListAsync(AdminAuth auth, string keyword)
         {
             var query = new Query();
+
+            query = GetQueryByAuth(query, auth);
 
             if (!string.IsNullOrWhiteSpace(keyword))
             {
@@ -56,13 +65,98 @@ namespace XBLMS.Core.Repositories
             query.OrderByDesc(nameof(ExamPaper.Id));
             return await _repository.GetAllAsync(query);
         }
-        public async Task<(int total, List<ExamPaper> list)> GetListAsync(List<int> treeIds, string keyword, int pageIndex, int pageSize)
+        public async Task<(int total, List<ExamPaper> list)> GetListByDateAsync(AdminAuth auth, string dateType, bool onlyTotal = true)
+        {
+            var query = Q.
+                WhereNullOrFalse(nameof(ExamPaper.Moni)).
+                WhereNullOrFalse(nameof(ExamPaper.IsCourseUse)).
+                WhereNullOrFalse(nameof(ExamPaper.Locked));
+
+            query = GetQueryByAuth(query, auth);
+
+            if (!string.IsNullOrWhiteSpace(dateType))
+            {
+                if (dateType == "today")
+                {
+                    var dateFromStr = DateTime.Now.ToString("yyyy-MM-dd 00:00:00");
+                    var dateToStr = DateTime.Now.ToString("yyyy-MM-dd 23:59:59");
+
+                    query.Where(nameof(ExamPaperUser.ExamBeginDateTime), ">=", DateUtils.ToString(dateFromStr));
+                    query.Where(nameof(ExamPaperUser.ExamBeginDateTime), "<=", DateUtils.ToString(dateToStr));
+                }
+                if (dateType == "week")
+                {
+                    DateTime today = DateTime.Now;
+                    DateTime startOfWeek = today;
+                    DateTime endOfWeek = today;
+                    int dayOfWeek = (int)today.DayOfWeek;
+                    if (dayOfWeek == 0)
+                    {
+                        startOfWeek = today.AddDays(-6);
+                    }
+                    else
+                    {
+                        startOfWeek = today.AddDays(1 - dayOfWeek);
+                    }
+                    endOfWeek = startOfWeek.AddDays(6);
+
+                    var dateFromStr = startOfWeek.ToString("yyyy-MM-dd 00:00:00");
+                    var dateToStr = endOfWeek.ToString("yyyy-MM-dd 23:59:59");
+
+                    query.Where(nameof(ExamPaperUser.ExamBeginDateTime), ">=", DateUtils.ToString(dateFromStr));
+                    query.Where(nameof(ExamPaperUser.ExamBeginDateTime), "<=", DateUtils.ToString(dateToStr));
+                }
+            }
+
+            query.OrderByDesc(nameof(ExamPaper.Id));
+
+            var total = await _repository.CountAsync(query);
+            if (onlyTotal)
+            {
+                return (total, null);
+            }
+            var list = await _repository.GetAllAsync(query);
+            return (total, list);
+        }
+        private Query GetQueryByAuth(Query query, AdminAuth auth)
+        {
+            if (auth.AuthDataType == AuthorityDataType.DataCreator)
+            {
+                query.Where(nameof(ExamPaper.CreatorId), auth.AdminId);
+            }
+            else
+            {
+                if (auth.AuthDataShowAll)
+                {
+                    if (auth.CurCompanyId != 1)
+                    {
+                        query.WhereLike(nameof(ExamPaper.CompanyParentPath), $"%'{auth.CurCompanyId}'%");
+                    }
+                }
+                else
+                {
+                    query.Where(nameof(ExamPaper.CompanyId), auth.CurCompanyId);
+                }
+            }
+
+            return query;
+        }
+        public async Task<(int total, List<ExamPaper> list)> GetListAsync(AdminAuth auth, bool treeIsChild, int treeId, string keyword, int pageIndex, int pageSize)
         {
             var query = new Query();
 
-            if (treeIds != null && treeIds.Count > 0)
+            query = GetQueryByAuth(query, auth);
+
+            if (treeId > 0)
             {
-                query.WhereIn(nameof(ExamPaper.TreeId), treeIds);
+                if (treeIsChild)
+                {
+                    query.WhereLike(nameof(ExamPaper.TreeParentPath), $"%'{treeId}'%");
+                }
+                else
+                {
+                    query.Where(nameof(ExamPaper.TreeId), treeId);
+                }
             }
             if (!string.IsNullOrWhiteSpace(keyword))
             {
@@ -78,10 +172,12 @@ namespace XBLMS.Core.Repositories
             var list = await _repository.GetAllAsync(query.ForPage(pageIndex, pageSize));
             return (total, list);
         }
-
-        public async Task<int> GetCountAsync(List<int> treeIds)
+        public async Task<(int total, int count)> CountAsync(int treeId)
         {
-            return await _repository.CountAsync(Q.WhereIn(nameof(ExamPaper.TreeId), treeIds));
+            var keyWords = $"'{treeId}'";
+            var total = await _repository.CountAsync(Q.WhereLike(nameof(ExamPaper.TreeParentPath), $"%{keyWords}%"));
+            var count = await _repository.CountAsync(Q.Where(nameof(ExamPaper.TreeId), treeId));
+            return (total, count);
         }
         public async Task<int> MaxAsync()
         {
@@ -89,18 +185,35 @@ namespace XBLMS.Core.Repositories
             if (maxId.HasValue) return maxId.Value;
             return 0;
         }
-        public async Task<(int allCount, int addCount, int deleteCount, int lockedCount, int unLockedCount)> GetDataCount()
+        public async Task<(int allCount, int addCount, int deleteCount, int lockedCount, int unLockedCount)> GetDataCount(AdminAuth auth)
         {
-            var count = await _repository.CountAsync(Q.WhereNullOrFalse(nameof(ExamPaper.Moni)));
-            var lockedCount = await _repository.CountAsync(Q.WhereNullOrFalse(nameof(ExamPaper.Moni)).WhereTrue(nameof(ExamPaper.Locked)));
-            var unLockedCount = await _repository.CountAsync(Q.WhereNullOrFalse(nameof(ExamPaper.Moni)).WhereNullOrFalse(nameof(ExamPaper.Locked)));
+            var countQuery = Q.WhereNullOrFalse(nameof(ExamPaper.Moni));
+            var lockedCountQuery = Q.WhereNullOrFalse(nameof(ExamPaper.Moni)).WhereTrue(nameof(ExamPaper.Locked));
+            var unLockedCountQuery = Q.WhereNullOrFalse(nameof(ExamPaper.Moni)).WhereNullOrFalse(nameof(ExamPaper.Locked));
+
+            countQuery = GetQueryByAuth(countQuery, auth);
+            lockedCountQuery = GetQueryByAuth(lockedCountQuery, auth);
+            unLockedCountQuery = GetQueryByAuth(unLockedCountQuery, auth);
+
+            var count = await _repository.CountAsync(countQuery);
+            var lockedCount = await _repository.CountAsync(lockedCountQuery);
+            var unLockedCount = await _repository.CountAsync(unLockedCountQuery);
             return (count, 0, 0, lockedCount, unLockedCount);
         }
-        public async Task<(int allCount, int addCount, int deleteCount, int lockedCount, int unLockedCount)> GetDataCountMoni()
+        public async Task<(int allCount, int addCount, int deleteCount, int lockedCount, int unLockedCount)> GetDataCountMoni(AdminAuth auth)
         {
-            var count = await _repository.CountAsync(Q.WhereTrue(nameof(ExamPaper.Moni)));
-            var lockedCount = await _repository.CountAsync(Q.WhereTrue(nameof(ExamPaper.Moni)).WhereTrue(nameof(ExamPaper.Locked)));
-            var unLockedCount = await _repository.CountAsync(Q.WhereTrue(nameof(ExamPaper.Moni)).WhereNullOrFalse(nameof(ExamPaper.Locked)));
+
+            var countQuery = Q.WhereTrue(nameof(ExamPaper.Moni));
+            var lockedCountQuery = Q.WhereTrue(nameof(ExamPaper.Moni)).WhereTrue(nameof(ExamPaper.Locked));
+            var unLockedCountQuery = Q.WhereTrue(nameof(ExamPaper.Moni)).WhereNullOrFalse(nameof(ExamPaper.Locked));
+
+            countQuery = GetQueryByAuth(countQuery, auth);
+            lockedCountQuery = GetQueryByAuth(lockedCountQuery, auth);
+            unLockedCountQuery = GetQueryByAuth(unLockedCountQuery, auth);
+
+            var count = await _repository.CountAsync(countQuery);
+            var lockedCount = await _repository.CountAsync(lockedCountQuery);
+            var unLockedCount = await _repository.CountAsync(unLockedCountQuery);
             return (count, 0, 0, lockedCount, unLockedCount);
         }
         public async Task<int> GetGroupCount(int groupId)
@@ -140,6 +253,20 @@ namespace XBLMS.Core.Repositories
                 }
             }
             return total;
+        }
+
+        public async Task<(int count, int total)> GetTotalAndCountByTreeIdAsync(AdminAuth auth, int treeId)
+        {
+            var countquery = Q.NewQuery();
+            var totalquery = Q.NewQuery();
+
+            countquery = GetQueryByAuth(countquery, auth);
+            totalquery = GetQueryByAuth(totalquery, auth);
+
+            var count = await _repository.CountAsync(countquery.Where(nameof(ExamPaper.TreeId), treeId));
+            var total = await _repository.CountAsync(totalquery.WhereLike(nameof(ExamPaper.TreeParentPath), $"%'{treeId}'%"));
+
+            return (count, total);
         }
     }
 }

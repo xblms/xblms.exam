@@ -16,16 +16,18 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             {
                 return this.NoAuth();
             }
-
-            var admin = await _authManager.GetAdminAsync();
+            var adminAuth = await _authManager.GetAdminAuth();
+            var admin = adminAuth.Admin;
             var tx = request.Item;
             if (await _examTxRepository.IsExistsAsync(tx.Name))
             {
                 return this.Error("保存失败，已存在相同名称的题型！");
             }
-            tx.CompanyId = admin.CompanyId;
+            tx.CompanyId = adminAuth.CurCompanyId;
             tx.DepartmentId = admin.DepartmentId;
             tx.CreatorId = admin.Id;
+            tx.CompanyParentPath = adminAuth.CompanyParentPath;
+            tx.DepartmentParentPath = admin.DepartmentParentPath;
 
             var txId = await _examTxRepository.InsertAsync(tx);
             await _authManager.AddAdminLogAsync("新增题型", $"{tx.Name}");

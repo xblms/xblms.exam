@@ -13,7 +13,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         [HttpGet, Route(RouteScore)]
         public async Task<ActionResult<GetScoreResult>> GetSocreList([FromQuery] GetSocreRequest request)
         {
-            var (total, list) = await _examPaperStartRepository.GetListByAdminAsync(request.Id, request.DateFrom, request.DateTo, request.Keywords, request.PageIndex, request.PageSize);
+            var (total, list) = await _examPaperStartRepository.GetListByAdminAsync(request.Id, request.PlanId, request.CourseId, request.DateFrom, request.DateTo, request.Keywords, request.PageIndex, request.PageSize);
             if (total > 0)
             {
                 foreach (var item in list)
@@ -35,7 +35,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         [HttpPost, Route(RouteScoreExport)]
         public async Task<ActionResult<StringResult>> SocreExport([FromBody] GetSocreRequest request)
         {
-            var (total, list) = await _examPaperStartRepository.GetListByAdminAsync(request.Id, request.DateFrom, request.DateTo, request.Keywords, 1, int.MaxValue);
+            var (total, list) = await _examPaperStartRepository.GetListByAdminAsync(request.Id, request.PlanId, request.CourseId, request.DateFrom, request.DateTo, request.Keywords, 1, int.MaxValue);
 
             var paper = await _examPaperRepository.GetAsync(request.Id);
 

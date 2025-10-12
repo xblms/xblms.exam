@@ -33,7 +33,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
 
             var existCount = 0;
             var useTimeSecond = 0;
-            var noSubmitStart = await _examPaperStartRepository.GetNoSubmitAsync(paper.Id, user.Id);
+            var noSubmitStart = await _examPaperStartRepository.GetNoSubmitAsync(request.PlanId, request.CourseId, paper.Id, user.Id);
             if (noSubmitStart != null)
             {
                 randomId = noSubmitStart.ExamPaperRandomId;
@@ -78,12 +78,20 @@ namespace XBLMS.Web.Controllers.Home.Exam
 
                 startId = await _examPaperStartRepository.InsertAsync(new ExamPaperStart
                 {
+                    PlanId = request.PlanId,
+                    CourseId = request.CourseId,
                     UserId = user.Id,
                     ExamPaperId = paper.Id,
                     ExamPaperRandomId = randomId,
                     BeginDateTime = DateTime.Now,
                     KeyWords = paper.Title,
-                    KeyWordsAdmin = await _organManager.GetUserKeyWords(user.Id)
+                    Moni = paper.Moni,
+                    KeyWordsAdmin = await _organManager.GetUserKeyWords(user.Id),
+                    CreatorId = user.Id,
+                    CompanyId = user.CompanyId,
+                    DepartmentId = user.DepartmentId,
+                    CompanyParentPath = user.CompanyParentPath,
+                    DepartmentParentPath = user.DepartmentParentPath
                 });
             }
 
@@ -98,7 +106,6 @@ namespace XBLMS.Web.Controllers.Home.Exam
             var paperTmTotal = 0;
 
             var tmIndex = 1;
-
             var haveSubjective = false;
             foreach (var config in configs)
             {
@@ -110,7 +117,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
                     haveSubjective = true;
                 }
 
-                var tms = await _examPaperRandomTmRepository.GetListAsync(randomId, config.TxId, config.ExamPaperId);
+                var tms = await _examPaperRandomTmRepository.GetListAsync(randomId, config.TxId, paper.Id);
                 if (tms != null && tms.Count > 0)
                 {
                     paperTmTotal += tms.Count;
@@ -171,6 +178,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
                                     }
                                 }
                             }
+
                         }
 
                         await _examManager.GetTmInfoByPaperUser(item, paper, startId);
@@ -195,12 +203,14 @@ namespace XBLMS.Web.Controllers.Home.Exam
 
             paper.Set("ExistUserCount", existCount);
 
+            var (aesKey, aesIV, aesSalt) = AesEncryptor.GetKey();
 
             return new GetResult
             {
                 Watermark = await _authManager.GetWatermark(),
                 Item = paper,
-                TxList = configs
+                TxList = AesEncryptor.Encrypt(TranslateUtils.JsonSerialize(configs), aesKey, aesIV),
+                Salt = aesSalt
             };
         }
     }

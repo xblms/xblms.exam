@@ -1,15 +1,21 @@
 ﻿var $url = '/settings/administratorsLayerProfile';
 var $urlAuth = '/settings/administratorsLayerProfile/actions/auth';
+var $urlRoles = '/settings/administratorsLayerProfile/actions/roles';
 
 var data = utils.init({
   userName: utils.getQueryString('userName'),
-  organGuid: utils.getQueryString('guid'),
+  organId: utils.getQueryInt('organId'),
+  organName: utils.getQueryString('organName'),
+  organType: utils.getQueryString('organType'),
   userId: 0,
   uploadUrl: null,
+  auths: null,
+  authDatas: null,
   roles: null,
   organs: null,
-  selectOrgans:[],
+  selectOrgans: [],
   form: {
+    userId: 0,
     userName: null,
     displayName: null,
     password: null,
@@ -17,25 +23,37 @@ var data = utils.init({
     avatarUrl: null,
     mobile: null,
     email: null,
-    auth: '',
-    organId: ''
+    auth: null,
+    authData: null,
+    organId: 0,
+    organName: '',
+    organType: ''
   },
-  isSelf:false
+  isSelf: false,
+  adminId: 0,
+  creatorId: 0,
+  roleChecked: []
 });
 
 var methods = {
   apiGet: function () {
     var $this = this;
-    $this.form.organId = $this.organGuid;
+    $this.form.organId = $this.organId;
+    $this.form.organType = $this.organType;
+    $this.form.organName = $this.organName;
+
     $api.get($url, {
       params: {
         userName: this.userName
       }
     }).then(function (response) {
       var res = response.data;
-      $this.roles = res.auths;
-      $this.organs = res.organs;
+      $this.auths = res.auths;
+      $this.authDatas = res.authDatas;
       $this.isSelf = res.isSelf;
+      $this.roleChecked = res.rolesIds;
+      $this.adminId = res.adminId;
+      $this.creatorId = res.creatorId;
 
       if ($this.userName) {
         $this.userId = res.userId;
@@ -45,14 +63,42 @@ var methods = {
         $this.form.mobile = res.mobile;
         $this.form.email = res.email;
         $this.form.auth = res.auth;
+        $this.form.authData = res.authData;
         $this.form.organId = res.organId;
+        $this.form.organName = res.organName;
+        $this.form.organType = res.organType;
       }
-
 
     }).catch(function (error) {
       utils.error(error, { layer: true });
     }).then(function () {
       utils.loading($this, false);
+    });
+  },
+
+  apiGetRoles: function () {
+    var $this = this;
+    $api.get($urlRoles, {
+    }).then(function (response) {
+      var res = response.data;
+      $this.roles = res.list;
+
+    }).catch(function (error) {
+    }).then(function () {
+    });
+  },
+  btnAddRoleClick: function () {
+
+    var $this = this;
+    top.utils.openLayer({
+      title: false,
+      closebtn: 0,
+      url: utils.getSettingsUrl('administratorsRoleAdd'),
+      width: "68%",
+      height: "78%",
+      end: function () {
+        $this.apiGetRoles();
+      }
     });
   },
   apiSubmit: function () {
@@ -68,7 +114,10 @@ var methods = {
       mobile: this.form.mobile,
       email: this.form.email,
       auth: this.form.auth,
+      authData: this.form.authData,
       organId: this.form.organId,
+      organType: this.form.organType,
+      rolesIds: this.roleChecked
     }).then(function (response) {
       utils.success('操作成功！');
       utils.closeLayer(false);
@@ -91,6 +140,12 @@ var methods = {
 
   btnSubmitClick: function () {
     var $this = this;
+
+    if (this.form.auth === "AdminNormal" && this.roleChecked.length === 0) {
+      utils.error('请至少选择一个角色', { layer: true });
+      return;
+    }
+
     this.$refs.form.validate(function (valid) {
       if (valid) {
         $this.apiSubmit();
@@ -132,9 +187,22 @@ var methods = {
   uploadRemove(file) {
     this.form.avatarUrl = null;
   },
-  btnCancelClick: function () {
-    utils.closeLayer(false);
-  }
+
+  btnSelectOrganClick: function () {
+    top.utils.openLayer({
+      title: false,
+      closebtn: 0,
+      url: utils.getCommonUrl('selectOrgan', { windowName: window.name, selectOne: true }),
+      width: "60%",
+      height: "88%"
+    });
+  },
+  selectOrganCallback: function (selectCallbackList) {
+    var selectOrgan = selectCallbackList[0];
+    this.form.organId = selectOrgan.id;
+    this.form.organName = selectOrgan.name;
+    this.form.organType = selectOrgan.type;
+  },
 };
 
 var $vue = new Vue({
@@ -142,6 +210,7 @@ var $vue = new Vue({
   data: data,
   methods: methods,
   created: function () {
+    this.apiGetRoles();
     this.uploadUrl = $apiUrl + $url + '/actions/upload?userName=' + this.userName;
     this.apiGet();
   }

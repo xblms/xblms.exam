@@ -1,0 +1,91 @@
+@page
+@{ Layout = "_LayoutApp"; }
+@section Styles{
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+}
+<div class="p-3" v-if="total>0">
+    <div class="row g-2">
+        <div class="col-xl-6 col-lg-6 col-md-6 col-6">
+            <div class="card rounded-0 card-lift card-hover border bg-white p-2 mb-2  shadow-lg" v-on:click="btnViewClick(course)" style="cursor:pointer;" v-for="course in list1">
+                <div class="position-relative">
+                    <img :src="course.coverImg" class="img-fluid card-img rounded-0">
+                    <el-tag class="position-absolute bottom-0 end-0 m-2" size="mini" type="primary" effect="plain" v-if="course.offLine">面授课</el-tag>
+                    <el-tag size="mini" class="bg-dark text-white position-absolute bottom-0 end-0 m-2 fs-6" v-else>{{ utils.formatDuration(course.duration) }}</el-tag>
+                    <el-tag size="mini" type="success" effect="dark" class="position-absolute top-0 end-0 m-2" v-if="course.state==='Yiwancheng'">{{ course.stateStr }}</el-tag>
+                    <el-tag size="mini" type="warning" effect="dark" class="position-absolute top-0 end-0 m-2" v-else>{{ course.stateStr }}</el-tag>
+                    <span class="position-absolute bottom-0 start-0 m-2">
+                        <el-tag size="mini" type="primary" effect="dark" class="me-1">{{ course.courseType}}</el-tag>
+                    </span>
+                </div>
+                <div class="p-2">
+                    <div class="mb-2 fw-semibold">
+                        {{ course.name }}
+                    </div>
+                    <div class="mb-2 lh-1 fs-6">
+                        <span>
+                            <i class="bi bi-star-fill text-warning me-1"></i>
+                            <span>{{ course.evaluationAvg }}</span>
+                        </span>
+                        <span>
+                            ({{ course.totaEvaluationlUser }})
+                        </span>
+                    </div>
+                    <div class="lh-1 fs-6">
+                        <span class="text-success" v-if="course.state==='Yiwancheng'">{{ course.credit }} 学分</span>
+                        <span v-else>{{ course.credit }} 学分</span>
+                        <span class="ms-2">{{ course.studyHour }}</span> 课时
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6 col-lg-6 col-md-6 col-6">
+            <div class="card rounded-0 card-lift card-hover border bg-white p-2 mb-2 shadow-lg" v-on:click="btnViewClick(course)" style="cursor:pointer;" v-for="course in list2">
+                <div class="position-relative">
+                    <img :src="course.coverImg" class="img-fluid card-img rounded-0">
+                    <el-tag class="position-absolute bottom-0 end-0 m-2" size="mini" type="primary" effect="plain" v-if="course.offLine">面授课</el-tag>
+                    <el-tag size="mini" class="bg-dark text-white position-absolute bottom-0 end-0 m-2 fs-6" v-else>{{ utils.formatDuration(course.duration) }}</el-tag>
+                    <el-tag size="mini" type="success" effect="dark" class="position-absolute top-0 end-0 m-2" v-if="course.state==='Yiwancheng'">{{ course.stateStr }}</el-tag>
+                    <el-tag size="mini" type="warning" effect="dark" class="position-absolute top-0 end-0 m-2" v-else>{{ course.stateStr }}</el-tag>
+                    <span class="position-absolute bottom-0 start-0 m-2">
+                        <el-tag size="mini" type="primary" effect="dark" class="me-1">{{ course.courseType}}</el-tag>
+                    </span>
+                </div>
+                <div class="p-2">
+                    <div class="mb-2 fw-semibold">
+                        {{ course.name }}
+                    </div>
+                    <div class="mb-2 lh-1 fs-6">
+                        <span>
+                            <i class="bi bi-star-fill text-warning me-1"></i>
+                            <span>{{ course.evaluationAvg }}</span>
+                        </span>
+                        <span>
+                            ({{ course.totaEvaluationlUser }})
+                        </span>
+                    </div>
+                    <div class="lh-1 fs-6">
+                        <span class="text-success" v-if="course.state==='Yiwancheng'">{{ course.credit }} 学分</span>
+                        <span v-else>{{ course.credit }} 学分</span>
+                        <span class="ms-2">{{ course.studyHour }}</span> 课时
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="my-5 text-center">
+        <el-button class="rounded-pill border-0" icon="el-icon-refresh-right" v-if="total>pushTotal" v-on:click="btnLoadMoreClick" :loading="loadMoreLoading">加载更多</el-button>
+        <small v-else>没有更多了</small>
+    </div>
+    <div class="py-8"></div>
+</div>
+<div class="pt-8" v-else>
+    <el-empty :image-size="88"></el-empty>
+</div>
+@section Scripts{
+    <script src="/sitefiles/assets/js/app/study/studyCourseLog.js" type="text/javascript"></script>
+}

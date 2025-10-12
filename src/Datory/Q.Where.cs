@@ -518,8 +518,8 @@ namespace Datory
         private static string GetInStrWhere(DatabaseType databaseType, string columnName)
         {
             var where = string.Empty;
-            
-            if (databaseType == DatabaseType.MySql)
+
+            if (databaseType == DatabaseType.MySql || databaseType == DatabaseType.MariaDB || databaseType == DatabaseType.OceanBase)
             {
                 where = $"INSTR([{columnName}], ?) > 0";
             }
@@ -573,7 +573,7 @@ namespace Datory
         {
             var where = string.Empty;
 
-            if (databaseType == DatabaseType.MySql)
+            if (databaseType == DatabaseType.MySql || databaseType == DatabaseType.MariaDB || databaseType == DatabaseType.OceanBase)
             {
                 where = $"INSTR(?, [{columnName}]) > 0";
             }
@@ -627,7 +627,7 @@ namespace Datory
         {
             var where = string.Empty;
 
-            if (databaseType == DatabaseType.MySql)
+            if (databaseType == DatabaseType.MySql || databaseType == DatabaseType.MariaDB || databaseType == DatabaseType.OceanBase)
             {
                 where = $"INSTR([{columnName}], ?) = 0";
             }

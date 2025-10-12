@@ -5,242 +5,399 @@
         "id": "home",
         "order": 1,
         "text": "首页",
-        "link": "/admin/dashboard/",
+        "link": "/xblms-admin/dashboard/",
         "iconClass": "el-icon-s-home",
+        "isPermission": true,
+        "systemCode": [ "Exam", "Elearning" ],
+        "children": []
+      },
+      {
+        "id": "studyplan",
+        "order": 2,
+        "text": "发布培训",
+        "link": "/xblms-admin/study/studyPlan/",
+        "iconClass": "el-icon-star-off",
+        "permissions": [ "Select", "Add", "Update", "Delete", "Manage" ],
+        "isPermission": true,
+        "systemCode": [ "Elearning" ],
+        "children": [
+        ]
+      },
+      {
+        "id": "studymanage",
+        "order": 3,
+        "text": "培训管理",
+        "link": "",
+        "iconClass": "el-icon-s-check",
+        "Permissions": [],
+        "isPermission": true,
+        "systemCode": [ "Elearning" ],
+        "children": [
+          {
+            "id": "studymanagefiles",
+            "order": 1,
+            "text": "课件上传",
+            "link": "/xblms-admin/study/studyCourseFiles/",
+            "iconClass": "el-icon-s-custom",
+            "Permissions": [ "Select", "Add", "Update", "Delete", "Download" ],
+            "isPermission": true,
+            "children": [
+            ]
+          },
+          {
+            "id": "studymanagecourse",
+            "order": 2,
+            "text": "发布课程",
+            "link": "/xblms-admin/study/studyCourse/",
+            "iconClass": "el-icon-s-custom",
+            "Permissions": [ "Select", "Add", "Update", "Delete", "Manage" ],
+            "isPermission": true,
+            "children": [
+            ]
+          },
+          {
+            "id": "studymanagecourseevaluation",
+            "order": 3,
+            "text": "课程评价",
+            "link": "/xblms-admin/study/studyCourseEvaluation/",
+            "iconClass": "el-icon-s-custom",
+            "Permissions": [ "Select", "Add", "Update", "Delete" ],
+            "isPermission": true,
+            "children": [
+            ]
+          }
+        ]
+      },
+      {
+        "id": "studyteacher",
+        "order": 4,
+        "text": "上课",
+        "link": "/xblms-admin/study/studyCourseTeacher/",
+        "iconClass": "el-icon-user-solid",
+        "permissions": [ "Select", "Manage" ],
+        "isPermission": true,
+        "systemCode": [ "Elearning" ],
         "children": [
         ]
       },
       {
         "id": "exampaper",
-        "order": 2,
+        "order": 5,
         "text": "发布考试",
-        "link": "/admin/exam/examPaper/",
+        "link": "/xblms-admin/exam/examPaper/",
         "iconClass": "el-icon-platform-eleme",
         "Permissions": [ "Select", "Add", "Update", "Delete", "Manage" ],
-        "children": [
-        ]
-      },
-      {
-        "id": "exampapermark",
-        "order": 3,
-        "text": "阅卷",
-        "link": "/admin/exam/examPaperMark/",
-        "iconClass": "el-icon-finished",
-        "Permissions": [ "Select" ],
-        "children": [
-        ]
+        "isPermission": true,
+        "children": []
       },
       {
         "id": "exam",
-        "order": 4,
+        "order": 6,
         "text": "考试管理",
         "link": "",
         "iconClass": "el-icon-s-order",
         "Permissions": [],
+        "isPermission": true,
         "children": [
           {
             "id": "examtx",
             "order": 1,
             "text": "题型管理",
-            "link": "/admin/exam/examTx/",
+            "link": "/xblms-admin/exam/examTx/",
             "iconClass": "el-icon-s-custom",
             "Permissions": [ "Select", "Add", "Update", "Delete" ],
-            "children": [
-            ]
+            "isPermission": true,
+            "children": []
           },
           {
             "id": "examtm",
             "order": 2,
             "text": "题目管理",
-            "link": "/admin/exam/examTm/",
+            "link": "/xblms-admin/exam/examTm/",
             "iconClass": "el-icon-s-custom",
             "Permissions": [ "Select", "Add", "Update", "Delete", "Export", "Import" ],
-            "children": [
-            ]
+            "isPermission": true,
+            "children": []
           },
           {
             "id": "examcer",
             "order": 3,
             "text": "证书管理",
-            "link": "/admin/exam/examCer/",
+            "link": "/xblms-admin/exam/examCer/",
             "iconClass": "el-icon-s-custom",
             "Permissions": [ "Select", "Add", "Update", "Delete" ],
-            "children": [
-            ]
+            "isPermission": true,
+            "children": []
           },
           {
             "id": "examtmgroup",
             "order": 4,
             "text": "题目组",
-            "link": "/admin/exam/examTmGroup/",
+            "link": "/xblms-admin/exam/examTmGroup/",
             "iconClass": "el-icon-s-custom",
             "Permissions": [ "Select", "Add", "Update", "Delete" ],
-            "children": [
-            ]
+            "isPermission": true,
+            "children": []
           },
           {
             "id": "examtmanalysis",
             "order": 5,
             "text": "题库统计",
-            "link": "/admin/exam/examTmAnalysis/",
+            "link": "/xblms-admin/exam/examTmAnalysis/",
             "iconClass": "el-icon-s-data",
             "Permissions": [ "Select" ],
+            "isPermission": true,
+            "children": []
+          }
+        ]
+      },
+      {
+        "id": "exampapermark",
+        "order": 7,
+        "text": "阅卷",
+        "link": "/xblms-admin/exam/examPaperMark/",
+        "iconClass": "el-icon-finished",
+        "Permissions": [ "Select" ],
+        "isPermission": true,
+        "systemCode": [ "Exam", "Elearning" ],
+        "children": []
+      },
+      {
+        "id": "questionnaire",
+        "order": 8,
+        "text": "发布问卷",
+        "link": "/xblms-admin/exam/examQuestionnaire/",
+        "iconClass": "el-icon-eleme",
+        "Permissions": [ "Select", "Add", "Update", "Delete", "Manage" ],
+        "isPermission": true,
+        "systemCode": [ "Exam", "Elearning" ],
+        "children": []
+      },
+      {
+        "id": "examassessment",
+        "order": 9,
+        "text": "发布测评",
+        "link": "/xblms-admin/exam/examAssessment/",
+        "iconClass": "el-icon-magic-stick",
+        "Permissions": [ "Select", "Add", "Update", "Delete", "Manage" ],
+        "isPermission": true,
+        "systemCode": [ "Exam", "Elearning" ],
+        "children": []
+      },
+      {
+        "id": "exampk",
+        "order": 10,
+        "text": "发布竞赛",
+        "link": "/xblms-admin/exam/examPk/",
+        "iconClass": "el-icon-trophy",
+        "Permissions": [ "Select", "Add", "Update", "Delete", "Manage" ],
+        "isPermission": true,
+        "systemCode": [ "Exam", "Elearning" ],
+        "children": []
+      },
+      {
+        "id": "uploadfiles",
+        "order": 11,
+        "text": "上传文档",
+        "link": "/xblms-admin/study/studyCourseFiles/",
+        "iconClass": "el-icon-upload",
+        "Permissions": [ "Select", "Add", "Update", "Delete" ],
+        "isPermission": true,
+        "systemCode": [ "Exam" ],
+        "children": []
+      },
+      {
+        "id": "knowledges",
+        "order": 12,
+        "text": "知识库",
+        "link": "/xblms-admin/knowledges/knowledges/",
+        "iconClass": "el-icon-hot-water",
+        "Permissions": [ "Select", "Add", "Update", "Delete" ],
+        "isPermission": true,
+        "systemCode": [ "Exam", "Elearning" ],
+        "children": []
+      },
+      {
+        "id": "points",
+        "order": 13,
+        "text": "积分管理",
+        "link": "",
+        "iconClass": "el-icon-coin",
+        "Permissions": [],
+        "isPermission": true,
+        "children": [
+          {
+            "id": "pointsconfig",
+            "order": 3,
+            "text": "积分配置",
+            "link": "/xblms-admin/points/giftPointConfig/",
+            "iconClass": "el-icon-s-custom",
+            "Permissions": [ "Select", "Update" ],
+            "isPermission": true,
+            "children": [
+            ]
+          },
+          {
+            "id": "pointsgifts",
+            "order": 2,
+            "text": "积分商品",
+            "link": "/xblms-admin/points/gifts/",
+            "iconClass": "el-icon-s-custom",
+            "Permissions": [ "Select", "Update" ],
+            "isPermission": true,
+            "children": [
+            ]
+          },
+          {
+            "id": "pointsgiftusers",
+            "order": 1,
+            "text": "积分兑换",
+            "link": "/xblms-admin/points/giftUsers/",
+            "iconClass": "el-icon-s-custom",
+            "Permissions": [ "Select", "Update" ],
+            "isPermission": true,
             "children": [
             ]
           }
         ]
       },
       {
-        "id": "questionnaire",
-        "order": 5,
-        "text": "发布问卷",
-        "link": "/admin/exam/examQuestionnaire/",
-        "iconClass": "el-icon-eleme",
-        "Permissions": [ "Select", "Add", "Update", "Delete", "Manage" ],
-        "children": [
-        ]
-      },
-      {
-        "id": "examassessment",
-        "order": 6,
-        "text": "发布测评",
-        "link": "/admin/exam/examAssessment/",
-        "iconClass": "el-icon-magic-stick",
-        "Permissions": [ "Select", "Add", "Update", "Delete", "Manage" ],
-        "children": [
-        ]
-      },
-      {
-        "id": "exampk",
-        "order": 7,
-        "text": "发布竞赛",
-        "link": "/admin/exam/examPk/",
-        "iconClass": "el-icon-trophy",
-        "Permissions": [ "Select", "Add", "Update", "Delete", "Manage" ],
-        "children": [
-        ]
-      },
-      {
-        "id": "knowledges",
-        "order": 7,
-        "text": "知识库",
-        "link": "/admin/knowledges/knowledges/",
-        "iconClass": "el-icon-hot-water",
-        "Permissions": [ "Select", "Add", "Update", "Delete" ],
-        "children": [
-        ]
-      },
-      {
         "id": "account",
-        "order": 8,
+        "order": 14,
         "text": "企业管理",
         "link": "",
         "iconClass": "el-icon-s-custom",
         "Permissions": [],
+        "isPermission": true,
         "children": [
           {
             "id": "accountusers",
             "order": 1,
             "text": "用户管理",
-            "link": "/admin/settings/users/",
+            "link": "/xblms-admin/settings/users/",
             "iconClass": "el-icon-s-custom",
             "Permissions": [ "Select", "Add", "Update", "Delete", "Export", "Import" ],
-            "children": [
-            ]
+            "isPermission": true,
+            "children": []
           },
           {
             "id": "accountusergroup",
             "order": 2,
             "text": "用户组",
-            "link": "/admin/settings/usersGroup/",
+            "link": "/xblms-admin/settings/usersGroup/",
             "iconClass": "el-icon-s-custom",
             "Permissions": [ "Select", "Add", "Update", "Delete" ],
-            "children": [
-            ]
+            "isPermission": true,
+            "children": []
           },
           {
             "id": "accountadministrator",
             "order": 3,
             "text": "管理员管理",
-            "link": "/admin/settings/administrators/",
+            "link": "/xblms-admin/settings/administrators/",
             "iconClass": "el-icon-s-custom",
             "Permissions": [ "Select", "Add", "Update", "Delete" ],
-            "children": [
-            ]
+            "isPermission": true,
+            "children": []
           },
           {
             "id": "accountroles",
             "order": 4,
             "text": "角色管理",
-            "link": "/admin/settings/administratorsRole/",
+            "link": "/xblms-admin/settings/administratorsRole/",
             "iconClass": "el-icon-s-custom",
             "Permissions": [ "Select", "Add", "Update", "Delete" ],
-            "children": [
-            ]
+            "isPermission": true,
+            "children": []
           },
           {
             "id": "accountorgans",
             "order": 5,
             "text": "组织管理",
-            "link": "/admin/settings/organs/",
+            "link": "/xblms-admin/settings/organs/",
             "iconClass": "el-icon-s-custom",
             "Permissions": [ "Select", "Add", "Update", "Delete" ],
-            "children": [
-            ]
+            "isPermission": true,
+            "children": []
           }
         ]
       },
       {
         "id": "system",
-        "order": 9,
+        "order": 15,
         "text": "系统管理",
         "link": "",
         "iconClass": "el-icon-s-tools",
         "Permissions": [],
         "children": [
           {
-            "id": "systeminfo",
+            "id": "systemconfig",
             "order": 1,
-            "text": "系统信息",
-            "link": "/admin/settings/utilitiesParameters/",
-            "iconClass": "el-icon-s-custom",
-            "Permissions": [ "Select" ],
+            "text": "系统设置",
+            "link": "",
+            "iconClass": "el-icon-set-up",
+            "Permissions": [],
             "children": [
+              {
+                "id": "systemconfigadmin",
+                "order": 1,
+                "text": "管理员设置",
+                "link": "/xblms-admin/settings/administratorsConfig/",
+                "iconClass": "el-icon-s-custom",
+                "Permissions": [ "Select", "Update" ],
+                "children": []
+              },
+              {
+                "id": "systemconfiguser",
+                "order": 2,
+                "text": "用户设置",
+                "link": "/xblms-admin/settings/usersConfig/",
+                "iconClass": "el-icon-s-custom",
+                "Permissions": [ "Select", "Update" ],
+                "children": []
+              },
+              {
+                "id": "systemconfigsystem",
+                "order": 5,
+                "text": "系统配置",
+                "link": "/xblms-admin/settings/serverConfig/",
+                "iconClass": "el-icon-s-custom",
+                "Permissions": [ "Select", "Add", "Update", "Delete" ],
+                "children": []
+              }
             ]
           },
           {
-            "id": "systemcache",
+            "id": "systemblock",
             "order": 2,
-            "text": "缓存管理",
-            "link": "/admin/settings/utilitiesCache/",
-            "iconClass": "el-icon-s-custom",
-            "Permissions": [ "Select", "SystemClearCache", "SystemRestart" ],
+            "text": "系统安全",
+            "link": "",
+            "iconClass": "el-icon-warning-outline",
+            "Permissions": [],
             "children": [
-            ]
-          },
-          {
-            "id": "systemblocksettings",
-            "order": 3,
-            "text": "访问拦截",
-            "link": "/admin/settings/blockSettings/",
-            "iconClass": "el-icon-s-custom",
-            "Permissions": [ "Select", "Add", "Update", "Delete" ],
-            "children": [
-            ]
-          },
-          {
-            "id": "systemblockquery",
-            "order": 4,
-            "text": "拦截查询",
-            "link": "/admin/settings/blockQuery/",
-            "iconClass": "el-icon-s-custom",
-            "Permissions": [ "Select" ],
-            "children": [
+              {
+                "id": "systemblocksettings",
+                "order": 1,
+                "text": "访问拦截",
+                "link": "/xblms-admin/settings/blockSettings/",
+                "iconClass": "el-icon-s-custom",
+                "Permissions": [ "Select", "Add", "Update", "Delete" ],
+                "children": []
+              },
+              {
+                "id": "systemblockquery",
+                "order": 2,
+                "text": "拦截查询",
+                "link": "/xblms-admin/settings/blockQuery/",
+                "iconClass": "el-icon-s-custom",
+                "Permissions": [ "Select" ],
+                "children": []
+              }
             ]
           },
           {
             "id": "systemdatabase",
-            "order": 5,
+            "order": 3,
             "text": "数据库管理",
             "iconClass": "el-icon-s-data",
             "Permissions": [],
@@ -249,7 +406,7 @@
                 "id": "systemdatabasetables",
                 "order": 1,
                 "text": "表查询",
-                "link": "/admin/settings/databaseTables/",
+                "link": "/xblms-admin/settings/databaseTables/",
                 "iconClass": "el-icon-s-custom",
                 "Permissions": [ "Select" ],
                 "children": []
@@ -258,154 +415,147 @@
                 "id": "systemdatabasequery",
                 "order": 1,
                 "text": "数据查询",
-                "link": "/admin/settings/databaseQuery/",
+                "link": "/xblms-admin/settings/databaseQuery/",
                 "iconClass": "el-icon-s-custom",
                 "Permissions": [ "Select" ],
-                "children": [
-                ]
+                "children": []
               },
               {
                 "id": "systemdatabasebackup",
                 "order": 1,
                 "text": "备份与恢复",
-                "link": "/admin/settings/databaseBackup/",
+                "link": "/xblms-admin/settings/databaseBackup/",
                 "iconClass": "el-icon-s-custom",
                 "Permissions": [ "Select", "Add", "Update", "Delete" ],
-                "children": [
-                ]
+                "children": []
               },
               {
                 "id": "systemdatabaseupdate",
                 "order": 1,
                 "text": "升级数据库",
-                "link": "/admin/syncDatabase/",
+                "link": "/xblms-admin/syncDatabase/",
                 "iconClass": "el-icon-s-custom",
                 "target": "_blank",
                 "Permissions": [ "Select" ],
-                "children": [
-                ]
+                "children": []
               }
             ]
           },
           {
-            "id": "systemaminconfig",
-            "order": 6,
-            "text": "管理员设置",
-            "link": "/admin/settings/administratorsConfig/",
-            "iconClass": "el-icon-s-custom",
-            "Permissions": [ "Select", "Update" ],
+            "id": "systemother",
+            "order": 4,
+            "text": "其他",
+            "link": "",
+            "iconClass": "el-icon-info",
+            "Permissions": [],
             "children": [
-            ]
-          },
-          {
-            "id": "systemuserconfig",
-            "order": 7,
-            "text": "用户设置",
-            "link": "/admin/settings/usersConfig/",
-            "iconClass": "el-icon-s-custom",
-            "Permissions": [ "Select", "Update" ],
-            "children": [
-            ]
-          },
-          {
-            "id": "systemhomemenus",
-            "order": 8,
-            "text": "用户菜单设置",
-            "link": "/admin/settings/homeMenus/",
-            "iconClass": "el-icon-s-custom",
-            "Permissions": [ "Select", "Add", "Update", "Delete" ],
-            "children": [
-            ]
-          },
-          {
-            "id": "systemencrypt",
-            "order": 9,
-            "text": "加密工具",
-            "link": "/admin/settings/utilitiesEncrypt/",
-            "iconClass": "el-icon-s-custom",
-            "Permissions": [ "Select" ],
-            "children": [
+              {
+                "id": "systemothersysteminfo",
+                "order": 1,
+                "text": "系统信息",
+                "link": "/xblms-admin/settings/utilitiesParameters/",
+                "iconClass": "el-icon-s-custom",
+                "Permissions": [ "Select" ],
+                "children": []
+              },
+              {
+                "id": "systemothersystemcache",
+                "order": 2,
+                "text": "缓存管理",
+                "link": "/xblms-admin/settings/utilitiesCache/",
+                "iconClass": "el-icon-s-custom",
+                "Permissions": [ "Select", "SystemClearCache", "SystemRestart" ],
+                "children": []
+              },
+              {
+                "id": "systemothersystemencrypt",
+                "order": 3,
+                "text": "加密工具",
+                "link": "/xblms-admin/settings/utilitiesEncrypt/",
+                "iconClass": "el-icon-s-custom",
+                "Permissions": [ "Select" ],
+                "children": []
+              }
             ]
           }
         ]
       },
       {
         "id": "logs",
-        "order": 10,
+        "order": 16,
         "text": "日志管理",
         "link": "",
         "iconClass": "el-icon-warning",
+        "isPermission": true,
         "Permissions": [],
         "children": [
           {
             "id": "logsadministratorlog",
             "order": 1,
             "text": "管理员日志",
-            "link": "/admin/settings/logsAdmin/",
+            "link": "/xblms-admin/settings/logsAdmin/",
             "iconClass": "el-icon-s-custom",
             "Permissions": [ "Select", "Delete" ],
-            "children": [
-            ]
+            "isPermission": true,
+            "children": []
           },
           {
             "id": "logsuserlog",
             "order": 2,
             "text": "用户日志",
-            "link": "/admin/settings/logsUser/",
+            "link": "/xblms-admin/settings/logsUser/",
             "iconClass": "el-icon-s-custom",
             "Permissions": [ "Select", "Delete" ],
-            "children": [
-            ]
+            "isPermission": true,
+            "children": []
           },
           {
             "id": "logserrorlog",
             "order": 3,
             "text": "系统错误日志",
-            "link": "/admin/settings/logsError/",
+            "link": "/xblms-admin/settings/logsError/",
             "iconClass": "el-icon-s-custom",
             "Permissions": [ "Select", "Delete" ],
-            "children": [
-            ]
+            "children": []
           },
           {
             "id": "logslogconfig",
             "order": 4,
             "text": "日志设置",
-            "link": "/admin/settings/logsConfig/",
+            "link": "/xblms-admin/settings/logsConfig/",
             "iconClass": "el-icon-s-custom",
             "Permissions": [ "Select", "Delete" ],
-            "children": [
-            ]
+            "children": []
           }
         ]
       },
       {
         "id": "analysis",
-        "order": 11,
+        "order": 17,
         "text": "统计图表",
         "link": "",
         "iconClass": "el-icon-s-operation",
+        "isPermission": true,
         "Permissions": [],
         "children": [
           {
             "id": "analysisadminlogin",
             "order": 1,
             "text": "登录统计",
-            "link": "/admin/settings/analysisAdminLogin/",
+            "link": "/xblms-admin/settings/analysisAdminLogin/",
             "iconClass": "el-icon-s-custom",
             "Permissions": [ "Select" ],
-            "children": [
-            ]
+            "isPermission": true,
+            "children": []
           },
           {
             "id": "analysisblock",
             "order": 1,
             "text": "访问拦截统计",
-            "link": "/admin/settings/blockAnalysis/",
+            "link": "/xblms-admin/settings/blockAnalysis/",
             "iconClass": "el-icon-s-custom",
             "Permissions": [ "Select" ],
-            "children": [
-            ]
+            "children": []
           }
         ]
       }

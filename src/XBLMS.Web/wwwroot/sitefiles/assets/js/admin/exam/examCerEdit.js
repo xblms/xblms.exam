@@ -93,18 +93,13 @@ var methods = {
     $api.post($url + '/positionsSubmit', { id: id }).then(function (response) {
       var res = response.data;
       if (res.value) {
-        if ($this.id > 0) {
-          utils.success('成功修改证书模板');
-        }
-        else {
-          utils.success('成功新增证书模板');
-        }
+        utils.success("操作成功");
+        utils.closeLayerSelf();
       }
     }).catch(function (error) {
       utils.error(error, { layer: true });
     }).then(function () {
       utils.loading($this, false);
-      utils.closeLayer(false);
     });
   },
   loadBox: function () {

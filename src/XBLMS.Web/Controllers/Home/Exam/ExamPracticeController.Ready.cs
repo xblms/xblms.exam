@@ -55,10 +55,11 @@ namespace XBLMS.Web.Controllers.Home.Exam
 
             List<int> nds = [1, 2, 3, 4, 5];
 
-            var (tmCount, tmIds) = await _examManager.PracticeGetTmids(user.Id, txIds, nds, null);
+            var (tmCount, tmIds, tmGroupIds) = await _examManager.PracticeGetTmids(user, txIds, nds, null);
 
             return new GetReadyRequest
             {
+                TmGroupIds = tmGroupIds,
                 TxList = txList,
                 Item = new ExamPractice()
                 {
@@ -78,7 +79,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
             var user = await _authManager.GetUserAsync();
             if (user == null) return Unauthorized();
 
-            var (tmCount, tmIds) = await _examManager.PracticeGetTmids(user.Id, request.TxIds, request.Nds, request.Zsds);
+            var (tmCount, tmIds) = await _examManager.PracticeGetTmids(request.TmGroupIds, request.TxIds, request.Nds, request.Zsds);
             return new GetReadySearchResult
             {
                 TmCount = tmCount,

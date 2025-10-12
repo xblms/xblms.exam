@@ -2,9 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using XBLMS.Enums;
+using XBLMS.Dto;
 using XBLMS.Models;
-using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Admin.Exam
 {
@@ -13,59 +12,44 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         [HttpGet, Route(Route)]
         public async Task<ActionResult<GetResult>> Get([FromQuery] GetRequest request)
         {
+            var adminAuth = await _authManager.GetAdminAuth();
 
             var resultGroups = new List<ExamTmGroup>();
-            var allGroups = await _examTmGroupRepository.GetListAsync();
- 
+            var allGroups = await _examTmGroupRepository.GetListAsync(adminAuth, request.Search);
+
             foreach (var group in allGroups)
             {
                 var creator = await _administratorRepository.GetByUserIdAsync(group.CreatorId);
                 if (creator != null)
                 {
-                    group.Set("CreatorId", creator.Id);
-                    group.Set("CreatorDisplayName", creator.DisplayName);
+                    group.Set("Creator", creator.DisplayName);
                 }
+                else
+                {
+                    group.Set("Creator", "无");
+                    group.CreatorId = 0;
+                }
+
                 group.Set("TypeName", group.GroupType.GetDisplayName());
-
-
-                var tmTotal = 0;
-                if (group.GroupType == TmGroupType.All)
-                {
-                    tmTotal = await _examTmRepository.GetCountByWithoutStopAsync();
-                }
-                else if (group.GroupType == TmGroupType.Fixed)
-                {
-                    var tmIds = group.TmIds;
-                    tmTotal = await _examTmRepository.GetCountByWithoutStopAndInIdsAsync(tmIds);
-                }
-                else
-                {
-                    tmTotal = await _examTmRepository.GetCountAsync(group.TreeIds, group.TxIds, group.Nandus, group.Zhishidians, group.DateFrom, group.DateTo);
-
-                }
-                group.TmTotal = tmTotal;
-
-                group.Set("UseCount", await _examPaperRepository.GetTmGroupCount(group.Id));
-
-                var keyWord = request.Search;
-                if (!string.IsNullOrEmpty(keyWord))
-                {
-                    if (StringUtils.Contains(group.GroupName, keyWord) || (StringUtils.Contains(group.Description, keyWord)))
-                    {
-                        resultGroups.Add(group);
-                    }
-                }
-                else
-                {
-                    resultGroups.Add(group);
-                }
-
+                group.Set("UseCount", 0);
+                resultGroups.Add(group);
 
             }
             return new GetResult
             {
                 Groups = resultGroups
             };
+        }
+
+        [HttpGet, Route(RouteTmTotal)]
+        public async Task<ActionResult<GetTmTotalResult>> GetTmTotal([FromQuery] IdRequest request)
+        {
+            var group = await _examTmGroupRepository.GetAsync(request.Id);
+
+            var tmTotal = await _examTmRepository.Group_GetTmTotalAsync(group);
+            var useTotal = await _examPaperRepository.GetTmGroupCount(group.Id);
+
+            return new GetTmTotalResult { TmTotal = tmTotal, UseTotal = useTotal };
         }
     }
 }

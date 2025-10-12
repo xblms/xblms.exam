@@ -11,11 +11,11 @@ namespace XBLMS.Core.Repositories
 {
     public partial class ExamPaperRandomRepository : IExamPaperRandomRepository
     {
-        private readonly ISettingsManager _settingsManager;
         private readonly IExamPaperRepository _examPaperRepository;
+        private readonly ISettingsManager _settingsManager;
         private readonly Repository<ExamPaperRandom> _repository;
 
-        public ExamPaperRandomRepository(ISettingsManager settingsManager,IExamPaperRepository examPaperRepository)
+        public ExamPaperRandomRepository(ISettingsManager settingsManager, IExamPaperRepository examPaperRepository)
         {
             _settingsManager = settingsManager;
             _examPaperRepository = examPaperRepository;
@@ -82,7 +82,8 @@ namespace XBLMS.Core.Repositories
 
             return await repository.DeleteAsync(Q.Where(nameof(ExamPaperRandom.ExamPaperId), examPaperId));
         }
-        public async Task DeleteAsync(int id,int examPaperId)
+
+        public async Task DeleteAsync(int id, int examPaperId)
         {
             var tableName = await GetTableNameAsync(examPaperId);
             var repository = await GetRepositoryAsync(tableName);
@@ -90,5 +91,4 @@ namespace XBLMS.Core.Repositories
             await repository.DeleteAsync(id);
         }
     }
-
 }

@@ -2,6 +2,8 @@ using Datory;
 using SqlKata;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using XBLMS.Dto;
+using XBLMS.Enums;
 using XBLMS.Models;
 using XBLMS.Repositories;
 using XBLMS.Services;
@@ -37,9 +39,34 @@ namespace XBLMS.Core.Repositories
         {
             return await _repository.UpdateAsync(item);
         }
-        public async Task<(int total, List<ExamAssessment> list)> GetListAsync(string keyword, int pageIndex, int pageSize)
+        private Query GetQueryByAuth(Query query, AdminAuth auth)
+        {
+            if (auth.AuthDataType == AuthorityDataType.DataCreator)
+            {
+                query.Where(nameof(ExamAssessment.CreatorId), auth.AdminId);
+            }
+            else
+            {
+                if (auth.AuthDataShowAll)
+                {
+                    if (auth.CurCompanyId != 1)
+                    {
+                        query.WhereLike(nameof(ExamAssessment.CompanyParentPath), $"%'{auth.CurCompanyId}'%");
+                    }
+                }
+                else
+                {
+                    query.Where(nameof(ExamAssessment.CompanyId), auth.CurCompanyId);
+                }
+            }
+
+            return query;
+        }
+        public async Task<(int total, List<ExamAssessment> list)> GetListAsync(AdminAuth auth, string keyword, int pageIndex, int pageSize)
         {
             var query = new Query();
+
+            query = GetQueryByAuth(query, auth);
 
             if (!string.IsNullOrWhiteSpace(keyword))
             {
@@ -83,11 +110,19 @@ namespace XBLMS.Core.Repositories
             await _repository.IncrementAsync(nameof(ExamAssessment.AnswerTotal), Q.Where(nameof(ExamAssessment.Id), id));
         }
 
-        public async Task<(int allCount, int addCount, int deleteCount, int lockedCount, int unLockedCount)> GetDataCount()
+        public async Task<(int allCount, int addCount, int deleteCount, int lockedCount, int unLockedCount)> GetDataCount(AdminAuth auth)
         {
-            var count = await _repository.CountAsync();
-            var lockedCount = await _repository.CountAsync(Q.WhereTrue(nameof(ExamAssessment.Locked)));
-            var unLockedCount = await _repository.CountAsync(Q.WhereNullOrFalse(nameof(ExamAssessment.Locked)));
+            var countQuery = Q.NewQuery();
+            var lockedCountQuery = Q.WhereTrue(nameof(ExamAssessment.Locked));
+            var unLockedCountQuery = Q.WhereNullOrFalse(nameof(ExamAssessment.Locked));
+
+            countQuery = GetQueryByAuth(countQuery, auth);
+            lockedCountQuery = GetQueryByAuth(lockedCountQuery, auth);
+            unLockedCountQuery = GetQueryByAuth(unLockedCountQuery, auth);
+
+            var count = await _repository.CountAsync(countQuery);
+            var lockedCount = await _repository.CountAsync(lockedCountQuery);
+            var unLockedCount = await _repository.CountAsync(unLockedCountQuery);
             return (count, 0, 0, lockedCount, unLockedCount);
         }
 

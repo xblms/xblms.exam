@@ -1,0 +1,306 @@
+@page
+@{ Layout = "_LayoutApp"; }
+@section Styles{
+    <style>
+        html {
+            overflow-x: hidden !important;
+        }
+
+        body {
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+}
+<img :src="courseInfo.coverImg" alt="courseInfo.name" class="img-fluid w-100 card-img">
+<div class="card rounded-0">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="fw-semibold mb-2">{{ courseInfo.name }}</div>
+            <a href="javascript:;" v-on:click="btnCollectionClick">
+                <i class="bi bi-heart-fill fs-3 text-danger" v-if="courseUser.collection"></i>
+                <i class="bi bi-heart fs-3 text-warning" v-else></i>
+            </a>
+        </div>
+        <div class="d-flex lh-1 mt-3">
+            <span class="fw-medium me-1">
+                {{ eAvg }}
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-star-fill text-warning" viewBox="0 0 16 16">
+                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"></path>
+                </svg>
+            </span>
+            <span class="fw-medium">({{ eUser }})</span>
+        </div>
+    </div>
+</div>
+<div class="p-3">
+    <div class="card rounded-4 position-relative">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item bg-transparent">
+                <i class="bi bi-star-fill text-success me-2"></i>
+                课时：{{ courseInfo.studyHour}}
+            </li>
+            <li class="list-group-item bg-transparent" v-if="courseInfo.state">
+                <i class="bi bi-star-fill text-success me-2"></i>
+                已获得学分：{{ courseInfo.credit}}
+            </li>
+            <li class="list-group-item bg-transparent" v-else>
+                <i class="bi bi-star-fill text-warning me-2"></i>
+                学分：{{ courseInfo.credit}}（完成课程可以获得）
+            </li>
+        </ul>
+        <div class="position-absolute top-0 start-100 translate-middle z-2 pe-8">
+            <div class="pe-8">
+                <img width="99" src="/sitefiles/assets/images/status/xuexizhong.png" v-if="courseInfo.courseUserInfo.state==='Xuexizhong'" />
+                <img width="99" src="/sitefiles/assets/images/status/yiwancheng.png" v-if="courseInfo.courseUserInfo.state==='Yiwancheng'" />
+            </div>
+        </div>
+    </div>
+    <div class="card rounded-4 mt-3" id="courseAccordion">
+        <div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item p-0 bg-transparent">
+                    <a class="h4 mb-0 d-flex align-items-center py-3 px-4" data-bs-toggle="collapse" href="#courseTwo" role="button" aria-expanded="false" aria-controls="courseTwo">
+                        <div class="me-auto">
+                            学习进度
+                        </div>
+                        <span class="chevron-arrow ms-4">
+                            <i class="bi bi-check-circle-fill fs-4 text-success" v-if="courseInfo.state"></i>
+                            <i class="bi bi-check-circle-fill fs-4" v-else></i>
+                        </span>
+                    </a>
+                    <div class="collapse show" id="courseTwo" data-bs-parent="#courseAccordion">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <div class="text-center">
+                                    <div class="text-center pb-3">
+                                        <span v-if="courseInfo.state" class="text-success">{{ courseInfo.stateStrMsg }}</span>
+                                        <span v-else class="text-warning">{{ courseInfo.stateStrMsg }}</span>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item bg-transparent" v-if="courseInfo.state">
+                    <span>
+                        <i class="bi bi-star-fill text-success me-2"></i>
+                        已参加培训
+                    </span>
+                </li>
+                <li class="list-group-item bg-transparent" v-else>
+                    <span v-if="courseUser.isSignin">
+                        <i class="bi bi-star-fill text-success me-2"></i>
+                        已参加培训
+                    </span>
+                    <span v-else>
+                        <i class="bi bi-star-fill text-warning me-2"></i>
+                        请参加培训（需要老师确认）
+                    </span>
+                </li>
+                <li class="list-group-item bg-transparent" v-if="courseInfo.state">
+                    <span v-if="courseInfo.examId>0">
+                        <i class="bi bi-star-fill text-success me-2"></i>
+                        已通过课后考试（{{ courseInfo.maxScore }}）
+                    </span>
+                    <span v-else>
+                        <i class="bi bi-star-fill text-success me-2"></i>
+                        无课后考试
+                    </span>
+                </li>
+                <li class="list-group-item bg-transparent" v-else>
+                    <span v-if="courseInfo.examId>0">
+                        <span v-if="courseInfo.boolExam">
+                            <i class="bi bi-star-fill text-success me-2"></i>
+                            已通过课后考试（{{ courseInfo.maxScore }}）
+                        </span>
+                        <span v-else>
+                            <i class="bi bi-star-fill text-warning me-2"></i>
+                            <el-link type="warning" v-on:click="btnViewExamClick" v-if="courseUser.isSignin">前往课后考试</el-link>
+                            <el-link type="warning" v-on:click="utils.error('请参加培训',{layer:true})" v-else>前往课后考试</el-link>
+                        </span>
+                    </span>
+                    <span v-else>
+                        <i class="bi bi-star-fill text-success me-2"></i>
+                        无课后考试
+                    </span>
+                </li>
+                <li class="list-group-item bg-transparent" v-if="courseInfo.state">
+                    <span v-if="courseInfo.examQuestionnaireId>0">
+                        <i class="bi bi-star-fill text-success me-2"></i>
+                        已提交课后问卷
+                    </span>
+                    <span v-else>
+                        <i class="bi bi-star-fill text-success me-2"></i>
+                        无课后问卷
+                    </span>
+                </li>
+                <li class="list-group-item bg-transparent" v-else>
+                    <span v-if="courseInfo.examQuestionnaireId>0">
+                        <span v-if="courseInfo.boolExam">
+                            <span v-if="courseInfo.boolExamQ">
+                                <i class="bi bi-star-fill text-success me-2"></i>
+                                已提交课后问卷
+                            </span>
+                            <span v-else>
+                                <i class="bi bi-star-fill text-warning me-2"></i>
+                                <el-link type="warning" v-on:click="btnViewExamQClick">前往课后问卷</el-link>
+                            </span>
+                        </span>
+                        <span v-else>
+                            <i class="bi bi-star-fill text-warning me-2"></i>
+                            <el-link type="warning" v-on:click="utils.error('请先通过课后考试',{layer:true})">前往课后问卷</el-link>
+                        </span>
+                    </span>
+                    <span v-else>
+                        <i class="bi bi-star-fill text-success me-2"></i>
+                        无课后问卷
+                    </span>
+                </li>
+                <li class="list-group-item bg-transparent" v-if="courseInfo.state">
+                    <span v-if="courseInfo.studyCourseEvaluationId>0">
+                        <i class="bi bi-star-fill text-success me-2"></i>
+                        已提交评价（{{ courseUser.avgEvaluation }}）
+                    </span>
+                    <span v-else>
+                        <i class="bi bi-star-fill text-success me-2"></i>
+                        无课后评价
+                    </span>
+                </li>
+                <li class="list-group-item bg-transparent" v-else>
+                    <span v-if="courseInfo.studyCourseEvaluationId>0">
+                        <span v-if="courseInfo.boolExam">
+                            <span v-if="courseInfo.boolEvaluation">
+                                <i class="bi bi-star-fill text-success me-2"></i>
+                                已提交评价（{{ courseUser.avgEvaluation }}）
+                            </span>
+                            <span v-else>
+                                <i class="bi bi-star-fill text-warning me-2"></i>
+                                <el-link type="warning" v-on:click="btnViewEvaluationClick">前往课后评价</el-link>
+                            </span>
+                        </span>
+                        <span v-else>
+                            <i class="bi bi-star-fill text-warning me-2"></i>
+                            <el-link type="warning" v-on:click="utils.error('请先通过课后考试',{layer:true})">前往课后评价</el-link>
+                        </span>
+                        <span v-else>
+                            <i class="bi bi-star-fill text-warning me-2"></i>
+                            <el-link type="warning" v-on:click="utils.error('请先完成章节学习',{layer:true})">前往课后评价</el-link>
+                        </span>
+                    </span>
+                    <span v-else>
+                        <i class="bi bi-star-fill text-success me-2"></i>
+                        无课后问卷
+                    </span>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="card rounded-4 mt-3">
+        <div>
+            <div class="card-header">
+                <h4 class="mb-0">培训时间</h4>
+            </div>
+            <div class="card-body">
+                开始 {{ courseInfo.offlineBeginDateTime }}
+                <el-divider></el-divider>
+                截止 {{ courseInfo.offlineEndDateTime }}
+            </div>
+        </div>
+    </div>
+    <div class="card rounded-4 mt-3">
+        <div>
+            <div class="card-header">
+                <h4 class="mb-0">培训地址</h4>
+            </div>
+            <div class="card-body">
+                {{ courseInfo.offlineAddress }}
+            </div>
+        </div>
+    </div>
+    <div class="card rounded-4 mt-3">
+        <div>
+            <div class="card-header">
+                <h4 class="mb-0">培训讲师</h4>
+            </div>
+            <div class="card-body">
+                {{ courseInfo.offlineTeacher }}
+            </div>
+        </div>
+    </div>
+    <div class="card rounded-4 mt-3">
+        <div>
+            <div class="card-header">
+                <h4 class="mb-0">课程介绍</h4>
+            </div>
+            <div class="card-body">
+                <p v-html="courseInfo.description"></p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card border-0 rounded-0 mt-3">
+    <div class="card-header text-center">
+        <h4 class="mb-0">课程评价</h4>
+    </div>
+    <div class="card-body">
+        <div v-if="eUser>0">
+            <div class="mb-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="display-2 fw-bold">
+                            {{ eAvg }} <i class="bi bi-star-fill text-warning"></i>
+                        </h3>
+                    </div>
+                    <div>
+                        {{ eUser }} 人评价了课程
+                    </div>
+                </div>
+            </div>
+            <hr class="my-5">
+            <div class="mb-3">
+                <div class="d-flex justify-content-between align-items-center  border-bottom pb-4 mb-4" v-for="eItem in eList">
+                    <div class="d-flex align-items-start">
+                        <img :src="eItem.avatarUrl || DEFAULT_AVATAR_URL" alt="" class="rounded-circle avatar-sm">
+                        <div class="ms-3">
+                            <h4 class="mb-1">
+                                {{ eItem.displayName }}
+                            </h4>
+                            <small>{{ utils.getFriendlyDateTime(eItem.starDateTime) }}</small>
+                            <div class="mb-2">
+                                <span class="fs-6">
+                                    <el-rate v-model="eItem.star"
+                                             disabled
+                                             show-score
+                                             :max="eItem.maxStar"
+                                             text-color="#ff9900">
+                                    </el-rate>
+                                </span>
+                            </div>
+                            <p>{{ eItem.textContent }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-5 text-center">
+                    <el-button icon="el-icon-refresh-right" v-if="eList.length>0 && eList.length<eTotal" v-on:click="btnLoadMoreEvaluationClick" :loading="eLoadMoreLoading">加载更多</el-button>
+                    <small v-else>没有更多了</small>
+                </div>
+            </div>
+        </div>
+        <div class="text-center p-5" v-else>
+            <small><i class="bi bi-clipboard me-2"></i>暂无评价</small>
+        </div>
+    </div>
+</div>
+<div class="py-8"></div>
+<div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 animate__animated animate__fadeInUp">
+    <div class="btn-group">
+        <button type="button" class="btn btn-primary rounded-pill" v-on:click="utils.closeLayerSelf"><i class="el-icon-back me-2"></i>返 回</button>
+    </div>
+</div>
+@section Scripts{
+    <script src="/sitefiles/assets/lib/geeks/js/bootstrap.bundle.min.js" type="text/javascript"></script>
+    <script src="/sitefiles/assets/js/app/study/studyCourseOfflineInfo.js" type="text/javascript"></script>
+}

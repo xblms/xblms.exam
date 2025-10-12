@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+Ôªøusing Microsoft.AspNetCore.Mvc;
 using System.Collections;
 using System.Threading.Tasks;
 using XBLMS.Dto;
@@ -26,7 +26,7 @@ namespace XBLMS.Web.Controllers.Admin.Knowledges
             {
                 if (string.IsNullOrEmpty(item)) continue;
 
-                var count = StringUtils.GetStartCount("£≠", item) == 0 ? StringUtils.GetStartCount("-", item) : StringUtils.GetStartCount("£≠", item);
+                var count = StringUtils.GetStartCount("Ôºç", item) == 0 ? StringUtils.GetStartCount("-", item) : StringUtils.GetStartCount("Ôºç", item);
                 var name = item.Substring(count, item.Length - count);
                 count++;
 
@@ -44,23 +44,25 @@ namespace XBLMS.Web.Controllers.Admin.Knowledges
 
                     var parentId = (int)insertedTreeIdHashtable[count];
 
-                    var insertedTkId = await _knowlegesTreeRepository.InsertAsync(new KnowledgesTree
+                    var insertedId = await _knowlegesTreeRepository.InsertAsync(new KnowledgesTree
                     {
                         Name = name,
                         ParentId = parentId,
-                        CompanyId=admin.CompanyId,
-                        DepartmentId= admin.DepartmentId,
-                        CreatorId= admin.CreatorId
+                        CompanyId = admin.CompanyId,
+                        DepartmentId = admin.DepartmentId,
+                        CreatorId = admin.Id,
+                        DepartmentParentPath = admin.DepartmentParentPath,
+                        CompanyParentPath = admin.CompanyParentPath,
                     });
 
-                    var insertTree = await _knowlegesTreeRepository.GetAsync(insertedTkId);
+                    var insertTree = await _knowlegesTreeRepository.GetAsync(insertedId);
                     insertTree.ParentPath = await _knowlegesTreeRepository.GetParentPathAsync(insertTree.Id);
                     await _knowlegesTreeRepository.UpdateAsync(insertTree);
 
-                    await _authManager.AddAdminLogAsync("–¬‘ˆ÷™ ∂ø‚∑÷¿‡", $"{name}");
+                    await _authManager.AddAdminLogAsync("Êñ∞Â¢ûÁü•ËØÜÂ∫ìÂàÜÁ±ª", $"{name}");
 
 
-                    insertedTreeIdHashtable[count + 1] = insertedTkId;
+                    insertedTreeIdHashtable[count + 1] = insertedId;
                 }
             }
             return new BoolResult

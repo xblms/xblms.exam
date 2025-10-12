@@ -1,4 +1,4 @@
-var $url = "/knowledgesView";
+﻿var $url = "/knowledgesView";
 var $urlLike = $url + "/like";
 var $urlCollect = $url + "/collect";
 
@@ -23,6 +23,8 @@ var methods = {
       $this.isCollect = res.isCollect;
       $this.likes = res.likes;
       $this.collects = res.collects;
+
+      top.utils.pointNotice(res.pointNotice);
     }).catch(function (error) {
       utils.error(error);
     }).then(function () {

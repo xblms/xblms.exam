@@ -14,7 +14,9 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 return this.NoAuth();
             }
 
-            var (total, list) = await _examAssessmentConfigRepository.GetListAsync(request.Keyword, request.PageIndex, request.PageSize);
+            var adminAuth = await _authManager.GetAdminAuth();
+
+            var (total, list) = await _examAssessmentConfigRepository.GetListAsync(adminAuth, request.Keyword, request.PageIndex, request.PageSize);
             if (total > 0)
             {
                 foreach (var item in list)

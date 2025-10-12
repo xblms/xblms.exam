@@ -3,11 +3,15 @@ if (window.top != self) {
 }
 
 var $url = '/index';
+var $urlChangeShowall = $url + '/changeShowall';
+var $urlChangeOrgan = $url + '/changeOrgan';
+
 var $sidebarWidth = 238;
 var $collapseWidth = 60;
 
 var data = utils.init({
   version: null,
+  versionName: null,
   sessionId: localStorage.getItem(SESSION_ID_NAME),
   menus: null,
   levelMenus: [],
@@ -35,12 +39,26 @@ var data = utils.init({
   topFrameSrc: '',
   topFrameWidth: 88,
 
-  isSafeMode: false
+  topRightFrameDrawer: false,
+  topRightFrameTitle: null,
+  topRightFrameSrc: '',
+  topRightFrameWidth: 88,
+
+  topTopFrameDrawer: false,
+  topTopFrameTitle: null,
+  topTopFrameSrc: '',
+  topTopFrameWidth: 50,
+
+  isSafeMode: false,
+  adminEnforceLogoutMinutes: 0,
+  adminEnforceLogoutMinutesTimer: 0
 });
 
 var methods = {
   apiGet: function () {
     var $this = this;
+
+    utils.loading(this, true);
 
     $api.get($url, {
       params: {
@@ -55,7 +73,9 @@ var methods = {
           $this.redirectPassword(res.local.userName);
         } else {
 
+          document.title = res.systemCodeName;
           $this.version = res.version;
+          $this.versionName = res.versionName;
           $this.isSafeMode = res.isSafeMode;
           $this.local = res.local;
           $this.menus = res.menus;
@@ -66,17 +86,47 @@ var methods = {
           $this.defaultOpeneds.push(home.id);
           $this.btnMenuClick(home);
 
+          $this.adminEnforceLogoutMinutes = res.adminEnforceLogoutMinutes;
+          if ($this.adminEnforceLogoutMinutes > 0) {
+            window.setInterval($this.adminEnforceLogoutMinutesTimerOut, 1000)
+          }
+
           setTimeout($this.ready, 100);
         }
-
-
       } else {
         location.href = res.redirectUrl;
       }
     }).catch(function (error) {
-      utils.loading($this, false);
       utils.error(error);
+      utils.loading($this, false);
     });
+  },
+  changeShowall: function (val) {
+    var $this = this;
+
+    utils.loading(this, true);
+
+    $api.post($urlChangeShowall, {
+      authDataShowAll: val
+    }).then(function (response) {
+      var res = response.data;
+      if (res.value) {
+        $this.changeOrganReload();
+      }
+    }).catch(function (error) {
+      utils.error(error);
+    }).then(function () {
+      utils.loading($this, false);
+    });
+  },
+  changeOrganReload: function () {
+
+    this.tabs.forEach(tab => {
+      var url = tab.url;
+      var iframe = top.document.getElementById('frm-' + tab.name).contentWindow;
+      iframe.location.href = url;
+    });
+
   },
   redirectPassword: function (userName) {
     var $this = this;
@@ -91,22 +141,18 @@ var methods = {
   },
 
   getLevelMenus: function (menus) {
-
     menus.forEach(m => {
       this.levelMenus.push(m);
       if (m.children && m.children.length > 0) {
         this.getLevelMenus(m.children)
       }
     })
-
   },
-
   ready: function () {
     window.onresize = this.winResize;
     window.onresize();
     utils.loading(this, false);
   },
-
   openContextMenu: function (e) {
     if (e.srcElement.id && _.startsWith(e.srcElement.id, 'tab-')) {
       this.contextTabName = _.trimStart(e.srcElement.id, 'tab-');
@@ -122,6 +168,8 @@ var methods = {
   },
   tabClick: function (e) {
     var $this = this;
+
+    this.contextTabName = e.name;
     var index = $this.tabs.findIndex(function (tab) {
       return tab.name === e.name;
     });
@@ -134,6 +182,7 @@ var methods = {
   },
   btnContextClick: function (command) {
     var $this = this;
+
     if (command === 'this') {
       this.tabs = this.tabs.filter(function (tab) {
         return tab.name !== $this.contextTabName;
@@ -161,7 +210,6 @@ var methods = {
       this.tabName = tab.name;
       //utils.openTab($this.contextTabName);
     }
-    this.closeContextMenu();
   },
   winResize: function () {
     this.winHeight = $(window).height();
@@ -178,7 +226,7 @@ var methods = {
 
   btnSideMenuClick: function (sideMenuIds) {
 
-    if (this.tabs.length > 5) {
+    if (this.tabs.length > 3) {
       var newTbas = [];
       for (var ti = 0; ti < this.tabs.length; ti++) {
         if (ti != 1) {
@@ -219,6 +267,7 @@ var methods = {
       top.location.href = menu.link;
     }
     else {
+      this.contextTabName = menu.name;
       utils.addTab(menu.text, menu.link + "?menuId=" + menu.id);
     }
   },
@@ -252,7 +301,49 @@ var methods = {
         }
       });
     }
+    else if (command === 'docs') {
+      window.open('/docs/')
+    }
   },
+  btnSelectOrganClick: function () {
+    top.utils.openLayer({
+      title: false,
+      closebtn: 0,
+      url: utils.getCommonUrl('selectOrganChange'),
+      width: "60%",
+      height: "88%"
+    });
+  },
+  selectOrganCallback: function (selectCallbackList) {
+    var selectOrgan = selectCallbackList[0];
+
+    var $this = this;
+
+    utils.loading(this, true);
+
+    $api.post($urlChangeOrgan, {
+      organId: selectOrgan.id
+    }).then(function (response) {
+      var res = response.data;
+      if (res.value) {
+        $this.local.authCurrentOrganName = selectOrgan.name;
+        $this.changeOrganReload();
+      }
+    }).catch(function (error) {
+      utils.error(error);
+    }).then(function () {
+      utils.loading($this, false);
+    });
+  },
+  adminEnforceLogoutMinutesTimerOut: function () {
+    this.adminEnforceLogoutMinutesTimer++;
+    if (this.adminEnforceLogoutMinutesTimer >= this.adminEnforceLogoutMinutes * 60) {
+      top.location.href = utils.getRootUrl('logout')
+    }
+  },
+  adminEnforceLogoutMinutesTimerFun: function () {
+    this.adminEnforceLogoutMinutesTimer = 0;
+  }
 
 };
 
@@ -261,7 +352,6 @@ var $vue = new Vue({
   data: data,
   methods: methods,
   created: function () {
-    document.title = DOCUMENTTITLE_ADMIN;
     this.apiGet();
   },
   computed: {
@@ -272,13 +362,7 @@ var $vue = new Vue({
       return this.isMobileMenu ? this.winWidth : 0;
     }
   },
-  watch: {
-    contextMenuVisible(value) {
-      if (this.contextMenuVisible) {
-        document.body.addEventListener("click", this.closeContextMenu);
-      } else {
-        document.body.removeEventListener("click", this.closeContextMenu);
-      }
-    }
+  mounted: function () {
+    document.body.addEventListener('mousemove', this.adminEnforceLogoutMinutesTimerFun);
   }
 });

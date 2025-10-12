@@ -11,9 +11,7 @@ var data = utils.init({
   checkStrictly: false,
   filterText: '',
   selectOrgans: [],
-  form: {
-    groupType:'All'
-  }
+  form: null
 });
 
 var methods = {
@@ -28,10 +26,9 @@ var methods = {
 
       $this.organs = res.organs;
       $this.groupTypeSelects = res.groupTypeSelects;
+      $this.form = _.assign({}, res.group);
 
       if (res.group.id > 0) {
-        //$this.form = res.group;
-        $this.form = _.assign({}, res.group);
         $this.checkdKeys = $this.expandedKeys = res.selectOrganIds;
       }
 
@@ -46,9 +43,12 @@ var methods = {
     var $this = this;
 
     utils.loading(this, true);
-    $api.post($urlPost, { selectOrgans: $this.selectOrgans,group: $this.form }).then(function (response) {
-      utils.success('操作成功！');
-      utils.closeLayer(false);
+    $api.post($urlPost, { selectOrgans: $this.organs, group: $this.form }).then(function (response) {
+      var res = response.data;
+      if (res.value) {
+        utils.success("操作成功");
+        utils.closeLayerSelf();
+      }
     }).catch(function (error) {
       utils.error(error, { layer: true });
     }).then(function () {
@@ -59,13 +59,9 @@ var methods = {
   btnSubmitClick: function () {
     var $this = this;
 
-    if ($this.form.groupType === 'Range') {
-      var selectNodes = this.$refs.organsTree.getCheckedNodes();
-      if (selectNodes && selectNodes.length > 0) {
-        selectNodes.forEach((node) => {
-          $this.selectOrgans.push({ id: node.id, type: node.organType });
-        });
-      }
+    if (this.form.groupType === 'Range' && (this.organs === null || this.organs.length === 0)) {
+      utils.error('请选择组织范围', { layer: true });
+      return;
     }
 
     this.$refs.form.validate(function (valid) {
@@ -75,13 +71,30 @@ var methods = {
     });
   },
 
-  btnCancelClick: function () {
-    utils.closeLayer();
+  handleOrganTagClose(tag) {
+    this.organs.splice(this.organs.indexOf(tag), 1);
   },
-  filterNode(value, data) {
-    if (!value) return true;
-    return data.name.indexOf(value) !== -1;
-  }
+  btnSelectOrganClick: function () {
+    top.utils.openLayer({
+      title: false,
+      closebtn: 0,
+      url: utils.getCommonUrl('selectOrgan', { windowName: window.name }),
+      width: "60%",
+      height: "88%"
+    });
+  },
+  selectOrganCallback: function (selectCallbackList) {
+    selectCallbackList.forEach(selectOrgan => {
+      let existIndex = this.organs.findIndex(item => {
+        return item.id === selectOrgan.id && item.type === selectOrgan.type;
+      });
+
+      if (existIndex < 0) {
+        this.organs.push(selectOrgan)
+      }
+    });
+  },
+
 };
 
 var $vue = new Vue({

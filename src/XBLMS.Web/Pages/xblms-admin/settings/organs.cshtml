@@ -1,0 +1,70 @@
+﻿@page
+@{ Layout = "_Layout"; }
+<el-card class="box-card">
+    <el-form v-on:submit.native.prevent :inline="true" :size="euiSize">
+        <el-form-item label="">
+            <el-input v-model="search"
+                      prefix-icon="el-icon-search" clearable
+                      placeholder="关键字查询">
+            </el-input>
+        </el-form-item>
+        <el-form-item label="">
+            <el-button type="primary" v-on:click="btnSearchClick" icon="el-icon-search" :loading="searchLoading">查 询</el-button>
+        </el-form-item>
+    </el-form>
+    <el-table :data="organs" ref="organTable"
+              row-key="guid"
+              lazy v-on:row-click="rowClick"
+              :load="loadTree"
+              :size="euiSize"
+              :height="($(window).height() - 115)"
+              :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
+        <el-table-column label="#"
+                         type="index"
+                         width="60"
+                         align="left">
+            <template scope="scope">
+                <span>{{scope.$index + 1}}</span>
+            </template>
+        </el-table-column>
+        <el-table-column prop="name"
+                         label="组织名称">
+            <template slot-scope="scope">
+                <span v-html="scope.row.fullName"></span>
+            </template>
+        </el-table-column>
+        <el-table-column prop="organTypeName"
+                         label="类型" width="118">
+        </el-table-column>
+        <el-table-column label="管理员" width="118">
+            <template slot-scope="scope">
+                {{ scope.row.adminCount }}/{{ scope.row.adminAllCount }}
+            </template>
+        </el-table-column>
+        <el-table-column label="用户" width="118">
+            <template slot-scope="scope">
+                {{ scope.row.userCount }}/{{ scope.row.userAllCount }}
+            </template>
+        </el-table-column>
+        <el-table-column label="上次修改时间" prop="lastModifiedDate" width="150"></el-table-column>
+        <el-table-column align="right" width="100" v-if="!isSearch && operate">
+            <template slot-scope="scope">
+                <el-dropdown :show-timeout="0" placement="left">
+                    <el-button icon="el-icon-arrow-left" size="mini" v-on:click.stop="return false">
+                        操作
+                    </el-button>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item icon="el-icon-plus" v-if="scope.row.organType==='company'" v-on:click.native="btnEdit(scope.row,true,'company')">添加下级单位</el-dropdown-item>
+                        <el-dropdown-item icon="el-icon-plus" v-if="scope.row.organType==='company' || scope.row.organType==='department'" v-on:click.native="btnEdit(scope.row,true,'department')">添加下级部门</el-dropdown-item>
+                        <el-dropdown-item icon="el-icon-edit" v-on:click.native="btnEdit(scope.row)">修改</el-dropdown-item>
+                        <el-dropdown-item icon="el-icon-delete" style="color:red;" v-on:click.native="btnDelete(scope.row)" divided :disabled="scope.row.id===1 && scope.row.organType==='company'">删除</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+            </template>
+        </el-table-column>
+        @await Html.PartialAsync("_PartialTableEmpty")
+    </el-table>
+</el-card>
+@section Scripts{
+    <script src="/sitefiles/assets/js/admin/settings/organs.js" type="text/javascript"></script>
+}

@@ -11,10 +11,10 @@ namespace XBLMS.Repositories
         Task DeleteByUserId(int userId);
         Task ClearByPaperAsync(int examPaperId);
         Task ClearByPaperAndUserAsync(int examPaperId, int userId);
-        Task<ExamPaperAnswer> GetAsync(int id,int examPaperId);
+        Task<ExamPaperAnswer> GetAsync(int id, int examPaperId);
         Task<ExamPaperAnswer> GetAsync(int tmId, int startId, int examPaperId);
         Task<decimal> ScoreSumAsync(int startId, int examPaperId);
-        Task<decimal> ObjectiveScoreSumAsync(int startId,int examPaperId);
+        Task<decimal> ObjectiveScoreSumAsync(int startId, int examPaperId);
         Task<decimal> SubjectiveScoreSumAsync(int startId, int examPaperId);
         Task<(int rightCount, int wrongCount)> CountAsync(int tmId, int examPaperId);
     }

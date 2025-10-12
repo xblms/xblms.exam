@@ -12,6 +12,15 @@ namespace XBLMS.Models
         [DataColumn]
         public AuthorityType Auth { get; set; }
         [DataColumn]
+        public AuthorityDataType AuthData { get; set; }
+        /// <summary>
+        /// 显示组织下所有数据还是显示当前组织下的数据
+        /// </summary>
+        [DataColumn]
+        public bool AuthDataShowAll { get; set; } = true;
+        [DataColumn]
+        public int AuthDataCurrentOrganId { get; set; }
+        [DataColumn]
         public string UserName { get; set; }
 
         [JsonIgnore]
@@ -52,7 +61,5 @@ namespace XBLMS.Models
 
         [DataColumn]
         public string AvatarUrl { get; set; }
-        [DataColumn]
-        public int DutyId { get; set; }
     }
 }

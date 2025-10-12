@@ -53,8 +53,9 @@ namespace XBLMS.Core.Repositories
 
         public async Task<List<ExamPracticeAnswer>> GetListAsync(int practiceId)
         {
-            var list= await _repository.GetAllAsync(Q.Where(nameof(ExamPracticeAnswer.PracticeId), practiceId).OrderBy(nameof(ExamPracticeAnswer.Id)));
-            return list;
+            return await _repository.GetAllAsync(Q.
+                Where(nameof(ExamPracticeAnswer.PracticeId), practiceId).
+                OrderBy(nameof(ExamPracticeAnswer.Id)));
         }
     }
 }

@@ -26,12 +26,15 @@ var methods = {
 
     utils.loading(this, true);
     $api.post($url, { item: this.form }).then(function (response) {
-      utils.success('操作成功！');
+      var res = response.data;
+      if (res.value) {
+        utils.success("操作成功");
+        utils.closeLayerSelf();
+      }
     }).catch(function (error) {
       utils.error(error, { layer: true });
     }).then(function () {
       utils.loading($this, false);
-      utils.closeLayerSelf();
     });
   },
 

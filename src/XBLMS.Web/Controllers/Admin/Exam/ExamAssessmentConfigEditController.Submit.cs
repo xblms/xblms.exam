@@ -13,7 +13,8 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         [HttpPost, Route(Route)]
         public async Task<ActionResult<BoolResult>> Submit([FromBody] GetSubmitRequest request)
         {
-            var admin = await _authManager.GetAdminAsync();
+            var adminAuth = await _authManager.GetAdminAuth();
+            var admin = adminAuth.Admin;
 
             if (request.Item.Id > 0)
             {
@@ -61,15 +62,12 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                         else
                         {
                             itemInfo.ConfigId = item.Id;
-                            itemInfo.CompanyId = admin.CompanyId;
-                            itemInfo.DepartmentId = admin.DepartmentId;
-                            itemInfo.CreatorId = admin.Id;
                             await _examAssessmentConfigSetRepository.InsertAsync(itemInfo);
                         }
                     }
                     if (itemIds.Count > 0)
                     {
-                        foreach(var itemId in itemIds)
+                        foreach (var itemId in itemIds)
                         {
                             await _examAssessmentConfigSetRepository.DeleteAsync(itemId);
                         }
@@ -91,9 +89,11 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             }
             else
             {
-                item.CompanyId = admin.CompanyId;
+                item.CompanyId = adminAuth.CurCompanyId;
                 item.DepartmentId = admin.DepartmentId;
                 item.CreatorId = admin.Id;
+                item.CompanyParentPath = adminAuth.CompanyParentPath;
+                item.DepartmentParentPath = admin.DepartmentParentPath;
 
                 var itemId = await _examAssessmentConfigRepository.InsertAsync(item);
                 if (request.ItemList != null && request.ItemList.Count > 0)
@@ -101,9 +101,6 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                     foreach (var itemInfo in request.ItemList)
                     {
                         itemInfo.ConfigId = itemId;
-                        itemInfo.CompanyId = admin.CompanyId;
-                        itemInfo.DepartmentId = admin.DepartmentId;
-                        itemInfo.CreatorId = admin.Id;
                         await _examAssessmentConfigSetRepository.InsertAsync(itemInfo);
                     }
                 }

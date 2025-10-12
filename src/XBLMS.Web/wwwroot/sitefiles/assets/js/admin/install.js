@@ -47,7 +47,7 @@ var data = utils.init({
   },
 
   adminForm: {
-    companyName:null,
+    companyName: null,
     userName: null,
     adminPassword: null,
     email: null,
@@ -87,11 +87,11 @@ var methods = {
     });
   },
 
-  apiDatabaseConnect: function() {
+  apiDatabaseConnect: function () {
     var $this = this;
 
     this.errorMessage = null;
-    utils.loading(this, true,'正在链接数据库...');
+    utils.loading(this, true, '正在链接数据库...');
     $api.post($url + '/actions/databaseConnect', this.databaseForm).then(function (response) {
       var res = response.data;
 
@@ -108,7 +108,7 @@ var methods = {
     });
   },
 
-  apiRedisConnect: function() {
+  apiRedisConnect: function () {
     var $this = this;
 
     this.errorMessage = null;
@@ -146,7 +146,7 @@ var methods = {
 
     this.errorMessage = null;
     utils.loading(this, true, '正在安装...');
-    $api.post($url + '/actions/install', _.assign({securityKey: securityKey}, $this.databaseForm, $this.redisForm, $this.adminForm)).then(function (response) {
+    $api.post($url + '/actions/install', _.assign({ securityKey: securityKey }, $this.databaseForm, $this.redisForm, $this.adminForm)).then(function (response) {
       var res = response.data;
       $this.pageIndex++;
       utils.loading($this, false);
@@ -164,7 +164,7 @@ var methods = {
   },
 
 
-  validatePass: function(rule, value, callback) {
+  validatePass: function (rule, value, callback) {
     if (value === '') {
       callback(new Error('请再次输入密码'));
     } else if (value !== this.adminForm.adminPassword) {
@@ -284,7 +284,6 @@ var methods = {
       this.pageIndex++;
       return;
     }
-
     this.$refs.databaseForm.validate(function (valid) {
       if (valid) {
         $this.apiDatabaseConnect();
@@ -307,17 +306,17 @@ var methods = {
     });
   },
 
-  btnInstallClick: function() {
+  btnInstallClick: function () {
     var $this = this;
 
-    this.$refs.adminForm.validate(function(valid) {
+    this.$refs.adminForm.validate(function (valid) {
       if (valid) {
         $this.apiPrepare();
       }
     });
   },
 
-  btnEnterClick: function() {
+  btnEnterClick: function () {
     location.href = utils.getIndexUrl();
   }
 }
@@ -327,7 +326,7 @@ var $vue = new Vue({
   data: data,
   methods: methods,
   created: function () {
-    document.title = DOCUMENTTITLE_INSTALL;
+    document.title = "系统安装";
     this.apiGet();
   }
 });

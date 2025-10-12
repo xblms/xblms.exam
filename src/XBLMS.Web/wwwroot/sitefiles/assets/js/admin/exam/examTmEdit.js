@@ -14,6 +14,7 @@ var data = utils.init({
   optionsValue: '',
   optionsEditShow: [],
   optionsEditReloaded: [],
+  styles: [],
   tableTmSmallList: []
 });
 
@@ -28,6 +29,9 @@ var methods = {
       $this.txList = res.txList;
 
       $this.form = _.assign({}, tm);
+
+      $this.styles = res.tmStyles;
+
       if (tm.id > 0) {
         $this.options = tm.options;
         $this.optionsValue = tm.answer;
@@ -36,7 +40,6 @@ var methods = {
         if ($this.curBaseTx === 'Duoxuanti') {
           $this.optionsValue = $this.form.optionsValues;
         }
-
         $this.tableTmSmallList = res.smallList;
       }
       else {
@@ -136,7 +139,7 @@ var methods = {
       var res = response.data;
       if (res.value) {
         utils.success("操作成功");
-        utils.closeLayer(false);
+        utils.closeLayerSelf();
       }
     }).catch(function (error) {
       utils.error(error, { layer: true });
@@ -188,7 +191,6 @@ var methods = {
   setOptionsValue: function (index, value) {
     this.$set(this.options, index, value);
   },
-
   btnSmallEdit: function (tmId, tmuuId) {
     var isAdd = false;
     if (tmuuId === '') {
@@ -204,7 +206,6 @@ var methods = {
       height: "88%",
     });
   },
-
   smallEditCallBack: function (smallTm, isAdd) {
     if (isAdd) {
       this.tableTmSmallList.push(smallTm);
@@ -222,7 +223,6 @@ var methods = {
   btnSmallDelete: function (tmId, tmuuId) {
 
     var $this = this;
-
     top.utils.alertDelete({
       title: '删除子题',
       text: '确定删除该子题吗？',

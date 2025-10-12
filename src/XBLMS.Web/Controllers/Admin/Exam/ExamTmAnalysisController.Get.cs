@@ -1,8 +1,9 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using XBLMS.Core.Utils;
+using XBLMS.Dto;
 using XBLMS.Enums;
 using XBLMS.Models;
 using XBLMS.Utils;
@@ -19,7 +20,9 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 return this.NoAuth();
             }
 
-            var analysis = await _examTmAnalysisRepository.GetAsync(reqeust.Type, reqeust.PaperId);
+            var adminAuth = await _authManager.GetAdminAuth();
+
+            var analysis = await _examTmAnalysisRepository.GetAsync(reqeust.Type, reqeust.PaperId, adminAuth.CurCompanyId);
             var total = 0;
             var list = new List<ExamTmAnalysisTm>();
             if (analysis != null)
@@ -29,22 +32,25 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                     await _examTmAnalysisTmRepository.DeleteAsync(analysis.Id);
                     analysis.TmAnalysisDateTime = DateTime.Now;
                     await _examTmAnalysisRepository.UpdateAsync(analysis);
-                    await Analysis(analysis);
+                    await Analysis(analysis, adminAuth);
                 }
             }
             else
             {
                 var analysisId = await _examTmAnalysisRepository.InsertAsync(new ExamTmAnalysis
                 {
+                    CreatorId = adminAuth.AdminId,
+                    CompanyId = adminAuth.CurCompanyId,
+                    CompanyParentPath = adminAuth.CompanyParentPath,
                     TmAnalysisDateTime = DateTime.Now,
                     TmAnalysisExamPapaerId = reqeust.PaperId,
                     TmAnalysisType = reqeust.Type
                 });
-                analysis = await _examTmAnalysisRepository.GetAsync(reqeust.Type, reqeust.PaperId);
-                await Analysis(analysis);
+                analysis = await _examTmAnalysisRepository.GetAsync(reqeust.Type, reqeust.PaperId, adminAuth.CurCompanyId);
+                await Analysis(analysis, adminAuth);
             }
 
-            (total, list) = await _examTmAnalysisTmRepository.GetListAsync(reqeust.OrderType, reqeust.KeyWords, analysis.Id, reqeust.PageIndex, reqeust.PageSize);
+            (total, list) = await _examTmAnalysisTmRepository.GetListAsync(adminAuth, reqeust.OrderType, reqeust.KeyWords, analysis.Id, reqeust.PageIndex, reqeust.PageSize);
 
             return new GetResult
             {
@@ -54,18 +60,14 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 PDate = analysis.TmAnalysisDateTime.Value.ToString(DateUtils.FormatStringDateTimeCN)
             };
         }
-        private async Task Analysis(ExamTmAnalysis analysis)
+        private async Task Analysis(ExamTmAnalysis analysis, AdminAuth auth)
         {
-
             if (analysis.TmAnalysisType == TmAnalysisType.ByExamAll)
             {
-                var tmIds = await _examTmRepository.GetIdsWithOutLockedAsync();
+                var tmIds = await _examTmRepository.GetIdsWithOutLockedAsync(auth.CurCompanyId);
                 foreach (var tmId in tmIds)
                 {
                     var tm = await _examTmRepository.GetAsync(tmId);
-                    var tx = await _examTxRepository.GetAsync(tm.TxId);
-                    if (tx.ExamTxBase == ExamTxBase.Zuheti) continue;
-
                     var randomIds = await _examPaperRandomTmRepository.GetIdsAsync(tmId, analysis.TmAnalysisExamPapaerId);
                     var rightTotal = 0;
                     var wrongTotal = 0;
@@ -103,18 +105,20 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                         Zhishidian = tm.Zhishidian,
                         Nandu = tm.Nandu,
                         Score = tm.Score,
+                        CreatorId = tm.CreatorId,
+                        CompanyId = tm.CompanyId,
+                        DepartmentId = tm.DepartmentId,
+                        CreatedDate = tm.CreatedDate
                     };
                     await _examTmAnalysisTmRepository.InsertAsync(analysisTm);
                 }
             }
             if (analysis.TmAnalysisType == TmAnalysisType.ByPractice)
             {
-                var tmIds = await _examTmRepository.GetIdsWithOutLockedAsync();
+                var tmIds = await _examTmRepository.GetIdsWithOutLockedAsync(auth.CurCompanyId);
                 foreach (var tmId in tmIds)
                 {
                     var tm = await _examTmRepository.GetAsync(tmId);
-                    var tx = await _examTxRepository.GetAsync(tm.TxId);
-                    if (tx.ExamTxBase == ExamTxBase.Zuheti) continue;
 
                     var (rightTotal, wrongTotal) = await _examPracticeAnswerRepository.CountAsync(tmId);
 
@@ -144,6 +148,10 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                             Zhishidian = tm.Zhishidian,
                             Nandu = tm.Nandu,
                             Score = tm.Score,
+                            CreatedDate = tm.CreatedDate,
+                            CreatorId = tm.CreatorId,
+                            CompanyId = tm.CompanyId,
+                            DepartmentId = tm.DepartmentId
                         };
                         await _examTmAnalysisTmRepository.InsertAsync(analysisTm);
                     }
@@ -163,8 +171,6 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                     if (randomIds != null && randomIds.Count > 0)
                     {
                         var tm = await _examTmRepository.GetAsync(tmId);
-                        var tx = await _examTxRepository.GetAsync(tm.TxId);
-                        if (tx.ExamTxBase == ExamTxBase.Zuheti) continue;
 
                         foreach (var randomId in randomIds)
                         {
@@ -197,6 +203,10 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                             Zhishidian = tm.Zhishidian,
                             Nandu = tm.Nandu,
                             Score = tm.Score,
+                            CreatedDate = tm.CreatedDate,
+                            CreatorId = tm.CreatorId,
+                            CompanyId = tm.CompanyId,
+                            DepartmentId = tm.DepartmentId
                         };
                         await _examTmAnalysisTmRepository.InsertAsync(analysisTm);
                     }

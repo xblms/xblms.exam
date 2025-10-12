@@ -29,5 +29,12 @@ namespace XBLMS.Models
         public List<string> CollectUserIds { get; set; }
         [DataColumn]
         public bool Locked { get; set; }
+        /// <summary>
+        /// 仅本单位内学员可以查看
+        /// </summary>
+        [DataColumn]
+        public bool OnlyCompany { get; set; }
+        [DataColumn]
+        public int FileId { get; set; }
     }
 }

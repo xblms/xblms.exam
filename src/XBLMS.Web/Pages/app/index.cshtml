@@ -9,6 +9,7 @@
         }
 
         body {
+            overflow-x: hidden !important;
             padding: 0;
             margin: 0;
         }
@@ -18,45 +19,45 @@
     <iframe id="homeRightIframe" ref="homeRightIframe" :src="rightUrl" style="width: 100%;height:100%; border: none;" :style="{height: ($(window).height()-10) + 'px'}"></iframe>
 </div>
 <template>
-    <div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center py-3 px-4 bg-white w-100 border-top border-1 border-light">
-        <div class="d-flex align-items-center justify-content-between text-dark">
+    <div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center py-3 px-4 w-100 border-top border-1 border-light bg-white">
+        <div :class="systemCode==='Exam'?'px-5':''" class="d-flex align-items-center justify-content-between text-dark">
             <a class="text-center text-dark lh-1" href="javascript:;" v-on:click="btnAppMenuClick('index')">
                 <div>
                     <i class="fs-2" :class="appMenuActive==='index'?'bi bi-house-fill fw-bold':'bi bi-house'"></i>
                 </div>
-                <div class="fs-6 mt-1">
-                    首页
+                <div class="fs-6 mt-1" :class="appMenuActive==='index'?'fw-bolder':''">
+                    待办
                 </div>
             </a>
-            <a class="text-center text-dark lh-1" href="javascript:;" v-on:click="btnAppMenuClick('exam')" v-if="utils.contains(openMenus,'examPaper')">
+            <a class="text-center text-dark lh-1" href="javascript:;" v-on:click="btnAppMenuClick('exam')">
                 <div>
                     <i class="fs-2" :class="appMenuActive==='exam'?'bi bi-clipboard-check-fill fw-bold':'bi bi-clipboard-check'"></i>
                 </div>
-                <div class="fs-6 mt-1">
+                <div class="fs-6 mt-1" :class="appMenuActive==='exam'?'fw-bolder':''">
                     考试
                 </div>
             </a>
-            <a class="text-center text-dark lh-1" href="javascript:;" v-on:click="btnAppMenuClick('moni')" v-if="utils.contains(openMenus,'examPaperMoni')">
+            <a v-if="systemCode==='Elearning'" class="text-center text-dark lh-1" href="javascript:;" v-on:click="btnAppMenuClick('studyPlan')">
                 <div>
-                    <i class="fs-2" :class="appMenuActive==='moni'?'bi bi-clipboard-fill fw-bold':'bi bi-clipboard'"></i>
+                    <i class="fs-2" :class="appMenuActive==='studyPlan'?'bi bi-clipboard-data-fill fw-bold':'bi bi-clipboard-data'"></i>
                 </div>
-                <div class="fs-6 mt-1">
-                    模拟
+                <div class="fs-6 mt-1" :class="appMenuActive==='studyPlan'?'fw-bolder':''">
+                    学习
                 </div>
             </a>
-            <a class="text-center text-dark lh-1" href="javascript:;" v-on:click="btnAppMenuClick('shuati')" v-if="utils.contains(openMenus,'examPractice')">
+            <a class="text-center text-dark lh-1" href="javascript:;" v-on:click="btnAppMenuClick('more')">
                 <div>
-                    <i class="fs-2" :class="appMenuActive==='shuati'?'bi bi-clipboard-heart-fill fw-bold':'bi bi-clipboard-heart'"></i>
+                    <i class="fs-2" :class="appMenuActive==='more'?'bi bi-filter-circle-fill fw-bold':'bi bi-filter-circle'"></i>
                 </div>
-                <div class="fs-6 mt-1">
-                    刷题
+                <div class="fs-6 mt-1" :class="appMenuActive==='more'?'fw-bolder':''">
+                    更多
                 </div>
             </a>
             <a class="text-center text-dark lh-1" href="javascript:;" v-on:click="btnAppMenuClick('mine')">
                 <div>
                     <i class="fs-2" :class="appMenuActive==='mine'?'bi bi-emoji-smile-fill fw-bold':'bi bi-emoji-neutral'"></i>
                 </div>
-                <div class="fs-6 mt-1">
+                <div class="fs-6 mt-1" :class="appMenuActive==='mine'?'fw-bolder':''">
                     我的
                 </div>
             </a>

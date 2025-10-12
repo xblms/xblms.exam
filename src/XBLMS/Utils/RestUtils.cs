@@ -1,4 +1,5 @@
 ﻿using RestSharp;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
@@ -85,9 +86,38 @@ namespace XBLMS.Utils
 
             return (false, null, GetErrorMessage(response));
         }
+        public static async Task<(bool success, TResult result, string failureMessage)> PostFormAsync<TRequest, TResult>(string url, List<KeyValuePair<string, string>> body, string accessToken = null) where TResult : class
+        {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13;
+            ServicePointManager.ServerCertificateValidationCallback +=
+                (sender, certificate, chain, errors) => true;
 
+            var client = new RestClient(url);
+            var request = new RestRequest
+            {
+                Method = Method.Post,
+                Timeout = System.Threading.Timeout.InfiniteTimeSpan,
+            };
+            request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
+            if (!string.IsNullOrEmpty(accessToken))
+            {
+                request.AddHeader("Authorization", $"Bearer {accessToken}");
+            }
+            body.ForEach(pramas =>
+            {
+                request.AddParameter(pramas.Key, pramas.Value);
+            });
+     
+            var response = await client.ExecuteAsync<TResult>(request);
+
+            if (response.IsSuccessful && string.IsNullOrEmpty(response.ErrorMessage))
+            {
+                return (true, response.Data, null);
+            }
+
+            return (false, null, GetErrorMessage(response));
+        }
         public static async Task<(bool success, TResult result, string failureMessage)> PostAsync<TRequest, TResult>(string url, TRequest body, string accessToken = null) where TResult : class
-
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13;
             ServicePointManager.ServerCertificateValidationCallback +=

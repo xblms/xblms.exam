@@ -117,5 +117,35 @@ namespace XBLMS.Enums
         KnowledgesUpdate,
         [DataEnum(DisplayName = "知识库删除")]
         KnowledgesDelete,
+        [DataEnum(DisplayName = "培训课件新增")]
+        StudyFileAdd,
+        [DataEnum(DisplayName = "培训课件修改")]
+        StudyFileUpdate,
+        [DataEnum(DisplayName = "培训课件删除")]
+        StudyFileDelete,
+        [DataEnum(DisplayName = "培训课程新增")]
+        StudyCourseAdd,
+        [DataEnum(DisplayName = "培训课程修改")]
+        StudyCourseUpdate,
+        [DataEnum(DisplayName = "培训课程删除")]
+        StudyCourseDelete,
+        [DataEnum(DisplayName = "培训课程评价新增")]
+        StudyEvaluationAdd,
+        [DataEnum(DisplayName = "培训课程评价修改")]
+        StudyEvaluationUpdate,
+        [DataEnum(DisplayName = "培训课程评价删除")]
+        StudyEvaluationDelete,
+        [DataEnum(DisplayName = "学习任务新增")]
+        StudyPlanAdd,
+        [DataEnum(DisplayName = "学习任务修改")]
+        StudyPlanUpdate,
+        [DataEnum(DisplayName = "学习任务删除")]
+        StudyPlanDelete,
+        [DataEnum(DisplayName = "积分商品新增")]
+        GiftAdd,
+        [DataEnum(DisplayName = "积分商品修改")]
+        GiftUpdate,
+        [DataEnum(DisplayName = "积分商品删除")]
+        GiftDelete
     }
 }

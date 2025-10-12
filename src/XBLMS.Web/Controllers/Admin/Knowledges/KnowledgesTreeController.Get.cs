@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
 namespace XBLMS.Web.Controllers.Admin.Knowledges
@@ -8,7 +8,9 @@ namespace XBLMS.Web.Controllers.Admin.Knowledges
         [HttpGet, Route(Route)]
         public async Task<ActionResult<GetResult>> Get()
         {
-            var trees = await _examManager.GetKnowlegesTreeCascadesAsync(true);
+            var adminAuth = await _authManager.GetAdminAuth();
+
+            var trees = await _examManager.GetKnowlegesTreeCascadesAsync(adminAuth, true);
 
             return new GetResult
             {

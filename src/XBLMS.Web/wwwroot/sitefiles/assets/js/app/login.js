@@ -14,8 +14,9 @@ var data = utils.init({
     isPersistent: false,
     captchaValue: null,
   },
-  version:null,
-  homeTitle: DOCUMENTTITLE_HOME,
+  version: null,
+  versionName: null,
+  homeTitle: DOCUMENTTITLECN,
   returnUrl: utils.getQueryString('returnUrl')
 });
 
@@ -34,7 +35,10 @@ var methods = {
     $api.get($url).then(function (response) {
       var res = response.data;
 
+      $this.systemCodeName = res.systemCodeName;
+      document.title = res.systemCodeName;
       $this.version = res.version;
+      $this.versionName = res.versionName;
       $this.isUserCaptchaDisabled = res.isUserCaptchaDisabled;
       if ($this.isUserCaptchaDisabled) {
         $this.btnTypeClick();
@@ -78,6 +82,7 @@ var methods = {
     }).then(function (response) {
       var res = response.data;
 
+      sessionStorage.setItem(SESSION_ID_NAME, res.sessionId);
       localStorage.removeItem(ACCESS_TOKEN_NAME);
       localStorage.setItem(ACCESS_TOKEN_NAME, res.token);
       if ($this.returnUrl) {
@@ -86,7 +91,7 @@ var methods = {
         $this.redirectIndex();
       }
     }).catch(function (error) {
-      utils.notifyError(error);
+      utils.error(error);
     }).then(function () {
       $this.apiCaptcha();
       utils.loading($this, false);
@@ -118,7 +123,6 @@ var methods = {
       }
     });
   },
-
 };
 
 var $vue = new Vue({
@@ -126,7 +130,6 @@ var $vue = new Vue({
   data: data,
   methods: methods,
   created: function () {
-    document.title = DOCUMENTTITLECN;
     this.apiGet();
   }
 });

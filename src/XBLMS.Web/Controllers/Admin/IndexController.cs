@@ -13,6 +13,9 @@ namespace XBLMS.Web.Controllers.Admin
     public partial class IndexController : ControllerBase
     {
         private const string Route = "index";
+        private const string RouteChangeAuthDataShowAll = Route + "/changeShowall";
+        private const string RouteChangeOrgan = Route + "/changeOrgan";
+
         private const string RouteSetLanguage = "index/actions/setLanguage";
 
         private readonly ISettingsManager _settingsManager;
@@ -21,8 +24,15 @@ namespace XBLMS.Web.Controllers.Admin
         private readonly IConfigRepository _configRepository;
         private readonly IAdministratorRepository _administratorRepository;
         private readonly IDbCacheRepository _dbCacheRepository;
+        private readonly IScheduledTaskRepository _scheduledTaskRepository;
+        private readonly ICreateManager _createManager;
+        private readonly ITaskManager _taskManager;
+        private readonly IErrorLogRepository _logRepository;
+        private readonly IOrganCompanyRepository _organCompanyRepository;
+        private readonly IOrganDepartmentRepository _organDepartmentRepository;
 
-        public IndexController(ISettingsManager settingsManager, IAuthManager authManager, IPathManager pathManager, IConfigRepository configRepository, IAdministratorRepository administratorRepository, IDbCacheRepository dbCacheRepository)
+        public IndexController(ISettingsManager settingsManager, IAuthManager authManager, IPathManager pathManager, IConfigRepository configRepository, IAdministratorRepository administratorRepository, IDbCacheRepository dbCacheRepository, IScheduledTaskRepository scheduledTaskRepository,
+            ICreateManager createManager, ITaskManager taskManager, IErrorLogRepository logRepository, IOrganCompanyRepository organCompanyRepository, IOrganDepartmentRepository organDepartmentRepository)
         {
             _settingsManager = settingsManager;
             _authManager = authManager;
@@ -30,6 +40,13 @@ namespace XBLMS.Web.Controllers.Admin
             _configRepository = configRepository;
             _administratorRepository = administratorRepository;
             _dbCacheRepository = dbCacheRepository;
+            _scheduledTaskRepository = scheduledTaskRepository;
+
+            _createManager = createManager;
+            _taskManager = taskManager;
+            _logRepository = logRepository;
+            _organCompanyRepository = organCompanyRepository;
+            _organDepartmentRepository = organDepartmentRepository;
         }
 
         public class Local
@@ -40,25 +57,38 @@ namespace XBLMS.Web.Controllers.Admin
             public string DisplayName { get; set; }
             public string AvatarUrl { get; set; }
             public string Auth { get; set; }
+            public string AuthCurrentOrganName { get; set; }
+            public bool AuthDataShowAll { get; set; }
+            public bool AuthOrganChange { get; set; }
         }
 
         public class GetRequest
         {
             public string SessionId { get; set; }
         }
-
-
         public class GetResult
         {
             public string Version { get; set; }
+            public string VersionName { get; set; }
             public bool IsSafeMode { get; set; }
             public bool Value { get; set; }
             public string RedirectUrl { get; set; }
             public IList<Menu> Menus { get; set; }
             public Local Local { get; set; }
+            public int AdminEnforceLogoutMinutes { get; set; }
             public bool IsEnforcePasswordChange { get; set; }
+            public string SystemCodeName { get; set; }
         }
 
+        public class GetChangeAuthDataShowAllRequest
+        {
+            public bool AuthDataShowAll { get; set; }
+        }
+
+        public class ChangeOrganRequest
+        {
+            public int OrganId { get; set; }
+        }
         public class SetLanguageRequest
         {
             public string Culture { get; set; }
@@ -76,8 +106,7 @@ namespace XBLMS.Web.Controllers.Admin
                 redirect = true;
                 redirectUrl = _pathManager.GetAdminUrl(InstallController.Route);
             }
-            else if (config.Initialized &&
-                     config.DatabaseVersion != _settingsManager.Version)
+            else if (config.Initialized && config.DatabaseVersion != _settingsManager.Version)
             {
                 redirect = true;
                 redirectUrl = _pathManager.GetAdminUrl(SyncDatabaseController.Route);

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using XBLMS.Core.Utils;
+using XBLMS.Dto;
 using XBLMS.Models;
 using XBLMS.Repositories;
 using XBLMS.Services;
@@ -12,7 +13,7 @@ using XBLMS.Utils;
 
 namespace XBLMS.Core.Repositories
 {
-    public class LogRepository : ILogRepository
+    public partial class LogRepository : ILogRepository
     {
         private readonly Repository<Log> _repository;
         private readonly IConfigRepository _configRepository;
@@ -63,6 +64,8 @@ namespace XBLMS.Core.Repositories
                     CompanyId = admin.CompanyId,
                     DepartmentId = admin.DepartmentId,
                     CreatorId = admin.Id,
+                    CompanyParentPath = admin.CompanyParentPath,
+                    DepartmentParentPath = admin.DepartmentParentPath,
                 };
 
                 await _repository.InsertAsync(log);
@@ -100,9 +103,11 @@ namespace XBLMS.Core.Repositories
                     IpAddress = ipAddress,
                     Action = action,
                     Summary = summary,
-                    CompanyId=user.CompanyId,
-                    DepartmentId=user.DepartmentId,
-                    CreatorId=user.Id,
+                    CompanyId = user.CompanyId,
+                    DepartmentId = user.DepartmentId,
+                    CreatorId = user.Id,
+                    CompanyParentPath = user.CompanyParentPath,
+                    DepartmentParentPath = user.DepartmentParentPath,
                 };
 
                 await _repository.InsertAsync(log);
@@ -123,19 +128,21 @@ namespace XBLMS.Core.Repositories
             var days = config.TimeThreshold;
             if (days <= 0) return;
 
-            await _repository.DeleteAsync(Q
-                .Where(nameof(Log.CreatedDate), "<", DateTime.Now.AddDays(-days))
-            );
+            await _repository.DeleteAsync(Q.Where(nameof(Log.CreatedDate), "<", DateTime.Now.AddDays(-days)));
         }
 
-        public async Task DeleteAllAdminLogsAsync()
+        public async Task DeleteAllAdminLogsAsync(AdminAuth auth)
         {
-            await _repository.DeleteAsync(Q.Where(nameof(Log.AdminId), ">", 0));
+            var query = Q.Where(nameof(Log.AdminId), ">", 0);
+            query = GetQueryByAuth(query, auth);
+            await _repository.DeleteAsync(query);
         }
 
-        public async Task DeleteAllUserLogsAsync()
+        public async Task DeleteAllUserLogsAsync(AdminAuth auth)
         {
-            await _repository.DeleteAsync(Q.Where(nameof(Log.UserId), ">", 0));
+            var query = Q.Where(nameof(Log.UserId), ">", 0);
+            query = GetQueryByAuth(query, auth);
+            await _repository.DeleteAsync(query);
         }
 
         private Query GetAdminQuery(List<int> adminIds, string keyword, string dateFrom, string dateTo)
@@ -174,16 +181,15 @@ namespace XBLMS.Core.Repositories
             return query;
         }
 
-        public async Task<int> GetAdminLogsCountAsync(List<int> adminIds, string keyword, string dateFrom, string dateTo)
-        {
-            return await _repository.CountAsync(GetAdminQuery(adminIds, keyword, dateFrom, dateTo));
-        }
-
-        public async Task<List<Log>> GetAdminLogsAsync(List<int> adminIds, string keyword, string dateFrom, string dateTo, int offset, int limit)
+        public async Task<(int total, List<Log> list)> GetAdminLogsAsync(AdminAuth auth, List<int> adminIds, string keyword, string dateFrom, string dateTo, int offset, int limit)
         {
             var query = GetAdminQuery(adminIds, keyword, dateFrom, dateTo);
+
+            query = GetQueryByAuth(query, auth);
+            var total = await _repository.CountAsync(query);
             query.Offset(offset).Limit(limit);
-            return await _repository.GetAllAsync(query);
+            var list = await _repository.GetAllAsync(query);
+            return (total, list);
         }
 
         private Query GetUserQuery(int userId, string keyword, string dateFrom, string dateTo)
@@ -222,17 +228,41 @@ namespace XBLMS.Core.Repositories
             return query;
         }
 
-        public async Task<int> GetUserLogsCountAsync(int userId, string keyword, string dateFrom, string dateTo)
-        {
-            return await _repository.CountAsync(GetUserQuery(userId, keyword, dateFrom, dateTo));
-        }
-
-        public async Task<List<Log>> GetUserLogsAsync(int userId, string keyword, string dateFrom, string dateTo, int offset, int limit)
+        public async Task<(int total, List<Log> list)> GetUserLogsAsync(AdminAuth auth, int userId, string keyword, string dateFrom, string dateTo, int offset, int limit)
         {
             var query = GetUserQuery(userId, keyword, dateFrom, dateTo);
-            query.Offset(offset).Limit(limit);
-            return await _repository.GetAllAsync(query);
-        }
 
+            query = GetQueryByAuth(query, auth);
+
+            var total = await _repository.CountAsync(query);
+
+            query.Offset(offset).Limit(limit);
+            var list = await _repository.GetAllAsync(query);
+            return (total, list);
+        }
+        private Query GetQueryByAuth(Query query, AdminAuth auth)
+        {
+            if (auth.AuthDataType == Enums.AuthorityDataType.DataCreator)
+            {
+                query.Where(nameof(Log.CreatorId), auth.AdminId);
+            }
+            else
+            {
+                if (auth.AuthDataShowAll)
+                {
+                    if (auth.CurCompanyId != 1)
+                    {
+                        query.WhereLike(nameof(Log.CompanyParentPath), $"%'{auth.CurCompanyId}'%");
+                    }
+                }
+                else
+                {
+                    query.Where(nameof(Log.CompanyId), auth.CurCompanyId);
+                }
+            }
+
+
+            return query;
+        }
     }
 }

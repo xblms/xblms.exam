@@ -17,6 +17,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
 
         private readonly IConfigRepository _configRepository;
         private readonly IAuthManager _authManager;
+        private readonly IOrganManager _organManager;
 
         private readonly IExamQuestionnaireRepository _examQuestionnaireRepository;
         private readonly IExamQuestionnaireAnswerRepository _examQuestionnaireAnswerRepository;
@@ -25,6 +26,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
 
         public ExamQuestionnairingController(IConfigRepository configRepository,
             IAuthManager authManager,
+            IOrganManager organManager,
             IExamQuestionnaireRepository examQuestionnaireRepository,
             IExamQuestionnaireAnswerRepository examQuestionnaireAnswerRepository,
             IExamQuestionnaireTmRepository examQuestionnaireTmRepository,
@@ -32,6 +34,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
         {
             _configRepository = configRepository;
             _authManager = authManager;
+            _organManager = organManager;
             _examQuestionnaireRepository = examQuestionnaireRepository;
             _examQuestionnaireAnswerRepository = examQuestionnaireAnswerRepository;
             _examQuestionnaireTmRepository = examQuestionnaireTmRepository;
@@ -53,6 +56,8 @@ namespace XBLMS.Web.Controllers.Home.Exam
 
         public class GetSubmitRequest
         {
+            public int PlanId { get; set; }
+            public int CourseId { get; set; }
             public int Id { get; set; }
             public List<ExamQuestionnaireTm> TmList { get; set; }
         }

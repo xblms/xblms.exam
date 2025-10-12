@@ -27,10 +27,14 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 }
             }
 
-
-            var admin = await _authManager.GetAdminAsync();
+            var adminAuth = await _authManager.GetAdminAuth();
+            var admin = adminAuth.Admin;
             var paper = request.Item;
 
+            if (paper.IsCourseUse)
+            {
+                paper.Published = false;
+            }
 
             if (paper.Id > 0)
             {
@@ -41,10 +45,9 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                     paper.SubmitType = request.SubmitType;
 
                     await _examManager.ClearQuestionnaire(paper.Id);
-
-                    await _examManager.ArrangeQuestionnaire(paper);
-
                     await _examManager.SetQuestionnairTm(request.TmList, paper.Id);
+
+                    _examManager.ArrangeQuestionnaireTask(paper.Id);
 
                     await _authManager.AddAdminLogAsync("重新发布调查问卷", $"{paper.Title}");
                     await _authManager.AddStatLogAsync(StatType.ExamQUpdate, "重新发布调查问卷", paper.Id, paper.Title, last);
@@ -71,9 +74,11 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             else
             {
                 paper.SubmitType = request.SubmitType;
-                paper.CompanyId = admin.CompanyId;
+                paper.CompanyId = adminAuth.CurCompanyId;
                 paper.CreatorId = admin.Id;
                 paper.DepartmentId = admin.DepartmentId;
+                paper.CompanyParentPath = adminAuth.CompanyParentPath;
+                paper.DepartmentParentPath = admin.DepartmentParentPath;
 
                 var paperId = await _questionnaireRepository.InsertAsync(paper);
                 paper.Id = paperId;
@@ -83,7 +88,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
                 if (request.SubmitType == SubmitType.Submit)
                 {
-                    await _examManager.ArrangeQuestionnaire(paper);
+                    _examManager.ArrangeQuestionnaireTask(paper.Id);
 
                     await _authManager.AddAdminLogAsync("发布调查问卷", $"{paper.Title}");
                     await _authManager.AddStatLogAsync(StatType.ExamQAdd, "发布调查问卷", paper.Id, paper.Title);

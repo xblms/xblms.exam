@@ -55,7 +55,7 @@ blockApi
         location.href = redirectUrl;
       } else if (blockMethod === "Warning") {
         bodyHtml = document.body.innerHTML;
-        document.title = DOCUMENTTITLE_BLOCK;
+        document.title = "访问受限";
         document.body.innerHTML = "";
         document.body.style.display = "block";
         Swal.fire({
@@ -68,7 +68,7 @@ blockApi
         });
       } else if (blockMethod === "Password") {
         bodyHtml = document.body.innerHTML;
-        document.title = DOCUMENTTITLE_BLOCK;
+        document.title = "访问受限";
         document.body.innerHTML = "";
         document.body.style.display = "block";
         Swal.fire({

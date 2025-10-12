@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 using XBLMS.Dto;
 using XBLMS.Enums;
+using XBLMS.Models;
 using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Admin.Settings.Database
@@ -39,8 +41,14 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Database
             {
                 return this.NoAuth();
             }
-            var jobTime = await Backup();
-            await _authManager.AddAdminLogAsync("备份数据库", $"备份时间：{jobTime}");
+
+            var jobinfo = new DbBackup
+            {
+                BeginTime = DateTime.Now,
+                Status = 0
+            };
+            await _dbBackupRepository.InsertAsync(jobinfo);
+
             return new BoolResult
             {
                 Value = true
@@ -54,12 +62,29 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Database
             {
                 return this.NoAuth();
             }
+
+            var config = await _configRepository.GetAsync();
+            var existsBackup = await _dbBackupRepository.ExistsBackupingAsync();
             var (total, list) = await _dbBackupRepository.GetListAsync(request.PageIndex, request.PageSize);
             return new GetResult
             {
+                DbBackupAuto = config.DbBackupAuto,
+                ExistsBackup = existsBackup,
                 Total = total,
                 List = list
+            };
+        }
 
+        [HttpPost, Route(RouteBackupConfig)]
+        public async Task<ActionResult<BoolResult>> SetConfig([FromBody] GetSetConfigRequest request)
+        {
+            var config = await _configRepository.GetAsync();
+            config.DbBackupAuto = request.DbBackupAuto;
+
+            await _configRepository.UpdateAsync(config);
+            return new BoolResult
+            {
+                Value = true
             };
         }
     }

@@ -1,0 +1,81 @@
+@page
+@{ Layout = "_LayoutHome"; }
+@section Styles{
+    <style>
+        .el-form-item {
+            margin-bottom: 0px;
+        }
+        body{
+            padding: 0;
+            margin: 0;
+        }
+
+        html{
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+}
+<div class="rounded-0 shadow p-3 bg-white sticky-top">
+    <div class="fw-bolder text-center">
+        课程收藏
+    </div>
+</div>
+<div class="p-5 py-4">
+    <el-form v-on:submit.native.prevent :inline="true" :model="form">
+        <el-form-item label="">
+            <el-input clearable prefix-icon="el-icon-search" v-model="form.keyWords" placeholder="关键字"></el-input>
+        </el-form-item>
+        <el-form-item label="">
+            <el-select v-model="form.state" clearable placeholder="学习状态" class="w-100">
+                <el-option label="全部状态"
+                           value="">
+                </el-option>
+                <el-option label="已完成"
+                           value="stateOver">
+                </el-option>
+                <el-option label="学习中"
+                           value="stateStuding">
+                </el-option>
+            </el-select>
+        </el-form-item>
+        <el-form-item>
+            <el-button icon="el-icon-search" v-on:click="btnSearchClick">查询</el-button>
+        </el-form-item>
+    </el-form>
+</div>
+<div class="px-5" v-if="total>0">
+    <div class="row g-4">
+        <div class="col-xl-3 col-lg-3 col-md-3 col-3">
+            <div class="card card-lift card-hover border bg-white p-0 mb-3 rounded-top-4" v-on:click="btnViewClick(course)" style="cursor:pointer;" v-for="course in list1">
+                @await Html.PartialAsync("_PartialStudyCourseItem")
+            </div>
+        </div>
+        <div class="col-xl-3 col-lg-3 col-md-3 col-3">
+            <div class="card card-lift card-hover border bg-white p-0 mb-3 rounded-top-4" v-on:click="btnViewClick(course)" style="cursor:pointer;" v-for="course in list2">
+                @await Html.PartialAsync("_PartialStudyCourseItem")
+            </div>
+        </div>
+        <div class="col-xl-3 col-lg-3 col-md-3 col-3">
+            <div class="card card-lift card-hover border bg-white p-0 mb-3 rounded-top-4" v-on:click="btnViewClick(course)" style="cursor:pointer;" v-for="course in list3">
+                @await Html.PartialAsync("_PartialStudyCourseItem")
+            </div>
+        </div>
+        <div class="col-xl-3 col-lg-3 col-md-3 col-3">
+            <div class="card card-lift card-hover border bg-white p-0 mb-3 rounded-top-4" v-on:click="btnViewClick(course)" style="cursor:pointer;" v-for="course in list4">
+                @await Html.PartialAsync("_PartialStudyCourseItem")
+            </div>
+        </div>
+    </div>
+    <div class="my-5 text-center">
+        <el-button class="border-0 rounded-pill" icon="el-icon-refresh-right" v-if="total>pushTotal" v-on:click="btnLoadMoreClick" :loading="loadMoreLoading">加载更多</el-button>
+        <small v-else>没有更多了</small>
+    </div>
+</div>
+<div class="pt-10" v-else>
+    <el-empty></el-empty>
+</div>
+
+@section Scripts{
+    <script src="/sitefiles/assets/js/home/study/studyCourseCollect.js" type="text/javascript"></script>
+}

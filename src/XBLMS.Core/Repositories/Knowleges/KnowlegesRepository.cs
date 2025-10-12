@@ -2,6 +2,8 @@ using Datory;
 using SqlKata;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using XBLMS.Dto;
+using XBLMS.Enums;
 using XBLMS.Models;
 using XBLMS.Repositories;
 using XBLMS.Services;
@@ -31,13 +33,29 @@ namespace XBLMS.Core.Repositories
         {
             return await _repository.UpdateAsync(item);
         }
-        public async Task<List<Knowledges>> GetNewListAsync()
-        {
-            return await _repository.GetAllAsync(Q.WhereNullOrFalse(nameof(Knowledges.Locked)).OrderByDesc(nameof(Knowledges.Id)).ForPage(1, 4));
-        }
-        public async Task<(int total, List<Knowledges> list)> GetListAsync(int userId, int treeId, bool isTreeWithChild, bool like, bool collect, string keyword, int pageIndex, int pageSize)
+        public async Task<List<Knowledges>> GetNewListAsync(int companyId)
         {
             var query = Q.WhereNullOrFalse(nameof(Knowledges.Locked));
+            query.Where(q => {
+                q.WhereNullOrFalse(nameof(Knowledges.OnlyCompany)).OrWhere(qq => {
+                    qq.WhereTrue(nameof(Knowledges.OnlyCompany)).Where(nameof(Knowledges.CompanyId), companyId);
+                    return qq;
+                });
+                return q;
+            });
+
+            return await _repository.GetAllAsync(query.OrderByDesc(nameof(Knowledges.Id)).ForPage(1, 12));
+        }
+        public async Task<(int total, List<Knowledges> list)> GetListAsync(int companyId, int userId, int treeId, bool isTreeWithChild, bool like, bool collect, string keyword, int pageIndex, int pageSize)
+        {
+            var query = Q.WhereNullOrFalse(nameof(Knowledges.Locked));
+            query.Where(q => {
+                q.WhereNullOrFalse(nameof(Knowledges.OnlyCompany)).OrWhere(qq => {
+                    qq.WhereTrue(nameof(Knowledges.OnlyCompany)).Where(nameof(Knowledges.CompanyId), companyId);
+                    return qq;
+                });
+                return q;
+            });
             if (treeId > 0)
             {
                 if (isTreeWithChild)
@@ -73,9 +91,12 @@ namespace XBLMS.Core.Repositories
             var list = await _repository.GetAllAsync(query.ForPage(pageIndex, pageSize));
             return (total, list);
         }
-        public async Task<(int total, List<Knowledges> list)> GetListAsync(int treeId, bool isTreeWithChild, string keyword, int pageIndex, int pageSize)
+        public async Task<(int total, List<Knowledges> list)> GetListAsync(AdminAuth auth, int treeId, bool isTreeWithChild, string keyword, int pageIndex, int pageSize)
         {
             var query = Q.NewQuery();
+
+            query = GetQueryByAuth(query, auth);
+
             if (treeId > 0)
             {
                 if (isTreeWithChild)
@@ -132,12 +153,60 @@ namespace XBLMS.Core.Repositories
             return await _repository.CountAsync(query);
         }
 
-        public async Task<(int allCount, int addCount, int deleteCount, int lockedCount, int unLockedCount)> GetDataCount()
+        public async Task<(int allCount, int addCount, int deleteCount, int lockedCount, int unLockedCount)> GetDataCount(AdminAuth auth)
         {
-            var count = await _repository.CountAsync();
-            var lockedCount = await _repository.CountAsync(Q.WhereTrue(nameof(Knowledges.Locked)));
-            var unLockedCount = await _repository.CountAsync(Q.WhereNullOrFalse(nameof(Knowledges.Locked)));
+            var countQuery = Q.NewQuery();
+            var lockedCountQuery = Q.WhereTrue(nameof(Knowledges.Locked));
+            var unLockedCountQuery = Q.WhereNullOrFalse(nameof(Knowledges.Locked));
+
+            countQuery = GetQueryByAuth(countQuery, auth);
+            lockedCountQuery = GetQueryByAuth(lockedCountQuery, auth);
+            unLockedCountQuery = GetQueryByAuth(unLockedCountQuery, auth);
+
+            var count = await _repository.CountAsync(countQuery);
+            var lockedCount = await _repository.CountAsync(lockedCountQuery);
+            var unLockedCount = await _repository.CountAsync(unLockedCountQuery);
             return (count, 0, 0, lockedCount, unLockedCount);
         }
+
+        public async Task<(int count, int total)> GetTotalAndCountByTreeIdAsync(AdminAuth auth, int treeId)
+        {
+            var countquery = Q.NewQuery();
+            var totalquery = Q.NewQuery();
+
+            countquery = GetQueryByAuth(countquery, auth);
+            totalquery = GetQueryByAuth(totalquery, auth);
+
+            var count = await _repository.CountAsync(countquery.Where(nameof(Knowledges.TreeId), treeId));
+            var total = await _repository.CountAsync(totalquery.WhereLike(nameof(Knowledges.TreeParentPath), $"%'{treeId}'%"));
+
+            return (count, total);
+        }
+
+
+        private Query GetQueryByAuth(Query query, AdminAuth auth)
+        {
+            if (auth.AuthDataType == AuthorityDataType.DataCreator)
+            {
+                query.Where(nameof(Knowledges.CreatorId), auth.AdminId);
+            }
+            else
+            {
+                if (auth.AuthDataShowAll)
+                {
+                    if (auth.CurCompanyId != 1)
+                    {
+                        query.WhereLike(nameof(Knowledges.CompanyParentPath), $"%'{auth.CurCompanyId}'%");
+                    }
+                }
+                else
+                {
+                    query.Where(nameof(Knowledges.CompanyId), auth.CurCompanyId);
+                }
+            }
+
+            return query;
+        }
+
     }
 }

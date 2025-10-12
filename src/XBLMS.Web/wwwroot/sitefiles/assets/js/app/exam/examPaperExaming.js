@@ -1,5 +1,5 @@
 var $url = "/exam/examPaperExaming";
-var $urlItem = $url+ "/item";
+var $urlItem = $url + "/item";
 var $urlSubmitAnswer = $url + "/submitAnswer";
 var $urlSubmitAnswerSmall = $url + "/submitAnswerSmall";
 var $urlSubmitPaper = $url + "/submitPaper";
@@ -7,13 +7,15 @@ var $urlSubmitTiming = $url + "/submitTiming";
 
 var data = utils.init({
   id: utils.getQueryInt('id'),
-  startId:0,
+  planId: utils.getQueryInt("planId"),
+  courseId: utils.getQueryInt("courseId"),
+  startId: 0,
   list: null,
   paper: null,
   tm: null,
-  watermark:null,
+  watermark: null,
   answerTotal: 0,
-  tmAnswerStatus:false,
+  tmAnswerStatus: false,
   tmList: [],
   surplusSecond: 0,
   curTimingSecond: 1,
@@ -25,7 +27,7 @@ var methods = {
   apiGet: function () {
     var $this = this;
 
-    if (this.loadCounts >= 5) {
+    if (this.loadCounts >= 8) {
       utils.loading($this, false);
       utils.alertExamWarning({
         title: '温馨提示',
@@ -46,7 +48,7 @@ var methods = {
         utils.loading(this, true, "正在加载试卷...");
       }
 
-      $api.get($url, { params: { id: $this.id, loadCounts: this.loadCounts } }).then(function (response) {
+      $api.get($url, { params: { id: $this.id, loadCounts: this.loadCounts, planId: this.planId, courseId: this.courseId } }).then(function (response) {
         var res = response.data;
 
         $this.startId = res.item.startId;
@@ -54,14 +56,14 @@ var methods = {
         if (res.item.tmTotal > 0) {
           $this.watermark = res.watermark;
           $this.paper = res.item;
-          $this.list = res.txList;
+          $this.list = JSON.parse(utils.AESDecrypt(res.txList, res.salt));
 
           $this.startId = $this.paper.startId;
 
           $this.loadUseTime();
         }
         else {
-          location.href = utils.getExamUrl('examPaperExaming', { id: $this.id, loadCounts: $this.loadCounts + 1, loadStartId: $this.startId })
+          location.href = utils.getExamUrl('examPaperExaming', { id: $this.id, loadCounts: $this.loadCounts + 1, loadStartId: $this.startId, planId: this.planId, courseId: this.courseId })
         }
 
       }).catch(function (error) {
@@ -114,7 +116,7 @@ var methods = {
   },
   getTmAnswerStatus: function (id) {
     var getCurTm = this.tmList.find(item => item.id === id);
-    return getCurTm.answerStatus;
+    return getCurTm.answerStatus || false;
   },
   answerChange: function (tm) {
 
@@ -148,10 +150,9 @@ var methods = {
 
     this.apiSubmitAnswer(tm.answerInfo);
   },
-  answerSmallChange: function (tm,smallTm) {
+  answerSmallChange: function (tm, smallTm) {
 
     tm.answerStatus = false;
-
 
     //子题状态
     smallTm.answerStatus = false;
@@ -176,7 +177,7 @@ var methods = {
         smallTm.answerStatus = false;
       }
     }
-    //
+
     if (tm.smallLists && tm.smallLists.length > 0) {
       var smallList = tm.smallLists;
       var allSmallAnswer = true;
@@ -207,14 +208,18 @@ var methods = {
     $api.post($urlSubmitAnswerSmall, { answer: setTm }).then(function (response) { });
   },
   apiSubmitPaper: function () {
-    $api.post($urlSubmitPaper, { id: this.startId }).then(function (response) { });
+    var $this = this;
+    utils.loading(this, true, "正在交卷...");
+    $api.post($urlSubmitPaper, { id: this.startId }).then(function () {
+      utils.loading($this, false);
+      location.href = utils.getExamUrl("examPaperSubmitResult", { id: $this.startId });
+    });
   },
   apiSubmitTiming: function () {
     $api.post($urlSubmitTiming, { id: this.startId }).then(function (response) { });
   },
   btnSubmitPaperClick: function () {
     this.apiSubmitPaper();
-    location.href = utils.getExamUrl("examPaperSubmitResult", { id: this.startId });
   },
   btnPaperSubmit: function () {
     var $this = this;
@@ -250,7 +255,7 @@ var methods = {
     setTimeout(function () {
       $this.curTimingSecond++;
       $this.timingChange();
-    },1000)
+    }, 1000)
   }
 };
 

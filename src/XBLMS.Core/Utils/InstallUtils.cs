@@ -52,7 +52,6 @@ namespace XBLMS.Core.Utils
 }}";
 
 
-
             FileUtils.WriteText(path, json.Trim());
 
             var webConfigPath = PathUtils.Combine(contentRootPath, "Web.config");

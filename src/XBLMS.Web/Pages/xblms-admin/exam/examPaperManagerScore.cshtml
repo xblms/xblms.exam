@@ -1,0 +1,100 @@
+﻿@page
+@{ Layout = "_Layout"; }
+@section Styles{
+    <link href="/sitefiles/assets/lib/geeks/css/theme.min.css" rel="stylesheet" type="text/css" />
+}
+<template>
+    <div style="padding:0 11px;">
+        <div>
+            <el-form v-on:submit.native.prevent :inline="true" :size="euiSize">
+                <el-form-item label="关键字">
+                    <el-input v-model="formScore.keywords" placeholder="组织、用户名、姓名" prefix-icon="el-icon-search" clearable></el-input>
+                </el-form-item>
+                <el-form-item label="交卷时间：从">
+                    <el-date-picker v-model="formScore.dateFrom"
+                                    type="datetime"
+                                    value-format="yyyy-MM-dd HH:mm:ss"
+                                    placeholder="选择开始日期">
+                    </el-date-picker>
+                </el-form-item>
+                <el-form-item label="到">
+                    <el-date-picker v-model="formScore.dateTo"
+                                    type="datetime"
+                                    value-format="yyyy-MM-dd HH:mm:ss"
+                                    placeholder="选择结束日期">
+                    </el-date-picker>
+                </el-form-item>
+                <el-form-item>
+                    <el-button :size="euiSize" icon="el-icon-search" type="primary" v-on:click="btnScoreSearchClick">查 询</el-button>
+                    <el-button :size="euiSize" plain type="primary" icon="el-icon-download" v-on:click="btnScoreExportClick" v-if="scoreTotal>0">
+                        导出Excel
+                    </el-button>
+                    <el-button :size="euiSize" plain type="primary" icon="el-icon-download" v-on:click="btnExportWordZipClick" v-if="scoreTotal>0">
+                        打包Word
+                    </el-button>
+                </el-form-item>
+            </el-form>
+        </div>
+        <div>
+            <el-table ref="scoreTable" :data="scoreList" :size="euiSize"
+                      style="width: 100%">
+                <el-table-column label="#"
+                                 type="index"
+                                 width="60"
+                                 align="left">
+                    <template scope="scope">
+                        <span>{{(formScore.pageIndex - 1) * formScore.pageSize + scope.$index + 1}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="账号" show-overflow-tooltip>
+                    <template slot-scope="scope">
+                        <el-link :underline="false" type="primary" v-on:click="btnViewClick(scope.row.user.id)">{{scope.row.user.userName}}</el-link>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="user.displayName" label="姓名" show-overflow-tooltip>
+                </el-table-column>
+                <el-table-column prop="user.organNames" label="组织" show-overflow-tooltip>
+                </el-table-column>
+                <el-table-column label="开考时间" prop="beginDateTime" width="150">
+                </el-table-column>
+                <el-table-column label="交卷时间" prop="endDateTime" width="150">
+                </el-table-column>
+                <el-table-column prop="user.useTime" label="用时" width="100">
+                </el-table-column>
+                <el-table-column prop="subjectiveScore" label="主观题成绩" width="100">
+                </el-table-column>
+                <el-table-column prop="objectiveScore" label="客观题成绩" width="100">
+                </el-table-column>
+                <el-table-column prop="score" label="成绩" width="100">
+                </el-table-column>
+                <el-table-column width="100">
+                    <template slot-scope="scope">
+                        <el-dropdown :show-timeout="0" placement="left">
+                            <el-button icon="el-icon-arrow-left" :size="euiSize" v-on:click.stop="return false">
+                                操作
+                            </el-button>
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item icon="el-icon-view" v-on:click.native="btnPaperSocreView(scope.row.id)">查看答卷</el-dropdown-item>
+                                <el-dropdown-item icon="el-icon-view" v-on:click.native="btnMarkView(scope.row.id)" v-if="scope.row.markTeacherId>0">查看阅卷</el-dropdown-item>
+                                <el-dropdown-item icon="el-icon-download" v-on:click.native="btnExportWordClick(scope.row.id)" divided>导出Word</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
+                    </template>
+                </el-table-column>
+                @await Html.PartialAsync("_PartialTableEmpty")
+            </el-table>
+
+            <div style="text-align: center; margin-top: 10px;">
+                <el-pagination v-on:current-change="scoreHandleCurrentChange" background
+                               :current-page="formScore.pageIndex"
+                               :page-size="formScore.pageSize"
+                               layout="total, prev, pager, next"
+                               :total="scoreTotal">
+                </el-pagination>
+            </div>
+        </div>
+    </div>
+</template>
+@section Scripts{
+    <script src="/sitefiles/assets/js/admin/exam/examPaperManagerScore.js" type="text/javascript"></script>
+}

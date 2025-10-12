@@ -1,4 +1,4 @@
-var $url = "/knowledges";
+﻿var $url = "/knowledges";
 var $urlItem = $url + "/item";
 var $urlTree = $url + "/tree";
 
@@ -11,7 +11,7 @@ var data = utils.init({
     state: '',
     orderby: '',
     pageIndex: 1,
-    pageSize: 18
+    pageSize: 24
   },
   list1: [],
   list2: [],
@@ -66,6 +66,9 @@ var methods = {
         });
       }
       $this.total = res.total;
+      if ($this.total === 0) {
+        location.href = utils.getRootUrl("empty");
+      }
 
     }).catch(function (error) {
       utils.error(error);

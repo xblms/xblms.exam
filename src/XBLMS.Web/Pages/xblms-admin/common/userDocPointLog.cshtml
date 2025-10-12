@@ -1,0 +1,84 @@
+﻿@page
+@{ Layout = "_Layout"; }
+
+@section Styles{
+    <link href="/sitefiles/assets/lib/geeks/css/theme.min.css" rel="stylesheet" type="text/css" />
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+            background: #fafafa;
+        }
+
+        html {
+            padding: 0;
+            margin: 0;
+            background: #fafafa;
+        }
+    </style>
+}
+
+<div class="p-3">
+    <el-form v-on:submit.native.prevent :inline="true" :model="form" :size="euiSize">
+        <el-form-item label="时间：从">
+            <el-date-picker v-model="form.dateFrom"
+                            type="date"
+                            value-format="yyyy-MM-ddTHH:mm:ss.000Z"
+                            placeholder="选择开始日期">
+            </el-date-picker>
+        </el-form-item>
+        <el-form-item label="到">
+            <el-date-picker v-model="form.dateTo"
+                            type="date"
+                            value-format="yyyy-MM-ddTHH:mm:ss.000Z"
+                            placeholder="选择结束日期">
+            </el-date-picker>
+        </el-form-item>
+        <el-form-item>
+            <el-button type="primary" v-on:click="btnSearchClick" icon="el-icon-search">查 询</el-button>
+        </el-form-item>
+    </el-form>
+    <el-table :data="list" :size="euiSize"
+              style="width: 100%">
+        <el-table-column label="#"
+                         type="index"
+                         width="60"
+                         align="left">
+            <template scope="scope">
+                <span>{{(form.pageIndex - 1) * form.pageSize + scope.$index + 1}}</span>
+            </template>
+        </el-table-column>
+        <el-table-column label="积分日志">
+            <template scope="scope">
+                {{ scope.row.subject }}<span v-if="scope.row.objectId>0">({{ scope.row.objectName }})</span>
+            </template>
+        </el-table-column>
+        <el-table-column label="积分时间" width="150">
+            <template scope="scope">
+                {{ utils.getFriendlyDate(scope.row.dateStr) }}
+            </template>
+        </el-table-column>
+        <el-table-column label="积分" width="100">
+            <template scope="scope">
+                + {{ scope.row.point }}
+            </template>
+        </el-table-column>
+        @await Html.PartialAsync("_PartialTableEmpty")
+    </el-table>
+    <div style="height:18px;"></div>
+    <el-row>
+        <el-col :span="24" align="left">
+            <el-pagination background
+                           v-on:current-change="handleCurrentChange"
+                           :current-page="form.pageIndex"
+                           :page-size="form.pageSize"
+                           layout="total, prev, pager, next, jumper"
+                           :total="total">
+            </el-pagination>
+        </el-col>
+    </el-row>
+</div>
+
+@section Scripts{
+<script src="/sitefiles/assets/js/admin/common/userDocPointLog.js" type="text/javascript"></script>
+}

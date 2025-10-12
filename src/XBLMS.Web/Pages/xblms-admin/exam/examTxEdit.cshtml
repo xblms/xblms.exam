@@ -1,0 +1,39 @@
+@page
+@{ Layout = "_Layout"; }
+
+<el-card>
+    <div slot="header" class="clearfix">
+        <span>{{ id>0 ? '修改' : '新增' }}题型</span>
+        <el-button style="float: right;padding:3px 0;" type="text" v-on:click="utils.closeLayerSelf"><i class="el-icon-close"></i></el-button>
+    </div>
+    <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-180) + 'px' }">
+        <div style="margin-right:18px;">
+            <el-form v-on:submit.native.prevent :size="euiSize" ref="form" :model="form" label-width="120px">
+                <el-form-item label="题型名称" prop="name" :rules="[{ required: true, message: '请输入题型名称' }]">
+                    <el-input v-model.trim="form.name" maxlength="10" show-word-limit placeholder="请输入题型名称"></el-input>
+                </el-form-item>
+                <el-form-item label="基本题型" prop="examTxBase" :rules="[{ required: true, message: '请选择题型' }]">
+                    <el-select v-model="form.examTxBase" class="form-control" :disabled="tmTotal>0">
+                        <el-option label="请选择基本题型" value=""></el-option>
+                        <el-option v-for="type in typeList" :label="type.label" :value="type.value" :key="type.value"></el-option>
+                    </el-select>
+                    <div class="tips" v-if="tmTotal>0" style="color:red;"><i class="el-icon-info"></i> 题库中已经存在该基本题型的题目，禁止修改基本题型。</div>
+                </el-form-item>
+                <el-form-item label="分数" prop="score" :rules="[{ required: true, message: '请输入分数' },{ validator:utils.validateInt }]">
+                    <el-input-number v-model="form.score" :min="1" :max="100" placeholder="请输入分数"></el-input-number>
+                </el-form-item>
+                <el-form-item label="排序" prop="taxis" :rules="[{ required: true, message: '请输入排序' },{ validator:utils.validateInt }]">
+                    <el-input-number v-model="form.taxis" :min="1" :max="1000" placeholder="请输入排序"></el-input-number>
+                </el-form-item>
+            </el-form>
+        </div>
+    </el-scrollbar>
+</el-card>
+<el-row align="center" style="margin-top:18px;">
+    <el-col :span="24" align="center">
+        <el-button icon="el-icon-check" type="primary" v-on:click="btnSubmitClick" :size="euiSize">确 定</el-button>
+        <el-button icon="el-icon-close" :size="euiSize" v-on:click="utils.closeLayerSelf">取 消</el-button>
+    </el-col>
+</el-row>
+@section Scripts{
+<script src="/sitefiles/assets/js/admin/exam/examTxEdit.js" type="text/javascript"></script> }

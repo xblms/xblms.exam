@@ -79,6 +79,9 @@ var data = utils.init({
   examPercent: 0,
   examMoniTotal: 0,
   examMoniPercent: 0,
+  examCerTotal: 0,
+  examQTotal: 0,
+  examAssTotal: 0,
 
   practiceAnswerTmTotal: 0,
   practiceAnswerPercent: 0,
@@ -89,23 +92,14 @@ var data = utils.init({
   practiceWrongTmTotal: 0,
   practiceWrongPercent: 0,
 
-  examPaper: null,
-  examMoni: null,
+  studyPlanTotalCredit: 0,
+  studyPlanTotalOverCredit: 0,
+  totalCourse: 0,
+  totalOverCourse: 0,
+  totalDuration: 0,
 
-  knowList:null,
-
-  topCer: null,
-  dateStr: null,
-
-  openMenus: [],
-
-  cerList: null,
-  todayExam: null,
-  taskPaperList: null,
-  taskQList: null,
-  taskAssList: null,
-  taskTotal: 0,
-  version: 'v8.0'
+  version: null,
+  systemCode: null
 });
 
 var methods = {
@@ -117,12 +111,16 @@ var methods = {
     $api.get($url, { params: { isApp: false } }).then(function (response) {
       var res = response.data;
 
+      $this.systemCode = res.systemCode;
       $this.user = res.user;
 
       $this.examTotal = res.examTotal;
       $this.examPercent = res.examPercent;
       $this.examMoniTotal = res.examMoniTotal;
       $this.examMoniPercent = res.examMoniPercent;
+      $this.examCerTotal = res.examCerTotal;
+      $this.examQTotal = res.examQTotal;
+      $this.examAssTotal = res.examAssTotal;
 
       $this.practiceAllPercent = res.practiceAllPercent;
       $this.practiceAllTmTotal = res.practiceAllTmTotal;
@@ -136,23 +134,16 @@ var methods = {
       $this.practiceCollectTmTotal = res.practiceCollectTmTotal;
       $this.practiceCollectPercent = res.practiceCollectPercent;
 
-      $this.examPaper = res.examPaper;
-      $this.examMoni = res.examMoni;
 
-      $this.topCer = res.topCer;
-      $this.dateStr = res.dateStr;
-
-      $this.cerList = res.cerList;
-      $this.knowList = res.knowList;
-      $this.todayExam = res.todayExam;
-      $this.taskPaperList = res.taskPaperList;
-      $this.taskQList = res.taskQList;
-      $this.taskAssList = res.taskAssList;
-      $this.taskTotal = res.taskTotal;
-
-      $this.openMenus = res.openMenus;
+      $this.studyPlanTotalCredit = res.studyPlanTotalCredit;
+      $this.studyPlanTotalOverCredit = res.studyPlanTotalOverCredit;
+      $this.totalCourse = res.totalCourse;
+      $this.totalOverCourse = res.totalOverCourse;
+      $this.totalDuration = res.totalDuration;
 
       $this.version = res.version;
+
+      top.utils.pointNotice(res.pointNotice);
 
       setTimeout(function () {
         $this.passSeries = [100];
@@ -167,12 +158,6 @@ var methods = {
     }).then(function () {
       utils.loading($this, false);
     });
-  },
-  btnUserMenuClick: function (command) {
-    top.$vue.btnUserMenuClick(command);
-  },
-  btnMoreMenuClick: function (command) {
-    top.$vue.btnTopMenuClick(command);
   },
   btnCreatePracticeClick: function (practiceType) {
     var $this = this;
@@ -194,7 +179,7 @@ var methods = {
               $this.apiCreatePractice(practiceType);
             }
             else {
-              utils.error("没有题目可以练习");
+              top.utils.error("没有题目可以练习");
             }
           }
           else if (practiceType === 'Wrong') {
@@ -202,7 +187,7 @@ var methods = {
               $this.apiCreatePractice(practiceType);
             }
             else {
-              utils.error("没有题目可以练习");
+              top.utils.error("没有题目可以练习");
             }
           }
         }
@@ -221,7 +206,7 @@ var methods = {
         $this.goPractice(res.id);
       }
       else {
-        utils.error(res.error);
+        utils.notifyError(res.error);
       }
 
     }).catch(function (error) {
@@ -240,57 +225,8 @@ var methods = {
       height: "88%"
     });
   },
-  btnViewKnowClick: function (row) {
-    utils.openTopLeft(row.name, utils.getKnowledgesUrl("knowledgesView", { id: row.id }));
-  },
-  btnViewAssClick: function (id) {
-    var $this = this;
-    top.utils.openLayer({
-      title: false,
-      closebtn: 0,
-      url: utils.getExamUrl('examAssessmenting', { id: id }),
-      width: "100%",
-      height: "100%",
-      end: function () {
-        $this.apiGet();
-      }
-    });
-  },
-  btnViewQClick: function (id) {
-    var $this = this;
-    top.utils.openLayer({
-      title: false,
-      closebtn: 0,
-      url: utils.getExamUrl('examQuestionnairing', { id: id }),
-      width: "100%",
-      height: "100%",
-      end: function () {
-        $this.apiGet();
-      }
-    });
-  },
-  btnViewPaperClick: function (id) {
-    var $this = this;
-    top.utils.openLayer({
-      title: false,
-      closebtn: 0,
-      url: utils.getExamUrl('examPaperInfo', { id: id }),
-      width: "78%",
-      height: "98%",
-      end: function () {
-        $this.apiGet();
-      }
-    });
-  },
-  btnViewCer: function (row) {
-    top.utils.openLayerPhoto({
-      title: row.name,
-      id: row.id,
-      src: row.cerImg + '?r=' + Math.random()
-    })
-  },
-  btnEventClick: function () {
-    utils.openTopLeft("考试日程", utils.getRootUrl("event"));
+  btnGiftsClick: function () {
+    location.href = utils.getGiftUrl("gifts");
   }
 };
 Vue.component("apexchart", {

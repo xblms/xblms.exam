@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using XBLMS.Dto;
 using XBLMS.Enums;
+using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
 {
@@ -10,6 +11,10 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
         [HttpPost, Route(RouteDelete)]
         public async Task<ActionResult<BoolResult>> Delete([FromBody] IdRequest request)
         {
+            if (!await _authManager.HasPermissionsAsync(MenuPermissionType.Delete))
+            {
+                return this.NoAuth();
+            }
 
             var roleInfo = await _roleRepository.GetRoleAsync(request.Id);
 

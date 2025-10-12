@@ -21,15 +21,18 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
         private readonly IAuthManager _authManager;
         private readonly IExamManager _examManager;
+        private readonly IStudyManager _studyManager;
         private readonly IExamQuestionnaireRepository _examQuestionnaireRepository;
         private readonly IExamQuestionnaireUserRepository _examQuestionnaireUserRepository;
         public ExamQuestionnaireController(IAuthManager authManager,
             IExamManager examManager,
+            IStudyManager studyManager,
             IExamQuestionnaireRepository examQuestionnaireRepository,
             IExamQuestionnaireUserRepository examQuestionnaireUserRepository)
         {
             _authManager = authManager;
             _examManager = examManager;
+            _studyManager = studyManager;
             _examQuestionnaireRepository = examQuestionnaireRepository;
             _examQuestionnaireUserRepository = examQuestionnaireUserRepository;
         }

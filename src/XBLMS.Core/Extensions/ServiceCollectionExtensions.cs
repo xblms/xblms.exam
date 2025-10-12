@@ -90,6 +90,7 @@ namespace XBLMS.Core.Extensions
 
         public static void AddTaskServices(this IServiceCollection services)
         {
+            services.AddHostedService<ScheduledHostedService>();
             services.AddHostedService<QueuedHostedService>();
             services.AddSingleton<ITaskManager, TaskManager>();
         }
@@ -105,6 +106,7 @@ namespace XBLMS.Core.Extensions
             services.AddScoped<IBlockManager, BlockManager>();
             services.AddScoped<IUploadManager, UploadManager>();
             services.AddScoped<IExamManager, ExamManager>();
+            services.AddScoped<IStudyManager, StudyManager>();
 
             services.AddSignalR();
             services.AddScoped<ISignalRHubManagerMessage, SignalRHubManagerMessage>();

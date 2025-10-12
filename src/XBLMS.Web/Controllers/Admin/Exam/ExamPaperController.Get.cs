@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using XBLMS.Utils;
 namespace XBLMS.Web.Controllers.Admin.Exam
@@ -15,25 +14,30 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 return this.NoAuth();
             }
 
-            var treeIds = new List<int>();
-            if (request.TreeId > 0)
-            {
-                if (request.TreeIsChildren)
-                {
-                    treeIds = await _examPaperTreeRepository.GetIdsAsync(request.TreeId);
-                }
-                else
-                {
-                    treeIds.Add(request.TreeId);
-                }
-            }
-            var (total, list) = await _examPaperRepository.GetListAsync(treeIds,request.Keyword, request.PageIndex, request.PageSize);
+            var adminAuth = await _authManager.GetAdminAuth();
+
+            var (total, list) = await _examPaperRepository.GetListAsync(adminAuth, request.TreeIsChildren, request.TreeId, request.Keyword, request.PageIndex, request.PageSize);
+
             if (total > 0)
             {
                 foreach (var item in list)
                 {
                     var markCount = await _examPaperStartRepository.CountByMarkAsync(item.Id);
                     item.Set("MarkCount", markCount);
+
+                    var creatorAdmin = await _adminRepository.GetByUserIdAsync(item.CreatorId);
+                    if (creatorAdmin != null)
+                    {
+                        item.Set("Creator", creatorAdmin.DisplayName);
+                    }
+                    else
+                    {
+                        item.CreatorId = 0;
+                        item.Set("Creator", "已删除");
+                    }
+
+                    var useCount = await _studyManager.GetUseCountByPaperId(item.Id);
+                    item.Set("UseCount", useCount);
                 }
             }
             return new GetResult

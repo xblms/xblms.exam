@@ -5,6 +5,7 @@ namespace XBLMS.Services
 {
     public partial interface IPathManager
     {
+        Task<string> GetServerFileUrl(string url);
         string ContentRootPath { get; }
 
         string WebRootPath { get; }

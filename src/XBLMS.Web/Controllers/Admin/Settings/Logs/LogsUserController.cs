@@ -43,6 +43,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Logs
 
         public async Task<PageResult<Log>> GetResultsAsync(SearchRequest request)
         {
+            var adminAuth = await _authManager.GetAdminAuth();
             var userId = 0;
             if (!string.IsNullOrEmpty(request.UserName))
             {
@@ -58,8 +59,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Logs
                 userId = user.Id;
             }
 
-            var count = await _logRepository.GetUserLogsCountAsync(userId, request.Keyword, request.DateFrom, request.DateTo);
-            var userLogs = await _logRepository.GetUserLogsAsync(userId, request.Keyword, request.DateFrom, request.DateTo, request.Offset, request.Limit);
+            var (count,userLogs) = await _logRepository.GetUserLogsAsync(adminAuth, userId, request.Keyword, request.DateFrom, request.DateTo, request.Offset, request.Limit);
             var logs = new List<Log>();
 
             foreach (var log in userLogs)

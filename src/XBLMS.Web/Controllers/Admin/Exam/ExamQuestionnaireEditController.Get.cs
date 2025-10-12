@@ -14,6 +14,8 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         [HttpGet, Route(Route)]
         public async Task<ActionResult<GetResult>> Get([FromQuery] IdRequest request)
         {
+            var adminAuth = await _authManager.GetAdminAuth();
+
             var paper = new ExamQuestionnaire();
             paper.Title = "调查问卷-" + StringUtils.PadZeroes(await _questionnaireRepository.MaxIdAsync() + 1, 5);
             if (request.Id > 0)
@@ -21,7 +23,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 paper = await _questionnaireRepository.GetAsync(request.Id);
             }
 
-            var userGroups = await _userGroupRepository.GetListWithoutLockedAsync();
+            var userGroups = await _userGroupRepository.GetListAsync(adminAuth, true);
             var tmList = await _questionnaireTmRepository.GetListAsync(paper.Id);
 
             var tmIndex = 0;
@@ -46,8 +48,12 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 }
                 item.Set("TmIndex", tmIndex);
             }
+
+            var config = await _configRepository.GetAsync();
+
             return new GetResult
             {
+                SystemCode = config.SystemCode,
                 Item = paper,
                 UserGroupList = userGroups,
                 TmList = tmList

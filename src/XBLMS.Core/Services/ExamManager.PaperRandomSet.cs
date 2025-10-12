@@ -1,11 +1,9 @@
-﻿using NPOI.SS.Formula.Functions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using XBLMS.Enums;
 using XBLMS.Models;
-using XBLMS.Utils;
 
 namespace XBLMS.Core.Services
 {
@@ -17,7 +15,7 @@ namespace XBLMS.Core.Services
             {
                 #region 固定出题
 
-                await _examPaperRandomConfigRepository.DeleteByPaperAsync(paper.Id);
+                await _databaseManager.ExamPaperRandomConfigRepository.DeleteByPaperAsync(paper.Id);
 
                 var paperRandom = new ExamPaperRandom()
                 {
@@ -25,33 +23,30 @@ namespace XBLMS.Core.Services
                 };
 
                 var txIds = new List<int>();
-                var randomId = await _examPaperRandomRepository.InsertAsync(paperRandom);
+                var randomId = await _databaseManager.ExamPaperRandomRepository.InsertAsync(paperRandom);
                 if (randomId > 0)
                 {
                     var tmIds = new List<int>();
                     var tmGroupIds = paper.TmGroupIds;
+                    var tmList = new List<ExamTm>();
                     if (tmGroupIds != null && tmGroupIds.Count > 0)
                     {
                         foreach (var tmGroupId in tmGroupIds)
                         {
-                            var tmGroup = await _examTmGroupRepository.GetAsync(tmGroupId);
-                            if (tmGroup != null && tmGroup.TmIds != null && tmGroup.TmIds.Count > 0)
+                            var tmGroup = await _databaseManager.ExamTmGroupRepository.GetAsync(tmGroupId);
+                            var groupTmList = await _databaseManager.ExamTmRepository.Group_GetTmListAsync(tmGroup);
+                            if (groupTmList != null && groupTmList.Count > 0)
                             {
-                                tmIds.AddRange(tmGroup.TmIds);
+                                tmList.AddRange(groupTmList);
                             }
                         }
 
                     }
-                    if (tmIds.Count > 0)
+                    if (tmList.Count > 0)
                     {
-                        tmIds = tmIds.Distinct().ToList();
-                        var tmList = await _examTmRepository.GetListWithOutLockedAsync(tmIds);
-                        if (tmList != null && tmList.Count > 0)
-                        {
-                            txIds = tmList.Select(tm => tm.TxId).ToList();
-                            await SetExamPaperRandomTm(tmList, paper, randomId);
-
-                        }
+                        tmList = tmList.DistinctBy(x => x.Id).ToList();
+                        txIds = tmList.Select(tm => tm.TxId).ToList();
+                        await SetExamPaperRandomTm(tmList, paper, randomId);
                     }
 
                 }
@@ -62,7 +57,7 @@ namespace XBLMS.Core.Services
                     var txs = new List<ExamTx>();
                     foreach (var txId in txIds)
                     {
-                        var tx = await _examTxRepository.GetAsync(txId);
+                        var tx = await _databaseManager.ExamTxRepository.GetAsync(txId);
                         if (tx != null)
                         {
                             txs.Add(tx);
@@ -73,7 +68,7 @@ namespace XBLMS.Core.Services
                     {
                         foreach (var tx in txs)
                         {
-                            var tmList = await _examPaperRandomTmRepository.GetListAsync(randomId, tx.Id, paper.Id);
+                            var tmList = await _databaseManager.ExamPaperRandomTmRepository.GetListAsync(randomId, tx.Id, paper.Id);
                             var tmTotal = 0;
                             decimal scoreTotal = 0;
                             var tmIds = new List<int>();
@@ -83,7 +78,7 @@ namespace XBLMS.Core.Services
                                 scoreTotal = tmList.Sum(tm => tm.Score);
                                 tmIds = tmList.Select(tm => tm.Id).ToList();
                             }
-                            await _examPaperRandomConfigRepository.InsertAsync(new ExamPaperRandomConfig
+                            await _databaseManager.ExamPaperRandomConfigRepository.InsertAsync(new ExamPaperRandomConfig
                             {
                                 ExamPaperId = paper.Id,
                                 TxId = tx.Id,
@@ -121,36 +116,30 @@ namespace XBLMS.Core.Services
                 hasTmGroup = true;
                 foreach (var tmGroupId in tmGroupIds)
                 {
-                    var tmGroup = await _examTmGroupRepository.GetAsync(tmGroupId);
+                    var tmGroup = await _databaseManager.ExamTmGroupRepository.GetAsync(tmGroupId);
                     if (tmGroup != null)
                     {
-                        if (tmGroup.GroupType == TmGroupType.Fixed && tmGroup.TmIds != null && tmGroup.TmIds.Count > 0)
+                        if (tmGroup.GroupType == TmGroupType.All)
                         {
-                            if (tmGroup.TmIds != null && tmGroup.TmIds.Count > 0)
-                            {
-                                tmIds.AddRange(tmGroup.TmIds);
-                            }
-
+                            allTm = true;
+                            break;
                         }
-                        if (tmGroup.GroupType == TmGroupType.Range)
+                        else
                         {
-                            var tmIdsByGroup = await _examTmRepository.Group_RangeIdsAsync(tmGroup);
+                            var tmIdsByGroup = await _databaseManager.ExamTmRepository.Group_RangeIdsAsync(tmGroup);
                             if (tmIdsByGroup != null && tmIdsByGroup.Count > 0)
                             {
                                 tmIds.AddRange(tmIdsByGroup);
                             }
                         }
-                        if (tmGroup.GroupType == TmGroupType.All)
-                        {
-                            allTm = true;
-                        }
                     }
                 }
 
             }
-            else
+
+            if (!allTm && tmIds.Count > 0)
             {
-                allTm = true;
+                tmIds = tmIds.Distinct().ToList();
             }
 
             if (paper.RandomCount > 0)
@@ -161,34 +150,34 @@ namespace XBLMS.Core.Services
                     {
                         ExamPaperId = paper.Id,
                     };
-                    var randomId = await _examPaperRandomRepository.InsertAsync(paperRandom);
-                    var configList = await _examPaperRandomConfigRepository.GetListAsync(paper.Id);
+                    var randomId = await _databaseManager.ExamPaperRandomRepository.InsertAsync(paperRandom);
+                    var configList = await _databaseManager.ExamPaperRandomConfigRepository.GetListAsync(paper.Id);
                     if (configList != null && configList.Count > 0)
                     {
                         var tms = new List<ExamTm>();
                         foreach (var config in configList)
                         {
-                            var tmList = await _examTmRepository.GetListByRandomAsync(allTm, hasTmGroup, tmIds, config.TxId, config.Nandu1TmCount, 0, 0, 0, 0);
+                            var tmList = await _databaseManager.ExamTmRepository.GetListByRandomAsync(allTm, hasTmGroup, tmIds, config.TxId, config.Nandu1TmCount, 0, 0, 0, 0);
                             if (tmList != null && tmList.Count > 0)
                             {
                                 tms.AddRange(tmList);
                             }
-                            tmList = await _examTmRepository.GetListByRandomAsync(allTm, hasTmGroup, tmIds, config.TxId, 0, config.Nandu2TmCount, 0, 0, 0);
+                            tmList = await _databaseManager.ExamTmRepository.GetListByRandomAsync(allTm, hasTmGroup, tmIds, config.TxId, 0, config.Nandu2TmCount, 0, 0, 0);
                             if (tmList != null && tmList.Count > 0)
                             {
                                 tms.AddRange(tmList);
                             }
-                            tmList = await _examTmRepository.GetListByRandomAsync(allTm, hasTmGroup, tmIds, config.TxId, 0, 0, config.Nandu3TmCount, 0, 0);
+                            tmList = await _databaseManager.ExamTmRepository.GetListByRandomAsync(allTm, hasTmGroup, tmIds, config.TxId, 0, 0, config.Nandu3TmCount, 0, 0);
                             if (tmList != null && tmList.Count > 0)
                             {
                                 tms.AddRange(tmList);
                             }
-                            tmList = await _examTmRepository.GetListByRandomAsync(allTm, hasTmGroup, tmIds, config.TxId, 0, 0, 0, config.Nandu4TmCount, 0);
+                            tmList = await _databaseManager.ExamTmRepository.GetListByRandomAsync(allTm, hasTmGroup, tmIds, config.TxId, 0, 0, 0, config.Nandu4TmCount, 0);
                             if (tmList != null && tmList.Count > 0)
                             {
                                 tms.AddRange(tmList);
                             }
-                            tmList = await _examTmRepository.GetListByRandomAsync(allTm, hasTmGroup, tmIds, config.TxId, 0, 0, 0, 0, config.Nandu5TmCount);
+                            tmList = await _databaseManager.ExamTmRepository.GetListByRandomAsync(allTm, hasTmGroup, tmIds, config.TxId, 0, 0, 0, 0, config.Nandu5TmCount);
                             if (tmList != null && tmList.Count > 0)
                             {
                                 tms.AddRange(tmList);
@@ -211,7 +200,7 @@ namespace XBLMS.Core.Services
                 var tmCount = 0;
                 decimal tmTotalScore = 0;
 
-                var examConfig = await _examPaperRandomConfigRepository.GetListAsync(paper.Id);
+                var examConfig = await _databaseManager.ExamPaperRandomConfigRepository.GetListAsync(paper.Id);
                 foreach (var tm in tmList)
                 {
                     var tmScore = tm.Score;
@@ -220,7 +209,7 @@ namespace XBLMS.Core.Services
                     {
                         tmScore = tm.Score;
 
-                        var tx = await _examTxRepository.GetAsync(tm.TxId);
+                        var tx = await _databaseManager.ExamTxRepository.GetAsync(tm.TxId);
                         if (paper.TmRandomType == ExamPaperTmRandomType.RandomNone)
                         {
                             tmScore = tx.Score;
@@ -268,7 +257,6 @@ namespace XBLMS.Core.Services
                         WrongCount = tm.WrongCount,
                         Zhishidian = tm.Zhishidian,
                     };
-
                     randomTm.Set("options", tm.Get("options"));
                     randomTm.Set("optionsValues", tm.Get("optionsValues"));
                     randomTmList.Add(randomTm);
@@ -315,12 +303,12 @@ namespace XBLMS.Core.Services
 
                 foreach (var tm in randomTmList)
                 {
-                    var randomTmId = await _examPaperRandomTmRepository.InsertAsync(tm);
+                    var randomTmId = await _databaseManager.ExamPaperRandomTmRepository.InsertAsync(tm);
 
-                    var tx = await _examTxRepository.GetAsync(tm.TxId);
+                    var tx = await _databaseManager.ExamTxRepository.GetAsync(tm.TxId);
                     if (tx.ExamTxBase == ExamTxBase.Zuheti)
                     {
-                        var smallList = await _examTmSmallRepository.GetListAsync(tm.SourceTmId);
+                        var smallList = await _databaseManager.ExamTmSmallRepository.GetListAsync(tm.SourceTmId);
 
                         if (smallList != null && smallList.Count > 0)
                         {
@@ -376,7 +364,7 @@ namespace XBLMS.Core.Services
                                 }
 
 
-                                await _examPaperRandomTmSmallRepository.InsertAsync(newSmall);
+                                await _databaseManager.ExamPaperRandomTmSmallRepository.InsertAsync(newSmall);
                             }
                         }
 

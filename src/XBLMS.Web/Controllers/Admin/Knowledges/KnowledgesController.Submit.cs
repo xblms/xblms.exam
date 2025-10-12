@@ -11,7 +11,8 @@ namespace XBLMS.Web.Controllers.Admin.Knowledges
         [HttpPost, Route(RouteSubmit)]
         public async Task<ActionResult<BoolResult>> Submit([FromBody] GetSubmitRequest request)
         {
-            var admin = await _authManager.GetAdminAsync();
+            var adminAuth = await _authManager.GetAdminAuth();
+            var admin = adminAuth.Admin;
 
             if (request != null && request.List != null && request.List.Count > 0)
             {
@@ -20,11 +21,14 @@ namespace XBLMS.Web.Controllers.Admin.Knowledges
                 foreach (var item in request.List)
                 {
                     item.CreatorId = admin.Id;
-                    item.CompanyId = admin.CompanyId;
+                    item.CompanyId = adminAuth.CurCompanyId;
                     item.DepartmentId = admin.DepartmentId;
+                    item.CompanyParentPath = adminAuth.CompanyParentPath;
+                    item.DepartmentParentPath = admin.DepartmentParentPath;
 
                     item.TreeId = tree.Id;
                     item.TreeParentPath = tree.ParentPath;
+
                     await _knowlegesRepository.InsertAsync(item);
 
                     await _authManager.AddAdminLogAsync("新增知识库", item.Name);

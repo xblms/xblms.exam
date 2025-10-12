@@ -19,6 +19,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         private const string Route = "exam/examPaperEdit";
         private const string RouteGetConfig = Route + "/getConfig";
 
+        private readonly IConfigRepository _configRepository;
         private readonly IAuthManager _authManager;
         private readonly IExamPaperRepository _examPaperRepository;
         private readonly IExamPaperTreeRepository _examPaperTreeRepository;
@@ -35,7 +36,9 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         private readonly IExamPaperUserRepository _examPaperUserRepository;
         private readonly IExamPaperStartRepository _examPaperStartRepository;
 
-        public ExamPaperEditController(IAuthManager authManager,
+        public ExamPaperEditController(
+            IConfigRepository configRepository,
+            IAuthManager authManager,
             IExamPaperRepository examPaperRepository,
             IExamPaperTreeRepository examPaperTreeRepository,
             IExamTmGroupRepository examTmGroupRepository,
@@ -47,10 +50,11 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             IExamPaperRandomRepository examPaperRandomRepository,
             IExamPaperRandomConfigRepository examPaperRandomConfigRepository,
             IExamPaperRandomTmRepository examPaperRandomTmRepository,
-            IExamPaperAnswerRepository examPaperAnswerRepository, 
+            IExamPaperAnswerRepository examPaperAnswerRepository,
             IExamPaperUserRepository examPaperUserRepository,
             IExamPaperStartRepository examPaperStartRepository)
         {
+            _configRepository = configRepository;
             _authManager = authManager;
             _examPaperRepository = examPaperRepository;
             _examPaperTreeRepository = examPaperTreeRepository;
@@ -86,6 +90,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             public List<UserGroup> UserGroupList { get; set; }
             public List<ExamCer> CerList { get; set; }
             public List<ExamPaperRandomConfig> ConfigList { get; set; }
+            public SystemCode SystemCode { get; set; }
         }
         public class GetSubmitRequest
         {

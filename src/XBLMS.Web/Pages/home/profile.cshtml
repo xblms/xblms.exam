@@ -6,43 +6,28 @@
         .el-upload, .el-upload-dragger {
             width: 150px;
         }
-
-        .el-button-group .el-dropdown {
-            float: left;
-            margin-top: -2.5px;
-            margin-right: -1px;
-        }
-
         .avatar {
             width: 158px;
             height: 158px;
             display: block;
         }
 
-        body {
+        body,html {
             padding: 0;
             margin: 0;
-            background-color: #ffffff;
         }
 
-        html {
-            padding: 0;
-            margin: 0;
-            background-color: #ffffff;
-        }
   </style>
 }
-<el-card class="rounded-0">
-    <div class="d-flex justify-content-between align-items-center">
-        <div>
-            <h2 class="h1 fw-bold">修改个人资料</h2>
-        </div>
+<div class="rounded-0 shadow p-3 bg-white sticky-top">
+    <div class="fw-bolder text-center">
+        修改信息
     </div>
-</el-card>
-<div class="p-3">
+</div>
+<div class="p-5">
     <el-form v-on:submit.native.prevent ref="form" :model="form" status-icon label-width="140px">
         <el-form-item label="用户名">
-            <el-input v-model="form.userName" disabled></el-input>
+            {{ form.userName }}
         </el-form-item>
         <el-form-item label="姓名" prop="displayName" :rules="[{ required: true, message: '请输入姓名' }]">
             <el-input v-model="form.displayName"></el-input>
@@ -70,27 +55,8 @@
                 <i v-else class="el-icon-plus"></i>
             </el-upload>
         </el-form-item>
-        <el-form-item label="背景">
-            <el-upload :action="uploadUrl"
-                       :show-file-list="false"
-                       :headers="{Authorization: 'Bearer ' + $token}"
-                       list-type="picture-card"
-                       :before-upload="uploadBgBefore"
-                       :on-progress="uploadBgProgress"
-                       :on-success="uploadBgSuccess"
-                       :on-error="uploadBgError"
-                       :on-remove="uploadBgRemove"
-                       :multiple="false">
-                <img v-if="form.avatarbgUrl" :src="form.avatarbgUrl" class="avatar">
-                <i v-else class="el-icon-plus"></i>
-            </el-upload>
-        </el-form-item>
-        <el-form-item>
-            <el-divider></el-divider>
-        </el-form-item>
-        <el-form-item>
-            <el-button icon="el-icon-check" type="primary" v-on:click="btnSubmitClick">保 存</el-button>
-            <el-button type="primary" plain icon="el-icon-back" v-on:click="top.$vue.btnTopMenuClick('index')">返 回</el-button>
+        <el-form-item class="mt-5">
+            <el-button plain icon="el-icon-check" type="primary" v-on:click="btnSubmitClick">保 存</el-button>
         </el-form-item>
     </el-form>
 </div>

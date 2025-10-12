@@ -1,0 +1,95 @@
+<template v-for="style in styles" :key="style.attributeName">
+  <template v-if="style.inputType === 'TextArea'">
+    <el-form-item :label="style.displayName" :prop="utils.toCamelCase(style.attributeName)" :rules="utils.getRules(style.rules)">
+      <el-input
+        v-model="form[utils.toCamelCase(style.attributeName)]"
+        type="textarea"
+        size="small"
+        :placeholder="style.helpText"
+        :autosize="{ minRows: 4, maxRows: 10}">
+      </el-input>
+    </el-form-item>
+  </template>
+  <!-- Text -->
+  <template v-else-if="style.inputType === 'Text'">
+    <el-form-item :label="style.displayName" :prop="utils.toCamelCase(style.attributeName)" :rules="utils.getRules(style.rules)">
+      <el-input v-model="form[utils.toCamelCase(style.attributeName)]" :placeholder="style.helpText"></el-input>
+    </el-form-item>
+  </template>
+  <!-- Number -->
+  <template v-else-if="style.inputType === 'Number'">
+    <el-form-item :label="style.displayName" :prop="utils.toCamelCase(style.attributeName)" :rules="utils.getRules(style.rules)">
+      <el-input v-model.number="form[utils.toCamelCase(style.attributeName)]" :placeholder="style.helpText"></el-input>
+    </el-form-item>
+  </template>
+  <!-- CheckBox -->
+  <template v-else-if="style.inputType === 'CheckBox'">
+    <el-form-item :label="style.displayName" :prop="utils.toCamelCase(style.attributeName)" :rules="utils.getRules(style.rules)">
+      <el-checkbox-group v-model="form[utils.toCamelCase(style.attributeName)]">
+          <el-checkbox v-for="item in style.items" :key="item.value" :label="item.value">{{item.label}}</el-checkbox>
+      </el-checkbox-group>
+      <div class="tips" v-if="style.helpText">{{style.helpText}}</div>
+    </el-form-item>
+  </template>
+  <!-- Radio -->
+  <template v-else-if="style.inputType === 'Radio'">
+    <el-form-item :label="style.displayName" :prop="utils.toCamelCase(style.attributeName)" :rules="utils.getRules(style.rules)">
+      <el-radio-group v-model="form[utils.toCamelCase(style.attributeName)]">
+          <el-radio v-for="item in style.items" :key="item.value" :label="item.value">{{item.label}}</el-radio>
+      </el-radio-group>
+      <div class="tips" v-if="style.helpText">{{style.helpText}}</div>
+    </el-form-item>
+  </template>
+  <!-- SelectOne -->
+  <template v-else-if="style.inputType === 'SelectOne'">
+    <el-form-item :label="style.displayName" :prop="utils.toCamelCase(style.attributeName)" :rules="utils.getRules(style.rules)">
+      <el-select v-model="form[utils.toCamelCase(style.attributeName)]" :placeholder="style.helpText || '请选择'">
+        <el-option
+          v-for="item in style.items"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"></el-option>
+      </el-select>
+    </el-form-item>
+  </template>
+  <!-- SelectMultiple -->
+  <template v-else-if="style.inputType === 'SelectMultiple'">
+    <el-form-item :label="style.displayName" :prop="utils.toCamelCase(style.attributeName)" :rules="utils.getRules(style.rules)">
+      <el-select v-model="form[utils.toCamelCase(style.attributeName)]" multiple :placeholder="style.helpText || '请选择'">
+        <el-option
+          v-for="item in style.items"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"></el-option>
+      </el-select>
+    </el-form-item>
+  </template>
+  <!-- Date -->
+  <template v-else-if="style.inputType === 'Date'">
+    <el-form-item :label="style.displayName" :prop="utils.toCamelCase(style.attributeName)" :rules="utils.getRules(style.rules)">
+      <el-date-picker
+        v-model="form[utils.toCamelCase(style.attributeName)]"
+        type="date"
+        value-format="yyyy-MM-ddTHH:mm:ss.000Z"
+        :placeholder="style.helpText || '请选择日期'">
+      </el-date-picker>
+    </el-form-item>
+  </template>
+  <!-- DateTime -->
+  <template v-else-if="style.inputType === 'DateTime'">
+    <el-form-item :label="style.displayName" :prop="utils.toCamelCase(style.attributeName)" :rules="utils.getRules(style.rules)">
+      <el-date-picker
+        v-model="form[utils.toCamelCase(style.attributeName)]"
+        type="datetime"
+        value-format="yyyy-MM-ddTHH:mm:ss.000Z"
+        :placeholder="style.helpText || '请选择日期时间'">
+      </el-date-picker>
+    </el-form-item>
+  </template>
+  <!-- Customize -->
+  <template v-else-if="style.inputType === 'Customize'">
+    <el-form-item :label="style.displayName" :prop="utils.toCamelCase(style.attributeName)" :rules="utils.getRules(style.rules)">
+      <div v-html="style.customizeCode"></div>
+    </el-form-item>
+  </template>
+</template>

@@ -4,6 +4,7 @@ var $urlRemove = $url + '/delGroupTm';
 var $urlAdd = $url + '/setGroupTm';
 
 var $treeUrl = '/exam/examTmTree';
+var $treeUrlTmTotal = $treeUrl + '/tmTotal';
 
 var data = utils.init({
   id: utils.getQueryInt("id"),
@@ -19,9 +20,22 @@ var data = utils.init({
     pageIndex: 1,
     pageSize: PER_PAGE
   },
+  formSInline: {
+    id: utils.getQueryInt("id"),
+    treeIsChildren: true,
+    treeId: 0,
+    txId: null,
+    nandu: null,
+    keyword: '',
+    order: '',
+    orderType: '',
+    pageIndex: 1,
+    pageSize: PER_PAGE
+  },
   tmList: null,
   tmTotal: 0,
   tmSelectList: null,
+  tmSelectTotal: 0,
   txList: null,
   orderTypeList: null,
 
@@ -67,10 +81,11 @@ var methods = {
   apiGetSelect: function () {
     var $this = this;
     utils.loading(this, true);
-    $api.get($urlGetSelect, { params: { id: $this.id } }).then(function (response) {
+    $api.get($urlGetSelect, { params: $this.formSInline }).then(function (response) {
       var res = response.data;
 
       $this.tmSelectList = res.items;
+      $this.tmSelectTotal = res.total;
 
     }).catch(function (error) {
       utils.error(error, { layer: true });
@@ -95,7 +110,7 @@ var methods = {
       });
     }
     else {
-      utils.error("请选择题目", { layer:true });
+      utils.error("请选择题目", { layer: true });
     }
 
   },
@@ -142,10 +157,10 @@ var methods = {
   apiRemove: function (id) {
     var $this = this;
     utils.loading(this, true);
-    $api.post($urlRemove, { id: this.id,ids:[id] }).then(function (response) {
+    $api.post($urlRemove, { id: this.id, ids: [id] }).then(function (response) {
       var res = response.data;
       if (res.value) {
-        utils.success('移出成功！', { layer: true });
+        utils.success('操作成功！', { layer: true });
       }
     }).catch(function (error) {
       utils.error(error);
@@ -157,10 +172,10 @@ var methods = {
   apiRemoves: function (ids) {
     var $this = this;
     utils.loading(this, true);
-    $api.post($urlRemove, { id: this.id, ids:ids }).then(function (response) {
+    $api.post($urlRemove, { id: this.id, ids: ids }).then(function (response) {
       var res = response.data;
       if (res.value) {
-        utils.success('移出成功！', { layer: true });
+        utils.success('操作成功！', { layer: true });
       }
     }).catch(function (error) {
       utils.error(error);
@@ -175,7 +190,7 @@ var methods = {
     $api.post($urlAdd, { id: this.id, ids: [id] }).then(function (response) {
       var res = response.data;
       if (res.value) {
-        utils.success('添加成功！', { layer: true });
+        utils.success('操作成功！', { layer: true });
       }
     }).catch(function (error) {
       utils.error(error);
@@ -190,7 +205,7 @@ var methods = {
     $api.post($urlAdd, { id: this.id, ids: ids }).then(function (response) {
       var res = response.data;
       if (res.value) {
-        utils.success('添加成功！', { layer: true });
+        utils.success('操作成功！', { layer: true });
       }
     }).catch(function (error) {
       utils.error(error);
@@ -202,6 +217,10 @@ var methods = {
   handleCurrentChange: function (val) {
     this.formInline.pageIndex = val;
     this.apiGet();
+  },
+  handleSCurrentChange: function (val) {
+    this.formSInline.pageIndex = val;
+    this.apiGetSelect();
   },
   btnSearchClick: function () {
     this.formInline.treeId = this.treeSelectId;
@@ -218,7 +237,12 @@ var methods = {
       height: "88%"
     });
   },
-
+  rowSelectClick(row, column, event) {
+    this.$refs.tmSelectTable.toggleRowSelection(row);
+  },
+  rowClick(row, column, event) {
+    this.$refs.tmTable.toggleRowSelection(row);
+  },
 
   //tree
   apiGetTree: function () {
@@ -235,127 +259,43 @@ var methods = {
       utils.loading($this, false);
       $this.$nextTick(() => {
         $this.treeDefaultExpandedKeys = $this.treeDefaultExpandedSetKeys;
+        $this.apiGetTmTotal();
       })
     });
   },
-  treeBtnHidePopover: function () {
-    this.treePopoverVisibles = this.treePopoverVisibles.map(item => false);
+  apiGetTmTotal: function () {
+    var $this = this;
+    setTimeout(function () {
+      if ($this.treeItems && $this.treeItems.length > 0) {
+        $this.treeItems.forEach(item => {
+          $api.get($treeUrlTmTotal, { params: { id: item.id } }).then(function (response) {
+            var res = response.data;
+            item.total = res.total;
+            item.selfTotal = res.count;
+            if (item.children && item.children.length > 0) {
+              $this.apiGetTmTotalChildren(item.children);
+            }
+          }).catch(function () {
+          }).then(function () {
+          });
+        })
+      }
+    }, 200);
   },
-  treeClearPopover: function () {
-    this.treeEditValid = false;
-    this.treePopoverVisibles = this.treePopoverVisibles.map(item => false);
-    this.treeAdd = false;
-    this.treeUpdate = false;
-  },
-
-  treeBtnEditClick: function (node, isAdd) {
-    if (isAdd) {
-      this.treeAdd = true;
-      this.treeUpdate = false;
-    }
-    else {
-      this.treeAdd = false;
-      this.treeUpdate = true;
-    }
-  },
-  treeBtnDeleteClick: function (node, data) {
-    if (data.total > 0 || data.selfTotal > 0) {
-      utils.error("该分类下有题目数据，请勿删除");
-    }
-    else {
-      var $this = this;
-      this.treeClearPopover();
-      top.utils.alertDelete({
-        title: '删除分类',
-        text: '此操作将删除分类及所有下级: ' + data.label + '，确定吗？',
-        callback: function () {
-          $this.treeApiDelete(node, data);
+  apiGetTmTotalChildren: function (childrenItems) {
+    var $this = this;
+    childrenItems.forEach(item => {
+      $api.get($treeUrlTmTotal, { params: { id: item.id } }).then(function (response) {
+        var res = response.data;
+        item.total = res.total;
+        item.selfTotal = res.count;
+        if (item.children && item.children.length > 0) {
+          $this.apiGetTmTotalChildren(item.children);
         }
+      }).catch(function () {
+      }).then(function () {
       });
-    }
-  },
-  treeApiDelete: function (node, data) {
-    var $this = this;
-
-    utils.loading(this, true);
-    $api.post($treeUrlDelete, { id: data.id }).then(function (response) {
-      var res = response.data;
-      if (res.value) {
-        const parent = node.parent;
-        const children = parent.data.children || parent.data;
-        const index = children.findIndex(d => d.id === data.id);
-        children.splice(index, 1);
-        utils.success('删除成功');
-      }
-    }).catch(function (error) {
-      utils.error(error);
-    }).then(function () {
-      utils.loading($this, false);
-    });
-  },
-
-  treeApiAddSubmit: function () {
-    var $this = this;
-    this.treeClearPopover();
-    this.treeTopAddPopover = false;
-    utils.loading(this, true);
-    $api.post($treeUrlAdd, this.treeAddForm).then(function (response) {
-      var res = response.data;
-      if (res.value) {
-        utils.success("分类添加成功")
-      }
-    }).catch(function (error) {
-      utils.error(error);
-    }).then(function () {
-      utils.loading($this, false);
-      $this.treeClearForm();
-      $this.apiGetTree();
-    });
-  },
-
-  treeBtnUpdateSubmitClick: function (id) {
-    this.treeUpdateForm.id = id;
-    if (this.treeUpdateForm.name != '' && this.treeUpdateForm.name.length > 0) {
-      this.treeEditValid = false;
-      this.treeApiUpdateSubmit();
-    }
-    else {
-      this.treeEditValid = true;
-    }
-  },
-  treeApiUpdateSubmit: function () {
-    var $this = this;
-    this.treeClearPopover();
-    utils.loading(this, true);
-    $api.post($treeUrlUpdate, { item: this.treeUpdateForm }).then(function (response) {
-      var res = response.data;
-      if (res.value) {
-        utils.success("分类修改成功")
-      }
-    }).catch(function (error) {
-      utils.error(error);
-    }).then(function () {
-      utils.loading($this, false);
-      $this.treeClearForm();
-      $this.apiGetTree();
-    });
-  },
-  treeClearForm: function () {
-    this.treeAddForm.parentId = 0;
-    this.treeAddForm.names = "";
-    this.treeUpdateForm.id = 0;
-    this.treeUpdateForm.name = "";
-  },
-
-  treeBtnAddSubmitClick: function (parentId) {
-    this.treeAddForm.parentId = parentId;
-    if (this.treeAddForm.names != '' && this.treeAddForm.names.length > 0) {
-      this.treeEditValid = false;
-      this.treeApiAddSubmit();
-    }
-    else {
-      this.treeEditValid = true;
-    }
+    })
   },
   treeFilterNode(value, data, node) {
     if (!value) return true;

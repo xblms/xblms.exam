@@ -321,10 +321,8 @@ __pycache__/
 *.odx.cs
 *.xsd.cs
 /src/XBLMS.Web/key-*.xml
-/src/XBLMS.Web/wwwroot/index.html
-/src/XBLMS.Web/wwwroot/sitefiles/index.html
 /src/XBLMS.Web/xblms.json
 /src/XBLMS.Web/wwwroot/sitefiles/upload
 /src/XBLMS.Web/wwwroot/sitefiles/download
 /src/XBLMS.Web/wwwroot/sitefiles/dbbackup
-/src/XBLMS.Web/wwwroot/sitefiles/assets/uploadtemplates/XBLMES-è€ƒè¯•å®¢æˆ·ç«¯.zip
+/src/XBLMS.Web/wwwroot/sitefiles/assets/uploadtemplates/XBLMES-¿¼ÊÔ¿Í»§¶Ë.zip

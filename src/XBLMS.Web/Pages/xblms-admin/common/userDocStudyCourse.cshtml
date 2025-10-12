@@ -1,0 +1,116 @@
+﻿@page
+@{ Layout = "_Layout"; }
+
+
+@section Styles{
+    <link href="/sitefiles/assets/lib/geeks/css/theme.min.css" rel="stylesheet" type="text/css" />
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+            background: #fafafa;
+        }
+
+        html {
+            padding: 0;
+            margin: 0;
+            background: #fafafa;
+        }
+    </style>
+}
+
+<div class="p-3">
+    <el-form v-on:submit.native.prevent :inline="true" :model="form" :size="euiSize">
+        <el-form-item label="时间：从">
+            <el-date-picker v-model="form.dateFrom"
+                            type="date"
+                            value-format="yyyy-MM-ddTHH:mm:ss.000Z"
+                            placeholder="选择开始日期">
+            </el-date-picker>
+        </el-form-item>
+        <el-form-item label="到">
+            <el-date-picker v-model="form.dateTo"
+                            type="date"
+                            value-format="yyyy-MM-ddTHH:mm:ss.000Z"
+                            placeholder="选择结束日期">
+            </el-date-picker>
+        </el-form-item>
+        <el-form-item>
+            <el-button type="primary" v-on:click="btnSearchClick" icon="el-icon-search">查 询</el-button>
+        </el-form-item>
+    </el-form>
+    <el-table :data="list" :size="euiSize"
+              style="width: 100%">
+        <el-table-column label="#"
+                         type="index"
+                         width="60"
+                         align="left">
+            <template scope="scope">
+                <span>{{(form.pageIndex - 1) * form.pageSize + scope.$index + 1}}</span>
+            </template>
+        </el-table-column>
+        <el-table-column label="课程">
+            <template slot-scope="scope">
+                {{ scope.row.courseName }}
+            </template>
+        </el-table-column>
+        <el-table-column prop="credit" label="学分" width="120">
+        </el-table-column>
+        <el-table-column label="学时" width="120">
+            <template slot-scope="scope">
+                {{ utils.formatDuration(scope.row.totalDuration) }}/{{ utils.formatDuration(scope.row.course.duration) }}
+            </template>
+        </el-table-column>
+        <el-table-column prop="maxScore" label="成绩" width="100">
+        </el-table-column>
+        <el-table-column label="评价" width="100">
+            <template slot-scope="scope">
+                {{ scope.row.avgEvaluation}} <i class="el-icon-star-off text-warning"></i>
+            </template>
+        </el-table-column>
+        <el-table-column label="" width="100">
+            <template slot-scope="scope">
+                <span v-if="scope.row.offLine">
+                    <el-tag type="success" v-if="scope.row.isSignin" size="mini">已上课</el-tag>
+                    <el-tag type="warning" v-else size="mini">未上课</el-tag>
+                </span>
+                <span v-else>
+                    <el-tag type="success" size="mini">/</el-tag>
+                </span>
+            </template>
+        </el-table-column>
+        <el-table-column prop="stateStr" label="状态" width="100">
+            <template slot-scope="scope">
+                <el-tag type="success" v-if="scope.row.state==='Yiwancheng'" size="mini">{{ scope.row.stateStr }}</el-tag>
+                <el-tag type="warning" v-else size="mini">{{ scope.row.stateStr }}</el-tag>
+            </template>
+        </el-table-column>
+        <el-table-column label="完成时间" width="150">
+            <template slot-scope="scope">
+                <span v-if="scope.row.state==='Yiwancheng'">
+                    {{ scope.row.overStudyDateTime }}
+                </span>
+                <span v-else>
+                    /
+                </span>
+            </template>
+        </el-table-column>
+        @await Html.PartialAsync("_PartialTableEmpty")
+    </el-table>
+    <div style="height:18px;"></div>
+    <el-row>
+        <el-col :span="24" align="left">
+            <el-pagination background
+                           v-on:current-change="handleCurrentChange"
+                           :current-page="form.pageIndex"
+                           :page-size="form.pageSize"
+                           layout="total, prev, pager, next, jumper"
+                           :total="total">
+            </el-pagination>
+        </el-col>
+    </el-row>
+</div>
+
+@section Scripts{
+<script src="/sitefiles/assets/js/admin/common/userDocStudyCourse.js" type="text/javascript"></script>
+}

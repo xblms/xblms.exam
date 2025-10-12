@@ -22,7 +22,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                     var userExamTimes = await _examPaperStartRepository.CountAsync(item.ExamPaperId, user.Id);
                     user.Set("ExamTimes", userExamTimes);
 
-                    var maxScore = await _examPaperStartRepository.GetMaxScoreAsync(user.Id, item.ExamPaperId);
+                    var maxScore = await _examPaperStartRepository.GetMaxScoreAsync(user.Id, item.ExamPaperId, 0, 0);
                     user.Set("MaxScore", maxScore);
 
                     item.Set("User", user);
@@ -125,7 +125,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         public async Task<ActionResult<StringResult>> UserExport([FromBody] GetUserRequest request)
         {
             var (total, list) = await _examPaperUserRepository.GetListAsync(request.Id, request.Keywords, 1, int.MaxValue);
-       
+
 
             var paper = await _examPaperRepository.GetAsync(request.Id);
 
@@ -157,7 +157,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                     var user = await _organManager.GetUser(item.UserId);
 
                     var userExamTimes = await _examPaperStartRepository.CountAsync(item.ExamPaperId, user.Id);
-                    var maxScore = await _examPaperStartRepository.GetMaxScoreAsync(user.Id, item.ExamPaperId);
+                    var maxScore = await _examPaperStartRepository.GetMaxScoreAsync(user.Id, item.ExamPaperId, 0, 0 );
 
                     rows.Add(new List<string>
                     {

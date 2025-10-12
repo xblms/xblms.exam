@@ -15,7 +15,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
     public partial class ExamQuestionnaireAnalysisController
     {
         [HttpGet, Route(RouteExportWord)]
-        public async Task<ActionResult<StringResult>> ExportWord([FromQuery] IdRequest request)
+        public async Task<ActionResult<StringResult>> ExportWord([FromQuery] GetRequest request)
         {
             if (!await _authManager.HasPermissionsAsync(MenuPermissionType.Manage))
             {
@@ -36,7 +36,6 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             var fileWordPath = _pathManager.GetDownloadFilesPath($"{wordFileName}");
 
             FileUtils.CopyFile(wordPath, fileWordPath);
-
 
             var wordContent = new StringBuilder();
             wordContent.AppendFormat(@"<html><head></head><body>");
@@ -110,7 +109,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                                                 var keyword = $"{tmOptions[i]}_{smallOptions[smallcurent]}";
 
                                                 twoline.Add(smallOptions[smallcurent]);
-                                                var answerCount = await _questionnaireAnswerRepository.GetCountSubmitUser(paper.Id, smallid, keyword);
+                                                var answerCount = await _questionnaireAnswerRepository.GetCountSubmitUser(0, 0, paper.Id, smallid, keyword);
                                                 twoline.Add(answerCount.ToString());
                                             }
 
@@ -142,13 +141,15 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                                     var smallid = small.Id;
                                     var smalltitle = small.Title;
 
-                                    var twoline = new List<string>();
-                                    twoline.Add(smalltitle);
+                                    var twoline = new List<string>
+                                    {
+                                        smalltitle
+                                    };
 
                                     for (var j = 0; j < tmOptions.Count; j++)
                                     {
                                         var keyword = $"{tmOptions[j]}";
-                                        var answerCount = await _questionnaireAnswerRepository.GetCountSubmitUser(paper.Id, smallid, keyword);
+                                        var answerCount = await _questionnaireAnswerRepository.GetCountSubmitUser(0, 0, paper.Id, smallid, keyword);
                                         twoline.Add(answerCount.ToString());
                                     }
                                     smallValueList.Add(twoline);
@@ -164,7 +165,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                                     wordContent.Append("<tr>");
                                     for (var j = 0; j < smallValueList[i].Count; j++)
                                     {
-                                        wordContent.Append($"<td style='border:1px solid #000000;padding:10px 5px;'>{ smallValueList[i][j] }</td>");
+                                        wordContent.Append($"<td style='border:1px solid #000000;padding:10px 5px;'>{smallValueList[i][j]}</td>");
                                     }
                                     wordContent.Append("</tr>");
                                 }
@@ -180,7 +181,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                             var optionAnswer = new List<string>();
                             if (tm.Tx == ExamQuestionnaireTxType.Jiandati)
                             {
-                                var answerList = await _questionnaireAnswerRepository.GetListAnswer(paper.Id, tm.Id);
+                                var answerList = await _questionnaireAnswerRepository.GetListAnswer(0, 0, paper.Id, tm.Id);
                                 if (answerList != null && answerList.Count > 0)
                                 {
                                     foreach (var answer in answerList)
@@ -203,7 +204,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                                         var abcList = StringUtils.GetABC();
                                         var optionAnswerValue = abcList[i];
                                         optionsValues.Add(optionAnswerValue);
-                                        var answerCount = await _questionnaireAnswerRepository.GetCountSubmitUser(paper.Id, tm.Id, optionAnswerValue);
+                                        var answerCount = await _questionnaireAnswerRepository.GetCountSubmitUser(0, 0, paper.Id, tm.Id, optionAnswerValue);
                                         optionsAnswers[i] = answerCount;
                                         tmAnswerToTal += answerCount;
 
@@ -232,11 +233,8 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 }
             }
 
-
-
             wordContent.AppendFormat(@"</body></html>");
             wordContent.Replace("xblmtotal", $"（共{tmTotal}项,调查人次：{paper.AnswerTotal}）");
-
 
             await FileUtils.WriteTextAsync(fileHtmlPath, wordContent.ToString());
             var result = WordManager.HtmlToWord(fileHtmlPath, fileWordPath);

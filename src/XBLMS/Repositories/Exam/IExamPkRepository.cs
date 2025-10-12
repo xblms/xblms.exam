@@ -1,6 +1,7 @@
 using Datory;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using XBLMS.Dto;
 using XBLMS.Models;
 
 namespace XBLMS.Repositories
@@ -15,8 +16,9 @@ namespace XBLMS.Repositories
         Task UpdateAsync(ExamPk examPk);
         Task DeleteAsync(int id);
         Task<List<ExamPk>> GetChildList(int id);
+        Task<(int total, List<ExamPk> list)> GetListAsync(AdminAuth auth, string name, int pageIndex, int pageSize);
         Task<(int total, List<ExamPk> list)> GetListAsync(string name, int pageIndex, int pageSize);
-        Task<(int allCount, int addCount, int deleteCount, int lockedCount, int unLockedCount)> GetDataCount();
+        Task<(int allCount, int addCount, int deleteCount, int lockedCount, int unLockedCount)> GetDataCount(AdminAuth auth);
         Task<int> GetGroupCount(int groupId);
     }
 }

@@ -1,0 +1,167 @@
+﻿@page
+@{ Layout = "_Layout"; }
+@section Styles{
+    <style>
+        .el-tree-node__content{
+            height:100% !important;
+        }
+    </style>
+}
+<el-row :gutter="0">
+    <el-col :span="6">
+        <el-card style="border-radius:0;">
+            <el-form v-on:submit.native.prevent :size="euiSize">
+                <el-form-item label="">
+                    <el-input placeholder="关键字查询"
+                              v-model="filterText" prefix-icon="el-icon-search" clearable>
+                        <el-button slot="append" v-on:click="loadTreeSearch" icon="el-icon-search" :loading="treeLoading">查 询</el-button>
+                    </el-input>
+                </el-form-item>
+            </el-form>
+            <el-scrollbar class="scrollbar" :style="{height: $(window).height()-112 + 'px'}">
+                <div style="padding-right:15px;">
+                    <el-tree class="filter-tree"
+                             :data="organs"
+                             :empty-text="treeLoading?'正在加载...':'暂无数据'"
+                             v-on:node-click="btnTreeClick"
+                             node-key="guid"
+                             :props="{children: 'children', isLeaf:'isLeaf',label:'fullName'}"
+                             accordion
+                             :load="loadTree"
+                             lazy
+                             :filter-node-method="filterNode"
+                             ref="tree">
+                        <template slot-scope="{ node,data }">
+                            <span style="width:100%;font-size:14px;padding:5px 0;"><span v-html="node.label"></span><span style="color:darkgray;">({{ data.adminCount }}/{{ data.adminAllCount }})</span></span>
+                        </template>
+                    </el-tree>
+                </div>
+            </el-scrollbar>
+        </el-card>
+    </el-col>
+    <el-col :span="18">
+        <el-card shadow="never" style="border-radius:0;">
+            <el-form :size="euiSize" v-on:submit.native.prevent :inline="true" :model="formInline">
+                <el-form-item label="管理权限">
+                    <el-select v-model="formInline.role" placeholder="管理权限">
+                        <el-option label="<全部管理权限>" value=""></el-option>
+                        <el-option v-for="role in roles"
+                                   :key="role.value"
+                                   :label="role.label"
+                                   :value="role.value">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="排序">
+                    <el-select v-model="formInline.order" placeholder="排序">
+                        <el-option label="<默认>" value=""></el-option>
+                        <el-option label="登录名称" value="UserName"></el-option>
+                        <el-option label="上次登录日期" value="LastActivityDate"></el-option>
+                        <el-option label="创建日期" value="CreatedDate"></el-option>
+                        <el-option label="登录次数" value="CountOfLogin"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="上次登录">
+                    <el-select v-model="formInline.lastActivityDate" placeholder="上次登录">
+                        <el-option label="<全部时间>" :value="0"></el-option>
+                        <el-option label="1天内" :value="1"></el-option>
+                        <el-option label="2天内" :value="2"></el-option>
+                        <el-option label="3天内" :value="3"></el-option>
+                        <el-option label="1周内" :value="7"></el-option>
+                        <el-option label="1个月内" :value="30"></el-option>
+                        <el-option label="3个月内" :value="90"></el-option>
+                        <el-option label="半年内" :value="180"></el-option>
+                        <el-option label="1年内" :value="365"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="管理员">
+                    <el-input prefix-icon="el-icon-search" clearable v-model="formInline.keyword" placeholder="关键字"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" :size="euiSize" v-on:click="btnSearchClick" icon="el-icon-search">查 询</el-button>
+                    <el-button type="primary" :size="euiSize" plain icon="el-icon-plus" v-on:click="btnAddClick">
+                        新 增
+                    </el-button>
+                    <el-button type="primary" :size="euiSize" plain icon="el-icon-setting" v-on:click="btnRolesClick">
+                        分配角色
+                    </el-button>
+                </el-form-item>
+            </el-form>
+            <el-table ref="administratorsTable"
+                      :size="euiSize"
+                      :height="$(window).height()-208"
+                      v-on:selection-change="handleSelectionChange"
+                      :data="administrators">
+                <el-table-column type="selection" align="left"
+                                 width="28">
+                </el-table-column>
+                <el-table-column label="#"
+                                 type="index"
+                                 width="60"
+                                 align="left">
+                    <template scope="scope">
+                        <span>{{(formInline.currentPage - 1) * formInline.limit + scope.$index + 1}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="账号">
+                    <template slot-scope="scope">
+                        <el-link :underline="false" type="primary" v-on:click="btnViewClick(scope.row)">{{scope.row.userName}}</el-link>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="displayName"
+                                 label="姓名">
+                </el-table-column>
+                <el-table-column width="158"
+                                 prop="lastActivityDate"
+                                 label="上次登录">
+                </el-table-column>
+                <el-table-column prop="countOfLogin"
+                                 label="登录次数">
+                </el-table-column>
+                <el-table-column prop="roles"
+                                 label="权限">
+                </el-table-column>
+                <el-table-column label="状态" width="80">
+                    <template slot-scope="scope">
+                        <el-tag type="danger" size="mini" v-if="scope.row.locked">禁用</el-tag>
+                        <el-tag type="success" size="mini" v-else>启用</el-tag>
+                    </template>
+                </el-table-column>
+                <el-table-column label="" align="right" width="100">
+                    <template slot-scope="scope">
+                        <el-dropdown :show-timeout="0" placement="left">
+                            <el-button icon="el-icon-arrow-left" size="mini" v-on:click.stop="return false">
+                                操作
+                            </el-button>
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item icon="el-icon-edit" v-on:click.native="btnEditClick(scope.row)" v-if="scope.row.creatorId===adminId || adminId===1">修改</el-dropdown-item>
+                                <el-dropdown-item icon="el-icon-key" v-on:click.native="btnPasswordClick(scope.row)" v-if="scope.row.creatorId===adminId || adminId===1">更改密码</el-dropdown-item>
+                                <el-dropdown-item icon="el-icon-unlock" v-if="scope.row.locked" v-on:click.native="btnUnLockClick(scope.row)">解锁</el-dropdown-item>
+                                <el-dropdown-item icon="el-icon-lock" v-else v-on:click.native="btnLockClick(scope.row)" v-if="(scope.row.creatorId===adminId || adminId===1) && scope.row.id!==1">锁定</el-dropdown-item>
+                                <el-dropdown-item icon="el-icon-delete" style="color:red;" v-on:click.native="btnDeleteClick(scope.row)" divided v-if="(scope.row.creatorId===adminId || adminId===1) && scope.row.id!==1">删除</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
+                    </template>
+                </el-table-column>
+                @await Html.PartialAsync("_PartialTableEmpty")
+            </el-table>
+            <div style="height:12px;"></div>
+            <el-row>
+                <el-col :span="24" align="center">
+                    <el-pagination v-on:current-change="handleCurrentChange"
+                                   :current-page="formInline.currentPage"
+                                   background
+                                   :page-size="formInline.limit"
+                                   layout="total, prev, pager, next, jumper"
+                                   :total="count">
+                    </el-pagination>
+                </el-col>
+            </el-row>
+        </el-card>
+
+    </el-col>
+</el-row>
+
+@section Scripts{
+    <script src="/sitefiles/assets/js/admin/settings/administrators.js" type="text/javascript"></script>
+}

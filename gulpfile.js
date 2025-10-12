@@ -1,4 +1,4 @@
-const fs = require('fs-extra');
+﻿const fs = require('fs-extra');
 const del = require('del');
 const gulp = require('gulp');
 const through2 = require('through2');
@@ -9,7 +9,7 @@ const filter = require('gulp-filter');
 const runSequence = require('gulp4-run-sequence');
 
 let os = '';
-const version = process.env.PRODUCTVERSION || '8.1.8';
+const version = process.env.PRODUCTVERSION || '8.2';
 const timestamp = (new Date()).getTime();
 let publishDir = '';
 let htmlDict = {};
@@ -78,7 +78,7 @@ gulp.task("build-sln", function () {
 
 gulp.task("build-admin", function () {
   return gulp
-    .src("./src/XBLMS.Web/Pages/admin/**/*.cshtml")
+    .src("./src/XBLMS.Web/Pages/xblms-admin/**/*.cshtml")
     .pipe(through2.obj((file, enc, cb) => {
       cb(null, transform(file, htmlDict['_Layout']))
     }))
@@ -98,7 +98,7 @@ gulp.task("build-admin", function () {
         },
       })
     )
-    .pipe(gulp.dest(`./build-${os}/src/XBLMS.Web/wwwroot/admin`));
+    .pipe(gulp.dest(`./build-${os}/src/XBLMS.Web/wwwroot/xblms-admin`));
 });
 
 gulp.task("build-app", function () {
@@ -152,7 +152,7 @@ gulp.task("build-home", function () {
 });
 
 gulp.task('build-clean', function(){
-  return del([`./build-${os}/src/XBLMS.Web/Pages/admin/**`, `./build-${os}/src/XBLMS.Web/Pages/home/**`, `./build-${os}/src/XBLMS.Web/Pages/app/**`], {force:true});
+  return del([`./build-${os}/src/XBLMS.Web/Pages/xblms-admin/**`, `./build-${os}/src/XBLMS.Web/Pages/home/**`, `./build-${os}/src/XBLMS.Web/Pages/app/**`], {force:true});
 });
 
 gulp.task("build-linux-x64", async function () {

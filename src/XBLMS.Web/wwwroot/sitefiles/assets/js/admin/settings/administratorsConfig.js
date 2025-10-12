@@ -2,6 +2,7 @@
 
 var data = utils.init({
   form: {
+    adminDefaultPassword: null,
     adminUserNameMinLength: null,
     adminPasswordMinLength: null,
     adminPasswordRestriction: null,
@@ -25,6 +26,7 @@ var methods = {
     $api.get($url).then(function (response) {
       var res = response.data;
 
+      $this.form.adminDefaultPassword = res.config.adminDefaultPassword;
       $this.form.adminUserNameMinLength = res.config.adminUserNameMinLength;
       $this.form.adminPasswordMinLength = res.config.adminPasswordMinLength;
       $this.form.adminPasswordRestriction = res.config.adminPasswordRestriction;
@@ -49,6 +51,7 @@ var methods = {
 
     utils.loading(this, true);
     $api.post($url, {
+      adminDefaultPassword: this.form.adminDefaultPassword,
       adminUserNameMinLength: this.form.adminUserNameMinLength,
       adminPasswordMinLength: this.form.adminPasswordMinLength,
       adminPasswordRestriction: this.form.adminPasswordRestriction,
@@ -81,14 +84,14 @@ var methods = {
   btnSubmitClick: function () {
     var $this = this;
 
-    this.$refs.form.validate(function(valid) {
+    this.$refs.form.validate(function (valid) {
       if (valid) {
         $this.apiSubmit();
       }
     });
   },
 
-  btnCloseClick: function() {
+  btnCloseClick: function () {
     utils.removeTab();
   },
 };

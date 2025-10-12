@@ -15,10 +15,12 @@ namespace XBLMS.Web.Controllers.Admin
             if (!await _configRepository.IsNeedInstallAsync()) return Unauthorized();
 
             var databaseType = request.DatabaseType;
+
             var databaseName = (databaseType == DatabaseType.Dm || databaseType == DatabaseType.KingbaseES) ? request.DatabaseName : string.Empty;
+
             var connectionString = DbUtils.GetConnectionString(request.DatabaseType, request.DatabaseHost,
-                    request.IsDatabaseDefaultPort, TranslateUtils.ToInt(request.DatabasePort), request.DatabaseUserName,
-                    request.DatabasePassword, databaseName);
+                   request.IsDatabaseDefaultPort, TranslateUtils.ToInt(request.DatabasePort), request.DatabaseUserName,
+                   request.DatabasePassword, databaseName);
 
             var db = new Database(databaseType, connectionString);
 

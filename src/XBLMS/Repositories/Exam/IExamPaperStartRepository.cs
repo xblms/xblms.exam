@@ -9,9 +9,9 @@ namespace XBLMS.Repositories
     {
         Task<ExamPaperStart> GetAsync(int id);
         Task<int> CountAsync(int paperId, int userId);
-        Task<List<ExamPaperStart>> GetNoSubmitListAsync(int paperId, int userId);
-        Task<ExamPaperStart> GetNoSubmitAsync(int paperId, int userId);
+        Task<ExamPaperStart> GetNoSubmitAsync(int planId, int courseId, int paperId, int userId);
         Task<int> GetNoSubmitIdAsync(int paperId, int userId);
+        Task<List<ExamPaperStart>> GetNoSubmitListAsync(int paperId, int userId);
         Task<int> InsertAsync(ExamPaperStart item);
         Task DeleteByUserId(int userId);
         Task DeleteAsync(int id);
@@ -21,10 +21,9 @@ namespace XBLMS.Repositories
         Task IncrementAsync(int id);
         Task<List<ExamPaperStart>> GetListAsync(int paperId, int userId);
         Task<(int total, List<ExamPaperStart> list)> GetListAsync(int userId, string dateFrom, string dateTo, string keyWords, int pageIndex, int pageSize);
-        Task<(int total, List<ExamPaperStart> list)> GetListByAdminAsync(int paperId, string dateFrom, string dateTo, string keyWords, int pageIndex, int pageSize, bool isMark = true);
+        Task<(int total, List<ExamPaperStart> list)> GetListByAdminAsync(int paperId, int planId, int couresId, string dateFrom, string dateTo, string keyWords, int pageIndex, int pageSize, bool isMark = true);
         Task<(int total, List<ExamPaperStart> list)> GetListByMarkerAsync(int markerId, string keyWords, int pageIndex, int pageSize);
-
-        Task<decimal> GetMaxScoreAsync(int userId, int paperId);
+        Task<decimal> GetMaxScoreAsync(int userId, int paperId, int planId, int courseId);
         Task UpdateLockedAsync(int paperId, bool locked);
         Task UpdateKeyWordsAsync(int paperId, string keyWords);
 
@@ -36,5 +35,8 @@ namespace XBLMS.Repositories
         Task<int> CountByPassAsync(int paperId, int passScore);
         Task<int> CountByPassDistinctAsync(int paperId, int passScore);
         Task<int> CountByMarkAsync(int paperId);
+
+        Task<(int total, List<ExamPaperStart> list)> Analysis_GetListAsync(int userId, bool isMoni, string dateFrom, string dateTo, int pageIndex, int pageSize);
+        Task<(int total, int passTotal)> Analysis_GetTotalAsync(int userId, bool isMoni, string dateFrom, string dateTo);
     }
 }

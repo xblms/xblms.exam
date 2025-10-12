@@ -46,6 +46,7 @@ namespace XBLMS.Web.Controllers.Admin.Knowledges
         }
         public class GetResult
         {
+            public bool IsAdmin { get; set; }
             public int Total { get; set; }
             public List<Models.Knowledges> List { get; set; }
         }

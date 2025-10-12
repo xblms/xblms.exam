@@ -13,10 +13,9 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
         [HttpPost, Route(Route)]
         public async Task<ActionResult<BoolResult>> Submit([FromBody] SubmitRequest request)
         {
-
             var userId = request.UserId;
-
             var adminId = _authManager.AdminId;
+            var adminAuth = await _authManager.GetAdminAuth();
 
             Administrator administrator;
             var last = new Administrator();
@@ -63,33 +62,44 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
             administrator.Mobile = request.Mobile;
             administrator.Email = request.Email;
             administrator.Auth = request.Auth;
-
-
-            var company = await _organManager.GetCompanyByGuidAsync(request.OrganId);
-            var department = await _organManager.GetDepartmentByGuidAsync(request.OrganId);
-            var duty = await _organManager.GetDutyByGuidAsync(request.OrganId);
-            if (company != null)
+            if (administrator.Auth != AuthorityType.AdminNormal)
             {
-                administrator.CompanyId = company.Id;
+                administrator.AuthData = AuthorityDataType.DataAll;
+            }
+            else
+            {
+                administrator.AuthData = request.AuthData.Value;
+            }
+
+            if (request.OrganType == "company")
+            {
+                administrator.CompanyId = request.OrganId;
                 administrator.DepartmentId = 0;
-                administrator.DutyId = 0;
+                administrator.DepartmentParentPath = null;
+
+                var company = await _organManager.GetCompanyAsync(request.OrganId);
+                if (company != null)
+                {
+                    administrator.CompanyParentPath = company.CompanyParentPath;
+                }
             }
-            if (department != null)
+            else
             {
-                administrator.CompanyId = department.CompanyId;
-                administrator.DepartmentId = department.Id;
-                administrator.DutyId = 0;
+                var department = await _organManager.GetDepartmentAsync(request.OrganId);
+                if (department != null)
+                {
+                    administrator.CompanyId = department.CompanyId;
+                    administrator.DepartmentId = department.Id;
+                    administrator.DepartmentParentPath = department.DepartmentParentPath;
+                }
             }
-            if (duty != null)
-            {
-                administrator.CompanyId = duty.CompanyId;
-                administrator.DepartmentId = duty.DepartmentId;
-                administrator.DutyId = duty.Id;
-            }
+
+            administrator.AuthDataCurrentOrganId = administrator.CompanyId;
 
             if (administrator.Id == 0)
             {
                 administrator.CreatorId = adminId;
+
                 var (isValid, errorMessage) = await _administratorRepository.InsertAsync(administrator, request.Password);
                 if (!isValid)
                 {
@@ -121,6 +131,25 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
                 await _authManager.AddAdminLogAsync("修改管理员账号", $"{administrator.DisplayName}");
                 await _authManager.AddStatLogAsync(StatType.AdminUpdate, "修改管理员账号", administrator.Id, administrator.UserName, last);
                 await _authManager.AddStatCount(StatType.AdminUpdate);
+            }
+
+            await _administratorsInRolesRepository.DeleteUserAsync(administrator.Id);
+            if (administrator.Auth == AuthorityType.AdminNormal)
+            {
+                if (request.RolesIds != null && request.RolesIds.Count > 0)
+                {
+                    foreach (var roleId in request.RolesIds)
+                    {
+                        await _administratorsInRolesRepository.InsertAsync(new AdministratorsInRoles
+                        {
+                            RoleId = roleId,
+                            AdminId = administrator.Id,
+                            CompanyId = administrator.CompanyId,
+                            DepartmentId = administrator.DepartmentId,
+                            CreatorId = adminId,
+                        });
+                    }
+                }
             }
 
             return new BoolResult

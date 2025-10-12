@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using XBLMS.Dto;
-using XBLMS.Models;
+using XBLMS.Enums;
 using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Home.Exam
@@ -24,8 +24,14 @@ namespace XBLMS.Web.Controllers.Home.Exam
                 {
                     tmCount = item.MineTmCount;
                 }
+
+                await _authManager.AddPointsLogAsync(PointType.PointExamPractice, user);
+                var pointNotice = await _authManager.PointNotice(PointType.PointExamPractice, user.Id);
+
+
                 return new GetResult
                 {
+                    PointNotice = pointNotice,
                     Title = item.Title,
                     TmIds = item.TmIds,
                     Total = tmCount,
@@ -37,7 +43,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
         }
 
         [HttpGet, Route(RouteTm)]
-        public async Task<ActionResult<ItemResult<ExamTm>>> GetTm([FromQuery] IdRequest request)
+        public async Task<ActionResult<GetTmResult>> GetTm([FromQuery] IdRequest request)
         {
             var user = await _authManager.GetUserAsync();
             if (user == null) return Unauthorized();
@@ -49,7 +55,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
 
                 bool isCollection = false;
                 var collection = await _examPracticeCollectRepository.GetAsync(user.Id);
-                if(collection!=null && collection.TmIds.Contains(tm.Id))
+                if (collection != null && collection.TmIds.Contains(tm.Id))
                 {
                     isCollection = true;
                 }
@@ -57,16 +63,19 @@ namespace XBLMS.Web.Controllers.Home.Exam
                 tm.Set("IsCollection", isCollection);
 
                 bool isWrong = false;
-                var wrong=await _examPracticeWrongRepository.GetAsync(user.Id);
-                if (wrong != null && wrong.TmIds.Contains(tm.Id)) {
+                var wrong = await _examPracticeWrongRepository.GetAsync(user.Id);
+                if (wrong != null && wrong.TmIds.Contains(tm.Id))
+                {
                     isWrong = true;
                 }
                 tm.Set("IsWrong", isWrong);
 
+                var (aesKey, aesIV, aesSalt) = AesEncryptor.GetKey();
 
-                return new ItemResult<ExamTm>
+                return new GetTmResult
                 {
-                    Item = tm
+                    Tm = AesEncryptor.Encrypt(TranslateUtils.JsonSerialize(tm), aesKey, aesIV),
+                    Salt = aesSalt
                 };
             }
             return this.Error("题目加载错误，请继续");

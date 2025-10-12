@@ -26,6 +26,10 @@
             padding-top: 0;
             padding-bottom: 0;
         }
+        body{
+            margin:0;
+            padding:0;
+        }
     </style>
 }
 <el-card class="rounded-0">
@@ -35,12 +39,12 @@
                 <el-input v-model="form.title"></el-input>
             </el-form-item>
             <el-form-item label="题型">
-                <el-checkbox-group size="mini" v-model="form.txIds" v-on:change="apiGetSearch">
+                <el-checkbox-group size="mini" v-model="form.txIds" v-on:change="txndChange">
                     <el-checkbox :label="tx.id" :key="tx.id" border v-for="tx in txList">{{ tx.name }}</el-checkbox>
                 </el-checkbox-group>
             </el-form-item>
             <el-form-item label="难度">
-                <el-checkbox-group v-model="form.nds" v-on:change="apiGetSearch">
+                <el-checkbox-group v-model="form.nds" v-on:change="txndChange">
                     <el-checkbox size="mini" v-for="nd in 5" :label="nd" :key="nd" border><span class="text-warning"><span>{{ nd }}</span><i class="el-icon-star-on ms-1 fs-6"></i></span></el-checkbox>
                 </el-checkbox-group>
             </el-form-item>
@@ -52,14 +56,7 @@
                         v-on:close="zsdhandleClose(zsd)">
                     {{zsd}}
                 </el-tag>
-                <el-input class="input-new-tag" size="mini"
-                          v-if="zsdinputVisible"
-                          v-model="zsdinputValue"
-                          ref="zsdsaveTagInput"
-                          v-on:keyup.enter.native="zsdhandleInputConfirm"
-                          v-on:blur="zsdhandleInputConfirm">
-                </el-input>
-                <el-button size="mini" v-else class="button-new-tag" v-on:click="zsdshowInput">+ 添加</el-button>
+                <el-button size="mini" class="button-new-tag" v-on:click="zsdBtnSelectClick">+ 添加</el-button>
             </el-form-item>
             <el-form-item label="刷题数量">
                 <el-slider v-model="form.mineTmCount" input-size="mini" :max="form.tmCount>=100?100:form.tmCount"
@@ -73,8 +70,8 @@
 <div class="py-8"></div>
 <div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 animate__animated animate__fadeInUp">
     <el-button-group class="rounded-0">
-        <el-button class="rounded-0" icon="el-icon-check" type="success" v-on:click="btnSubmitClick">开始刷题</el-button>
-        <el-button class="rounded-0" icon="el-icon-close" v-on:click="utils.closeLayerSelf">取 消</el-button>
+        <el-button class="rounded-start-pill" icon="el-icon-check" type="success" v-on:click="btnSubmitClick">开始刷题</el-button>
+        <el-button class="rounded-end-pill" icon="el-icon-close" v-on:click="utils.closeLayerSelf">取 消</el-button>
     </el-button-group>
 </div>
 

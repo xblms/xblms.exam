@@ -61,9 +61,9 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
         [HttpGet, Route(RouteSetRole)]
         public async Task<ActionResult<GetPermissionsResult>> GetRoleSet([FromQuery] IdRequest request)
         {
-            var admin = await _authManager.GetAdminAsync();
+            var adminAuth = await _authManager.GetAdminAuth();
 
-            var roleds = await _roleRepository.GetRolesAsync();
+            var roleds = await _roleRepository.GetRolesAsync(adminAuth, string.Empty);
             var resultRoles = new List<GetPermissionsResultRole>();
             foreach (var role in roleds)
             {

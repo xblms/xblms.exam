@@ -18,7 +18,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
                 {
                     if(request.RangeType== RangeType.Exam)
                     {
-                        await _examManager.Arrange(request.Id, id);
+                        await _examManager.ArrangeOnlyOne(request.Id, id);
                     }
                 }
             }

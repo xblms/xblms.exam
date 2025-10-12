@@ -1,4 +1,5 @@
 var $url = 'settings/database/backup';
+var $urlConfig = $url + '/config';
 
 var data = utils.init({
   formInline: {
@@ -15,7 +16,9 @@ var data = utils.init({
   recoverTotal: 0,
   uploadBackupUrl: null,
   fileList: [],
-  showFileList: true
+  showFileList: true,
+  existsBackup: false,
+  dbBackupAuto: false
 });
 
 
@@ -26,15 +29,26 @@ var methods = {
     $api.post($url, $this.formInline).then(function (response) {
       var res = response.data;
 
+      $this.dbBackupAuto = res.dbBackupAuto;
+      $this.existsBackup = res.existsBackup;
       $this.list = res.list;
       $this.total = res.total;
+
+      if ($this.existsBackup) {
+        setTimeout($this.apiGet, 5000);
+      }
 
     }).catch(function (error) {
       utils.loading($this, false);
       utils.error(error);
     }).then(function () {
       utils.loading($this, false);
-      $this.apiGetRecover();
+    });
+  },
+  autoConfigChange: function (val) {
+    $api.post($urlConfig, { dbBackupAuto: val }).then(function (response) {
+    }).catch(function () {
+    }).then(function () {
     });
   },
   apiGetRecover: function () {
@@ -76,9 +90,6 @@ var methods = {
     utils.loading(this, true, "正在备份，请稍等...");
     $api.get($url + '/excution').then(function (response) {
       var res = response.data;
-      if (res.value) {
-        utils.success("备份成功");
-      }
     }).catch(function (error) {
       utils.error(error);
     }).then(function () {
@@ -173,6 +184,7 @@ var $vue = new Vue({
   methods: methods,
   created: function () {
     this.apiGet();
+    this.apiGetRecover();
     this.uploadBackupUrl = $apiUrl + '/' + $url + '/upload';
   }
 });

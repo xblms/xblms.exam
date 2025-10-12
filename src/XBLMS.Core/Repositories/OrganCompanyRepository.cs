@@ -1,7 +1,6 @@
 ﻿using Datory;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using XBLMS.Core.Utils;
 using XBLMS.Models;
 using XBLMS.Repositories;
 using XBLMS.Services;
@@ -12,13 +11,11 @@ namespace XBLMS.Core.Repositories
     {
         private readonly ISettingsManager _settingsManager;
         private readonly Repository<OrganCompany> _repository;
-        private readonly string _cacheKey;
 
         public OrganCompanyRepository(ISettingsManager settingsManager)
         {
             _settingsManager = settingsManager;
             _repository = new Repository<OrganCompany>(settingsManager.Database, settingsManager.Redis);
-            _cacheKey = CacheUtils.GetEntityKey(TableName);
         }
 
         public IDatabase Database => _repository.Database;
@@ -29,21 +26,24 @@ namespace XBLMS.Core.Repositories
 
         public async Task<int> InsertAsync(OrganCompany company)
         {
-            return await _repository.InsertAsync(company, Q.CachingRemove(_cacheKey));
+            return await _repository.InsertAsync(company);
         }
 
         public async Task<bool> UpdateAsync(OrganCompany company)
         {
-            return await _repository.UpdateAsync(company, Q.CachingRemove(_cacheKey));
+            return await _repository.UpdateAsync(company, Q.CachingRemove(GetCacheKey(company.Id)));
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteByIdsAsync(List<int> ids)
         {
-            return await _repository.DeleteAsync(id, Q.CachingRemove(_cacheKey));
-        }
-        public async Task ClearAsync()
-        {
-            await _repository.DeleteAsync(Q.WhereNot(nameof(OrganCompany.Id), 1).CachingRemove(_cacheKey));
+            if (ids != null)
+            {
+                foreach (int id in ids)
+                {
+                    await _repository.DeleteAsync(id, Q.CachingRemove(GetCacheKey(id)));
+                }
+            }
+            return true;
         }
     }
 }

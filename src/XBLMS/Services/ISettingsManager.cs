@@ -10,6 +10,7 @@ namespace XBLMS.Services
         string ContentRootPath { get; }
         string WebRootPath { get; }
         string Version { get; }
+        string VersionName { get; }
         string FrameworkDescription { get; }
         string OSArchitecture { get; set; }
         string OSDescription { get; }

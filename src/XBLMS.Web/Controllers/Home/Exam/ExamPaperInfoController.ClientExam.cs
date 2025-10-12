@@ -14,7 +14,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
 
             //var hostUrl = $"https://localhost:55212/home/entryExamClient?token={request.Token}&id={request.Id}";
 
-            hostUrl = TranslateUtils.EncryptStringBySecretKey(hostUrl, "kaoshiduanclient");
+            hostUrl = DesEncryptor.EncryptStringBySecretKey(hostUrl, "kaoshiduanclient");
 
             return new StringResult { Value = hostUrl };
 

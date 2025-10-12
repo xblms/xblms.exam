@@ -1,5 +1,6 @@
 ﻿var $url = '/exam/examTmGroup';
 var $urlDelete = $url + '/delete';
+var $urlTmTotal = $url + '/tmTotal';
 
 var data = utils.init({
   groups: null,
@@ -22,7 +23,24 @@ var methods = {
       if (message) {
         utils.success(message);
       }
+      setTimeout(function () {
+        $this.apiGetTmTotal();
+      }, 100);
     });
+  },
+  apiGetTmTotal: function () {
+    if (this.groups && this.groups.length > 0) {
+      this.groups.forEach(item => {
+        $api.get($urlTmTotal, { params: { id: item.id } }).then(function (response) {
+          var res = response.data;
+          item.tmTotal = res.tmTotal;
+          item.useCount = res.useTotal;
+        }).catch(function (error) {
+        }).then(function () {
+        });
+      });
+    }
+
   },
   btnSearch: function () {
     this.apiGet();

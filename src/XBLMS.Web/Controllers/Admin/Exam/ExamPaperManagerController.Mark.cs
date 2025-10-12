@@ -11,7 +11,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         [HttpGet, Route(RouteMark)]
         public async Task<ActionResult<GetScoreResult>> GetMarkList([FromQuery] GetSocreRequest request)
         {
-            var (total, list) = await _examPaperStartRepository.GetListByAdminAsync(request.Id, request.DateFrom, request.DateTo, request.Keywords, request.PageIndex, request.PageSize, false);
+            var (total, list) = await _examPaperStartRepository.GetListByAdminAsync(request.Id, 0, 0, request.DateFrom, request.DateTo, request.Keywords, request.PageIndex, request.PageSize, false);
             if (total > 0)
             {
                 foreach (var item in list)

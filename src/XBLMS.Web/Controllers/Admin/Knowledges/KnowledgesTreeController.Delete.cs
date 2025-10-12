@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+ï»¿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using XBLMS.Dto;
 using XBLMS.Enums;
@@ -21,7 +21,7 @@ namespace XBLMS.Web.Controllers.Admin.Knowledges
             if (item == null) return this.NotFound();
 
             await _knowlegesTreeRepository.DeleteAsync(request.Id);
-            await _authManager.AddAdminLogAsync("É¾³ıÖªÊ¶¿â·ÖÀà¼°ËùÓĞÏÂ¼¶", $"{item.Name}");
+            await _authManager.AddAdminLogAsync("åˆ é™¤çŸ¥è¯†åº“åˆ†ç±»åŠæ‰€æœ‰ä¸‹çº§", $"{item.Name}");
             return new BoolResult
             {
                 Value = true

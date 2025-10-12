@@ -8,6 +8,10 @@ namespace XBLMS.Models
     public class ExamCerUser : Entity
     {
         [DataColumn]
+        public int PlanId { get; set; }
+        [DataColumn]
+        public int CourseId { get; set; }
+        [DataColumn]
         public int UserId { get; set; }
         [DataColumn]
         public int CerId { get; set; }

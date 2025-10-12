@@ -24,7 +24,7 @@ namespace XBLMS.Core.Utils
                 }
             }
             //清除样式
-            el = new[] { "div", "span", "font", "h1", "h2", "h3", "h4", "h5", "h6", "tbody" };
+            el = new[] { "xblm", "div", "span", "font", "h1", "h2", "h3", "h4", "h5", "h6", "tbody" };
             foreach (var s in el)
             {
                 try
@@ -49,7 +49,7 @@ namespace XBLMS.Core.Utils
         public static string ClearFontSize(string html)
         {
             if (string.IsNullOrEmpty(html)) return string.Empty;
-            
+
             return RegexUtils.Replace(@"font-size:\w+;", html, string.Empty);
         }
 

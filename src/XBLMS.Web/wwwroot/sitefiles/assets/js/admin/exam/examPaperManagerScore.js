@@ -8,6 +8,8 @@ var data = utils.init({
   title: '',
   formScore: {
     id: 0,
+    planId: 0,
+    courseId: 0,
     keywords: '',
     dateFrom: '',
     dateTo: '',
@@ -108,6 +110,8 @@ var $vue = new Vue({
   methods: methods,
   created: function () {
     this.id = this.formScore.id = utils.getQueryInt("id");
+    this.formScore.planId = utils.getQueryInt("planId");
+    this.formScore.courseId = utils.getQueryInt("courseId");
     this.apiGet();
   }
 });

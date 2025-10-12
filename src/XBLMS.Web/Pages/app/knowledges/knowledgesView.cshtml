@@ -1,11 +1,7 @@
-@page
-@{ Layout = "_LayoutHome"; }
+﻿@page
+@{ Layout = "_LayoutApp"; }
 @section Styles{
     <style>
-        html {
-            margin: 0;
-            padding: 0;
-        }
         body {
             margin: 0;
             padding: 0;
@@ -18,17 +14,17 @@
 <div style="position:fixed;right:5%;top:60%;" class="animate__animated animate__fadeInRightBig">
     <div>
         <div class="mb-3 text-center">
-            <el-button circle class="border-0 bg-transparent" v-if="isLike" v-on:click="btnLikeClick"><i class="bi bi-star-fill fs-1 text-success"></i></el-button>
-            <el-button circle class="border-0 bg-transparent" v-else v-on:click="btnLikeClick"><i class="bi bi-star fs-1 text-dark"></i></el-button>
+            <el-button type="success" icon="el-icon-user-solid" circle class="border-0 fs-2" v-if="isLike" v-on:click="btnLikeClick"></el-button>
+            <el-button icon="el-icon-user" plain circle class="border-0 fs-2" v-else v-on:click="btnLikeClick"></el-button>
             <div>{{ likes }}</div>
         </div>
         <div class="mb-3 text-center">
-            <el-button circle class="border-0 bg-transparent" v-if="isCollect" v-on:click="btnCollectClick"><i class="bi bi-heart-fill fs-1 text-success"></i></el-button>
-            <el-button circle class="border-0 bg-transparent" v-else v-on:click="btnCollectClick"><i class="bi bi-heart fs-1 text-dark"></i></el-button>
+            <el-button type="success" icon="el-icon-star-on" circle class="border-0 fs-2" v-if="isCollect" v-on:click="btnCollectClick"></el-button>
+            <el-button icon="el-icon-star-off" plain circle class="border-0 fs-2" v-else v-on:click="btnCollectClick"></el-button>
             <div>{{ collects }}</div>
         </div>
         <div class="mb-2 text-center">
-            <el-button circle class="p-0 border-0 bg-transparent" v-on:click="utils.closeLayerSelf"><i class="bi bi-sign-turn-slight-left display-2 text-dark"></i></el-button>
+            <el-button icon="el-icon-back" circle class="border-0 fs-2" v-on:click="utils.closeLayerSelf"></el-button>
         </div>
     </div>
 </div>

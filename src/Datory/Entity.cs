@@ -17,7 +17,12 @@ namespace Datory
         [DataColumn]
         public int DepartmentId { get; set; }
         [DataColumn]
+        public List<string> CompanyParentPath { get; set; }
+        [DataColumn]
+        public List<string> DepartmentParentPath { get; set; }
+        [DataColumn]
         public int CreatorId { get; set; }
+
         [DataColumn(Length = 50)]
         public string Guid { get; set; }
 

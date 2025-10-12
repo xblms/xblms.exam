@@ -42,127 +42,123 @@
 <div>
     <div v-if="tm && tm.id>0">
         <el-card v-if="tm" class="fs-4 rounded-0">
-            <div slot="header" class="d-flex justify-content-between align-items-center">
-                <div>第<span class="px-1">{{ tmIndex+1 }}</span>题（{{ tm.txName }}）</div>
-                <div><span>{{ tm.zhishidian }}</span></div>
-            </div>
-            <div>
-                <div v-if="tm.baseTx==='Zuheti'">
-                    <div class="mb-3 fw-bold">
+            <div v-if="tm.baseTx==='Zuheti'">
+                <div class="mb-3 fw-bold">
+                    <el-card>
                         <div v-html="tm.titleHtml"></div>
-                    </div>
-                    <div class="mb-3" v-for="(small,smallIndex) in tm.smallList">
-                        <div class="mb-3">
-                            <div>第<span class="px-1">{{ (smallIndex+1) }}</span>小题（<span>{{ small.txName }}</span>）</div>
-                            <div v-if="small.baseTx==='Tiankongti'">
-                                <span v-if="small.titleList && small.titleList.length>0">
-                                    <span v-for="tmContent in small.titleList">
-                                        <span v-if="utils.contains(tmContent.value,'___')">
-                                            <el-input v-model.trim="small.optionsValues[tmContent.key]" v-on:change="answerChangeSmall" style="width:130px;"></el-input>
-                                        </span>
-                                        <span v-else v-html="tmContent.value"></span>
-                                    </span>
-                                </span>
-                                <div v-else v-html="small.titleHtml"></div>
-                            </div>
-                            <div v-else v-html="small.titleHtml"></div>
-                        </div>
-                        <div class="list-group" v-if="small.baseTx!=='Tiankongti'">
-                            <div v-if="small.baseTx==='Danxuanti' || small.baseTx==='Panduanti'">
-                                <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in small.optionsRandom">
-                                    <div class="d-flex justify-content-start align-items-center">
-                                        <div class="me-1 position-relative">
-                                            {{optionsABC[optionIndex]}}
-                                        </div>
-                                        <div class="w-100 pt-1">
-                                            <el-radio class="border-0 w-100" border :label="option.key" v-model="small.myAnswer" v-on:change="answerChangeSmall" size="medium">
-                                                <span v-html="option.value"></span>
-                                            </el-radio>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div v-else-if="small.baseTx==='Duoxuanti'">
-                                <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in small.optionsRandom">
-                                    <div class="d-flex justify-content-start align-items-center">
-                                        <div class="me-1 position-relative">
-                                            {{optionsABC[optionIndex]}}
-                                        </div>
-                                        <div class="w-100 pt-1">
-                                            <el-checkbox class="border-0 w-100" border size="medium" :true-label="option.key" false-label="" v-model="small.optionsValues[optionsABC.indexOf(option.key)]" v-on:change="answerChangeSmall">
-                                                <span v-html="option.value"></span>
-                                            </el-checkbox>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div v-else-if="small.baseTx==='Jiandati'">
-                                <el-input :key="small.id" type="textarea" resize="none" v-model.trim="small.myAnswer" :autosize="{ minRows: 3}" maxlength="333" style="width:100%;"
-                                          show-word-limit v-on:change="answerChangeSmall"></el-input>
-                            </div>
-                            <div v-else>
-                                未知题型
-                            </div>
-                        </div>
-                        <el-card v-if="answerResult && !answerResult.isRight" :class="small.myAnswer!==small.answer?'bg-danger text-white':''">
-                            <div>正确答案：{{ small.answer }}</div>
-                            <div class="mt-2">
-                                题目解析：<span v-html="small.jiexi"></span>
-                            </div>
-                        </el-card>
-                    </div>
+                    </el-card>
                 </div>
-                <div v-else>
-                    <div class="mb-3 fw-bold">
-                        <div v-if="tm.baseTx==='Tiankongti'">
-                            <span v-if="tm.titleList && tm.titleList.length>0">
-                                <span v-for="tmContent in tm.titleList">
+                <div class="mb-3" v-for="(small,smallIndex) in tm.smallList">
+                    <div class="mb-3">
+                        <div class="fw-light">第<span class="px-1">{{ (smallIndex+1) }}</span>小题（<span>{{ small.txName }}</span>）</div>
+                        <div v-if="small.baseTx==='Tiankongti'">
+                            <span v-if="small.titleList && small.titleList.length>0">
+                                <span v-for="tmContent in small.titleList">
                                     <span v-if="utils.contains(tmContent.value,'___')">
-                                        <el-input v-model.trim="tm.optionsValues[tmContent.key]" v-on:change="answerChange" style="width:130px;"></el-input>
+                                        <el-input v-model.trim="small.optionsValues[tmContent.key]" v-on:change="answerChangeSmall" style="width:130px;"></el-input>
                                     </span>
                                     <span v-else v-html="tmContent.value"></span>
                                 </span>
                             </span>
-                            <div v-else v-html="tm.titleHtml"></div>
+                            <div v-else v-html="small.titleHtml"></div>
                         </div>
-                        <div v-else v-html="tm.titleHtml"></div>
+                        <div v-else v-html="small.titleHtml"></div>
                     </div>
-                    <div class="list-group" v-if="tm.baseTx!=='Tiankongti'">
-                        <div v-if="tm.baseTx==='Danxuanti' || tm.baseTx==='Panduanti'">
-                            <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.optionsRandom">
+                    <div class="list-group" v-if="small.baseTx!=='Tiankongti'">
+                        <div v-if="small.baseTx==='Danxuanti' || small.baseTx==='Panduanti'">
+                            <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in small.optionsRandom">
                                 <div class="d-flex justify-content-start align-items-center">
-                                    <div class="me-1 position-relative">
+                                    <div>
                                         {{optionsABC[optionIndex]}}
                                     </div>
-                                    <div class="w-100">
-                                        <el-radio class="border-0 w-100" border :label="option.key" v-model="tm.answer" v-on:change="answerChange" size="medium">
+                                    <div class="w-100 pt-1">
+                                        <el-radio class="border-0 w-100" border :label="option.key" v-model="small.myAnswer" v-on:change="answerChangeSmall" size="medium">
                                             <span v-html="option.value"></span>
                                         </el-radio>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div v-else-if="tm.baseTx==='Duoxuanti'">
-                            <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.optionsRandom">
-                                  <div class="d-flex justify-content-start align-items-center">
-                                    <div class="me-1 position-relative">
+                        <div v-else-if="small.baseTx==='Duoxuanti'">
+                            <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in small.optionsRandom">
+                                <div class="d-flex justify-content-start align-items-center">
+                                    <div>
                                         {{optionsABC[optionIndex]}}
                                     </div>
-                                    <div class="w-100">
-                                        <el-checkbox class="border-0 w-100" border size="medium" :true-label="option.key" false-label="" v-model="tm.optionsValues[optionsABC.indexOf(option.key)]" v-on:change="answerChange">
+                                    <div class="w-100 pt-1">
+                                        <el-checkbox class="border-0 w-100" border size="medium" :true-label="option.key" false-label="" v-model="small.optionsValues[optionsABC.indexOf(option.key)]" v-on:change="answerChangeSmall">
                                             <span v-html="option.value"></span>
                                         </el-checkbox>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div v-else-if="tm.baseTx==='Jiandati'">
-                            <el-input :key="tm.id" type="textarea" resize="none" v-model.trim="tm.answer" :autosize="{ minRows: 3}" maxlength="333" style="width:100%;"
-                                      show-word-limit v-on:change="answerChange"></el-input>
+                        <div v-else-if="small.baseTx==='Jiandati'">
+                            <el-input :key="small.id" type="textarea" resize="none" v-model.trim="small.myAnswer" :autosize="{ minRows: 3}" maxlength="333" style="width:100%;"
+                                      show-word-limit v-on:change="answerChangeSmall"></el-input>
                         </div>
                         <div v-else>
                             未知题型
                         </div>
+                    </div>
+                    <el-card v-if="answerResult && !answerResult.isRight" :class="small.myAnswer!==small.answer?'bg-danger text-white':''">
+                        <div>正确答案：{{ small.answer }}</div>
+                        <div class="mt-2">
+                            题目解析：<span v-html="small.jiexi"></span>
+                        </div>
+                    </el-card>
+                </div>
+            </div>
+            <div v-else>
+                <div class="mb-3 fw-bold">
+                    <div v-if="tm.baseTx==='Tiankongti'">
+                        <span v-if="tm.titleList && tm.titleList.length>0">
+                            <span v-for="tmContent in tm.titleList">
+                                <span v-if="utils.contains(tmContent.value,'___')">
+                                    <el-input v-model.trim="tm.optionsValues[tmContent.key]" v-on:change="answerChange" style="width:130px;"></el-input>
+                                </span>
+                                <span v-else v-html="tmContent.value"></span>
+                            </span>
+                        </span>
+                        <div v-else v-html="tm.titleHtml"></div>
+                    </div>
+                    <div v-else v-html="tm.titleHtml"></div>
+                </div>
+                <div class="list-group" v-if="tm.baseTx!=='Tiankongti'">
+                    <div v-if="tm.baseTx==='Danxuanti' || tm.baseTx==='Panduanti'">
+                        <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.optionsRandom">
+                            <div class="d-flex justify-content-start align-items-center">
+                                <div>
+                                    {{optionsABC[optionIndex]}}
+                                </div>
+                                <div class="w-100 pt-1">
+                                    <el-radio class="border-0 w-100" border :label="option.key" v-model="tm.answer" v-on:change="answerChange" size="medium">
+                                        <span v-html="option.value"></span>
+                                    </el-radio>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div v-else-if="tm.baseTx==='Duoxuanti'">
+                        <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.optionsRandom">
+                            <div class="d-flex justify-content-start align-items-center">
+                                <div>
+                                    {{optionsABC[optionIndex]}}
+                                </div>
+                                <div class="w-100 pt-1">
+                                    <el-checkbox class="border-0 w-100" border size="medium" :true-label="option.key" false-label="" v-model="tm.optionsValues[optionsABC.indexOf(option.key)]" v-on:change="answerChange">
+                                        <span v-html="option.value"></span>
+                                    </el-checkbox>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div v-else-if="tm.baseTx==='Jiandati'">
+                        <el-input :key="tm.id" type="textarea" resize="none" v-model.trim="tm.answer" :autosize="{ minRows: 3}" maxlength="333" style="width:100%;"
+                                  show-word-limit v-on:change="answerChange"></el-input>
+                    </div>
+                    <div v-else>
+                        未知题型
                     </div>
                 </div>
             </div>
@@ -174,41 +170,39 @@
                 </div>
             </div>
         </el-card>
-        <el-card class="mt-2 rounded-0">
+        <div class="mt-2 rounded-0">
             <div v-if="answerResult">
-                <div class=" text-center">
-                    <div>
-                        <el-card class="rounded-0">
-                            <div v-if="answerResult.isRight">
+                <div>
+                    <el-card class="rounded-0">
+                        <div v-if="answerResult.isRight">
+                            <div>
+                                <i class="bi bi-emoji-sunglasses text-success me-1 fs-1"></i>恭喜你，答对了。
+                            </div>
+                        </div>
+                        <div v-else-if="tm.baseTx==='Zuheti'">
+                            <span class="text-warning me-2">部分小题错误</span>
+                        </div>
+                        <div v-else>
+                            <div class="text-danger">
+                                <i class="bi bi-emoji-frown me-1 fs-1"></i>很遗憾，答错了。
+                            </div>
+                            <div class="mg-2">
+                                <div>正确答案：<span class="text-success">{{ answerResult.answer }}</span></div>
                                 <div>
-                                    <i class="bi bi-emoji-sunglasses text-success me-3"></i>恭喜你，答对了。
+                                    题目解析：<span v-html="answerResult.jiexi"></span>
                                 </div>
                             </div>
-                            <div v-else-if="tm.baseTx==='Zuheti'">
-                                <span class="text-warning me-2">部分小题错误</span>
-                            </div>
-                            <div v-else>
-                                <div class="text-danger">
-                                    <i class="bi bi-emoji-frown me-3"></i>很遗憾，答错了。
-                                </div>
-                                <div class="mg-2">
-                                    <div>正确答案：<span class="text-success">{{ answerResult.answer }}</span></div>
-                                    <div class="mt-2">
-                                        题目解析：<span v-html="answerResult.jiexi"></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </el-card>
-                    </div>
-                    <div class="mt-2">
-                        <el-button class="rounded-0" type="primary" v-on:click="btnDownClick" icon="el-icon-right">继续</el-button>
-                    </div>
+                        </div>
+                    </el-card>
+                </div>
+                <div class="mt-2 text-center">
+                    <el-button class="w-100 rounded-0 py-3" type="primary" v-on:click="btnDownClick" icon="el-icon-right">继续</el-button>
                 </div>
             </div>
             <div v-else class="text-center">
-                <el-button class="rounded-0" v-on:click="btnSubmitAnswerClick" type="primary">提交答案</el-button>
+                <el-button icon="el-icon-check" class="w-100 rounded-0 py-3" v-on:click="btnSubmitAnswerClick" type="primary">提交答案</el-button>
             </div>
-        </el-card>
+        </div>
     </div>
     <el-card v-else>
         <div :style="{ height: ($(window).innerHeight()-245) + 'px' }">

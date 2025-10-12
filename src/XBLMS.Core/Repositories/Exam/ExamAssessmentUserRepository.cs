@@ -134,6 +134,17 @@ namespace XBLMS.Core.Repositories
             return (total, submitTotal);
         }
 
+        public async Task<int> CountAsync(int userId)
+        {
+            var query = Q.
+                WhereNullOrFalse(nameof(ExamAssessmentUser.Locked)).
+                Where(nameof(ExamAssessmentUser.SubmitType), SubmitType.Submit.GetValue()).
+                Where(nameof(ExamAssessmentUser.UserId), userId);
+
+            var total = await _repository.CountAsync(query);
+            return total;
+        }
+
         public async Task<(int total,List<ExamAssessmentUser> list)> GetTaskAsync(int userId)
         {
             var query = Q.

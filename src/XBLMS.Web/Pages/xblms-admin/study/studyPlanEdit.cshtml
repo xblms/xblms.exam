@@ -1,0 +1,286 @@
+﻿@page
+@{ Layout = "_Layout"; }
+@section Styles{
+    <style>
+        .el-upload, .el-upload-dragger {
+            width:180px;
+        }
+
+        .cover {
+            height: 180px;
+            display: block;
+        }
+
+        .el-button-group .el-dropdown {
+            float: left;
+            margin-top: -2.5px;
+            margin-right: -1px;
+        }
+    </style>
+}
+
+<el-card>
+    <div slot="header" class="clearfix">
+        <span>{{ id > 0 ? "修改" : "新增" }}学习任务</span>
+        <el-button style="float: right;padding:3px 0;" type="text" v-on:click="utils.closeLayerSelf"><i class="el-icon-close"></i></el-button>
+    </div>
+    <div>
+        <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-180) + 'px' }">
+            <div style="padding-right:18px;margin-bottom:9px;">
+                <el-collapse v-model="activeName">
+                    <el-collapse-item title="基本信息" name="1">
+                        <template slot="title">
+                            <h3>基本信息</h3>
+                        </template>
+                        <el-form v-on:submit.native.prevent ref="form" :model="form" :size="euiSize" status-icon label-width="100px">
+                            <el-row>
+                                <el-col :span="16">
+                                    <el-form-item label="计划名称" prop="planName" :rules="[{ required: true, message: '请输入计划名称' }]">
+                                        <el-input v-model="form.planName"></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="计划年度" prop="planYear" :rules="[{ required: true, message: '请输入计划年度' }]">
+                                        <el-input-number v-model="form.planYear"></el-input-number>
+                                    </el-form-item>
+                                    <el-form-item label="计划学分" prop="planCredit" :rules="[{ required: true, message: '请输入计划学分' }]">
+                                        <el-input-number v-model="form.planCredit"></el-input-number>
+                                    </el-form-item>
+                                    <el-form-item label="计划周期" prop="planBeginDateTime" :rules="{ required: true, message: '请选择开始时间' }">
+                                        <el-date-picker v-model="form.planBeginDateTime"
+                                                        type="datetime"
+                                                        placeholder="开始时间"
+                                                        value-format="yyyy-MM-dd HH:mm:ss">
+                                        </el-date-picker>
+                                    </el-form-item>
+                                    <el-form-item prop="planEndDateTime" :rules="{ required: true, message: '请选择截止时间' }">
+                                        <el-date-picker v-model="form.planEndDateTime"
+                                                        type="datetime"
+                                                        placeholder="截止时间"
+                                                        value-format="yyyy-MM-dd HH:mm:ss">
+                                        </el-date-picker>
+                                    </el-form-item>
+                                    <el-form-item label="介绍" prop="description">
+                                        <el-input ref="description" type="textarea" :autosize="{ minRows: 3}" v-model="form.description"></el-input>
+                                        <el-link type="primary" icon="el-icon-document" v-on:click="btnOpenEditClick('description','form')">富文本编辑</el-link>
+                                    </el-form-item>
+                                    <el-form-item label="学员范围" prop="userGroupIds">
+                                        <el-select ref="selectUserGroup" v-model="form.userGroupIds" filterable multiple placeholder="请选择用户组" clearable style="width:100%">
+                                            <el-option v-for="userGroup in userGroupList"
+                                                       :key="userGroup.id"
+                                                       :label="userGroup.groupName"
+                                                       :value="userGroup.id">
+                                            </el-option>
+                                        </el-select>
+                                        <div class="tips">根据选择的用户组匹配需要参加培训的学员，多个组为并集。默认不安排学员。</div>
+                                    </el-form-item>
+                                    <el-form-item label="大考">
+                                        <el-tooltip effect="dark" :content="form.examName" placement="right" v-if="form.examId>0">
+                                            <el-button type="success" icon="el-icon-star-on" v-on:click="btnDeleteExamClick('-1',false)">已关联课后考试</el-button>
+                                        </el-tooltip>
+                                        <el-button plain icon="el-icon-star-off" v-on:click="btnSelectExamClick('-1',false)" v-else>选择课后考试</el-button>
+                                        <div class="tips">学习任务考试，学习完成所有内容需要参加考试，考试通过即可完成培训任务</div>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="8">
+                                    <el-form-item label="封面图">
+                                        <el-upload :action="uploadUrl"
+                                                   :show-file-list="false"
+                                                   :headers="{Authorization: 'Bearer ' + $token}"
+                                                   list-type="picture-card"
+                                                   :before-upload="uploadBefore"
+                                                   :on-progress="uploadProgress"
+                                                   :on-success="uploadSuccess"
+                                                   :on-error="uploadError"
+                                                   :on-remove="uploadRemove"
+                                                   :multiple="false">
+                                            <img v-if="form.coverImg" :src="form.coverImg" class="cover">
+                                            <i v-else class="el-icon-plus"></i>
+                                        </el-upload>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                        </el-form>
+
+                    </el-collapse-item>
+                    <el-collapse-item title="培训内容" name="2">
+                        <template slot="title">
+                            <h3>培训内容</h3>
+                        </template>
+                        <el-form v-on:submit.native.prevent :size="euiSize" status-icon label-width="100px">
+                            <el-form-item label="必修课">
+                                <el-button plain icon="el-icon-plus" v-on:click.stop="btnSelectCourseClick(false)">添加必修课</el-button>
+                            </el-form-item>
+                            <el-form-item>
+                                <el-table ref="courseList"
+                                          :row-key="Math.random()"
+                                          :data="courseList"
+                                          border
+                                          style="width: 100%"
+                                          size="mini"
+                                          :default-sort="{prop: 'taxis', order: 'asc'}"
+                                          empty-text="请添加必修课">
+                                    <el-table-column type="index" label="#"
+                                                     width="60" align="center">
+                                    </el-table-column>
+                                    <el-table-column label="课程名称">
+                                        <template slot-scope="scope">
+                                            <el-input v-model.trim="scope.row.courseName"></el-input>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column label="课时">
+                                        <template slot-scope="scope">
+                                            <el-input-number v-model="scope.row.studyHour" :precision="1" :min="0.1"></el-input-number>
+                                            <el-tag>{{ utils.formatDuration(scope.row.duration) }}</el-tag>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column label="学分" width="160">
+                                        <template slot-scope="scope">
+                                            <el-input-number v-model="scope.row.credit" :precision="1" :min="0.1"></el-input-number>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column label="排序" width="160" prop="taxis">
+                                        <template slot-scope="scope">
+                                            <el-input-number v-model="scope.row.taxis" :min="1" :max="100"></el-input-number>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column label="课后设置" width="300">
+                                        <template slot-scope="scope">
+                                            <el-button-group>
+                                                <el-tooltip effect="dark" :content="scope.row.examName" placement="top" v-if="scope.row.examId>0">
+                                                    <el-button size="mini" type="success" v-on:click.stop="btnDeleteExamClick(scope.row.guid,false)">考试</el-button>
+                                                </el-tooltip>
+                                                <el-button size="mini" plain v-on:click.stop="btnSelectExamClick(scope.row.guid,false)" v-else>考试</el-button>
+                                                <el-tooltip effect="dark" :content="scope.row.examQuestionnaireName" placement="top" v-if="scope.row.examQuestionnaireId>0">
+                                                    <el-button size="mini" type="success" v-on:click.stop="btnDeleteQClick(scope.row.guid,false)">问卷</el-button>
+                                                </el-tooltip>
+                                                <el-button size="mini" plain v-on:click.stop="btnSelectQClick(scope.row.guid,false)" v-else>问卷</el-button>
+                                                <el-tooltip effect="dark" :content="scope.row.studyCourseEvaluationName" placement="top" v-if="scope.row.studyCourseEvaluationId>0">
+                                                    <el-button size="mini" type="success" v-on:click.stop="btnDeleteEvaluationClick(scope.row.guid,false)">评价</el-button>
+                                                </el-tooltip>
+                                                <el-button size="mini" plain v-on:click.stop="btnSelectEvaluationClick(scope.row.guid,false)" v-else>评价</el-button>
+                                                <template v-if="scope.row.offLine">
+                                                    <el-tooltip effect="dark" :content="scope.row.teacherName" placement="top" v-if="scope.row.teacherId>0">
+                                                        <el-button size="mini" type="success" v-on:click.stop="btnDeleteTeacherClick(scope.row.guid,false)">上课老师</el-button>
+                                                    </el-tooltip>
+                                                    <el-button size="mini" plain v-on:click.stop="btnSelectTeacherClick(scope.row.guid,false)" v-else>上课老师</el-button>
+                                                </template>
+                                            </el-button-group>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column width="70">
+                                        <template slot-scope="scope">
+                                            <el-button type="danger" size="mini" icon="el-icon-delete" v-on:click.stop="btnRemoveCourse(scope.row,false)">
+                                            </el-button>
+                                        </template>
+                                    </el-table-column>
+                                </el-table>
+                            </el-form-item>
+                        </el-form>
+                        <el-form v-on:submit.native.prevent :size="euiSize" status-icon label-width="100px">
+                            <el-form-item label="选修课">
+                                <el-button plain icon="el-icon-plus" v-on:click.stop="btnSelectCourseClick(true)">添加选修课</el-button>
+                            </el-form-item>
+                            <el-form-item>
+                                <el-card shadow="never">
+                                    <div slot="header">
+                                        选修课完成条件
+                                    </div>
+                                    <div>
+                                        <el-checkbox v-model="form.selectCourseOverByCount">按完成课程数量</el-checkbox>
+                                        <template v-if="form.selectCourseOverByCount">
+                                            任意完成<el-input-number v-model="form.selectCourseOverCount" :min="0" :max="form.selectTotalCount"></el-input-number>门/共{{ form.selectTotalCount }}门
+                                        </template>
+                                        <div style="height:8px;"></div>
+                                        <el-checkbox v-model="form.selectCourseOverByDuration">按学习时长</el-checkbox>
+                                        <template v-if="form.selectCourseOverByDuration">
+                                            累计学习<el-input-number v-model="form.selectCourseOverMinute" :min="0"></el-input-number>分钟/共{{ utils.formatDuration(form.selectTotalDuration) }}
+                                        </template>
+                                    </div>
+                                </el-card>
+                            </el-form-item>
+                            <el-form-item>
+                                <el-table ref="courseSelectList"
+                                          :row-key="Math.random()"
+                                          :data="courseSelectList"
+                                          border
+                                          style="width: 100%"
+                                          size="mini"
+                                          :default-sort="{prop: 'taxis', order: 'asc'}"
+                                          empty-text="请添加选修课">
+                                    <el-table-column type="index" label="#"
+                                                     width="60" align="center">
+                                    </el-table-column>
+                                    <el-table-column label="课程名称">
+                                        <template slot-scope="scope">
+                                            <el-input v-model.trim="scope.row.courseName"></el-input>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column label="课时">
+                                        <template slot-scope="scope">
+                                            <el-input-number v-model="scope.row.studyHour" :precision="1" :min="0.1"></el-input-number>
+                                            <el-tag>{{ utils.formatDuration(scope.row.duration) }}</el-tag>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column label="学分" width="160">
+                                        <template slot-scope="scope">
+                                            <el-input-number v-model="scope.row.credit" :precision="1" :min="0.1"></el-input-number>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column label="排序" width="160" prop="taxis">
+                                        <template slot-scope="scope">
+                                            <el-input-number v-model="scope.row.taxis" :min="1" :max="100"></el-input-number>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column label="课后设置" width="300">
+                                        <template slot-scope="scope">
+                                            <el-button-group>
+                                                <el-tooltip effect="dark" :content="scope.row.examName" placement="top" v-if="scope.row.examId>0">
+                                                    <el-button size="mini" type="success" v-on:click.stop="btnDeleteExamClick(scope.row.guid,true)">考试</el-button>
+                                                </el-tooltip>
+                                                <el-button size="mini" plain v-on:click.stop="btnSelectExamClick(scope.row.guid,true)" v-else>考试</el-button>
+                                                <el-tooltip effect="dark" :content="scope.row.examQuestionnaireName" placement="top" v-if="scope.row.examQuestionnaireId>0">
+                                                    <el-button size="mini" type="success" v-on:click.stop="btnDeleteQClick(scope.row.guid,true)">问卷</el-button>
+                                                </el-tooltip>
+                                                <el-button size="mini" plain v-on:click.stop="btnSelectQClick(scope.row.guid,true)" v-else>问卷</el-button>
+                                                <el-tooltip effect="dark" :content="scope.row.studyCourseEvaluationName" placement="top" v-if="scope.row.studyCourseEvaluationId>0">
+                                                    <el-button size="mini" type="success" v-on:click.stop="btnDeleteEvaluationClick(scope.row.guid,true)">评价</el-button>
+                                                </el-tooltip>
+                                                <el-button size="mini" plain v-on:click.stop="btnSelectEvaluationClick(scope.row.guid,true)" v-else>评价</el-button>
+                                                <template v-if="scope.row.offLine">
+                                                    <el-tooltip effect="dark" :content="scope.row.teacherName" placement="top" v-if="scope.row.teacherId>0">
+                                                        <el-button size="mini" type="success" v-on:click.stop="btnDeleteTeacherClick(scope.row.guid,true)">上课老师</el-button>
+                                                    </el-tooltip>
+                                                    <el-button size="mini" plain v-on:click.stop="btnSelectTeacherClick(scope.row.guid,true)" v-else>上课老师</el-button>
+                                                </template>
+                                            </el-button-group>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column width="70">
+                                        <template slot-scope="scope">
+                                            <el-button type="danger" size="mini" icon="el-icon-delete" v-on:click.stop="btnRemoveCourse(scope.row,true)">
+                                            </el-button>
+                                        </template>
+                                    </el-table-column>
+                                </el-table>
+                            </el-form-item>
+                        </el-form>
+                    </el-collapse-item>
+                </el-collapse>
+            </div>
+        </el-scrollbar>
+    </div>
+</el-card>
+<el-row align="center" style="margin-top:18px;">
+    <el-col :span="24" align="center">
+        <template v-if="form.submitType==='Save'">
+            <el-button icon="el-icon-check" :size="euiSize" plain type="primary" v-on:click="btnSaveClick">保 存</el-button>
+            <el-button icon="el-icon-s-promotion" :size="euiSize" type="primary" v-on:click="btnSubmitClick">发 布</el-button>
+        </template>
+        <template v-else>
+            <el-button icon="el-icon-check" :size="euiSize" type="primary" v-on:click="btnSubmitClick">确 定</el-button>
+        </template>
+        <el-button :size="euiSize" icon="el-icon-close" plain v-on:click="utils.closeLayerSelf">取 消</el-button>
+    </el-col>
+</el-row>
+@section Scripts{
+    <script src="/sitefiles/assets/js/admin/study/studyPlanEdit.js" type="text/javascript"></script>
+}

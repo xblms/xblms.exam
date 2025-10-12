@@ -1,0 +1,112 @@
+﻿@page
+@{ Layout = "_Layout"; }
+
+@section Styles{
+    <style>
+        .el-drawer__header {
+            margin-bottom: 0 !important;
+            padding: 8px 18px;
+            font-weight: bolder;
+            color: #000000;
+        }
+    </style>
+}
+
+<template>
+    <el-card class="box-card">
+        <div slot="header" class="clearfix">
+            <span>{{ planName }}-课程统计</span>
+            <el-link style="float: right;padding:3px 0;" icon="el-icon-close" v-on:click="utils.closeLayerSelf">关 闭</el-link>
+        </div>
+        <div>
+            <el-form v-on:submit.native.prevent :inline="true" :size="euiSize">
+                <el-form-item label="课程">
+                    <el-input v-model="formCourse.keyWords" placeholder="关键字" prefix-icon="el-icon-search" clearable></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button :size="euiSize" icon="el-icon-search" type="primary" v-on:click="btnCourseSearchClick">查 询</el-button>
+                    <el-button :size="euiSize" plain type="primary" icon="el-icon-download" v-on:click="btnCourseExportClick">
+                        导 出
+                    </el-button>
+                </el-form-item>
+            </el-form>
+        </div>
+        <div>
+            <el-table ref="courseTable" :data="courseList" :size="euiSize"
+                      style="width: 100%" :height="$(window).height()-166">
+                <el-table-column label="#"
+                                 type="index"
+                                 width="60"
+                                 align="left">
+                    <template scope="scope">
+                        <span>{{ scope.$index + 1 }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="课程" prop="courseName" show-overflow-tooltip>
+                    <template slot-scope="scope">
+                        <el-tag size="mini" type="primary" v-if="scope.row.isSelectCourse">选修课</el-tag>
+                        <el-tag size="mini" type="primary" effect="dark" v-else>必修课</el-tag>
+                        <el-tag size="mini" type="warning" v-if="scope.row.offLine">线下课</el-tag>
+                        {{ scope.row.courseName }}
+                    </template>
+                </el-table-column>
+                <el-table-column prop="studyHour" label="课时" width="88">
+                </el-table-column>
+                <el-table-column label="学时" width="88">
+                    <template slot-scope="scope">
+                        {{ utils.formatDuration(scope.row.duration) }}
+                    </template>
+                </el-table-column>
+                <el-table-column prop="credit" label="学分" width="88">
+                </el-table-column>
+                <el-table-column label="培训人数" prop="totalUser" width="88">
+                </el-table-column>
+                <el-table-column label="学习人数" prop="studyUser" width="88">
+                </el-table-column>
+                <el-table-column label="完成人数" prop="overUser" width="88">
+                </el-table-column>
+                <el-table-column label="完成率" width="200">
+                    <template slot-scope="scope">
+                        <el-progress :stroke-width="12" :percentage="utils.formatPercentFloat(scope.row.overUser,scope.row.studyUser)" color="#67c23a"></el-progress>
+                    </template>
+                </el-table-column>
+                <el-table-column label="评价" width="100">
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.studyCourseEvaluationId>0">
+                            {{ scope.row.star}}<i class="el-icon-star"></i>({{scope.row.starUser}})
+                        </span>
+                        <span v-else>/</span>
+                    </template>
+                </el-table-column>
+                <el-table-column width="100" align="right">
+                    <template slot-scope="scope">
+                        <el-dropdown :show-timeout="0" placement="left">
+                            <el-button icon="el-icon-arrow-left" :size="euiSize" v-on:click.stop="return false">
+                                操作
+                            </el-button>
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item icon="el-icon-s-data" v-on:click.native="btnCourseManagerAnalysisClick(scope.row)">综合统计</el-dropdown-item>
+                                <el-dropdown-item icon="el-icon-user" v-on:click.native="btnManagerUserClick(scope.row)">学习情况</el-dropdown-item>
+                                <el-dropdown-item icon="el-icon-s-order" v-on:click.native="btnManagerScoreClick(scope.row)" v-if="scope.row.examId>0">考试成绩</el-dropdown-item>
+                                <el-dropdown-item icon="el-icon-document" v-on:click.native="btnManagerQClick(scope.row)" v-if="scope.row.examQuestionnaireId>0">调查结果</el-dropdown-item>
+                                <el-dropdown-item icon="el-icon-star-off" v-on:click.native="btnManagerEvaluationClick(scope.row)" v-if="scope.row.studyCourseEvaluationId>0">课程评价</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
+                    </template>
+                </el-table-column>
+                @await Html.PartialAsync("_PartialTableEmpty")
+            </el-table>
+        </div>
+    </el-card>
+</template>
+<template>
+    <el-drawer :title="frameTitle" destroy-on-close
+               size="88%"
+               :visible.sync="frameDrawer"
+               direction="ltr">
+        <iframe :src="frameSrc" style="width: 100%; height: 100%; border: none" :style="{height: ($(window).height() - 58) + 'px'}"></iframe>
+    </el-drawer>
+</template>
+@section Scripts{
+    <script src="/sitefiles/assets/js/admin/study/studyPlanManagerCourse.js" type="text/javascript"></script>
+}

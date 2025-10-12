@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using XBLMS.Enums;
 using XBLMS.Models;
 
 namespace XBLMS.Web.Controllers.Admin.Exam
@@ -12,15 +13,16 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         [HttpGet, Route(Route)]
         public async Task<ActionResult<GetResult>> Get([FromQuery] GetRequest reqeust)
         {
+            var admin = await _authManager.GetAdminAsync();
+
             var list = await _examTxRepository.GetListAsync();
             if (list == null || list.Count == 0)
             {
                 await _examTxRepository.ResetAsync();
                 list = await _examTxRepository.GetListAsync();
             }
-
             var resultList = new List<ExamTx>();
-           
+
             foreach (var tx in list)
             {
                 tx.Set("TmCount", await _examTmRepository.GetCountByTxIdAsync(tx.Id));
@@ -38,9 +40,10 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                     resultList.Add(tx);
                 }
             }
-            resultList = resultList.OrderBy(tx => tx.Taxis).ToList();
+            resultList = [.. resultList.OrderBy(tx => tx.Taxis)];
             return new GetResult
             {
+                Operate = admin.Auth == AuthorityType.Admin,
                 Items = resultList
             };
         }

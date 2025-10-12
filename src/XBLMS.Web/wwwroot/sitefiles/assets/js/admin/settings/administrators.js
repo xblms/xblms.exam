@@ -4,16 +4,21 @@ var $urlDelete = $url + '/actions/delete';
 var $urlExport = $url + '/actions/export';
 var $urlUpload = $apiUrl + '/settings/administrators/actions/import';
 
+var $urlTreeLazy = '/settings/organs/lazy';
+var $urlTreeLazyCount = $urlTreeLazy + '/count';
+
 var data = utils.init({
   drawer: false,
   administrators: null,
   count: null,
   roles: null,
   adminId: null,
-  curOrganGuid:'',
+  selectOrganId: 0,
+  selectOrganType: '',
+  selectOrganName: '',
   formInline: {
     organId: 0,
-    organType:'',
+    organType: '',
     role: '',
     order: '',
     lastActivityDate: 0,
@@ -28,12 +33,14 @@ var data = utils.init({
   uploadList: [],
   filterText: '',
   treeWidth: 0,
-  organs:null,
-  defaultProps: {
-    children: 'children',
-    label: 'name'
-  },
-  multipleSelection: []
+  organs: null,
+  multipleSelection: [],
+  treeParentId: 0,
+  treeOrganType: 'company',
+  treeLoading: false,
+  topNode: null,
+  topResolve: null,
+  loadNodeGuidList: []
 });
 
 var methods = {
@@ -44,7 +51,6 @@ var methods = {
       params: this.formInline
     }).then(function (response) {
       var res = response.data;
-      $this.organs = res.organs;
       $this.roles = res.roles;
       $this.adminId = res.adminId;
     }).catch(function (error) {
@@ -53,6 +59,79 @@ var methods = {
       utils.loading($this, false);
       $this.apiGet();
     });
+  },
+  loadTree(node, resolve) {
+    if (node.level !== 0) {
+      let tree = node.data;
+      this.treeParentId = tree.id;
+      this.treeOrganType = tree.organType;
+
+      this.loadNodeGuidList.push(tree.guid);
+    }
+    else {
+      this.topNode = node;
+      this.topResolve = resolve;
+    }
+
+    var $this = this;
+    $this.treeLoading = true;
+
+    var organParams = {
+      keyWords: this.filterText,
+      parentId: this.treeParentId,
+      organType: this.treeOrganType,
+      showAdminTotal: true,
+      showUserTotal: false
+    };
+
+    $api.get($urlTreeLazy, { params: organParams }).then(function (response) {
+      var res = response.data;
+      resolve(res.organs)
+    }).catch(function (error) {
+      utils.error(error);
+    }).then(function () {
+      $this.treeLoading = false;
+    });
+
+  },
+  loadTreeRefreshTotal: function () {
+    let loadedIdList = [];
+    if (this.loadNodeGuidList.length > 0) {
+      this.loadNodeGuidList.forEach(letGuid => {
+        let letNode = this.$refs.tree.store.getNode(letGuid);
+        if (letNode) {
+          if (!utils.contains(loadedIdList, letGuid)) {
+            loadedIdList.push(letGuid)
+            this.apiGetTreeCount(letNode);
+          }
+        
+          if (letNode.childNodes && letNode.childNodes.length > 0) {
+            letNode.childNodes.forEach(letcnode => {
+
+              let letcGuid = letcnode.data.guid;
+              if (!utils.contains(loadedIdList, letcGuid)) {
+                loadedIdList.push(letcGuid)
+                this.apiGetTreeCount(letcnode);
+              }
+
+            });
+          }
+        }
+      });
+    }
+    else {
+      this.loadTreeSearch();
+    }
+  },
+  loadTreeSearch: function () {
+    var $this = this;
+
+    this.treeParentId = 0;
+    this.treeOrganType = "company";
+
+    $this.topNode.childNodes = [];
+    $this.loadTree($this.topNode, $this.topResolve);
+
   },
   apiGet: function () {
     var $this = this;
@@ -69,7 +148,19 @@ var methods = {
       utils.loading($this, false);
     });
   },
+  apiGetTreeCount: function (node) {
+    var $this = this;
 
+    $api.get($urlTreeLazyCount, {
+      params: { id: node.data.id, type: node.data.organType, userType: 'admin' }
+    }).then(function (response) {
+      var res = response.data;
+      $this.$set(node.data, 'adminCount', res.count);
+      $this.$set(node.data, 'adminAllCount', res.total);
+    }).catch(function () {
+    }).then(function () {
+    });
+  },
   apiDelete: function (item) {
     var $this = this;
 
@@ -84,6 +175,7 @@ var methods = {
       utils.error(error);
     }).then(function () {
       utils.loading($this, false);
+      $this.loadTreeRefreshTotal();
     });
   },
 
@@ -121,7 +213,7 @@ var methods = {
     });
   },
 
-  btnViewClick: function(row) {
+  btnViewClick: function (row) {
     utils.openAdminView(row.id);
   },
 
@@ -130,16 +222,16 @@ var methods = {
     top.utils.openLayer({
       title: false,
       closebtn: 0,
-      url: utils.getSettingsUrl('administratorsLayerProfile', { guid: $this.curOrganGuid }),
+      url: utils.getSettingsUrl('administratorsLayerProfile', { organId: $this.selectOrganId, organName: $this.selectOrganName, organType: $this.selectOrganType }),
       width: "60%",
-      height: "88%", end: function () { $this.apiGet() }
+      height: "88%", end: function () { $this.apiGet(); $this.loadTreeRefreshTotal(); }
     });
   },
   btnEditClick: function (row) {
     var $this = this;
     top.utils.openLayer({
       title: false,
-      closebtn:0,
+      closebtn: 0,
       url: utils.getSettingsUrl('administratorsLayerProfile', { userName: row.userName }),
       width: "60%",
       height: "88%",
@@ -147,11 +239,11 @@ var methods = {
     });
   },
 
-  btnPasswordClick: function(row) {
+  btnPasswordClick: function (row) {
     top.utils.openLayer({
       title: false,
       closebtn: 0,
-      url: utils.getSettingsUrl('administratorsLayerPassword', {userName: row.userName}),
+      url: utils.getSettingsUrl('administratorsLayerPassword', { userName: row.userName }),
       width: "38%",
       height: "58%",
     });
@@ -171,7 +263,7 @@ var methods = {
       top.utils.openLayer({
         title: false,
         closebtn: 0,
-        url: utils.getSettingsUrl('administratorsRoleSet', { adminIds:ids }),
+        url: utils.getSettingsUrl('administratorsRoleSet', { adminIds: ids }),
         width: "68%",
         height: "68%",
       });
@@ -194,7 +286,7 @@ var methods = {
     });
   },
 
-  btnLockClick: function(item) {
+  btnLockClick: function (item) {
     var $this = this;
 
     top.utils.alertDelete({
@@ -207,7 +299,7 @@ var methods = {
     });
   },
 
-  btnUnLockClick: function(item) {
+  btnUnLockClick: function (item) {
     var $this = this;
 
     top.utils.alertDelete({
@@ -227,12 +319,16 @@ var methods = {
   btnTreeClick: function (data, node, e) {
     this.formInline.organId = data.id;
     this.formInline.organType = data.organType;
-    this.curOrganGuid = data.guid;
+
+    this.selectOrganId = data.id;
+    this.selectOrganName = data.name;
+    this.selectOrganType = data.organType;
+
     this.btnSearchClick();
   },
 
 
-  handleCurrentChange: function(val) {
+  handleCurrentChange: function (val) {
     this.formInline.currentValue = val;
     this.formInline.offset = this.formInline.limit * (val - 1);
 
@@ -248,11 +344,6 @@ var methods = {
 var $vue = new Vue({
   el: '#main',
   data: data,
-  watch: {
-    filterText(val) {
-      this.$refs.tree.filter(val);
-    }
-  },
   methods: methods,
   created: function () {
     this.apiGetOtherData();

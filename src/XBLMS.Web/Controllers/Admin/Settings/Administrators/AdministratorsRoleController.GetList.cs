@@ -7,9 +7,12 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
     public partial class AdministratorsRoleController
     {
         [HttpGet, Route(Route)]
-        public async Task<ActionResult<ListRequest>> GetList()
+        public async Task<ActionResult<ListRequest>> GetList([FromQuery] GetRequest request)
         {
-            var allRoles = await _roleRepository.GetRolesAsync();
+            var adminAuth = await _authManager.GetAdminAuth();
+
+            var allRoles = await _roleRepository.GetRolesAsync(adminAuth, request.KeyWords);
+
             foreach (var role in allRoles)
             {
                 var admins = new List<KeyValuePair<int, string>>();
@@ -34,9 +37,8 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
                     role.Set("CreaterName", creator.DisplayName);
                     role.Set("CreaterId", creator.Id);
                 }
-    
             }
-            
+
 
             return new ListRequest
             {

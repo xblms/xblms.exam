@@ -9,11 +9,11 @@ namespace XBLMS.Core.Repositories
 {
     public partial class ExamPaperRandomConfigRepository : IExamPaperRandomConfigRepository
     {
-        private readonly ISettingsManager _settingsManager;
         private readonly IExamPaperRepository _examPaperRepository;
+        private readonly ISettingsManager _settingsManager;
         private readonly Repository<ExamPaperRandomConfig> _repository;
 
-        public ExamPaperRandomConfigRepository(ISettingsManager settingsManager,IExamPaperRepository examPaperRepository)
+        public ExamPaperRandomConfigRepository(ISettingsManager settingsManager, IExamPaperRepository examPaperRepository)
         {
             _settingsManager = settingsManager;
             _examPaperRepository = examPaperRepository;

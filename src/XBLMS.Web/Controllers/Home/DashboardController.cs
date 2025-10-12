@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
-using System.Collections.Generic;
 using XBLMS.Configuration;
+using XBLMS.Dto;
+using XBLMS.Enums;
 using XBLMS.Models;
 using XBLMS.Repositories;
 using XBLMS.Services;
@@ -21,53 +22,34 @@ namespace XBLMS.Web.Controllers.Home
         private readonly IAuthManager _authManager;
         private readonly IOrganManager _organManager;
         private readonly IExamManager _examManager;
-        private readonly IExamPaperUserRepository _examPaperUserRepository;
-        private readonly IExamPaperRepository _examPaperRepository;
-        private readonly IExamPaperStartRepository _examPaperStartRepository;
-        private readonly IExamQuestionnaireRepository _examQuestionnaireRepository;
         private readonly IExamQuestionnaireUserRepository _examQuestionnaireUserRepository;
-        private readonly IExamCerRepository _examCerRepository;
         private readonly IExamCerUserRepository _examCerUserRepository;
 
         private readonly IExamAssessmentUserRepository _examAssessmentUserRepository;
-        private readonly IExamAssessmentRepository _examAssessmentRepository;
-
-        private readonly IKnowlegesRepository _knowlegesRepository;
-        private readonly IUserMenuRepository _userMenuRepository;
+        private readonly IStudyPlanUserRepository _studyPlanUserRepository;
+        private readonly IStudyCourseUserRepository _studyCourseUserRepository;
 
         public DashboardController(IConfigRepository configRepository,
             ISettingsManager settingsManager,
             IOrganManager organManager,
             IAuthManager authManager,
             IExamManager examManager,
-            IExamPaperUserRepository examPaperUserRepository,
-            IExamPaperRepository examPaperRepository,
-            IExamPaperStartRepository examPaperStartRepository,
-            IExamQuestionnaireRepository examQuestionnaireRepository,
             IExamQuestionnaireUserRepository examQuestionnaireUserRepository,
-            IExamCerRepository examCerRepository,
             IExamCerUserRepository examCerUserRepository,
             IExamAssessmentUserRepository examAssessmentUserRepository,
-            IExamAssessmentRepository examAssessmentRepository,
-            IKnowlegesRepository knowlegesRepository,
-            IUserMenuRepository userMenuRepository)
+            IStudyPlanUserRepository studyPlanUserRepository,
+            IStudyCourseUserRepository studyCourseUserRepository)
         {
             _settingsManager = settingsManager;
             _configRepository = configRepository;
             _authManager = authManager;
             _organManager = organManager;
             _examManager = examManager;
-            _examPaperUserRepository = examPaperUserRepository;
-            _examPaperRepository = examPaperRepository;
-            _examPaperStartRepository = examPaperStartRepository;
-            _examQuestionnaireRepository = examQuestionnaireRepository;
             _examQuestionnaireUserRepository = examQuestionnaireUserRepository;
-            _examCerRepository = examCerRepository;
             _examCerUserRepository = examCerUserRepository;
             _examAssessmentUserRepository = examAssessmentUserRepository;
-            _examAssessmentRepository = examAssessmentRepository;
-            _knowlegesRepository = knowlegesRepository;
-            _userMenuRepository = userMenuRepository;
+            _studyPlanUserRepository = studyPlanUserRepository;
+            _studyCourseUserRepository = studyCourseUserRepository;
         }
 
         public class GetRequest
@@ -77,15 +59,18 @@ namespace XBLMS.Web.Controllers.Home
 
         public class GetResult
         {
+            public string VersionName { get; set; }
+            public SystemCode SystemCode { get; set; }
+            public PointNotice PointNotice { get; set; }
             public User User { get; set; }
             public double AllPercent { get; set; }
             public double ExamPercent { get; set; }
             public double ExamMoniPercent { get; set; }
             public int ExamTotal { get; set; }
             public int ExamMoniTotal { get; set; }
-
-            public ExamPaper ExamPaper { get; set; }
-            public ExamPaper ExamMoni { get; set; }
+            public int ExamCerTotal { get; set; }
+            public int ExamQTotal { get; set; }
+            public int ExamAssTotal { get; set; }
 
             public int PracticeAnswerTmTotal { get; set; }
             public double PracticeAnswerPercent { get; set; }
@@ -96,24 +81,11 @@ namespace XBLMS.Web.Controllers.Home
             public int PracticeWrongTmTotal { get; set; }
             public double PracticeWrongPercent { get; set; }
 
-            public int TaskPaperTotal { get; set; }
-            public int TaskQTotal { get; set; }
-            public int TaskAssTotal { get; set; }
-
-            public ExamCerUser TopCer { get; set; }
-
-            public string DateStr { get; set; }
-            public List<ExamCerUser> CerList { get; set; }
-
-            public List<Models.Knowledges> KnowList { get; set; }
-
-            public ExamPaper TodayExam { get; set; }
-            public List<ExamPaper> TaskPaperList { get; set; }
-            public List<ExamQuestionnaire> TaskQList { get; set; }
-            public List<ExamAssessment> TaskAssList { get; set; }
-            public int TaskTotal { get; set; }
-
-            public List<string> OpenMenus { get; set; }
+            public decimal StudyPlanTotalCredit { get; set; }
+            public decimal StudyPlanTotalOverCredit { get; set; }
+            public int TotalCourse { get; set; }
+            public int TotalOverCourse { get; set; }
+            public long TotalDuration { get; set; }
             public string Version { get; set; }
 
         }

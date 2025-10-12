@@ -1,0 +1,38 @@
+﻿@page
+@{ Layout = "_Layout"; }
+
+<el-card>
+    <div slot="header" class="clearfix">
+        <span>{{ id > 0 ? "修改" : "新增" }}{{ type==="company" ? "单位" : "部门" }}</span>
+        <el-button style="float: right;padding:3px 0;" type="text" v-on:click="utils.closeLayer(false)"><i class="el-icon-close"></i></el-button>
+    </div>
+    <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-180) + 'px' }">
+        <div style="margin-right:18px;">
+            <el-form v-on:submit.native.prevent :size="euiSize" ref="form" :model="form" status-icon label-width="140px">
+                <template v-if="id>0">
+                    <el-form-item :label="type==='company' ? '单位名称' : '部门名称'" prop="name" :rules="[{ required: true, message: '请输入名称' }]">
+                        <el-input v-model="form.name"></el-input>
+                    </el-form-item>
+                </template>
+                <el-form-item :label="type==='company' ? '单位名称' : '部门名称'" prop="name" :rules="[{ required: true, message: '请输入名称' }]" v-else>
+                    <el-input type="textarea"
+                              placeholder="批量新增，下级前添加“-”字符，示例：&#10;1级&#10;-2级&#10;--3级"
+                              v-model="form.name"
+                              show-word-limit rows="9">
+                    </el-input>
+                    <el-link type="primary" v-on:click.stop="btnInsertDemoClick">插入示例</el-link>
+                </el-form-item>
+            </el-form>
+        </div>
+    </el-scrollbar>
+</el-card>
+<el-row align="center" style="margin-top:18px;">
+    <el-col :span="24" align="center">
+        <el-button icon="el-icon-check" :size="euiSize" type="primary" v-on:click="btnSubmitClick">确 定</el-button>
+        <el-button icon="el-icon-close" :size="euiSize" v-on:click="btnCancelClick">取 消</el-button>
+    </el-col>
+</el-row>
+
+@section Scripts{
+    <script src="/sitefiles/assets/js/admin/settings/organsEdit.js" type="text/javascript"></script>
+}

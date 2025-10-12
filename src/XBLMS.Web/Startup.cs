@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Diagnostics;
@@ -96,7 +96,8 @@ namespace XBLMS.Web
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(StringUtils.GetSecurityKeyBytes(settingsManager.SecurityKey)),
                     ValidateIssuer = false,
-                    ValidateAudience = false
+                    ValidateAudience = false,
+                    ClockSkew = TimeSpan.Zero
                 };
                 x.Events = new JwtBearerEvents
                 {
@@ -121,7 +122,8 @@ namespace XBLMS.Web
                 };
             });
 
-            services.Configure<FormOptions>(x => {
+            services.Configure<FormOptions>(x =>
+            {
                 x.ValueLengthLimit = int.MaxValue;
                 x.MultipartBodyLengthLimit = long.MaxValue; // In case of multipart
             });
@@ -135,7 +137,7 @@ namespace XBLMS.Web
             services.AddTaskServices();
             services.AddRepositories(assemblies);
             services.AddServices();
-      
+
 
             services.AddLocalization(options => options.ResourcesPath = "Resources");
             services
@@ -169,33 +171,11 @@ namespace XBLMS.Web
 
             });
 
-
-            if (!settingsManager.IsSafeMode)
-            {
-                //http://localhost:5000/api/swagger/v1/swagger.json
-                //http://localhost:5000/api/swagger/
-                //http://localhost:5000/api/docs/
-                services.AddOpenApiDocument(config =>
-                {
-                    config.PostProcess = document =>
-                    {
-                        document.Info.Version = "v1";
-                        document.Info.Title = "XBLMS API";
-                        document.Info.Description = "XBLMS API";
-                        document.Info.Contact = new NSwag.OpenApiContact
-                        {
-                            Name = "XBLMS",
-                            Email = string.Empty,
-                            Url = string.Empty
-                        };
-                    };
-                });
-            }
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ISettingsManager settingsManager, IErrorLogRepository errorLogRepository)
         {
-          
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -268,8 +248,6 @@ namespace XBLMS.Web
                 ContentTypeProvider = provider
             });
 
-            //app.UseStaticFiles();
-
             var supportedCultures = new[]
             {
                 new CultureInfo("en-US"),
@@ -282,8 +260,6 @@ namespace XBLMS.Web
                 SupportedCultures = supportedCultures,
                 SupportedUICultures = supportedCultures
             });
-
-          
 
             app.UseRouting();
 
@@ -298,20 +274,6 @@ namespace XBLMS.Web
             });
 
             app.UseRequestLocalization();
-
-
-            if (!settingsManager.IsSafeMode)
-            {
-                app.UseOpenApi();
-                app.UseSwaggerUi();
-                app.UseReDoc(settings =>
-                {
-                    settings.Path = "/api/docs";
-                    settings.DocumentPath = "/swagger/v1/swagger.json";
-                });
-            }
-
-    
         }
     }
 }

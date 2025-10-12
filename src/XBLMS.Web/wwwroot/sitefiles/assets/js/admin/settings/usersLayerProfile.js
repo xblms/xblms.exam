@@ -2,9 +2,10 @@
 
 var data = utils.init({
   userId: utils.getQueryInt('userId'),
-  organGuid: utils.getQueryString("guid"),
+  organId: utils.getQueryString("organId"),
+  organType: utils.getQueryString("organType"),
+  organName: utils.getQueryString('organName'),
   uploadUrl: null,
-  organs: null,
   form: {
     userName: null,
     displayName: null,
@@ -13,15 +14,23 @@ var data = utils.init({
     avatarUrl: null,
     mobile: null,
     email: null,
+    dutyName: '',
     locked: false,
-    organId: ''
+    organId: 0,
+    organType: '',
+    organName:''
   }
 });
 
 var methods = {
   apiGet: function () {
     var $this = this;
-    $this.form.organId = $this.organGuid;
+
+    $this.form.organId = $this.organId;
+    $this.form.organType = $this.organType;
+    $this.form.organName = $this.organName;
+
+
     $api.get($url, {
       params: {
         userId: this.userId
@@ -38,7 +47,10 @@ var methods = {
         $this.form.mobile = res.mobile;
         $this.form.email = res.email;
         $this.form.organId = res.organId;
+        $this.form.organType = res.organType;
+        $this.form.organName = res.organName;
         $this.form.locked = res.locked;
+        $this.form.dutyName = res.dutyName;
       }
 
 
@@ -62,7 +74,10 @@ var methods = {
       mobile: this.form.mobile,
       email: this.form.email,
       organId: this.form.organId,
-      locked: this.form.locked
+      locked: this.form.locked,
+      dutyName: this.form.dutyName,
+      organId: this.form.organId,
+      organType: this.form.organType,
     }).then(function (response) {
       utils.success('操作成功！');
       utils.closeLayer(false);
@@ -130,7 +145,22 @@ var methods = {
 
   btnCancelClick: function () {
     utils.closeLayer(false);
-  }
+  },
+  btnSelectOrganClick: function () {
+    top.utils.openLayer({
+      title: false,
+      closebtn: 0,
+      url: utils.getCommonUrl('selectOrgan', { windowName: window.name, selectOne: true }),
+      width: "60%",
+      height: "88%"
+    });
+  },
+  selectOrganCallback: function (selectCallbackList) {
+    var selectOrgan = selectCallbackList[0];
+    this.form.organId = selectOrgan.id;
+    this.form.organName = selectOrgan.name;
+    this.form.organType = selectOrgan.type;
+  },
 };
 
 var $vue = new Vue({

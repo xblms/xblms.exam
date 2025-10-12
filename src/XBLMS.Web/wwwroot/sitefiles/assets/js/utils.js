@@ -138,6 +138,56 @@ var utils = {
     }
     return 0.00
   },
+  formatDuration: function (duration) {
+    var fen = "00";
+    var miao = "00";
+    if (duration < 60) {
+      fen = "00";
+      if (duration < 10) {
+        miao = "0" + duration;
+      }
+      else {
+        miao = duration;
+      }
+
+    }
+    if (duration === 60) {
+      fen = "00";
+      miao = "60";
+    }
+    if (duration > 60) {
+      fen = Math.trunc(duration / 60);
+      if (fen < 10) {
+        fen = "0" + fen;
+      }
+      miao = Math.trunc(duration % 60);
+      if (miao < 10) {
+        miao = "0" + miao;
+      }
+    }
+
+    return fen + ":" + miao;
+  },
+  formatDurationCN: function (duration) {
+
+    if (duration > 3600) {
+      var shi = Math.trunc(duration / 3600);
+      var fen = Math.trunc(duration / 60);
+      return shi + "时" + miao + "分";
+    }
+    else {
+      if (duration <= 60) {
+        return duration + "秒";
+      }
+      else {
+        fen = Math.trunc(duration / 60);
+        miao = Math.trunc(duration % 60);
+        return fen + "分" + miao + "秒";
+      }
+
+    }
+
+  },
   toCamelCase: function (s) {
     if (!s || s[0] !== s[0].toUpperCase()) {
       return s;
@@ -216,12 +266,21 @@ var utils = {
     return utils.getPageUrl("exam", name, query);
   },
 
+  getStudyUrl: function (name, query) {
+    return utils.getPageUrl("study", name, query);
+  },
   getKnowledgesUrl: function (name, query) {
     return utils.getPageUrl("knowledges", name, query);
   },
 
   getSettingsUrl: function (name, query) {
     return utils.getPageUrl("settings", name, query);
+  },
+  getPointsUrl: function (name, query) {
+    return utils.getPageUrl("points", name, query);
+  },
+  getGiftUrl: function (name, query) {
+    return utils.getPageUrl("gift", name, query);
   },
 
   getCommonUrl: function (name, query) {
@@ -235,7 +294,7 @@ var utils = {
     } else {
       url += name + "/";
     }
-    if (this.contains(url, 'admin/login') || this.contains(url, 'home/login') || this.contains(url, 'app/login')) {
+    if (this.contains(url, 'xblms-admin/login') || this.contains(url, 'home/login') || this.contains(url, 'app/login')) {
       url += "?par=" + this.uuid();
     }
     else {
@@ -259,7 +318,6 @@ var utils = {
   getExtendName: function (attributeName, n) {
     return utils.toCamelCase(n ? attributeName + n : attributeName);
   },
-
   openAdminView(id) {
     top.utils.openLayer({
       title: false,
@@ -614,6 +672,19 @@ var utils = {
       message: message,
       showIcon: true,
       showClose: true,
+      customClass: 'el-message-extend'
+    });
+  },
+
+  warning: function (message, options) {
+    var vue = (options && options.layer) ? utils.getTabVue() : utils.getRootVue();
+
+    vue.$message({
+      type: "warning",
+      message: message,
+      showIcon: true,
+      showClose: true,
+      customClass: 'el-message-extend'
     });
   },
 
@@ -637,7 +708,8 @@ var utils = {
           type: "error",
           message: error,
           showIcon: true,
-          showClose: true
+          showClose: true,
+          customClass: 'el-message-extend'
         });
       }
     } else if (error.response) {
@@ -647,7 +719,7 @@ var utils = {
 
       if (!ignoreAuth && error.response && (error.response.status === 401 || error.response.status === 403)) {
         var location = _.trimEnd(window.location.href, '/');
-        if (_.endsWith(location, '/admin') || _.endsWith(location, '/home') || _.endsWith(location, '/app')) {
+        if (_.endsWith(location, '/xblms-admin') || _.endsWith(location, '/home') || _.endsWith(location, '/app')) {
           top.location.href = utils.getRootUrl('login', { status: 401 });
 
         } else {
@@ -688,6 +760,7 @@ var utils = {
         message: message,
         showIcon: true,
         showClose: true,
+        customClass: 'el-message-extend'
       });
     } else if (typeof error === 'object') {
       vue.$message({
@@ -695,6 +768,7 @@ var utils = {
         message: error + '',
         showIcon: true,
         showClose: true,
+        customClass: 'el-message-extend'
       });
     }
   },
@@ -733,6 +807,24 @@ var utils = {
   },
   closeTopLeft: function () {
     top.$vue.topFrameDrawer = false;
+  },
+  openTopRight: function (title, src, width) {
+    top.$vue.topRightFrameTitle = title;
+    top.$vue.topRightFrameSrc = src;
+    top.$vue.topRightFrameWidth = width || 88;
+    top.$vue.topRightFrameDrawer = true;
+  },
+  closeTopRight: function () {
+    top.$vue.topRightFrameDrawer = false;
+  },
+  openTopTop: function (title, src, width) {
+    top.$vue.topTopFrameTitle = title;
+    top.$vue.topTopFrameSrc = src;
+    top.$vue.topTopFrameWidth = width || 50;
+    top.$vue.topTopFrameDrawer = true;
+  },
+  closeTopTop: function () {
+    top.$vue.topTopFrameDrawer = false;
   },
   openLayerPhoto: function (config) {
     layer.photos({
@@ -784,7 +876,8 @@ var utils = {
       closeBtn: config.closebtn,
       content: config.url,
       success: config.success,
-      end: config.end
+      end: config.end,
+      offset: config.offset || 'auto'
     });
 
     setTimeout(function () {
@@ -796,6 +889,12 @@ var utils = {
     }
 
     return false;
+  },
+
+  pointNotice: function (notice) {
+    if (notice.success) {
+      layer.msg('<div class="p-3 text-center"><div class="pb-3"><i class="bi bi-database-check fs-1 text-warning fw-bolder"></i></div>' + notice.msg + '<div class="pt-3 fs-3"><i class="bi bi-plus me-2"></i>' + notice.value + '</div></div>', { shade: 0.5,time:1500 });
+    }
   },
 
   contains: function (str, val) {
@@ -818,8 +917,8 @@ var utils = {
         e.preventDefault();
         e.stopPropagation();
         var url = location.href;
-        if (url.indexOf('/admin/') !== -1) {
-          url = url.substring(url.indexOf('/admin/'));
+        if (url.indexOf('/xblms-admin/') !== -1) {
+          url = url.substring(url.indexOf('/xblms-admin/'));
         }
         utils.openDocs(url);
       }
@@ -1099,7 +1198,34 @@ var utils = {
         }
       }
     }, 100);
-  }
+  },
+  AESGetKey: function (salt) {
+    return salt.substring(8, 40);
+  },
+  AESGetIV: function (salt) {
+    return salt.substring(46, 62);
+  },
+  AESEncrypt: function (plainText, salt) {
+    let key = utils.AESGetKey(salt);
+    let iv = utils.AESGetIV(salt);
+    const dataStr = typeof plainText === 'object' ? JSON.stringify(plainText) : String(plainText)
+    const encrypted = CryptoJS.AES.encrypt(dataStr, CryptoJS.enc.Utf8.parse(key), {
+      iv: CryptoJS.enc.Utf8.parse(iv),
+      mode: CryptoJS.mode.CBC,
+      padding: CryptoJS.pad.Pkcs7
+    })
+    return encrypted.toString()
+  },
+  AESDecrypt: function (plainText, salt) {
+    let key = utils.AESGetKey(salt);
+    let iv = utils.AESGetIV(salt);
+    const decrypt = CryptoJS.AES.decrypt(plainText, CryptoJS.enc.Utf8.parse(key), {
+      iv: CryptoJS.enc.Utf8.parse(iv),
+      mode: CryptoJS.mode.CBC,
+      padding: CryptoJS.pad.Pkcs7
+    })
+    return decrypt.toString(CryptoJS.enc.Utf8)
+  },
 };
 
 Object.defineProperty(Object.prototype, "getEntityValue", {
@@ -1122,16 +1248,10 @@ var DEFAULT_AVATAR_URL = '/sitefiles/assets/images/default_avatar.png';
 var DEFAULT_NOBODY_AVATAR_URL = '/sitefiles/assets/images/nobody_avatar.svg';
 var DEFAULT_AVATAR_BG_URL = '/sitefiles/assets/images/default_avatar_bg.jpg';
 var DEFAULT_LOGO_URL = "/sitefiles/assets/images/logo.png";
+var DEFAULT_LOGINBG_URL = '/sitefiles/assets/images/cover/bg.png';
 
 var DOCUMENTTITLE = 'XBLMS.EXAM';
-var DOCUMENTTITLECN = '在线考试系统';
-var DOCUMENTTITLE_ADMIN = DOCUMENTTITLE + '-后台管理';
-var DOCUMENTTITLE_HOME = DOCUMENTTITLE + '-用户中心';
-var DOCUMENTTITLE_DATABASEUPDATE = DOCUMENTTITLE + '-数据库升级';
-var DOCUMENTTITLE_INSTALL = DOCUMENTTITLE + '-系统安装';
-var DOCUMENTTITLE_ERROR = DOCUMENTTITLE + '-系统错误';
-var DOCUMENTTITLE_BLOCK = DOCUMENTTITLE + '-访问受限';
-
+var DOCUMENTTITLECN = '星期八在线考试系统';
 
 var sessionId = utils.getQueryString('sessionId');
 var accessToken = utils.getQueryString('accessToken');
@@ -1141,7 +1261,6 @@ if (sessionId && accessToken) {
   sessionStorage.removeItem(ACCESS_TOKEN_NAME);
   localStorage.setItem(ACCESS_TOKEN_NAME, accessToken);
 }
-
 
 var $token = sessionStorage.getItem(ACCESS_TOKEN_NAME) || localStorage.getItem(ACCESS_TOKEN_NAME) || utils.getQueryString('accessToken');
 var $api = axios.create({

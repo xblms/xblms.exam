@@ -8,99 +8,95 @@
         body{
             padding: 0;
             margin: 0;
-            background-color: #ffffff;
+            background: #ffffff;
         }
 
         html{
             padding: 0;
             margin: 0;
-            background-color: #ffffff;
+            background: #ffffff;
         }
     </style>
 }
-<el-card class="rounded-0">
-    <div class="d-flex justify-content-between align-items-center">
-        <div>
-            <h2 class="h1 fw-bold">考试中心</h2>
-            <small>共 {{total}} 场考试安排</small>
-        </div>
-        <div>
-            <el-form v-on:submit.native.prevent :inline="true" :model="form">
-                <el-form-item label="开考时间">
-                    <el-select v-model="form.date" placeholder="开考时间">
-                        <el-option label="全部" value=""></el-option>
-                        <el-option label="今天" value="today"></el-option>
-                        <el-option label="三天内" value="three"></el-option>
-                        <el-option label="一周内" value="week"></el-option>
-                        <el-option label="当月" value="month"></el-option>
-                        <el-option label="当年" value="year"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="试卷">
-                    <el-input prefix-icon="el-icon-search" v-model="form.keyWords" placeholder="关键字"></el-input>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" plain icon="el-icon-search" v-on:click="btnSearchClick">查询</el-button>
-                </el-form-item>
-            </el-form>
+<div class="bg-cover position-relative" style="background-image:url('/sitefiles/assets/images/cover/exam.png');">
+    <div class="container py-8">
+        <span class="p-0 m-0 fw-bolder h1 text-gray-1000 d-flex align-items-center"><i class="el-icon-platform-eleme me-3 fs-1"></i><span>考试中心</span></span>
+    </div>
+</div>
+<el-card class="rounded-0 border-0 sticky-top">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                {{ total }} 场考试安排
+            </div>
+            <div>
+                <el-form v-on:submit.native.prevent :inline="true" :model="form">
+                    <el-form-item label="">
+                        <el-input prefix-icon="el-icon-search" v-model="form.keyWords" placeholder="关键字"></el-input>
+                    </el-form-item>
+                    <el-form-item label="">
+                        <el-select v-model="form.date" placeholder="开考时间">
+                            <el-option label="开考时间" value=""></el-option>
+                            <el-option label="今天" value="today"></el-option>
+                            <el-option label="三天内" value="three"></el-option>
+                            <el-option label="一周内" value="week"></el-option>
+                            <el-option label="当月" value="month"></el-option>
+                            <el-option label="当年" value="year"></el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item class="pe-0 m-0">
+                        <el-button icon="el-icon-search" v-on:click="btnSearchClick">查 询</el-button>
+                    </el-form-item>
+                </el-form>
+            </div>
         </div>
     </div>
 </el-card>
-<div class="p-3" v-if="total>0">
-    <div>
-        <div class="ms-5 position-relative card-hover-with-icon" v-for="(paper,index) in list" v-on:click="btnViewClick(paper.id)">
-            <div class="position-absolute top-50 start-0 translate-middle">
-                <div class="position-relative">
-                    <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="13" y="10" width="28" height="34" fill="none" stroke="#333" stroke-width="1" stroke-linejoin="miter" /><path d="M35 10V4H8C7.44772 4 7 4.44772 7 5V38H13" stroke="#333" stroke-width="1" stroke-linecap="round" stroke-linejoin="miter" /><path d="M21 22H33" stroke="#333" stroke-width="1" stroke-linecap="round" stroke-linejoin="miter" /><path d="M21 30H33" stroke="#333" stroke-width="1" stroke-linecap="round" stroke-linejoin="miter" /></svg>
-                    <span class="position-absolute top-100 start-100 translate-middle mt-1 fs-6">{{ index+1 }}</span>
-                </div>
+<div class="container py-5">
+    <div v-if="total>0">
+        <div class="d-flex py-4 card-hover-bg" v-for="(paper,index) in list" v-on:click="btnViewClick(paper.id)">
+            <div class="position-relative">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="13" y="10" width="28" height="34" fill="none" stroke="#333" stroke-width="1" stroke-linejoin="miter" /><path d="M35 10V4H8C7.44772 4 7 4.44772 7 5V38H13" stroke="#333" stroke-width="1" stroke-linecap="round" stroke-linejoin="miter" /><path d="M21 22H33" stroke="#333" stroke-width="1" stroke-linecap="round" stroke-linejoin="miter" /><path d="M21 30H33" stroke="#333" stroke-width="1" stroke-linecap="round" stroke-linejoin="miter" /></svg>
+                <span class="position-absolute top-50 start-100 translate-middle ms-2 mt-2">.{{ index+1 }}</span>
             </div>
-            <el-card class="rounded-0 border-start-0 border-end-0" shadow="hover">
-                <div class="row align-items-center g-3 ms-6">
-                    <div class="col">
-                        <div class="mb-2">
-                            <el-link :underline="false" v-on:click.stop="btnViewClick(paper.id)">
-                                <span class="fw-bold card-icon px-3 py-1 rounded-pill" :class="paper.myExamTimes>0?'bg-white':'bg-warning text-white'">{{ paper.title }}</span>
-                            </el-link>
-                        </div>
-                        <ul class="list-inline fw-light ms-3">
-                            <li class="list-inline-item fs-5">
-                                总分：{{paper.totalScore}}
-                            </li>
-                            <li class="list-inline-item fs-5">
-                                及格分：{{paper.passScore}}
-                            </li>
-                            <li class="list-inline-item fs-5">
-                                开考时间：{{ paper.examStartDateTimeStr }}
-                            </li>
-                            <li class="list-inline-item fs-5">
-                                剩余考试次数：
-                                <span class="fs-3 text-success fw-bold" v-if="(paper.userExamTimes-paper.myExamTimes)>0">
-                                    {{paper.userExamTimes-paper.myExamTimes}}
-                                </span>
-                                <span class="fs-3 text-danger fw-bold" v-else>
-                                    0
-                                </span>
-                                /{{paper.userExamTimes}}
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="col-auto">
-                        <div class="bg-light p-2 rounded-pill">
-                            <el-button type="primary" plain icon="el-icon-s-order" class="rounded-pill" v-on:click.stop="btnViewClick(paper.id)">详 细</el-button>
-                        </div>
-                    </div>
+            <div class="ps-8">
+                <div class="mb-3">
+                    <span class="card-title">{{ paper.title }}</span>
                 </div>
-            </el-card>
+                <ul class="list-inline fw-light m-0 d-flex align-items-center">
+                    <li class="list-inline-item">
+                        总分：{{paper.totalScore}}
+                    </li>
+                    <li class="list-inline-item">
+                        及格分：{{paper.passScore}}
+                    </li>
+                    <li class="list-inline-item">
+                        开考时间：<span class="text-warning fw-bold">{{ paper.examStartDateTimeStr }}</span>
+                    </li>
+                    <li class="list-inline-item">
+                        剩余考试次数：
+                        <span class="text-success fw-bold" v-if="(paper.userExamTimes-paper.myExamTimes)>0">
+                            {{paper.userExamTimes-paper.myExamTimes}}
+                        </span>
+                        <span class="text-danger fw-bold" v-else>
+                            0
+                        </span>
+                        /{{paper.userExamTimes}}
+                    </li>
+                </ul>
+            </div>
+            <div class="ms-auto d-flex align-items-center">
+                <el-tag :type="paper.paperStatus" effect="dark" class="rounded-pill px-3"><i class="el-icon-info me-2"></i>{{ paper.paperStatusStr }}</el-tag>
+            </div>
         </div>
         <div class="my-5 text-center">
-            <el-button icon="el-icon-refresh-right" v-if="list.length>0 && list.length<total" v-on:click="btnLoadMoreClick" :loading="loadMoreLoading">加载更多</el-button>
+            <el-button class="border-0 rounded-pill" icon="el-icon-refresh-right" v-if="list.length>0 && list.length<total" v-on:click="btnLoadMoreClick" :loading="loadMoreLoading">加载更多</el-button>
             <small v-else>没有更多了</small>
         </div>
     </div>
-</div>
-<div class="pt-10" v-else>
-    <el-empty image="/sitefiles/assets/images/nodata.svg"></el-empty>
+    <div class="pt-10" v-else>
+        <el-empty></el-empty>
+    </div>
 </div>
 @section Scripts{
     <script src="/sitefiles/assets/js/home/exam/examPaper.js" type="text/javascript"></script>

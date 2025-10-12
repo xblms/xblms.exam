@@ -17,6 +17,8 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 return this.NoAuth();
             }
 
+            var adminAuth = await _authManager.GetAdminAuth();
+
             var pk = new ExamPk();
             pk.Name = $"答题竞赛-{StringUtils.GetShortGuid()}";
             pk.RuleType = PkRuleType.Game1;
@@ -26,8 +28,8 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 pk = await _examPkRepository.GetAsync(request.Id);
             }
 
-            var userGroups = await _userGroupRepository.GetListWithoutLockedAsync();
-            var tmGroups = await _tmGroupRepository.GetListAsync();
+            var userGroups = await _userGroupRepository.GetListAsync(adminAuth, true);
+            var tmGroups = await _tmGroupRepository.GetListAsync(adminAuth, string.Empty, true);
 
             return new GetResult
             {

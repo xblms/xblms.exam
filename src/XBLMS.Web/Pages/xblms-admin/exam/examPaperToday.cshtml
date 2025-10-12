@@ -1,0 +1,42 @@
+﻿@page
+@{ Layout = "_Layout"; }
+
+<el-row>
+    <el-col>
+        <el-table ref="paperTable" :data="list" :size="euiSize"
+                  v-on:cell-mouse-enter="mouseoverShowIn"
+                  v-on:cell-mouse-leave="mouseoverShowOut"
+                  style="width: 100%">
+            <el-table-column label="试卷名称" show-overflow-tooltip prop="title" align="left">
+                <template slot-scope="scope">
+                    {{ scope.row.title }}
+                    <div v-if="scope.row.id===curMouseoverId">
+                        <template v-if="scope.row.tmRandomType!=='RandomExaming' && scope.row.submitType==='Submit'">
+                            <el-link :underline="false" v-on:click.stop="btnViewClick(scope.row)" type="primary" size="mini" style="font-size:12px;">预览</el-link>
+                            <el-divider direction="vertical"></el-divider>
+                        </template>
+                        <el-link :underline="false" v-on:click.stop="btnManagerUserClick(scope.row)" type="primary" size="mini" style="font-size:12px;">考生管理</el-link>
+                        <el-divider direction="vertical"></el-divider>
+                        <el-link :underline="false" v-on:click.stop="btnManagerScoreClick(scope.row)" type="primary" size="mini" style="font-size:12px;">考试成绩</el-link>
+                        <el-divider direction="vertical"></el-divider>
+                        <el-link :underline="false" v-on:click.stop="btnManagerAnalysisClick(scope.row)" type="primary" size="mini" style="font-size:12px;">综合统计</el-link>
+                    </div>
+                </template>
+            </el-table-column>
+            <el-table-column prop="examBeginDateTime" label="开考时间" width="150" align="right">
+            </el-table-column>
+            <el-table-column label="#"
+                             type="index"
+                             width="50"
+                             align="right">
+                <template scope="scope">
+                    <span>{{ scope.$index + 1 }}</span>
+                </template>
+            </el-table-column>
+        </el-table>
+    </el-col>
+</el-row>
+
+@section Scripts{
+    <script src="/sitefiles/assets/js/admin/exam/examPaperToday.js" type="text/javascript"></script>
+}

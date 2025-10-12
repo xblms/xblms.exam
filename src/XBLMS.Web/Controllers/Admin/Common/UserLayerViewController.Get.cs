@@ -24,9 +24,12 @@ namespace XBLMS.Web.Controllers.Admin.Common
 
             user = await _organManager.GetUser(user.Id);
 
+            var config = await _configRepository.GetAsync();
+
             return new GetResult
             {
-                User = user
+                User = user,
+                SystemCode = config.SystemCode
             };
         }
     }

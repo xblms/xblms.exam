@@ -1,0 +1,35 @@
+﻿@page
+@{ Layout = "_LayoutApp"; }
+@section Styles{
+    <style>
+        .el-rate__icon {
+            font-size: 24px !important;
+        }
+    </style>
+}
+<el-card class="shadow-lg rounded-4">
+    <el-form label-position="top">
+        <template v-for="item in list">
+            <template v-if="item.textContent">
+                <el-form-item :label="item.title">
+                    <el-input type="textarea" :rows="2" v-model="item.strValue"></el-input>
+                </el-form-item>
+            </template>
+            <template v-else>
+                <el-form-item :label="item.title">
+                    <el-rate v-model="item.starValue" :max="maxStar"></el-rate>
+                    <small class="text-warning">必填项</small>
+                </el-form-item>
+            </template>
+        </template>
+    </el-form>
+</el-card>
+<div class="py-8"></div>
+<div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 animate__animated animate__fadeInUp">
+    <div class="btn-group">
+        <button type="button" class="btn btn-primary rounded-0" v-on:click="btnSubmitClick"><i class="el-icon-check me-2"></i>提交评价</button>
+        <button type="button" class="btn btn-outline-primary rounded-0" v-on:click="utils.closeLayerSelf"><i class="el-icon-close me-2"></i>取 消</button>
+    </div>
+</div>
+@section Scripts{
+<script src="/sitefiles/assets/js/app/study/studyCourseEvaluation.js" type="text/javascript"></script> }

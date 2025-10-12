@@ -2,7 +2,8 @@ var $url = 'exam/examTx';
 
 var data = utils.init({
   list: null,
-  name:'',
+  operate: false,
+  name: '',
 });
 
 var methods = {
@@ -13,6 +14,7 @@ var methods = {
     $api.get($url, { params: { name: $this.name } }).then(function (response) {
       var res = response.data;
 
+      $this.operate = res.operate;
       $this.list = res.items;
 
     }).catch(function (error) {
@@ -27,7 +29,7 @@ var methods = {
     var $this = this;
 
     utils.loading(this, true);
-    $api.post($url+'/del', { id: id }).then(function (response) {
+    $api.post($url + '/del', { id: id }).then(function (response) {
       var res = response.data;
       utils.success('操作成功！');
     }).catch(function (error) {

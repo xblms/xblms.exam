@@ -1,0 +1,94 @@
+﻿@page
+@{ Layout = "_Layout"; }
+
+<el-card class="box-card">
+    <el-form v-on:submit.native.prevent :inline="true" :size="euiSize">
+        <el-form-item label="用户、商品">
+            <el-input v-model="form.keyWords"
+                      prefix-icon="el-icon-search" clearable
+                      placeholder="关键字">
+            </el-input>
+        </el-form-item>
+        <el-form-item label="">
+            <el-button icon="el-icon-search" type="primary" :size="euiSize" v-on:click="btnSearch">查 询</el-button>
+        </el-form-item>
+    </el-form>
+
+    <el-table :data="list" style="width: 100%;" :size="euiSize"
+              :height="($(window).height() - 163)">
+        <el-table-column label="#" :default-sort="{prop: 'createdDate', order: 'descending'}"
+                         type="index"
+                         width="60"
+                         align="left">
+            <template scope="scope">
+                <span>{{ scope.$index + 1 }}</span>
+            </template>
+        </el-table-column>
+        <el-table-column label="状态" width="80" prop="adminStateStr" align="left">
+             <template slot-scope="scope">
+                <div v-if="scope.row.adminState==='Yiling' || scope.row.adminState==='Yiqianshou'"><el-tag size="mini" effect="dark" type="success">{{ scope.row.adminStateStr }}</el-tag></div>
+                <div v-else><el-tag size="mini" effect="dark" type="warning">{{ scope.row.adminStateStr }}</el-tag></div>
+            </template>
+        </el-table-column>
+        <el-table-column label="商品" show-overflow-tooltip prop="shopName">
+            <template slot-scope="scope">
+                <el-tooltip placement="left">
+                    <div slot="content"><img :src="scope.row.gift.coverImg[0]" width="100" /></div>
+                    <span>{{ scope.row.shopName }}</span>
+                </el-tooltip>
+            </template>
+        </el-table-column>
+        <el-table-column label="用户">
+            <template slot-scope="scope">
+                <el-link type="primary" v-on:click.native="utils.openUserView(scope.row.user.id)" v-if="scope.row.user">{{ scope.row.user.displayName }}</el-link>
+                <span v-else>/</span>
+            </template>
+        </el-table-column>
+        <el-table-column label="兑换时间" prop="createdDate" width="150">
+        </el-table-column>
+        <el-table-column label="积分" prop="point" width="80">
+        </el-table-column>
+        <el-table-column label="领取方式" width="100" prop="shopTypeStr">
+        </el-table-column>
+        <el-table-column label="领取信息">
+            <template slot-scope="scope">
+                <div v-if="scope.row.shopType==='Online'">收件人:{{ scope.row.contacts }};联系方式:{{ scope.row.contactMobile }};收件地址:{{ scope.row.contactAddress }}</div>
+                <div v-if="scope.row.shopType==='OffLine'">{{ scope.row.gift.offLineAddress }}</div>
+            </template>
+        </el-table-column>
+        <el-table-column label="修改状态" align="right" width="120">
+            <template slot-scope="scope">
+                <template v-if="scope.row.shopType==='Online'">
+                    <el-select v-model="scope.row.adminState" v-on:change="shopStateChange(scope.row)" size="mini">
+                    <el-option v-for="item in stateOptionsOnline"
+                               :key="item.value"
+                               :label="item.label"
+                               :value="item.value">
+                    </el-option>
+                </el-select>
+                </template>
+                <template v-else>
+                    <el-select v-model="scope.row.adminState" v-on:change="shopStateChange(scope.row)" size="mini">
+                        <el-option v-for="item in stateOptionsOffline"
+                                   :key="item.value"
+                                   :label="item.label"
+                                   :value="item.value">
+                        </el-option>
+                    </el-select>
+                </template>
+            </template>
+        </el-table-column>
+        @await Html.PartialAsync("_PartialTableEmpty")
+    </el-table>
+    <div style="text-align: center; margin-top: 13px;">
+        <el-pagination v-on:current-change="handleCurrentChange" background
+                       :current-page="form.pageIndex"
+                       :page-size="form.pageSize"
+                       layout="total, prev, pager, next, jumper"
+                       :total="total">
+        </el-pagination>
+    </div>
+</el-card>
+@section Scripts{
+    <script src="/sitefiles/assets/js/admin/points/giftUsers.js" type="text/javascript"></script>
+}

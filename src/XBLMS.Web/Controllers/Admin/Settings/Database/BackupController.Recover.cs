@@ -21,7 +21,6 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Database
             {
                 return this.NoAuth();
             }
-            var admin = await _authManager.GetAdminAsync();
 
             var (total, list) = await _dbRecoverRepository.GetListAsync(request.PageIndex, request.PageSize);
             return new GetRecoverResult
@@ -37,7 +36,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Database
             {
                 return this.NoAuth();
             }
-            var admin = await _authManager.GetAdminAsync();
+
             await _dbRecoverRepository.DeleteAsync();
             await _authManager.AddAdminLogAsync("清空数据库还原日志");
             return new BoolResult { Value = true };
@@ -105,9 +104,11 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Database
                 var errorLogs = "";
                 foreach (var tableName in tableNames)
                 {
-                    var includes = new List<string>();
-                    includes.Add(_dbRecoverRepository.TableName);
-                    includes.Add(_dbBackupRepository.TableName);
+                    var includes = new List<string>
+                    {
+                        _dbRecoverRepository.TableName,
+                        _dbBackupRepository.TableName
+                    };
                     if (ListUtils.ContainsIgnoreCase(includes, tableName)) continue;
                     try
                     {
@@ -164,7 +165,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Database
                 await _dbRecoverRepository.InsertAsync(jobRecover);
                 return new BoolResult
                 {
-                    Value = jobRecover.Status == 2 ? false : true
+                    Value = jobRecover.Status != 2
                 };
             }
 

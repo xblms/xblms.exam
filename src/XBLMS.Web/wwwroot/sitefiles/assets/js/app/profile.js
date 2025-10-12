@@ -46,8 +46,6 @@ var methods = {
     this.$refs.form.validate(function(valid) {
       if (valid) {
         $this.apiSubmit();
-      } else {
-        utils.scrollToError();
       }
     });
   },

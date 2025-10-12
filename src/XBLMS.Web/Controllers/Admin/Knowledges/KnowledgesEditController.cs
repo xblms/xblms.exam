@@ -43,6 +43,7 @@ namespace XBLMS.Web.Controllers.Admin.Knowledges
             public int Id { get; set; }
             public string Name { get; set; }
             public string CoverImgUrl { get; set; }
+            public bool OnlyCompany { get; set; }
         }
         public class GetSubmitRequest
         {

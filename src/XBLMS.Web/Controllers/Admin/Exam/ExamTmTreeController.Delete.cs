@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using XBLMS.Dto;
 using XBLMS.Enums;
@@ -21,10 +21,8 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             var item = await _examTmTreeRepository.GetAsync(request.Id);
 
             if (item == null) return this.NotFound();
-            var ids = await _examTmTreeRepository.GetIdsAsync(request.Id);
-            var tmCount =0;
-            if (tmCount > 0) return this.Error($"该分类下面包含【{tmCount}】题目，暂时不允许删除");
-            await _examTmTreeRepository.DeleteAsync(ids);
+
+            await _examTmTreeRepository.DeleteAsync(item.Id);
             await _authManager.AddAdminLogAsync("删除题目分类及所有下级", $"{item.Name}");
             return new BoolResult
             {

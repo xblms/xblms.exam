@@ -16,8 +16,7 @@ var methods = {
       var res = response.data;
 
       $this.item = res.item;
-      $this.tmList = res.tmList;
-
+      $this.tmList = JSON.parse(utils.AESDecrypt(res.tmList, res.salt));
 
     }).catch(function (error) {
       utils.error(error, { layer: true });

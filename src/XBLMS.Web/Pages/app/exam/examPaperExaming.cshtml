@@ -24,8 +24,8 @@
         }
 
         .number {
-            background-color:#000000;
-            padding:8px 10px !important;
+            background-color: #E6A23C;
+            padding:8px 12px !important;
             color: white !important;
             text-shadow: 0px 0px 10px #427ed1, 0px 0px 10px #427ed1;
             font-size:14px !important;
@@ -36,9 +36,9 @@
 }
 @await Html.PartialAsync("_PartialWatermark")
 <template v-if="paper">
-    <div class="d-flex justify-content-between align-items-center px-2 py-3 mt-3">
+    <div class="d-flex justify-content-between align-items-center px-2 py-3">
         <div class="text-start">
-            <div class="mb-2 fw-bold">{{ paper.title }}</div>
+            <div class="fw-bolder">{{ paper.title }}</div>
             <div class="fs-5">共{{ paper.tmTotal }}题，总分{{ paper.totalScore }}分，及格分{{ paper.passScore }}分</div>
         </div>
         <div class="text-end">
@@ -47,76 +47,78 @@
         </div>
     </div>
     <div class="z-2">
-        <el-card v-for="tm in tmList" class="fs-4 mb-2 rounded-0" ref="'tmid_'+tm.id" :id="'tmid_'+tm.id">
-            <div slot="header" class="d-flex justify-content-between align-items-center">
+        <el-card v-for="tm in tmList" class="fs-4 mb-3 rounded-0" ref="'tmid_'+tm.id" :id="'tmid_'+tm.id">
+            <div class="d-flex justify-content-between align-items-center pb-2">
                 <div>第<span class="px-1">{{ tm.tmIndex }}</span>题（<span>{{ tm.txName }}</span>）</div>
                 <div><span>{{ tm.score }}分</span></div>
             </div>
-            <div class="pe-3">
+            <div style="word-wrap:break-word;">
                 <div v-if="tm.baseTx==='Zuheti'">
-                    <div class="mb-3">
+                    <div class="mb-3 fw-bold">
                         <div v-html="tm.titleHtml"></div>
                     </div>
-                    <div class="mb-3" v-for="small in tm.smallLists">
-                        <div class="d-flex justify-content-between align-items-center p-3 bg-light">
-                            <div>第<span class="px-1">{{ small.tmIndex }}</span>小题（<span>{{ small.txName }}</span>）</div>
-                            <div><span>{{ small.score }}分</span></div>
-                        </div>
-                        <div class="mb-3 fw-bold">
-                            <div v-if="small.baseTx==='Tiankongti'">
-                                <span v-if="small.titleList && small.titleList.length>0">
-                                    <span v-for="tmContent in small.titleList">
-                                        <span v-if="utils.contains(tmContent.value,'___')">
-                                            <el-input v-model.trim="small.answerInfo.optionsValues[tmContent.key]" v-on:change="answerSmallChange(tm,small)" style="width:130px;"></el-input>
+                    <div v-for="small in tm.smallLists">
+                        <el-card class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center py-3">
+                                <div>第<span class="px-1">{{ small.tmIndex }}</span>小题（<span>{{ small.txName }}</span>）</div>
+                                <div><span>{{ small.score }}分</span></div>
+                            </div>
+                            <div class="mb-3 fw-bold">
+                                <div v-if="small.baseTx==='Tiankongti'">
+                                    <span v-if="small.titleList && small.titleList.length>0">
+                                        <span v-for="tmContent in small.titleList">
+                                            <span v-if="utils.contains(tmContent.value,'___')">
+                                                <el-input v-model.trim="small.answerInfo.optionsValues[tmContent.key]" v-on:change="answerSmallChange(tm,small)" style="width:130px;"></el-input>
+                                            </span>
+                                            <span v-else v-html="tmContent.value"></span>
                                         </span>
-                                        <span v-else v-html="tmContent.value"></span>
                                     </span>
-                                </span>
+                                    <div v-else v-html="small.titleHtml"></div>
+                                </div>
                                 <div v-else v-html="small.titleHtml"></div>
                             </div>
-                            <div v-else v-html="small.titleHtml"></div>
-                        </div>
-                        <div class="list-group" v-if="small.baseTx!=='Tiankongti'">
-                            <div v-if="small.baseTx==='Danxuanti' || small.baseTx==='Panduanti'">
-                                <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in small.optionsRandom">
-                                    <div class="d-flex justify-content-start align-items-center">
-                                        <div class="me-1 position-relative">
-                                            {{optionsABC[optionIndex]}}
-                                        </div>
-                                        <div class="w-100 pt-1">
-                                            <el-radio class="border-0 w-100" border :label="option.key" v-model="small.answerInfo.answer" v-on:change="answerSmallChange(tm,small)" size="medium">
-                                                <span v-html="option.value"></span>
-                                            </el-radio>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div v-else-if="small.baseTx==='Duoxuanti'">
-                                <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in small.optionsRandom">
-                                    <div class="d-flex justify-content-start align-items-center">
-                                        <div class="me-1 position-relative">
-                                            {{optionsABC[optionIndex]}}
-                                        </div>
-                                        <div class="w-100 pt-1">
-                                            <el-checkbox class="border-0 w-100 h-100" border :true-label="option.key" false-label="" v-model="small.answerInfo.optionsValues[optionsABC.indexOf(option.key)]" v-on:change="answerSmallChange(tm,small)" size="medium">
-                                                <span v-html="option.value"></span>
-                                            </el-checkbox>
+                            <div class="list-group" v-if="small.baseTx!=='Tiankongti'">
+                                <div v-if="small.baseTx==='Danxuanti' || small.baseTx==='Panduanti'">
+                                    <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in small.optionsRandom">
+                                        <div class="d-flex justify-content-start align-items-center">
+                                            <div>
+                                                {{optionsABC[optionIndex]}}
+                                            </div>
+                                            <div class="w-100 pt-1">
+                                                <el-radio class="border-0 w-100" border :label="option.key" v-model="small.answerInfo.answer" v-on:change="answerSmallChange(tm,small)" size="medium">
+                                                    <span v-html="option.value"></span>
+                                                </el-radio>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+                                <div v-else-if="small.baseTx==='Duoxuanti'">
+                                    <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in small.optionsRandom">
+                                        <div class="d-flex justify-content-start align-items-center">
+                                            <div>
+                                                {{optionsABC[optionIndex]}}
+                                            </div>
+                                            <div class="w-100 pt-1">
+                                                <el-checkbox class="border-0 w-100" border :true-label="option.key" false-label="" v-model="small.answerInfo.optionsValues[optionsABC.indexOf(option.key)]" v-on:change="answerSmallChange(tm,small)" size="medium">
+                                                    <span v-html="option.value"></span>
+                                                </el-checkbox>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div v-else-if="small.baseTx==='Jiandati'">
+                                    <el-input :key="small.id" type="textarea" resize="none" v-model="small.answerInfo.answer" :autosize="{ minRows: 3}" maxlength="333" style="width:100%;"
+                                              show-word-limit v-on:change="answerSmallChange(tm,small)"></el-input>
+                                </div>
+                                <div v-else>
+                                    未知题型
+                                </div>
                             </div>
-                            <div v-else-if="small.baseTx==='Jiandati'">
-                                <el-input :key="small.id" type="textarea" resize="none" v-model="small.answerInfo.answer" :autosize="{ minRows: 3}" maxlength="333" style="width:100%;"
-                                          show-word-limit v-on:change="answerSmallChange(tm,small)"></el-input>
-                            </div>
-                            <div v-else>
-                                未知题型
-                            </div>
-                        </div>
+                        </el-card>
                     </div>
                 </div>
                 <div v-else>
-                    <div class="mb-3 fw-bold">
+                    <div class="mb-3 fw-bolder">
                         <div v-if="tm.baseTx==='Tiankongti'">
                             <span v-if="tm.titleList && tm.titleList.length>0">
                                 <span v-for="tmContent in tm.titleList">
@@ -134,7 +136,7 @@
                         <div v-if="tm.baseTx==='Danxuanti' || tm.baseTx==='Panduanti'">
                             <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.optionsRandom">
                                 <div class="d-flex justify-content-start align-items-center">
-                                    <div class="me-1 position-relative">
+                                    <div>
                                         {{optionsABC[optionIndex]}}
                                     </div>
                                     <div class="w-100">
@@ -148,11 +150,11 @@
                         <div v-else-if="tm.baseTx==='Duoxuanti'">
                             <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.optionsRandom">
                                 <div class="d-flex justify-content-start align-items-center">
-                                    <div class="me-1 position-relative">
+                                    <div>
                                         {{optionsABC[optionIndex]}}
                                     </div>
                                     <div class="w-100">
-                                        <el-checkbox class="border-0 w-100" border :true-label="option.key" false-label="" v-model="tm.answerInfo.optionsValues[optionsABC.indexOf(option.key)]" v-on:change="answerChange(tm)" size="medium">
+                                        <el-checkbox class="border-0 w-100 h-100" border :true-label="option.key" false-label="" v-model="tm.answerInfo.optionsValues[optionsABC.indexOf(option.key)]" v-on:change="answerChange(tm)" size="medium">
                                             <span v-html="option.value"></span>
                                         </el-checkbox>
                                     </div>
@@ -173,55 +175,49 @@
     </div>
     <div class="py-8"></div>
 </template>
-<div style="position:fixed;left:0;top:0;width:100%;" class="text-center p-2" v-if="paper && paper.isTiming">
-    <el-statistic :value="surplusSecond"
-                  time-indices v-on:finish="timingFinish">
-    </el-statistic>
-</div>
 <div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 animate__animated animate__fadeInUp z-1">
+    <div class="text-center mb-2" v-if="paper && paper.isTiming">
+        <el-statistic :value="surplusSecond"
+                      time-indices v-on:finish="timingFinish">
+        </el-statistic>
+    </div>
     <el-button-group class="rounded-0">
         <el-button class="rounded-0" icon="el-icon-upload" type="primary" v-on:click="btnPaperSubmit">立即交卷</el-button>
         <el-button class="rounded-0" v-if="paper && paper.openExist" v-on:click="utils.closeLayerSelf" icon="el-icon-close">退 出</el-button>
     </el-button-group>
 </div>
-<div style="position:fixed;right:10%;top:80%;" class="text-center">
+<div style="position:fixed;right:3%;bottom:0;" class="text-center mb-5 z-1">
     <el-button type="primary" icon="el-icon-s-grid" circle v-on:click="datikaDialogVisible=true"></el-button>
 </div>
-<div style="position:fixed;left:10%;top:80%;" class="text-center" v-if="paper && paper.tmTotal>0">
-    <el-progress type="circle" :percentage="utils.formatPercentFloat(answerTotal,paper.tmTotal)" status="success" width="50"></el-progress>
+<div v-if="paper && paper.tmTotal>0" style="position:fixed;left:3%;bottom:0;" class="text-center mb-5 z-1">
+    <el-progress type="circle" :percentage="utils.formatPercentFloat(answerTotal,paper.tmTotal)" status="success" width="40"></el-progress>
 </div>
 <template>
-    <el-dialog title="" :visible.sync="datikaDialogVisible" width="98%">
-        <el-card class="rounded-0">
-            <div slot="header">
-                <div class="row">
-                    <div class="col">答题卡</div>
-                    <div class="col-auto">
-                        <el-tag size="mini" type="warning" class="me-1">未答</el-tag>
-                        <el-tag size="mini" effect="dark" type="success">已答</el-tag>
-                    </div>
-                </div>
-            </div>
-            <div>
-                <el-scrollbar class="scrollbar" style="height:300px;">
-                    <ul class="list-group mb-1" v-for="(tx,txIndex) in list">
-                        <li class="list-group-item border-0 p-1 fw-light">{{tx.txName}}</li>
-                        <li class="list-group-item border-0 p-1">
-                            <span v-for="tabTm in tx.tmList" v-on:click="btnGoTm(tabTm.id)">
-                                <el-tag :key="tabTm.id" type="success" effect="dark" v-if="getTmAnswerStatus(tabTm.id)" class="m-2">
-                                    {{ tabTm.tmIndex }}
-                                </el-tag>
-                                <el-tag :key="tabTm.id" type="warning" v-else class="m-2">
-                                    {{ tabTm.tmIndex }}
-                                </el-tag>
-                            </span>
-                        </li>
-                    </ul>
-                </el-scrollbar>
-            </div>
-        </el-card>
+    <el-dialog fullscreen title="" :visible.sync="datikaDialogVisible">
+        <div slot="title">
+            <span class="fw-bolder me-2">答题卡</span>
+            <el-tag size="mini" type="warning" class="me-1">未答</el-tag>
+            <el-tag size="mini" effect="dark" type="success">已答</el-tag>
+        </div>
+        <div>
+            <el-scrollbar class="scrollbar" :style="{ height: ($(window).height()-200) + 'px' }">
+                <ul class="list-group mb-1" v-for="(tx,txIndex) in list">
+                    <li class="list-group-item border-0 p-1 fw-bord">{{tx.txName}}</li>
+                    <li class="list-group-item border-0 p-1">
+                        <span v-for="tabTm in tx.tmList" v-on:click="btnGoTm(tabTm.id)">
+                            <el-tag :key="tabTm.id" type="success" effect="dark" v-if="getTmAnswerStatus(tabTm.id)" class="m-1">
+                                {{ tabTm.tmIndex }}
+                            </el-tag>
+                            <el-tag :key="tabTm.id" type="warning" v-else class="m-1">
+                                {{ tabTm.tmIndex }}
+                            </el-tag>
+                        </span>
+                    </li>
+                </ul>
+            </el-scrollbar>
+        </div>
         <div slot="footer" class="dialog-footer text-center">
-            <el-button class="rounded-0" icon="el-icon-close" v-on:click="datikaDialogVisible = false">关 闭</el-button>
+            <el-button class="rounded-0" icon="el-icon-close" v-on:click="datikaDialogVisible = false">关闭答题卡</el-button>
         </div>
     </el-dialog>
 </template>

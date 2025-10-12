@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
-using System.Collections.Generic;
 using XBLMS.Configuration;
 using XBLMS.Models;
 using XBLMS.Repositories;
@@ -16,9 +15,9 @@ namespace XBLMS.Web.Controllers.Home.Exam
     {
         private const string Route = "exam/examPaperExaming";
         private const string RouteSubmitAnswer = Route + "/submitAnswer";
-        private const string RouteSubmitAnswerSmall = Route + "/submitAnswerSmall";
         private const string RouteSubmitPaper = Route + "/submitPaper";
         private const string RouteSubmitTiming = Route + "/submitTiming";
+        private const string RouteSubmitAnswerSmall = Route + "/submitAnswerSmall";
 
         private readonly IConfigRepository _configRepository;
         private readonly IAuthManager _authManager;
@@ -29,12 +28,12 @@ namespace XBLMS.Web.Controllers.Home.Exam
         private readonly IExamPaperRandomConfigRepository _examPaperRandomConfigRepository;
         private readonly IExamPaperRandomRepository _examPaperRandomRepository;
         private readonly IExamPaperRandomTmRepository _examPaperRandomTmRepository;
-        private readonly IExamPaperRandomTmSmallRepository _examPaperRandomTmSmallRepository;
         private readonly IExamPaperAnswerRepository _examPaperAnswerRepository;
-        private readonly IExamPaperAnswerSmallRepository _examPaperAnswerSmallRepository;
         private readonly IExamPaperStartRepository _examPaperStartRepository;
         private readonly IExamManager _examManager;
         private readonly IExamTxRepository _examTxRepository;
+        private readonly IExamPaperRandomTmSmallRepository _examPaperRandomTmSmallRepository;
+        private readonly IExamPaperAnswerSmallRepository _examPaperAnswerSmallRepository;
 
         public ExamPaperExamingController(IConfigRepository configRepository,
             ICreateManager createManager,
@@ -49,8 +48,8 @@ namespace XBLMS.Web.Controllers.Home.Exam
             IExamPaperStartRepository examPaperStartRepository,
             IOrganManager organManager,
             IExamTxRepository examTxRepository,
-            IExamPaperAnswerSmallRepository examPaperAnswerSmallRepository,
-            IExamPaperRandomTmSmallRepository examPaperRandomTmSmallRepository)
+            IExamPaperRandomTmSmallRepository examPaperRandomTmSmallRepository,
+            IExamPaperAnswerSmallRepository examPaperAnswerSmallRepository)
         {
             _configRepository = configRepository;
             _authManager = authManager;
@@ -65,19 +64,22 @@ namespace XBLMS.Web.Controllers.Home.Exam
             _examPaperStartRepository = examPaperStartRepository;
             _organManager = organManager;
             _examTxRepository = examTxRepository;
-            _examPaperAnswerSmallRepository = examPaperAnswerSmallRepository;
             _examPaperRandomTmSmallRepository = examPaperRandomTmSmallRepository;
+            _examPaperAnswerSmallRepository = examPaperAnswerSmallRepository;
         }
         public class GetRequest
         {
             public int Id { get; set; }
+            public int PlanId { get; set; }
+            public int CourseId { get; set; }
             public int LoadCounts { get; set; }
         }
         public class GetResult
         {
             public string Watermark { get; set; }
             public ExamPaper Item { get; set; }
-            public List<ExamPaperRandomConfig> TxList { get; set; }
+            public string TxList { get; set; }
+            public string Salt { get; set; }
         }
         public class GetSubmitAnswerRequest
         {

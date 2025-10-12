@@ -1,4 +1,4 @@
-var $url = "/error";
+﻿var $url = "/error";
 
 var data = utils.init({
   logId: utils.getQueryInt('logId'),

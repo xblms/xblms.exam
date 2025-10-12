@@ -1,29 +1,26 @@
 var $url = "/exam/examPaperView";
-var $urlItem = $url+ "/item";
+var $urlItem = $url + "/item";
 
 var data = utils.init({
   id: utils.getQueryInt('id'),
   list: null,
   paper: null,
-  tm: null,
-  watermark:null,
-  answerTotal: 0,
-  tmAnswerStatus:false,
-  tmList: [],
+  watermark: null,
+  tmList: []
 });
 
 var methods = {
   apiGet: function () {
     var $this = this;
 
-    utils.loading(this, true, "正在加载试卷...");
+    utils.loading(this, true, "正在加载答卷...");
 
     $api.get($url, { params: { id: $this.id } }).then(function (response) {
       var res = response.data;
 
       $this.watermark = res.watermark;
       $this.paper = res.item;
-      $this.list = res.txList;
+      $this.list = JSON.parse(utils.AESDecrypt(res.txList, res.salt));
 
       if ($this.list && $this.list.length > 0) {
         $this.list.forEach(item => {
@@ -35,8 +32,6 @@ var methods = {
           }
 
         });
-
-        $this.btnGetTm($this.tmList[0].id);
       }
 
     }).catch(function (error) {
@@ -46,26 +41,10 @@ var methods = {
     });
   },
   btnGetTm(id) {
-    this.tm = null;
-    var $this = this;
-    $this.$nextTick(() => {
-      var getCurTm = $this.tmList.find(item => item.id === id);
-      $this.tm = getCurTm;
-    })
-  },
-  getTmAnswerStatus: function (id) {
-    var getCurTm = this.tmList.find(item => item.id === id);
-    return getCurTm.isRight;
-  },
-  btnDownClick: function () {
-    var curIndex = this.tm.tmIndex;
-    let downTm = this.tmList.find(item => item.tmIndex === (curIndex + 1))
-    this.btnGetTm(downTm.id);
-  },
-  btnUpClick: function () {
-    var curIndex = this.tm.tmIndex;
-    let upTm = this.tmList.find(item => item.tmIndex === (curIndex - 1))
-    this.btnGetTm(upTm.id);
+    var tmel = document.getElementById("tmid_" + id);
+    if (tmel) {
+      tmel.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
   }
 };
 

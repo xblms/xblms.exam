@@ -1,20 +1,22 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using XBLMS.Dto;
 using XBLMS.Models;
 
 namespace XBLMS.Repositories
 {
     public partial interface IOrganDepartmentRepository
     {
+        Task<bool> HasChildren(int parentId, int companyId);
+        Task<List<OrganDepartment>> GetListAsync(int parentId, int companyId);
+        Task<List<OrganDepartment>> GetListAsync(string keyWords);
+        Task<List<OrganDepartment>> GetListAsync(AdminAuth auth, string keywords);
+        Task<List<string>> GetParentPathAsync(int id);
+        Task<(List<string> path, List<string> names)> GetParentPathAndNamesAsync(int id);
         Task<List<OrganDepartment>> GetListAsync();
         Task<OrganDepartment> GetAsync(int companyId, string name);
-        Task<List<OrganDepartment>> GetPathNamesAsync(int id);
-        Task<List<OrganDepartment>> GetListAsync(int companyId);
         Task<OrganDepartment> GetAsync(int id);
-        Task<OrganDepartment> GetByGuidAsync(string guid);
         Task<List<int>> GetIdsAsync(int id);
-        Task<List<int>> GetIdsByCompanyIdAsync(int companyId);
-        Task<List<string>> GetGuidsAsync(List<int> ids);
-        Task<(int allCount, int addCount, int deleteCount, int lockedCount, int unLockedCount)> GetDataCount();
+        Task<(int allCount, int addCount, int deleteCount, int lockedCount, int unLockedCount)> GetDataCount(AdminAuth auth);
     }
 }

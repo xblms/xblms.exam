@@ -1,5 +1,5 @@
-﻿using System;
-using System.Linq;
+﻿using Datory;
+using System;
 using System.Threading.Tasks;
 using XBLMS.Enums;
 using XBLMS.Models;
@@ -139,7 +139,7 @@ namespace XBLMS.Core.Services
         {
             var tm = await _databaseManager.ExamPaperRandomTmRepository.GetAsync(examPaperAnswer.RandomTmId, examPaperAnswer.ExamPaperId);
 
-            examPaperAnswer.Score= await ExecuteSubmitAnswerGetScoreAsync(examPaperAnswer.ExamPaperId, tm.TxId, tm.Score, examPaperAnswer.ExamTmType, tm.Answer, examPaperAnswer.Answer);
+            examPaperAnswer.Score = await ExecuteSubmitAnswerGetScoreAsync(examPaperAnswer.ExamPaperId, tm.TxId, tm.Score, examPaperAnswer.ExamTmType, tm.Answer, examPaperAnswer.Answer);
 
             await _databaseManager.ExamPaperAnswerRepository.UpdateAsync(examPaperAnswer);
         }
@@ -154,9 +154,10 @@ namespace XBLMS.Core.Services
 
             decimal answerScore = 0;
             var smallAnswerList = await _databaseManager.ExamPaperAnswerSmallRepository.GetListAsync(examPaperAnswer.AnswerId);
-            if(smallAnswerList!=null && smallAnswerList.Count > 0)
+            if (smallAnswerList != null && smallAnswerList.Count > 0)
             {
-                foreach (var smallAnswer in smallAnswerList) {
+                foreach (var smallAnswer in smallAnswerList)
+                {
                     answerScore += smallAnswer.Score;
                 }
             }
@@ -167,13 +168,10 @@ namespace XBLMS.Core.Services
         }
 
 
-
-        public async Task ExecuteSubmitPaperAsync(int startId)
+        private async Task ExecuteSubmitPaperAsync(int startId)
         {
-            //Thread.Sleep(1000 * 10);
             var start = await _databaseManager.ExamPaperStartRepository.GetAsync(startId);
             var paper = await _databaseManager.ExamPaperRepository.GetAsync(start.ExamPaperId);
-
 
             if (start.HaveSubjective)
             {
@@ -190,8 +188,6 @@ namespace XBLMS.Core.Services
             {
                 start.IsMark = true;
             }
-
-        
 
             start.IsSubmit = true;
             start.EndDateTime = DateTime.Now;
@@ -213,11 +209,61 @@ namespace XBLMS.Core.Services
                 start.Score = objectiveSocre;
             }
 
+            start.IsPass = start.Score >= paper.PassScore;
             await _databaseManager.ExamPaperStartRepository.UpdateAsync(start);
 
-            if (start.IsMark && start.IsSubmit && start.Score >= paper.PassScore && paper.CerId > 0)
+            await _databaseManager.ExamPaperUserRepository.IncrementSubmitAsync(start.PlanId, start.CourseId, start.ExamPaperId, start.UserId);
+
+            var user = await _databaseManager.UserRepository.GetByUserIdAsync(start.UserId);
+            if (user != null)
             {
-                await AwardCer(paper, startId, start.UserId);
+                await AddPointsLogAsync(PointType.PointExam, user, paper.Id, paper.Title);
+            }
+
+
+            if (start.IsMark && start.IsSubmit)
+            {
+                if (start.IsPass)
+                {
+                    await AddPointsLogAsync(PointType.PointExamPass, user, paper.Id, paper.Title);
+                    if (start.Score >= paper.TotalScore)
+                    {
+                        await AddPointsLogAsync(PointType.PointExamFull, user, paper.Id, paper.Title);
+                    }
+                    if (paper.CerId > 0)
+                    {
+                        CreateExamAwardCerAsync(start.Id);
+                    }
+                }
+            }
+        }
+        private async Task AddPointsLogAsync(PointType pointType, User user, int objectId = 0, string objectName = "")
+        {
+            var dateStr = DateTime.Now.ToString("yyyy-MM-dd");
+            var (value, maxvalue) = await _databaseManager.ConfigRepository.GetPointValueByPointType(pointType);
+            var todayMaxvalue = await _databaseManager.PointLogRepository.GetSumPoint(pointType, user.Id, dateStr);
+
+            var isNotice = pointType == PointType.PointExamFull || pointType == PointType.PointExamPass;
+            if (maxvalue > todayMaxvalue)
+            {
+                var log = new PointLog()
+                {
+                    IsNotice = isNotice,
+                    UserId = user.Id,
+                    CompanyId = user.CompanyId,
+                    DepartmentId = user.DepartmentId,
+                    CompanyParentPath = user.CompanyParentPath,
+                    DepartmentParentPath = user.DepartmentParentPath,
+                    CreatorId = user.Id,
+                    ObjectId = objectId,
+                    ObjectName = objectName,
+                    PointType = pointType,
+                    DateStr = dateStr,
+                    Point = value,
+                    Subject = $"{pointType.GetDisplayName()}奖励积分"
+                };
+                await _databaseManager.PointLogRepository.InsertAsync(log);
+                await _databaseManager.UserRepository.UpdatePointsAsync(value, user.Id);
             }
         }
     }

@@ -46,6 +46,12 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             _questionnaireUserRepository = examQuestionnaireUserRepository;
             _questionnaireAnswerRepository = questionnaireAnswerRepository;
         }
+        public class GetRequest
+        {
+            public int Id { get; set; }
+            public int PlanId { get; set; }
+            public int CourseId { get; set; }
+        }
         public class GetResult
         {
             public ExamQuestionnaire Item { get; set; }

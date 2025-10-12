@@ -37,6 +37,13 @@ namespace XBLMS.Core.Services
             return path;
         }
 
+        public string GetCourseFilesUploadPath(params string[] paths)
+        {
+            var path = GetSiteFilesPath(DirectoryUtils.SiteFiles.Upload, DirectoryUtils.SiteFiles.Coursefiles, PageUtils.Combine(paths));
+            DirectoryUtils.CreateDirectoryIfNotExists(path);
+            return path;
+        }
+
         public string GetCerUploadFilesPath(params string[] paths)
         {
             var path = GetSiteFilesPath(DirectoryUtils.SiteFiles.Upload, DirectoryUtils.SiteFiles.Cer, PageUtils.Combine(paths));

@@ -31,13 +31,13 @@ ENTRYPOINT ["dotnet", "XBLMS.Web.dll"]
 #1将该文件放入部署文件夹根目录
 
 #2创建镜像
-#docker build -t xblmsexam:8.0 .
+#docker build -t xblmselearning:8.0 .
 
 #3启动容器
-#docker run -d -p 8888:8888 xblmsexam:8.0
+#docker run -d -p 8888:8888 xblmselearning:8.0
 
 #4访问 http://localhost:8888/admin/install 安装系统
 
 #5完成
 
-#删除容器后数据会丢失，有兴趣的朋友可以深入研究一下持久化
+#删除容器后数据会丢失，有情趣的朋友可以深入研究一下持久化

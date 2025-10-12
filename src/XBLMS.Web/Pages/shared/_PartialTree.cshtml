@@ -1,5 +1,5 @@
 <el-card style="border-radius:0;">
-    <el-form :size="euiSize">
+    <el-form v-on:submit.native.prevent :size="euiSize">
         <el-form-item>
             <el-input clearable :placeholder="treeName" v-model="treeFilterText" prefix-icon="el-icon-search">
                 <template slot="prepend">
@@ -11,7 +11,7 @@
                     <el-tooltip placement="top" manual v-model="treeTopAddPopover">
                         <div slot="content" style="width:400px;">
                             <el-card>
-                                <el-form :size="euiSize">
+                                <el-form v-on:submit.native.prevent :size="euiSize">
                                     <el-form-item label="">
                                         添加分类
                                     </el-form-item>
@@ -38,7 +38,7 @@
     </el-form>
     <el-scrollbar class="scrollbar" :style="{height: $(window).height()-116 + 'px'}">
         <el-tree class="filter-tree"
-                 :data="treeItems" :expand-on-click-node="false"
+                 :data="treeItems"
                  v-on:node-click="treeNodeClick"
                  v-on:node-contextmenu="treeNodeContextmenu"
                  v-on:node-expand="treeNodeExpand"
@@ -54,7 +54,7 @@
                     <div slot="content">
                         <el-card>
                             <div v-if="treeAdd" style="width:400px;">
-                                <el-form :size="euiSize">
+                                <el-form v-on:submit.native.prevent :size="euiSize">
                                     <el-form-item label="">
                                         添加分类
                                     </el-form-item>
@@ -73,7 +73,7 @@
                                 </el-form>
                             </div>
                             <div v-else-if="treeUpdate" style="width:300px;">
-                                <el-form :size="euiSize">
+                                <el-form v-on:submit.native.prevent :size="euiSize">
                                     <el-form-item label="">
                                         修改分类
                                     </el-form-item>
@@ -98,8 +98,11 @@
                             </div>
                         </el-card>
                     </div>
-                    <span style="width:100%;font-size:12px;padding-top:3px;">{{ node.label }}<span style="color:darkgray;">({{ data.selfTotal }}/{{ data.total }})</span></span>
+                    <span style="width:100%;font-size:14px;padding:5px 0;">{{ node.label }}<span style="color:darkgray;">({{ data.selfTotal }}/{{ data.total }})</span></span>
                 </el-tooltip>
+                <template v-else>
+                    <span style="width:100%;font-size:14px;padding:5px 0;">{{ node.label }}<span style="color:darkgray;">({{ data.selfTotal }}/{{ data.total }})</span></span>
+                </template>
             </template>
         </el-tree>
     </el-scrollbar>

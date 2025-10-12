@@ -21,6 +21,8 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
         private readonly IAuthManager _authManager;
         private readonly IExamManager _examManager;
+        private readonly IStudyManager _studyManager;
+        private readonly IAdministratorRepository _adminRepository;
         private readonly IExamPaperRepository _examPaperRepository;
         private readonly IExamPaperTreeRepository _examPaperTreeRepository;
         private readonly IExamPaperUserRepository _examPaperUserRepository;
@@ -29,7 +31,9 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         private readonly IExamTmAnalysisTmRepository _examTmAnalysisTmRepository;
 
         public ExamPaperController(IAuthManager authManager,
+            IAdministratorRepository adminRepository,
             IExamManager examManager,
+            IStudyManager studyManager,
             IExamPaperRepository examPaperRepository,
             IExamPaperTreeRepository examPaperTreeRepository,
             IExamPaperUserRepository examPaperUserRepository,
@@ -38,7 +42,9 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             IExamTmAnalysisTmRepository examTmAnalysisTmRepository)
         {
             _authManager = authManager;
+            _adminRepository = adminRepository;
             _examManager = examManager;
+            _studyManager = studyManager;
             _examPaperRepository = examPaperRepository;
             _examPaperTreeRepository = examPaperTreeRepository;
             _examPaperUserRepository = examPaperUserRepository;
@@ -61,6 +67,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         }
         public class GetResult
         {
+            public bool IsAdmin { get; set; }
             public List<ExamPaper> Items { get; set; }
             public int Total { get; set; }
 

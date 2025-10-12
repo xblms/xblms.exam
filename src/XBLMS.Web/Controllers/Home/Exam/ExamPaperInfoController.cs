@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using XBLMS.Configuration;
+using XBLMS.Dto;
 using XBLMS.Models;
 using XBLMS.Repositories;
 using XBLMS.Services;
@@ -32,8 +33,15 @@ namespace XBLMS.Web.Controllers.Home.Exam
             _examPaperUserRepository = examPaperUserRepository;
             _examManager = examManager;
         }
+        public class GetRequest
+        {
+            public int Id { get; set; }
+            public int PlanId { get; set; }
+            public int CourseId { get; set; }
+        }
         public class GetResult
         {
+            public PointNotice pointNotice { get; set; }
             public ExamPaper Item { get; set; }
         }
         public class GetCheckResult

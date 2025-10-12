@@ -162,7 +162,57 @@ namespace XBLMS.Utils
         {
             return Convert.ToInt32(Math.Ceiling((double)numerator / denominator));
         }
-
+        public static string ToMinuteAndSecond(int second, bool isChinese = true)
+        {
+            if (second > 0)
+            {
+                if (second < 10)
+                {
+                    return isChinese ? $"0分{second}秒" : $"00:{second}";
+                }
+                else
+                {
+                    if (second > 60)
+                    {
+                        return isChinese ? $"{ToInt((second / 60).ToString())}分{second % 60}秒" : $"{ToInt((second / 60).ToString())}:{second % 60}";
+                    }
+                    else
+                    {
+                        return isChinese ? $"0分{second}秒" : $"0:{second}";
+                    }
+                }
+            }
+            else
+            {
+                return isChinese ? "0分0秒" : "00:00";
+            }
+        }
+        public static string ToHour(int minute)
+        {
+            if (minute > 0)
+            {
+                if (minute < 60)
+                {
+                    return $"{minute}分钟";
+                }
+                else
+                {
+                    return $"{ToInt((minute / 60).ToString())}小时{minute % 60}分钟";
+                }
+            }
+            else
+            {
+                return "0分钟";
+            }
+        }
+        public static string ToAvg(double value, double sumValue)
+        {
+            if (value > 0 && sumValue > 0)
+            {
+                return (value / sumValue).ToString("0.00");
+            }
+            return "0.00";
+        }
         public static string ToPercent(decimal a, decimal b)
         {
             if (a > 0 && b > 0)
@@ -459,13 +509,6 @@ namespace XBLMS.Utils
 
             try
             {
-                //var settings = new JsonSerializerSettings
-                //{
-                //    ContractResolver = new CamelCasePropertyNamesContractResolver()
-                //};
-                //var timeFormat = new IsoDateTimeConverter {DateTimeFormat = "yyyy-MM-dd HH:mm:ss"};
-                //settings.Converters.Add(timeFormat);
-
                 return JsonConvert.SerializeObject(obj, JsonSettings);
             }
             catch
@@ -487,10 +530,6 @@ namespace XBLMS.Utils
 
             try
             {
-                //var settings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
-                //var timeFormat = new IsoDateTimeConverter { DateTimeFormat = "yyyy-MM-dd HH:mm:ss" };
-                //settings.Converters.Add(timeFormat);
-
                 return JsonConvert.DeserializeObject<T>(json, JsonSettings);
             }
             catch
@@ -538,59 +577,6 @@ namespace XBLMS.Utils
                     target[attributeName] = attributes[attributeName];
                 }
             }
-        }
-
-        public static string EncryptStringBySecretKey(string inputString, string secretKey)
-        {
-            if (string.IsNullOrEmpty(inputString)) return string.Empty;
-
-            try
-            {
-                var encryptor = new DesEncryptor
-                {
-                    InputString = inputString,
-                    EncryptKey = secretKey
-                };
-                encryptor.DesEncrypt();
-
-                var retVal = encryptor.OutString;
-                retVal = retVal.Replace("+", "0add0").Replace("=", "0equals0").Replace("&", "0and0").Replace("?", "0question0").Replace("'", "0quote0").Replace("/", "0slash0");
-
-                return retVal + Constants.EncryptStingIndicator;
-            }
-            catch
-            {
-                // ignored
-            }
-
-            return string.Empty;
-        }
-
-        public static string DecryptStringBySecretKey(string inputString, string secretKey)
-        {
-            if (string.IsNullOrEmpty(inputString)) return string.Empty;
-
-            try
-            {
-                inputString = inputString.Replace(Constants.EncryptStingIndicator, string.Empty).Replace("0add0", "+")
-                    .Replace("0equals0", "=").Replace("0and0", "&").Replace("0question0", "?").Replace("0quote0", "'")
-                    .Replace("0slash0", "/");
-
-                var encryptor = new DesEncryptor
-                {
-                    InputString = inputString,
-                    DecryptKey = secretKey
-                };
-                encryptor.DesDecrypt();
-
-                return encryptor.OutString;
-            }
-            catch
-            {
-                // ignored
-            }
-
-            return string.Empty;
         }
     }
 }

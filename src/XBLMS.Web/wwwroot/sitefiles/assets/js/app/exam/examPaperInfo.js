@@ -5,6 +5,8 @@ var $urlClientExamStatus = $url + "/clientExamStatus";
 
 var data = utils.init({
   id: utils.getQueryInt("id"),
+  planId: utils.getQueryInt("planId"),
+  courseId: utils.getQueryInt("courseId"),
   cjList: [],
   item: null,
   startLoading: false,
@@ -21,10 +23,11 @@ var methods = {
       utils.loading(this, true);
     }
 
-    $api.get($url, { params: { id: $this.id } }).then(function (response) {
+    $api.get($url, { params: { id: $this.id, planId: $this.planId, courseId: $this.courseId } }).then(function (response) {
       var res = response.data;
 
       $this.item = res.item;
+      top.utils.pointNotice(res.pointNotice);
 
       if ($this.item.examStartDateTimeLong > 0) {
         $this.isStart = false;
@@ -68,7 +71,7 @@ var methods = {
     top.utils.openLayer({
       title: false,
       closebtn: 0,
-      url: utils.getExamUrl('examPaperExaming', { id: this.id }),
+      url: utils.getExamUrl('examPaperExaming', { id: this.id, planId: this.planId, courseId: this.courseId }),
       width: "100%",
       height: "100%",
       end: function () {

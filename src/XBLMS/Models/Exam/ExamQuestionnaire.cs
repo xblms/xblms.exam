@@ -9,6 +9,8 @@ namespace XBLMS.Models
     public class ExamQuestionnaire : Entity
     {
         [DataColumn]
+        public bool IsCourseUse { get; set; }   
+        [DataColumn]
         public string Title { get; set; }
         [DataColumn]
         public DateTime? ExamBeginDateTime { get; set; } = DateTime.Now;

@@ -39,16 +39,16 @@ namespace XBLMS.Web.Controllers.Admin.Common
             foreach (var config in configs)
             {
                 var tx = await _examTxRepository.GetAsync(config.TxId);
-                if (tx != null && (tx.ExamTxBase == ExamTxBase.Tiankongti || tx.ExamTxBase == ExamTxBase.Jiandati || tx.ExamTxBase == ExamTxBase.Zuheti))
+                if (tx != null && tx.ExamTxBase == ExamTxBase.Tiankongti || tx.ExamTxBase == ExamTxBase.Jiandati || tx.ExamTxBase == ExamTxBase.Zuheti)
                 {
-                    var tms = await _examPaperRandomTmRepository.GetListAsync(randomId, config.TxId, config.ExamPaperId);
+                    var tms = await _examPaperRandomTmRepository.GetListAsync(randomId, config.TxId, paper.Id);
                     if (tms != null && tms.Count > 0)
                     {
                         paperTmTotal += tms.Count;
 
                         foreach (var item in tms)
                         {
-                            await _examManager.GetTmInfoByPaperMark(item, paper, startId);
+                            await _examManager.GetTmInfoByPaperAdmin(item, paper, startId);
                             item.Set("TmIndex", tmIndex);
                             tmIndex++;
                         }

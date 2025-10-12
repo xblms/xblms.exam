@@ -1,7 +1,9 @@
 ﻿using Datory;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using XBLMS.Enums;
 using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
@@ -16,33 +18,11 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
                 return this.NoAuth();
             }
 
-            var companyIds = new List<int>();
-            var departmentIds = new List<int>();
-            var dutyIds = new List<int>();
-            if (request.OrganId == 0) { }
-            else if (request.OrganId == 1 && request.OrganType == "company") { }
-            else
-            {
-                if (request.OrganId != 0)
-                {
-                    if (request.OrganType == "company")
-                    {
-                        companyIds = await _organManager.GetCompanyIdsAsync(request.OrganId);
-                    }
-                    if (request.OrganType == "department")
-                    {
-                        departmentIds = await _organManager.GetDepartmentIdsAsync(request.OrganId);
-                    }
-                    if (request.OrganType == "duty")
-                    {
-                        dutyIds = await _organManager.GetDutyIdsAsync(request.OrganId);
-                    }
-                }
-            }
-            var count = await _administratorRepository.GetCountAsync(companyIds, departmentIds, dutyIds, request.Role, request.LastActivityDate, request.Keyword);
-            var administrators = await _administratorRepository.GetAdministratorsAsync(companyIds, departmentIds, dutyIds, request.Role, request.Order, request.LastActivityDate, request.Keyword, request.Offset, request.Limit);
+            var adminAuth = await _authManager.GetAdminAuth();
+
+            var (total, list) = await _administratorRepository.GetAdministratorsAsync(adminAuth, request.OrganId, request.OrganType, request.Role, request.Order, request.LastActivityDate, request.Keyword, request.Offset, request.Limit);
             var admins = new List<Admin>();
-            foreach (var administratorInfo in administrators)
+            foreach (var administratorInfo in list)
             {
                 admins.Add(new Admin
                 {
@@ -58,14 +38,15 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
                     CountOfLogin = administratorInfo.CountOfLogin,
                     Locked = administratorInfo.Locked,
                     Auth = administratorInfo.Auth,
-                    Roles = administratorInfo.Auth.GetDisplayName()
+                    Roles = administratorInfo.Auth.GetDisplayName(),
+                    CreatorId = administratorInfo.CreatorId
                 });
             }
 
             return new GetResult
             {
                 Administrators = admins,
-                Count = count,
+                Count = total,
             };
         }
 
@@ -80,11 +61,20 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
             var adminId = _authManager.AdminId;
 
             var roles = _authManager.AuthorityTypes();
-            var organs = await _organManager.GetOrganTreeTableDataAsync();
+
+            var adminAuth = await _authManager.GetAdminAuth();
+
+            if (adminAuth.AuthType != AuthorityType.Admin)
+            {
+                roles = roles.Where(r => r.Value != AuthorityType.Admin.GetValue()).ToList();
+                if (adminAuth.AuthType == AuthorityType.AdminNormal)
+                {
+                    roles = roles.Where(r => r.Value != AuthorityType.AdminCompany.GetValue()).ToList();
+                }
+            }
 
             return new GetResult
             {
-                Organs = organs,
                 Roles = roles,
                 AdminId = adminId
             };

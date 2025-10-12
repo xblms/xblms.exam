@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using XBLMS.Dto;
+using XBLMS.Enums;
 using XBLMS.Models;
 
 namespace XBLMS.Web.Controllers.Home.Exam
@@ -33,15 +34,19 @@ namespace XBLMS.Web.Controllers.Home.Exam
         }
 
         [HttpGet, Route(RouteItem)]
-        public async Task<ActionResult<ItemResult<ExamQuestionnaire>>> GetItem([FromQuery] IdRequest request)
+        public async Task<ActionResult<GetItemResult>> GetItem([FromQuery] IdRequest request)
         {
             var user = await _authManager.GetUserAsync();
             if (user == null) return Unauthorized();
 
             var paper = await _examQuestionnaireRepository.GetAsync(request.Id);
             await _examManager.GetQuestionnaireInfo(paper, user);
-            return new ItemResult<ExamQuestionnaire>
+
+            var pointNotice = await _authManager.PointNotice(PointType.PointExamQ, user.Id);
+
+            return new GetItemResult
             {
+                PointNotice = pointNotice,
                 Item = paper
             };
         }

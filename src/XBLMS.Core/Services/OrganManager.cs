@@ -10,21 +10,18 @@ namespace XBLMS.Core.Services
         private readonly IUserRepository _userRepository;
         private readonly IOrganCompanyRepository _companyRepository;
         private readonly IOrganDepartmentRepository _departmentRepository;
-        private readonly IOrganDutyRepository _dutyRepository;
         private readonly IDatabaseManager _databaseManager;
 
         public OrganManager(IOrganCompanyRepository companyRepository,
             IOrganDepartmentRepository departmentRepository,
             IAdministratorRepository administratorRepository,
             IUserRepository userRepository,
-            IOrganDutyRepository dutyRepository,
             IDatabaseManager databaseManager)
         {
             _companyRepository = companyRepository;
             _departmentRepository = departmentRepository;
             _administratorRepository = administratorRepository;
             _userRepository = userRepository;
-            _dutyRepository = dutyRepository;
             _databaseManager = databaseManager;
 
         }
@@ -41,7 +38,6 @@ namespace XBLMS.Core.Services
         {
             await _userRepository.DeleteAsync(userId);
 
-            await _databaseManager.UserGroupRepository.DeleteByUserId(userId);
             await _databaseManager.ExamQuestionnaireUserRepository.DeleteByUserId(userId);
             await _databaseManager.ExamQuestionnaireAnswerRepository.DeleteByUserId(userId);
             await _databaseManager.ExamPracticeWrongRepository.DeleteByUserId(userId);

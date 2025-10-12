@@ -1,4 +1,4 @@
-using Datory;
+﻿using Datory;
 using Datory.Annotations;
 using System;
 using XBLMS.Enums;
@@ -11,7 +11,7 @@ namespace XBLMS.Models
         [DataColumn]
         public string DatabaseVersion { get; set; }
 
-        [DataColumn]
+        public bool ExamTmCache { get; set; }
         public DateTime UpdateDate { get; set; }
         public bool Initialized => Id > 0;
         public bool IsLogAdmin { get; set; } = true;
@@ -19,6 +19,7 @@ namespace XBLMS.Models
         public bool IsLogError { get; set; } = true;
         public bool IsTimeThreshold { get; set; }
         public int TimeThreshold { get; set; } = 60;
+        public string AdminDefaultPassword { get; set; } = "password@1";
         public int AdminUserNameMinLength { get; set; }
         public int AdminPasswordMinLength { get; set; } = 6;
         public PasswordRestriction AdminPasswordRestriction { get; set; } = PasswordRestriction.None;
@@ -39,6 +40,43 @@ namespace XBLMS.Models
         public int UserLockLoginHours { get; set; } = 3;
         public bool IsUserCaptchaDisabled { get; set; }
         public bool IsHomeClosed { get; set; }
+        public bool SyncAuto { get; set; } = false;
+        public bool DbBackupAuto { get; set; } = false;
 
+        public SystemCode SystemCode { get; set; } = SystemCode.Exam;
+        public string SystemCodeName { get; set; } = "星期八在线考试系统";
+
+
+        //部署配置
+        public bool BushuFilesServer { get; set; } = false; //课件服务器单独部署
+        public string BushuFilesServerUrl { get; set; } = ""; //课件服务器单独部署
+
+        //积分配置
+        public int PointLogin { get; set; } = 5;
+        public int PointLoginDayMax { get; set; } = 100;
+        public int PointPlanOver { get; set; } = 35;
+        public int PointPlanOverDayMax { get; set; } = 100;
+        public int PointVideo { get; set; } = 5;
+        public int PointVideoDayMax { get; set; } = 100;
+        public int PointDocument { get; set; } = 5;
+        public int PointDocumentDayMax { get; set; } = 100;
+        public int PointCourseOver { get; set; } = 25;
+        public int PointCourseOverDayMax { get; set; } = 100;
+        public int PointEvaluation { get; set; } = 15;
+        public int PointEvaluationDayMax { get; set; } = 100;
+        public int PointExam { get; set; } = 10;
+        public int PointExamDayMax { get; set; } = 100;
+        public int PointExamPass { get; set; } = 15;
+        public int PointExamPassDayMax { get; set; } = 100;
+        public int PointExamFull { get; set; } = 30;
+        public int PointExamFullDayMax { get; set; } = 100;
+        public int PointExamQ { get; set; } = 30;
+        public int PointExamQDayMax { get; set; } = 100;
+        public int PointExamAss { get; set; } = 30;
+        public int PointExamAssDayMax { get; set; } = 100;
+        public int PointExamPractice { get; set; } = 1;
+        public int PointExamPracticeDayMax { get; set; } = 100;
+        public int PointExamPracticeRight { get; set; } = 2;
+        public int PointExamPracticeRightDayMax { get; set; } = 100;
     }
 }

@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using XBLMS.Enums;
@@ -33,7 +33,9 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 return this.NoAuth();
             }
 
-            var list = await _examPaperRepository.GetListAsync(reqeust.Title);
+            var adminAuth = await _authManager.GetAdminAuth();
+
+            var list = await _examPaperRepository.GetListAsync(adminAuth, reqeust.Title);
             var resultList = new List<KeyValuePair<int, string>>();
             foreach (var item in list)
             {

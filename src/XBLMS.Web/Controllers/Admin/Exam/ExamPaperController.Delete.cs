@@ -21,7 +21,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 await _examPaperRepository.DeleteAsync(paper.Id);
                 await _examManager.ClearRandom(paper.Id, true);
 
-                var analysis = await _examTmAnalysisRepository.GetAsync(TmAnalysisType.ByExamOnlyOne, paper.Id);
+                var analysis = await _examTmAnalysisRepository.GetAsync(TmAnalysisType.ByExamOnlyOne, paper.Id, 0);
                 if (analysis!=null)
                 {
                     await _examTmAnalysisRepository.DeleteAsync(analysis.Id);

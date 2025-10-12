@@ -1,8 +1,11 @@
 using Datory;
+using SqlKata;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using XBLMS.Core.Utils;
+using XBLMS.Dto;
+using XBLMS.Enums;
 using XBLMS.Models;
 using XBLMS.Repositories;
 using XBLMS.Services;
@@ -30,9 +33,11 @@ namespace XBLMS.Core.Repositories
             return await _repository.GetAsync(roleId);
         }
 
-        public async Task<List<Role>> GetRolesAsync()
+        public async Task<List<Role>> GetRolesAsync(AdminAuth auth)
         {
-            return await _repository.GetAllAsync(Q.OrderByDesc(nameof(Role.Id)));
+            var query = Q.OrderByDesc(nameof(Role.Id));
+            query = GetQueryByAuth(query, auth);
+            return await _repository.GetAllAsync(query);
         }
 
 
@@ -62,6 +67,48 @@ namespace XBLMS.Core.Repositories
         {
             var roles = ListUtils.GetEnums<PredefinedRole>().Select(x => x.GetValue()).ToList();
             return ListUtils.ContainsIgnoreCase(roles, roleName);
+        }
+
+        public async Task<List<Role>> GetRolesAsync(AdminAuth auth, string keyWords)
+        {
+            var query = Q.NewQuery();
+
+            query = GetQueryByAuth(query, auth);
+
+            if (!string.IsNullOrEmpty(keyWords))
+            {
+                query.Where(q =>
+                {
+                    q.WhereLike(nameof(Role.RoleName), $"%{keyWords}%")
+                    .OrWhereLike(nameof(Role.Description), $"%{keyWords}%");
+                    return q;
+                });
+            }
+
+            return await _repository.GetAllAsync(query.OrderByDesc(nameof(Role.Id)));
+        }
+        private Query GetQueryByAuth(Query query, AdminAuth auth)
+        {
+            if (auth.AuthDataType == AuthorityDataType.DataCreator)
+            {
+                query.Where(nameof(Role.CreatorId), auth.AdminId);
+            }
+            else
+            {
+                if (auth.AuthDataShowAll)
+                {
+                    if (auth.CurCompanyId != 1)
+                    {
+                        query.WhereLike(nameof(Role.CompanyParentPath), $"%'{auth.CurCompanyId}'%");
+                    }
+                }
+                else
+                {
+                    query.Where(nameof(Role.CompanyId), auth.CurCompanyId);
+                }
+            }
+
+            return query;
         }
     }
 }

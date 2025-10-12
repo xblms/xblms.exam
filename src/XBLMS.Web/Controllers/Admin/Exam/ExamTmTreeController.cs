@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using System.Collections.Generic;
@@ -19,20 +19,23 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         private const string RouteDelete = Route + "/del";
         private const string RouteAdd = Route + "/add";
         private const string RouteUpdate = Route + "/update";
+        private const string RouteTmTotal = Route + "/tmTotal";
 
         private readonly IAuthManager _authManager;
         private readonly IExamTmTreeRepository _examTmTreeRepository;
         private readonly IExamTxRepository _examTxRepository;
         private readonly IExamManager _examManager;
         private readonly IExamTmGroupRepository _examTmGroupRepository;
+        private readonly IExamTmRepository _examTmRepository;
 
-        public ExamTmTreeController(IAuthManager authManager, IExamTmTreeRepository examTmTreeRepository, IExamTxRepository examTxRepository, IExamManager examManager, IExamTmGroupRepository examTmGroupRepository)
+        public ExamTmTreeController(IAuthManager authManager, IExamTmTreeRepository examTmTreeRepository, IExamTxRepository examTxRepository, IExamManager examManager, IExamTmGroupRepository examTmGroupRepository, IExamTmRepository examTmRepository)
         {
             _authManager = authManager;
             _examTmTreeRepository = examTmTreeRepository;
             _examTxRepository = examTxRepository;
             _examManager = examManager;
             _examTmGroupRepository = examTmGroupRepository;
+            _examTmRepository = examTmRepository;
         }
         public class GetResult
         {
@@ -45,6 +48,11 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         {
             public string Names { get; set; }
             public int ParentId { get; set; }
+        }
+        public class GetTmTotalResult
+        {
+            public int Total { get; set; }
+            public int Count { get; set; }
         }
     }
 }

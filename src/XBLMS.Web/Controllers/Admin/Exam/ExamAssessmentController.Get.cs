@@ -9,7 +9,9 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         [HttpGet, Route(Route)]
         public async Task<ActionResult<GetResult>> GetManage([FromQuery] GetRequest request)
         {
-            var (total, list) = await _examAssessmentRepository.GetListAsync(request.Keyword, request.PageIndex, request.PageSize);
+            var adminAuth = await _authManager.GetAdminAuth();
+
+            var (total, list) = await _examAssessmentRepository.GetListAsync(adminAuth, request.Keyword, request.PageIndex, request.PageSize);
 
             if (total > 0)
             {

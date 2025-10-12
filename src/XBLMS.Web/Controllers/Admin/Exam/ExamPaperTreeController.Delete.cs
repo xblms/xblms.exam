@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+ï»¿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using XBLMS.Dto;
 using XBLMS.Enums;
@@ -16,16 +16,12 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 return this.NoAuth();
             }
 
-            var admin = await _authManager.GetAdminAsync();
-
             var item = await _examPaperTreeRepository.GetAsync(request.Id);
 
             if (item == null) return this.NotFound();
-            var ids = await _examPaperTreeRepository.GetIdsAsync(request.Id);
-            var tmCount =0;
-            if (tmCount > 0) return this.Error($"¸Ã·ÖÀàÏÂÃæ°üº¬¡¾{tmCount}¡¿·İÊÔ¾í£¬ÔİÊ±²»ÔÊĞíÉ¾³ı");
-            await _examPaperTreeRepository.DeleteAsync(ids);
-            await _authManager.AddAdminLogAsync("É¾³ıÊÔ¾í·ÖÀà¼°ËùÓĞÏÂ¼¶", $"{item.Name}");
+
+            await _examPaperTreeRepository.DeleteAsync(item.Id);
+            await _authManager.AddAdminLogAsync("åˆ é™¤è¯•å·åˆ†ç±»åŠæ‰€æœ‰ä¸‹çº§", $"{item.Name}");
             return new BoolResult
             {
                 Value = true

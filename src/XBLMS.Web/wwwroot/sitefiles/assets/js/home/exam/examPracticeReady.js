@@ -5,6 +5,7 @@ var $urlSearch = $url + "/search";
 var data = utils.init({
   form: null,
   txList: null,
+  tmGroupIds:null,
   zsdinputVisible: false,
   zsdinputValue: '',
 });
@@ -16,6 +17,7 @@ var methods = {
       var res = response.data;
 
       $this.txList = res.txList;
+      $this.tmGroupIds = res.tmGroupIds;
       $this.form = _.assign({}, res.item);
 
       $this.setMineTmCount();
@@ -42,7 +44,7 @@ var methods = {
   apiGetSearch: function () {
     var $this = this;
     utils.loading(this, true, '正在加载配置...');
-    $api.post($urlSearch, { txIds: this.form.txIds, nds: this.form.nds, zsds: this.form.zsds }).then(function (response) {
+    $api.post($urlSearch, { tmGroupIds: this.tmGroupIds, txIds: this.form.txIds, nds: this.form.nds, zsds: this.form.zsds }).then(function (response) {
       var res = response.data;
 
       $this.form.tmCount = res.tmCount;
@@ -89,43 +91,26 @@ var methods = {
       utils.loading($this, false);
     });
   },
-  goPractice: function (id) {
-    var $this = this;
+  zsdBtnSelectClick: function () {
     top.utils.openLayer({
       title: false,
       closebtn: 0,
-      url: utils.getExamUrl('examPracticing', { id: id }),
+      url: utils.getExamUrl('examPracticeReadyZsd', { windowName: window.name }),
       width: "68%",
       height: "88%",
-      end: function () {
-        $this.apiGet();
-      }
     });
   },
-  zsdbtnLogClick: function () {
-    location.href = utils.getExamUrl('examPracticeLog');
+  selectZsdsCallback: function (zsdResultList) {
+    this.form.zsds = zsdResultList;
+    this.apiGetSearch();
   },
   zsdhandleClose(tag) {
     this.form.zsds.splice(this.form.zsds.indexOf(tag), 1);
     this.apiGetSearch();
   },
-
-  zsdshowInput() {
-    var $this = this;
-    this.zsdinputVisible = true;
-    this.$nextTick(_ => {
-      $this.$refs.zsdsaveTagInput.$refs.input.focus();
-    });
-  },
-
-  zsdhandleInputConfirm() {
-    let inputValue = this.zsdinputValue;
-    if (inputValue && !utils.contains(this.form.zsds, inputValue)) {
-      this.form.zsds.push(inputValue);
-      this.apiGetSearch();
-    }
-    this.zsdinputVisible = false;
-    this.zsdinputValue = '';
+  txndChange: function () {
+    this.form.zsds = [];
+    this.apiGetSearch();
   }
 };
 

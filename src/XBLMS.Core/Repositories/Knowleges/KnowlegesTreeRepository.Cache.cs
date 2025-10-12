@@ -1,30 +1,25 @@
 ﻿using Datory;
+using SqlKata;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using XBLMS.Dto;
+using XBLMS.Enums;
 using XBLMS.Models;
 
 namespace XBLMS.Core.Repositories
 {
     public partial class KnowlegesTreeRepository
     {
-        public async Task<List<KnowledgesTree>> GetListAsync()
+        public async Task<List<KnowledgesTree>> GetListAsync(AdminAuth auth)
         {
-            return await GetAllAsync();
-        }
-        public async Task<List<KnowledgesTree>> GetAllAsync()
-        {
-            return await _repository.GetAllAsync(Q
-                .OrderBy(nameof(KnowledgesTree.CreatedDate))
-                .CachingGet(_cacheKey)
-            );
+            var query = Q.OrderBy(nameof(KnowledgesTree.Id));
+            query = GetQueryByAuth(query, auth);
+            return await _repository.GetAllAsync(query);
         }
 
         public async Task<KnowledgesTree> GetAsync(int id)
         {
-            var tks = await GetAllAsync();
-            var list = tks.ToList();
-            return list.Where(x => x.Id == id).FirstOrDefault();
+            return await _repository.GetAsync(id);
         }
 
         public async Task<List<string>> GetParentPathAsync(int id)
@@ -48,21 +43,12 @@ namespace XBLMS.Core.Repositories
 
         public async Task<List<int>> GetIdsAsync(int id)
         {
-            var all = await GetAllAsync();
-            var ids = new List<int>(id);
-            await GetIdsAsync(ids, all, id);
-            return ids;
+            return await _repository.GetAllAsync<int>(Q.
+                Select(nameof(KnowledgesTree.Id)).
+                WhereLike(nameof(KnowledgesTree.ParentPath), $"%'{id}'%"));
         }
 
-        private async Task GetIdsAsync(List<int> ids, List<KnowledgesTree> all, int parentid)
-        {
-            var children = all.Where(x => x.ParentId == parentid).ToList();
-            foreach (var child in children)
-            {
-                ids.Add(child.Id);
-                await GetIdsAsync(ids, all, child.Id);
-            }
-        }
+
         private async Task GetParentIdsAsync(List<int> ids, int parentId)
         {
             ids.Add(parentId);
@@ -77,9 +63,32 @@ namespace XBLMS.Core.Repositories
 
         public async Task<List<KnowledgesTree>> GetChildAsync(int parentId)
         {
-            var all = await GetAllAsync();
-            var children = all.Where(x => x.ParentId == parentId).ToList();
-            return children;
+            var query = Q.Where(nameof(KnowledgesTree.ParentId), parentId);
+            return await _repository.GetAllAsync(query);
+        }
+
+        private Query GetQueryByAuth(Query query, AdminAuth auth)
+        {
+            if (auth.AuthDataType == AuthorityDataType.DataCreator)
+            {
+                query.Where(nameof(KnowledgesTree.CreatorId), auth.AdminId);
+            }
+            else
+            {
+                if (auth.AuthDataShowAll)
+                {
+                    if (auth.CurCompanyId != 1)
+                    {
+                        query.WhereLike(nameof(KnowledgesTree.CompanyParentPath), $"%'{auth.CurCompanyId}'%");
+                    }
+                }
+                else
+                {
+                    query.Where(nameof(KnowledgesTree.CompanyId), auth.CurCompanyId);
+                }
+            }
+
+            return query;
         }
     }
 }

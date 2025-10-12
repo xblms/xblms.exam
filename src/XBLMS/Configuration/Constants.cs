@@ -9,7 +9,7 @@ namespace XBLMS.Configuration
         public const string ConfigFileName = "xblms.json";
         public const string PackageFileName = "package.json";
         public const string ReadmeFileName = "README.md";
-        public const string AdminDirectory = "admin";
+        public const string AdminDirectory = "xblms-admin";
         public const string HomeDirectory = "home";
         public const string WwwrootDirectory = "wwwroot";
         public const string DefaultLanguage = "en";
@@ -33,6 +33,10 @@ namespace XBLMS.Configuration
         {
             return $"{SessionIdPrefix}{userId}";
         }
+        public static string GetUserSessionIdCacheKey(int userId)
+        {
+            return $"{SessionIdPrefix}USER-{userId}";
+        }
 
         public const char Newline = '\n';//换行
         public const string ReturnAndNewline = "\r\n";//回车换行
@@ -48,7 +52,7 @@ namespace XBLMS.Configuration
     <meta http-equiv=""expires"" content=""Tue, 01 Jan 1980 1:00:00 GMT"" />
     <meta http-equiv=""pragma"" content=""no-cache"" />
   </head>
-  <body><script>location.href=""/admin/""</script></body>
+  <body><script>location.href=""/xblms-admin/""</script></body>
 </html>
 ";
 

@@ -75,6 +75,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
             }
 
             await _examAssessmentRepository.IncrementAsync(request.Id);
+            await _authManager.AddPointsLogAsync(PointType.PointExamAss, user, assInfo.Id, assInfo.Title);
 
             return new BoolResult
             {

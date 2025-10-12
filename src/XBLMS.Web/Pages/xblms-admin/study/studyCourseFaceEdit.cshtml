@@ -1,0 +1,143 @@
+﻿@page
+@{ Layout = "_Layout"; }
+@section Styles{
+  <style>
+    .el-upload, .el-upload-dragger {
+        width: 180px;
+    }
+
+        .cover {
+            height: 180px;
+            display: block;
+        }
+    .el-button-group .el-dropdown {
+      float: left;
+      margin-top: -2.5px;
+      margin-right: -1px;
+    }
+  </style>
+}
+
+<el-card>
+    <div slot="header" class="clearfix">
+        <span>{{ id > 0 ? "修改" : "新增" }}线下课</span>
+        <el-button style="float: right;padding:3px 0;" type="text" v-on:click="utils.closeLayerSelf"><i class="el-icon-close"></i></el-button>
+    </div>
+    <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-180) + 'px' }">
+        <div style="margin-right:18px;">
+            <el-form v-on:submit.native.prevent ref="form" :model="form" :size="euiSize" status-icon label-width="140px">
+                <el-form-item label="课程分类" prop="treeId" :rules="{ required: true, message: '请选择课程分类' }">
+                    <el-cascader ref="tree" style="width:100%"
+                                 v-model="form.treeId"
+                                 :options="tree"
+                                 :props="{ emitPath:false,checkStrictly: true,expandTrigger:'hover' }"
+                                 placeholder="请选择课程分类"
+                                 :show-all-levels="false">
+                    </el-cascader>
+                </el-form-item>
+                <el-form-item label="课程名称" prop="name" :rules="[{ required: true, message: '请输入课程名称' }]">
+                    <el-input v-model="form.name"></el-input>
+                </el-form-item>
+                <el-form-item prop="public">
+                    <el-checkbox v-model="form.public">公共课</el-checkbox>
+                    <el-checkbox v-model="form.onlyCompany" v-if="form.public">仅本单位的学员可以选修</el-checkbox>
+                    <div class="tips">公共课是完全开放的，发布后学员都可以选修，如果有关联课后内容，则必须完成关联才可以完成课程。</div>
+                </el-form-item>
+                <el-form-item label="课时" prop="studyHour" :rules="[{ required: true, message: '请输入课时' }]">
+                    <el-input-number v-model="form.studyHour" :precision="1" :min="0.1" label="课时"></el-input-number>
+                    <div class="tips">1位小数</div>
+                </el-form-item>
+                <el-form-item label="学分" prop="credit" :rules="[{ required: true, message: '请输入学分' }]">
+                    <el-input-number v-model="form.credit" :precision="1" :min="0.1" label="学分"></el-input-number>
+                    <div class="tips">1位小数</div>
+                </el-form-item>
+                <el-form-item label="培训时间" prop="offlineBeginDateTime" :rules="{ required: true, message: '请选择开始时间' }">
+                    <el-date-picker v-model="form.offlineBeginDateTime"
+                                    type="datetime"
+                                    placeholder="开始时间"
+                                    value-format="yyyy-MM-dd HH:mm:ss">
+                    </el-date-picker>
+                </el-form-item>
+                <el-form-item prop="offlineEndDateTime" :rules="{ required: true, message: '请选择截止时间' }">
+                    <el-date-picker v-model="form.offlineEndDateTime"
+                                    type="datetime"
+                                    placeholder="截止时间"
+                                    value-format="yyyy-MM-dd HH:mm:ss">
+                    </el-date-picker>
+                </el-form-item>
+                <el-form-item label="培训场地" prop="offlineAddress" :rules="{ required: true, message: '请输入培训场地' }">
+                    <el-input ref="offlineAddress" type="textarea" :autosize="{ minRows: 3}" v-model="form.offlineAddress"></el-input>
+                </el-form-item>
+                <el-form-item label="培训老师" prop="offlineTeacher" :rules="{ required: true, message: '请输入培训老师' }">
+                    <el-input v-model="form.offlineTeacher"></el-input>
+                </el-form-item>
+                <el-form-item label="">
+                    <el-tooltip effect="dark" :content="form.teacherName" placement="right" v-if="form.teacherId>0">
+                        <el-button type="success" icon="el-icon-star-on" v-on:click="btnDeleteTeacherClick">已选择上课老师</el-button>
+                    </el-tooltip>
+                    <el-button plain icon="el-icon-star-off" v-on:click="btnSelectTeacherClick" v-else>选择上课老师</el-button>
+                </el-form-item>
+                <el-form-item label="课程描述" prop="description">
+                    <el-input ref="description" type="textarea" :autosize="{ minRows: 3}" v-model="form.description"></el-input>
+                    <el-link type="primary" icon="el-icon-document" v-on:click="btnOpenEditClick('description','form')">富文本编辑</el-link>
+                </el-form-item>
+                <el-form-item label="标签" prop="mark">
+                    <el-select v-model.trim="form.mark" style="width:100%"
+                               multiple
+                               filterable
+                               allow-create
+                               default-first-option
+                               placeholder="键入或选择标签">
+                        <el-option v-for="item in markList"
+                                   :key="item"
+                                   :label="item"
+                                   :value="item">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="课后设置">
+                    <div class="tips">如果是公共课，需要在这里配置，如果是计划内的课程，也可以在计划内配置</div>
+                    <el-tooltip effect="dark" :content="form.examName" placement="right" v-if="form.examId>0">
+                        <el-button type="success" icon="el-icon-star-on" v-on:click.stop="btnDeleteExamClick">已关联课后考试</el-button>
+                    </el-tooltip>
+                    <el-button plain icon="el-icon-star-off" v-on:click.stop="btnSelectExamClick" v-else>选择课后考试</el-button>
+                </el-form-item>
+                <el-form-item label="">
+                    <el-tooltip effect="dark" :content="form.examQuestionnaireName" placement="right" v-if="form.examQuestionnaireId>0">
+                        <el-button type="success" icon="el-icon-star-on" v-on:click.stop="btnDeleteQClick">已关联课后问卷</el-button>
+                    </el-tooltip>
+                    <el-button plain icon="el-icon-star-off" v-on:click.stop="btnSelectQClick" v-else>选择课后问卷</el-button>
+                </el-form-item>
+                <el-form-item label="">
+                    <el-tooltip effect="dark" :content="form.studyCourseEvaluationName" placement="right" v-if="form.studyCourseEvaluationId>0">
+                        <el-button type="success" icon="el-icon-star-on" v-on:click.stop="btnDeleteEvaluationClick">已关联课后评价</el-button>
+                    </el-tooltip>
+                    <el-button plain icon="el-icon-star-off" v-on:click.stop="btnSelectEvaluationClick" v-else>选择课后评价</el-button>
+                </el-form-item>
+                <el-form-item label="课程封面">
+                    <el-upload :action="uploadUrl"
+                               :show-file-list="false"
+                               :headers="{Authorization: 'Bearer ' + $token}"
+                               list-type="picture-card"
+                               :before-upload="uploadBefore"
+                               :on-progress="uploadProgress"
+                               :on-success="uploadSuccess"
+                               :on-error="uploadError"
+                               :on-remove="uploadRemove"
+                               :multiple="false">
+                        <img v-if="form.coverImg" :src="form.coverImg" class="cover">
+                        <i v-else class="el-icon-plus"></i>
+                    </el-upload>
+                </el-form-item>
+            </el-form>
+        </div>
+    </el-scrollbar>
+</el-card>
+<el-row align="center" style="margin-top:18px;">
+    <el-col :span="24" align="center">
+        <el-button icon="el-icon-check" type="primary" v-on:click="btnSubmitClick" :size="euiSize">确 定</el-button>
+        <el-button icon="el-icon-close" :size="euiSize" v-on:click="utils.closeLayerSelf">取 消</el-button>
+    </el-col>
+</el-row>
+@section Scripts{
+<script src="/sitefiles/assets/js/admin/study/studyCourseEdit.js" type="text/javascript"></script> }

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using System.Collections.Generic;
 using XBLMS.Configuration;
-using XBLMS.Dto;
+using XBLMS.Enums;
 using XBLMS.Models;
 using XBLMS.Repositories;
 using XBLMS.Services;
@@ -26,6 +26,8 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
         private const string RouteLock = "settings/users/actions/lock";
         private const string RouteUnLock = "settings/users/actions/unLock";
 
+        private const string RouteDoc = Route + "/doc";
+
         private readonly IAuthManager _authManager;
         private readonly IPathManager _pathManager;
         private readonly IDatabaseManager _databaseManager;
@@ -33,8 +35,9 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
         private readonly IUserGroupRepository _userGroupRepository;
         private readonly IOrganManager _organManager;
         private readonly IExamManager _examManager;
+        private readonly IConfigRepository _configRepository;
 
-        public UsersController(IAuthManager authManager, IPathManager pathManager, IDatabaseManager databaseManager, IUserRepository userRepository, IUserGroupRepository userGroupRepository, IOrganManager organManager, IExamManager examManager)
+        public UsersController(IAuthManager authManager, IPathManager pathManager, IDatabaseManager databaseManager, IUserRepository userRepository, IUserGroupRepository userGroupRepository, IOrganManager organManager, IExamManager examManager, IConfigRepository configRepository)
         {
             _authManager = authManager;
             _pathManager = pathManager;
@@ -43,6 +46,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
             _userGroupRepository = userGroupRepository;
             _organManager = organManager;
             _examManager = examManager;
+            _configRepository = configRepository;
         }
 
         public class GetRequest
@@ -55,19 +59,21 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
             public string Keyword { get; set; }
             public int Offset { get; set; }
             public int Limit { get; set; }
+            public string DateFrom { get; set; }
+            public string DateTo { get; set; }
         }
 
         public class GetResults
         {
-            public List<OrganTree> Organs { get; set; }
             public List<User> Users { get; set; }
             public int Count { get; set; }
             public List<UserGroup> Groups { get; set; }
+            public SystemCode SystemCode { get; set; } 
         }
         public class ImportCheckResult
         {
             public bool Value { get; set; }
-            public List<KeyValuePair<int,string>> Msgs { get; set; }
+            public List<KeyValuePair<int, string>> Msgs { get; set; }
             public string FilePath { get; set; }
             public int Success { set; get; }
             public int Failure { set; get; }

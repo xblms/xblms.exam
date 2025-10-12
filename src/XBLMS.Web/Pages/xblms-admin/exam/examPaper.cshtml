@@ -1,0 +1,112 @@
+﻿@page
+@{ Layout = "_Layout"; }
+@section Styles{
+    <style>
+        .el-tree-node__content{
+            height:100% !important;
+        }
+    </style>
+}
+<el-row :gutter="0">
+    <el-col :span="6">
+        @await Html.PartialAsync("_PartialTree")
+    </el-col>
+    <el-col :span="18">
+        <el-card shadow="never" style="border-radius:0;">
+            <el-form v-on:submit.native.prevent :inline="true" :size="euiSize">
+                <el-form-item label="试卷">
+                    <el-input clearable v-model="formInline.keyword" placeholder="关键字" prefix-icon="el-icon-search"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button icon="el-icon-search" type="primary" v-on:click="btnSearchClick">查 询</el-button>
+                    <el-button plain icon="el-icon-plus" type="primary" v-on:click="btnEditClick(0)">发布考试</el-button>
+                </el-form-item>
+                <el-form-item>
+                </el-form-item>
+            </el-form>
+            <el-table ref="paperTable" :data="paperList" :size="euiSize"
+                      style="width: 100%" :height="$(window).height()-160">
+                <el-table-column label="#"
+                                 type="index"
+                                 width="60"
+                                 align="left">
+                    <template scope="scope">
+                        <span>{{(formInline.pageIndex - 1) * formInline.pageSize + scope.$index + 1}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="试卷名称" show-overflow-tooltip prop="title">
+                    <template slot-scope="scope">
+                        <el-link size="mini" type="primary" v-on:click="btnViewClick(scope.row)" v-if="scope.row.tmRandomType!=='RandomExaming' && scope.row.submitType==='Submit'">
+                            <el-tag v-if="scope.row.moni" type="warning" size="mini">模拟</el-tag>
+                            <el-tag v-if="scope.row.isCourseUse" type="primary" size="mini">课后</el-tag>
+                            <span>{{ scope.row.title }}</span>
+                        </el-link>
+                        <template v-else>
+                            <el-tag v-if="scope.row.moni" type="warning" size="mini">模拟</el-tag>
+                            <el-tag v-if="scope.row.isCourseUse" type="primary" size="mini">课后</el-tag>
+                            <span>{{ scope.row.title }}</span>
+                        </template>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="examBeginDateTime" label="开考时间" width="150">
+                </el-table-column>
+                <el-table-column prop="markCount" label="待阅卷" width="80">
+                </el-table-column>
+                <el-table-column prop="createdDate" label="创建时间"
+                                 width="150">
+                </el-table-column>
+                <el-table-column label="创建人" width="100" show-overflow-tooltip>
+                    <template slot-scope="scope">
+                        <el-link :underline="false" type="primary" v-on:click="utils.openAdminView(scope.row.creatorId)" v-if="scope.row.creatorId>0">{{scope.row.creator}}</el-link>
+                        <el-tag v-else size="mini" type="danger" effect="dark">{{scope.row.creator}}</el-tag>
+                    </template>
+                </el-table-column>
+                <el-table-column label="状态" width="85">
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.locked"><el-tag size="mini" type="danger" effect="dark">已停用</el-tag></span>
+                        <span v-else>
+                            <span v-if="scope.row.submitType==='Save'"><el-tag size="mini" type="warning" effect="dark">已保存</el-tag></span>
+                            <span v-else><el-tag size="mini" type="success" effect="dark">已发布</el-tag></span>
+                        </span>
+                    </template>
+                </el-table-column>
+                <el-table-column width="100">
+                    <template slot-scope="scope">
+                        <el-dropdown :show-timeout="0" placement="left">
+                            <el-button icon="el-icon-arrow-left" size="mini" v-on:click.stop="return false">
+                                操作
+                            </el-button>
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item icon="el-icon-edit" v-on:click.native="btnEditClick(scope.row.id)">修改</el-dropdown-item>
+                                <el-dropdown-item icon="el-icon-document-copy" v-on:click.native="btnCopyClick(scope.row.id)">复制</el-dropdown-item>
+                                <el-dropdown-item icon="el-icon-unlock" v-if="scope.row.locked" v-on:click.native="btnUnLockClick(scope.row.id)">启用</el-dropdown-item>
+                                <el-dropdown-item icon="el-icon-lock" v-else v-on:click.native="btnLockClick(scope.row.id)">停用</el-dropdown-item>
+                                <template v-if="scope.row.submitType==='Submit'">
+                                    <el-dropdown-item icon="el-icon-user" v-on:click.native="btnManagerUserClick(scope.row)" divided>考生管理</el-dropdown-item>
+                                    <el-dropdown-item icon="el-icon-finished" v-on:click.native="btnManagerMarkClick(scope.row)">阅卷管理</el-dropdown-item>
+                                    <el-dropdown-item icon="el-icon-document-checked" v-on:click.native="btnManagerScoreClick(scope.row)">考试成绩</el-dropdown-item>
+                                    <el-dropdown-item icon="el-icon-s-data" v-on:click.native="btnManagerAnalysisClick(scope.row)">综合统计</el-dropdown-item>
+                                </template>
+                                <el-dropdown-item icon="el-icon-delete" style="color:red;" v-on:click.native="btnDeleteClick(scope.row.id)" divided>删除</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
+                    </template>
+                </el-table-column>
+                @await Html.PartialAsync("_PartialTableEmpty")
+            </el-table>
+
+            <div style="text-align: center; margin-top: 10px;">
+                <el-pagination v-on:current-change="handleCurrentChange" background
+                               :current-page="formInline.pageIndex"
+                               :page-size="formInline.pageSize"
+                               layout="total, prev, pager, next, jumper"
+                               :total="paperTotal">
+                </el-pagination>
+            </div>
+        </el-card>
+    </el-col>
+</el-row>
+
+@section Scripts{
+    <script src="/sitefiles/assets/js/admin/exam/examPaper.js" type="text/javascript"></script>
+}

@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using XBLMS.Core.Utils;
+using XBLMS.Dto;
 using XBLMS.Enums;
 using XBLMS.Models;
 using XBLMS.Repositories;
@@ -155,7 +156,22 @@ namespace XBLMS.Core.Repositories
         {
             await _repository.UpdateAsync(Q.Set(nameof(User.PkRoomId), user.PkRoomId).Where(nameof(User.Id), user.Id).CachingRemove(GetCacheKeysToRemove(user)));
         }
-
+        public async Task UpdateUserGroupIdsAsync(User user)
+        {
+            await _repository.UpdateAsync(Q.Set(nameof(User.UserGroupIds), user.UserGroupIds).Where(nameof(User.Id), user.Id).CachingRemove(GetCacheKeysToRemove(user)));
+        }
+        public async Task UpdateUserGroupIdsAsync(int groupId)
+        {
+            var userList = await _repository.GetAllAsync(Q.WhereNullOrEmpty(nameof(User.UserGroupIds)).WhereLike(nameof(User.UserGroupIds), $"%'{groupId}'%"));
+            if (userList.Count > 0)
+            {
+                foreach (var user in userList)
+                {
+                    user.UserGroupIds.Remove($"'{groupId}'");
+                    await _repository.UpdateAsync(Q.Set(nameof(User.UserGroupIds), user.UserGroupIds).Where(nameof(User.Id), user.Id).CachingRemove(GetCacheKeysToRemove(user)));
+                }
+            }
+        }
         public async Task<(bool success, string errorMessage)> UpdateAsync(User user)
         {
             var entity = await GetByUserIdAsync(user.Id);
@@ -178,7 +194,9 @@ namespace XBLMS.Core.Repositories
                        .Set(nameof(user.AvatarCerUrl), user.AvatarCerUrl)
                        .Set(nameof(user.CompanyId), user.CompanyId)
                        .Set(nameof(user.DepartmentId), user.DepartmentId)
-                       .Set(nameof(user.DutyId), user.DutyId)
+                       .Set(nameof(user.CompanyParentPath), user.CompanyParentPath)
+                       .Set(nameof(user.DepartmentParentPath), user.DepartmentParentPath)
+                       .Set(nameof(user.DutyName), user.DutyName)
                        .Where(nameof(user.Id), user.Id)
                        .CachingRemove(cacheKeys)
                    );
@@ -274,16 +292,7 @@ namespace XBLMS.Core.Repositories
             }
             else if (passwordFormat == PasswordFormat.Encrypted)
             {
-                retVal = TranslateUtils.EncryptStringBySecretKey(password, passwordSalt);
-
-                //var des = new DesEncryptor
-                //{
-                //    InputString = password,
-                //    EncryptKey = passwordSalt
-                //};
-                //des.DesEncrypt();
-
-                //retVal = des.OutString;
+                retVal = DesEncryptor.EncryptStringBySecretKey(password, passwordSalt);
             }
             return retVal;
         }
@@ -301,16 +310,7 @@ namespace XBLMS.Core.Repositories
             }
             else if (passwordFormat == PasswordFormat.Encrypted)
             {
-                retVal = TranslateUtils.DecryptStringBySecretKey(password, passwordSalt);
-
-                //var des = new DesEncryptor
-                //{
-                //    InputString = password,
-                //    DecryptKey = passwordSalt
-                //};
-                //des.DesDecrypt();
-
-                //retVal = des.OutString;
+                retVal = DesEncryptor.DecryptStringBySecretKey(password, passwordSalt);
             }
             return retVal;
         }
@@ -389,6 +389,48 @@ namespace XBLMS.Core.Repositories
                 .Set(nameof(User.Locked), false)
                 .Set(nameof(User.CountOfFailedLogin), 0)
                 .WhereIn(nameof(User.Id), userIds)
+                .CachingRemove(cacheKeys.ToArray())
+            );
+        }
+
+        public async Task UpdatePointsAsync(int points, int userId)
+        {
+            var cacheKeys = new List<string>();
+            var user = await GetByUserIdAsync(userId);
+            cacheKeys.AddRange(GetCacheKeysToRemove(user));
+
+            await _repository.UpdateAsync(Q
+                .Set(nameof(User.PointsTotal), user.PointsTotal + points)
+                .Set(nameof(User.PointsSurplusTotal), user.PointsSurplusTotal + points)
+                .Where(nameof(User.Id), userId)
+                .CachingRemove(cacheKeys.ToArray())
+            );
+        }
+
+        public async Task UpdatePointsSurplusAsync(int points, int userId)
+        {
+            var cacheKeys = new List<string>();
+            var user = await GetByUserIdAsync(userId);
+            cacheKeys.AddRange(GetCacheKeysToRemove(user));
+
+            await _repository.UpdateAsync(Q
+                .Set(nameof(User.PointsSurplusTotal), user.PointsSurplusTotal - points)
+                .Where(nameof(User.Id), userId)
+                .CachingRemove(cacheKeys.ToArray())
+            );
+        }
+
+        public async Task UpdatePointShopInfoAsync(string linkMan, string linkTel, string linkAddress, int userId)
+        {
+            var cacheKeys = new List<string>();
+            var user = await GetByUserIdAsync(userId);
+            cacheKeys.AddRange(GetCacheKeysToRemove(user));
+
+            await _repository.UpdateAsync(Q
+                .Set(nameof(User.PointShopLinkMan), linkMan)
+                .Set(nameof(User.PointShopLinkTel), linkTel)
+                .Set(nameof(User.PointShopLinkAddress), linkAddress)
+                .Where(nameof(User.Id), userId)
                 .CachingRemove(cacheKeys.ToArray())
             );
         }
@@ -523,47 +565,22 @@ namespace XBLMS.Core.Repositories
             return (true, null);
         }
 
-        public async Task<int> GetCountAsync(List<int> companyIds, List<int> departmentIds, List<int> dutyIds, List<int> userIds, int range, int dayOfLastActivity, string keyword)
+        public Query GetUserQuery(AdminAuth auth, Query query, int organId, string organType, int dayOfLastActivity, string keyword, string order)
         {
-            var query = GetGroupQuery(companyIds, departmentIds, dutyIds, userIds, range, dayOfLastActivity, keyword, string.Empty);
-            return await _repository.CountAsync(query);
-        }
-        public async Task<List<User>> GetUsersAsync(List<int> companyIds, List<int> departmentIds, List<int> dutyIds, List<int> userIds, int range, int dayOfLastActivity, string keyword, string order, int offset, int limit)
-        {
-            var query = GetGroupQuery(companyIds, departmentIds, dutyIds, userIds, range, dayOfLastActivity, keyword, order);
-            query.Offset(offset).Limit(limit);
+            query = GetQueryByAuth(query, auth);
 
-            return await _repository.GetAllAsync(query);
-        }
-        public async Task<List<int>> GetUserIdsAsync(List<int> companyIds, List<int> departmentIds, List<int> dutyIds, List<int> userIds, int range, int dayOfLastActivity, string keyword, string order)
-        {
-            var query = GetGroupQuery(companyIds, departmentIds, dutyIds, userIds, range, dayOfLastActivity, keyword, order);
-            return await _repository.GetAllAsync<int>(query.Select(nameof(User.Id)));
-        }
-        private static Query GetGroupQuery(List<int> companyIds, List<int> departmentIds, List<int> dutyIds, List<int> userIds, int range, int dayOfLastActivity, string keyword, string order)
-        {
-            var query = Q.NewQuery();
-            if (userIds == null) userIds = new List<int>();
-            if (companyIds != null && companyIds.Count > 0)
+            if (organId > 0)
             {
-                query.WhereIn(nameof(User.CompanyId), companyIds);
+                if (organType == "company")
+                {
+                    query.WhereContains(nameof(User.CompanyParentPath), $"%'{organId}'%");
+                }
+                if (organType == "department")
+                {
+                    query.WhereContains(nameof(User.DepartmentParentPath), $"%'{organId}'%");
+                }
             }
-            if (departmentIds != null && departmentIds.Count > 0)
-            {
-                query.WhereIn(nameof(User.DepartmentId), departmentIds);
-            }
-            if (dutyIds != null && dutyIds.Count > 0)
-            {
-                query.WhereIn(nameof(User.DutyId), dutyIds);
-            }
-            if (range == 0)
-            {
-                query.WhereNotIn(nameof(User.Id), userIds);
-            }
-            else
-            {
-                query.WhereIn(nameof(User.Id), userIds);
-            }
+
             if (dayOfLastActivity > 0)
             {
                 var dateTime = DateTime.Now.AddDays(-dayOfLastActivity);
@@ -578,6 +595,7 @@ namespace XBLMS.Core.Repositories
                     .OrWhereLike(nameof(User.Email), like)
                     .OrWhereLike(nameof(User.Mobile), like)
                     .OrWhereLike(nameof(User.DisplayName), like)
+                    .OrWhereLike(nameof(User.DutyName), like)
                 );
             }
 
@@ -596,200 +614,34 @@ namespace XBLMS.Core.Repositories
             {
                 query.OrderByDesc(nameof(User.Id));
             }
-
             return query;
         }
-        private static Query GetQuery(List<int> companyIds, List<int> departmentIds, List<int> dutyIds, List<int> userIds, int dayOfLastActivity, string keyword, string order)
+        public async Task<(int total, List<User> list)> GetListAsync(AdminAuth auth, int organId, string organType, UserGroup group, int dayOfLastActivity, string keyword, string order, int offset, int limit)
         {
             var query = Q.NewQuery();
+            query = GetUserQuery(auth, query, organId, organType, dayOfLastActivity, keyword, order);
 
-            if (companyIds != null && companyIds.Count > 0)
+            if (group != null)
             {
-                query.WhereIn(nameof(User.CompanyId), companyIds);
-            }
-            if (departmentIds != null && departmentIds.Count > 0)
-            {
-                query.WhereIn(nameof(User.DepartmentId), departmentIds);
-            }
-            if (dutyIds != null && dutyIds.Count > 0)
-            {
-                query.WhereIn(nameof(User.DutyId), dutyIds);
-            }
-            if (userIds != null && userIds.Count > 0)
-            {
-                query.WhereIn(nameof(User.Id), userIds);
-            }
-            if (dayOfLastActivity > 0)
-            {
-                var dateTime = DateTime.Now.AddDays(-dayOfLastActivity);
-                query.Where(nameof(User.LastActivityDate), ">=", DateUtils.ToString(dateTime));
+                query = UserGroupQuery(group);
             }
 
-            if (!string.IsNullOrEmpty(keyword))
-            {
-                var like = $"%{keyword}%";
-                query.Where(q => q
-                    .WhereLike(nameof(User.UserName), like)
-                    .OrWhereLike(nameof(User.Email), like)
-                    .OrWhereLike(nameof(User.Mobile), like)
-                    .OrWhereLike(nameof(User.DisplayName), like)
-                );
-            }
+            var total = await _repository.CountAsync(query);
 
-            if (!string.IsNullOrEmpty(order))
-            {
-                if (StringUtils.EqualsIgnoreCase(order, nameof(User.UserName)))
-                {
-                    query.OrderBy(nameof(User.UserName));
-                }
-                else
-                {
-                    query.OrderByDesc(order);
-                }
-            }
-            else
-            {
-                query.OrderByDesc(nameof(User.Id));
-            }
+            var list = await _repository.GetAllAsync(query.Offset(offset).Limit(limit));
 
-            return query;
+            return (total, list);
         }
-
-        public async Task<(int total, List<User> list)> GetListAsync(List<int> companyIds, List<int> departmentIds, List<int> dutyIds, string keyWords, int pageIndex, int pageSize)
+        public async Task<(int total, List<User> list)> GetListAsync(AdminAuth auth, int organId, string organType, string keyword, int pageIndex, int pageSize)
         {
             var query = Q.NewQuery();
+            query = GetUserQuery(auth, query, organId, organType, 0, keyword, string.Empty);
 
-            if (companyIds != null && companyIds.Count > 0)
-            {
-                query.WhereIn(nameof(User.CompanyId), companyIds);
-            }
-            if (departmentIds != null && departmentIds.Count > 0)
-            {
-                query.WhereIn(nameof(User.DepartmentId), departmentIds);
-            }
-            if (dutyIds != null && dutyIds.Count > 0)
-            {
-                query.WhereIn(nameof(User.DutyId), dutyIds);
-            }
+            var total = await _repository.CountAsync(query);
 
-            if (!string.IsNullOrEmpty(keyWords))
-            {
-                var like = $"%{keyWords}%";
-                query.Where(q => q
-                    .WhereLike(nameof(User.UserName), like)
-                    .OrWhereLike(nameof(User.Email), like)
-                    .OrWhereLike(nameof(User.Mobile), like)
-                    .OrWhereLike(nameof(User.DisplayName), like)
-                );
-            }
-            var count = await _repository.CountAsync(query);
             var list = await _repository.GetAllAsync(query.ForPage(pageIndex, pageSize));
-            return (count, list);
-        }
 
-        public async Task<int> GetCountAsync(List<int> companyIds, List<int> departmentIds, List<int> dutyIds, List<int> userIds, int dayOfLastActivity, string keyword)
-        {
-            var query = GetQuery(companyIds, departmentIds, dutyIds, userIds, dayOfLastActivity, keyword, string.Empty);
-            return await _repository.CountAsync(query);
-        }
-
-        public async Task<List<User>> GetUsersAsync(List<int> companyIds, List<int> departmentIds, List<int> dutyIds, List<int> userIds, int dayOfLastActivity, string keyword, string order, int offset, int limit)
-        {
-            var query = GetQuery(companyIds, departmentIds, dutyIds, userIds, dayOfLastActivity, keyword, order);
-            query.Offset(offset).Limit(limit);
-
-            return await _repository.GetAllAsync(query);
-        }
-
-        public async Task<List<int>> GetUserIdsAsync(List<int> companyIds, List<int> departmentIds, List<int> dutyIds, List<int> userIds, int dayOfLastActivity, string keyword, string order)
-        {
-            var query = GetQuery(companyIds, departmentIds, dutyIds, userIds, dayOfLastActivity, keyword, order);
-
-            return await _repository.GetAllAsync<int>(query.Select(nameof(User.Id)));
-        }
-        public async Task<List<int>> GetUserIdsAsync(List<int> companyIds, List<int> departmentIds, List<int> dutyIds)
-        {
-            var query = Q.Select(nameof(User.Id));
-
-
-            if (companyIds != null && companyIds.Count > 0)
-            {
-                query.WhereIn(nameof(User.CompanyId), companyIds);
-            }
-            if (departmentIds != null && departmentIds.Count > 0)
-            {
-                query.WhereIn(nameof(User.DepartmentId), departmentIds);
-            }
-            if (dutyIds != null && dutyIds.Count > 0)
-            {
-                query.WhereIn(nameof(User.DutyId), dutyIds);
-            }
-
-            return await _repository.GetAllAsync<int>(query);
-        }
-        public async Task<List<int>> GetUserIdsWithOutLockedAsync(List<int> companyIds, List<int> departmentIds, List<int> dutyIds)
-        {
-            var query = Q.Select(nameof(User.Id));
-
-
-            if (companyIds != null && companyIds.Count > 0)
-            {
-                query.WhereIn(nameof(User.CompanyId), companyIds);
-            }
-            if (departmentIds != null && departmentIds.Count > 0)
-            {
-                query.WhereIn(nameof(User.DepartmentId), departmentIds);
-            }
-            if (dutyIds != null && dutyIds.Count > 0)
-            {
-                query.WhereIn(nameof(User.DutyId), dutyIds);
-            }
-            query.WhereNullOrFalse(nameof(User.Locked));
-            return await _repository.GetAllAsync<int>(query);
-        }
-        public async Task<List<int>> GetUserIdsWithOutLockedAsync()
-        {
-            var query = Q.Select(nameof(User.Id));
-            query.WhereNullOrFalse(nameof(User.Locked));
-            return await _repository.GetAllAsync<int>(query);
-        }
-        public async Task<int> GetCountAsync(int companyId, int departmentId, int dutyId)
-        {
-            var query = Q.NewQuery();
-            if (companyId > 0)
-            {
-                query.Where(nameof(User.CompanyId), companyId);
-            }
-            if (departmentId > 0)
-            {
-                query.Where(nameof(User.DepartmentId), departmentId);
-            }
-            if (dutyId > 0)
-            {
-                query.Where(nameof(User.DutyId), dutyId);
-            }
-
-            return await _repository.CountAsync(query);
-        }
-        public async Task<int> GetCountAsync(List<int> companyIds, List<int> departmentIds, List<int> dutyIds)
-        {
-            var query = new Query();
-
-
-            if (companyIds != null && companyIds.Count > 0)
-            {
-                query.WhereIn(nameof(User.CompanyId), companyIds);
-            }
-            if (departmentIds != null && departmentIds.Count > 0)
-            {
-                query.WhereIn(nameof(User.DepartmentId), departmentIds);
-            }
-            if (dutyIds != null && dutyIds.Count > 0)
-            {
-                query.WhereIn(nameof(User.DutyId), dutyIds);
-            }
-
-            return await _repository.CountAsync(query);
+            return (total, list);
         }
 
         public async Task<User> DeleteAsync(int userId)
@@ -800,40 +652,32 @@ namespace XBLMS.Core.Repositories
 
             return user;
         }
-        public async Task<int> GetCountByUserGroupAsync()
+        public async Task<(int total, int count)> GetCountByCompanyAsync(AdminAuth auth, int companyId)
         {
-            var query = Q.WhereNullOrFalse(nameof(User.Locked));
-            return await _repository.CountAsync(query);
+            var queryCount = Q.NewQuery();
+            var queryTotal = Q.NewQuery();
+            if (auth.AuthDataType == AuthorityDataType.DataCreator)
+            {
+                queryCount.Where(nameof(User.CreatorId), auth.AdminId);
+                queryTotal.Where(nameof(User.CreatorId), auth.AdminId);
+            }
+            var count = await _repository.CountAsync(queryCount.Where(nameof(User.CompanyId), companyId));
+            var total = await _repository.CountAsync(queryTotal.WhereLike(nameof(User.CompanyParentPath), $"%'{companyId}'%"));
+            return (total, count);
         }
-        public async Task<int> GetCountByUserGroupAsync(List<int> userIds)
+        public async Task<(int total, int count)> GetCountByDepartmentAsync(AdminAuth auth, int departmentId)
         {
-            if (userIds != null)
+            var queryCount = Q.NewQuery();
+            var queryTotal = Q.NewQuery();
+            if (auth.AuthDataType == AuthorityDataType.DataCreator)
             {
-                var query = Q.WhereNullOrFalse(nameof(User.Locked)).WhereIn(nameof(User.Id), userIds);
-                return await _repository.CountAsync(query);
-            }
-            return 0;
-
-        }
-        public async Task<int> GetCountByUserGroupAsync(List<int> companyIds, List<int> departmentIds, List<int> dutyIds)
-        {
-            var query = Q.WhereNullOrFalse(nameof(User.Locked));
-
-
-            if (companyIds != null && companyIds.Count > 0)
-            {
-                query.WhereIn(nameof(User.CompanyId), companyIds);
-            }
-            if (departmentIds != null && departmentIds.Count > 0)
-            {
-                query.WhereIn(nameof(User.DepartmentId), departmentIds);
-            }
-            if (dutyIds != null && dutyIds.Count > 0)
-            {
-                query.WhereIn(nameof(User.DutyId), dutyIds);
+                queryCount.Where(nameof(User.CreatorId), auth.AdminId);
+                queryTotal.Where(nameof(User.CreatorId), auth.AdminId);
             }
 
-            return await _repository.CountAsync(query);
+            var count = await _repository.CountAsync(queryCount.Where(nameof(User.DepartmentId), departmentId));
+            var total = await _repository.CountAsync(queryTotal.WhereLike(nameof(User.DepartmentParentPath), $"%'{departmentId}'%"));
+            return (total, count);
         }
     }
 }

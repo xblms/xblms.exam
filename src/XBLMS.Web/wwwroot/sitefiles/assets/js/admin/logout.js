@@ -1,4 +1,4 @@
-var $url = '/logout';
+﻿var $url = '/logout';
 
 var data = utils.init({});
 
@@ -22,7 +22,7 @@ var methods = {
   },
 
   redirect: function () {
-    window.top.location.href = '/admin/login'
+    window.top.location.href = '/xblms-admin/login'
   }
 };
 

@@ -8,7 +8,6 @@ namespace XBLMS.Services
     {
         void GetExamAssessmentInfo(ExamAssessment ass, ExamAssessmentUser assUser, User user);
         Task ClearExamAssessment(int assId);
-        Task ArrangerExamAssessment(ExamAssessment ass);
         Task SerExamAssessmentTm(List<ExamAssessmentTm> tmList,int assId);
     }
 

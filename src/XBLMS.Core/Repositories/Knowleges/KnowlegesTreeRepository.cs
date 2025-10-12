@@ -1,7 +1,6 @@
 ﻿using Datory;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using XBLMS.Core.Utils;
 using XBLMS.Models;
 using XBLMS.Repositories;
 using XBLMS.Services;
@@ -12,13 +11,11 @@ namespace XBLMS.Core.Repositories
     {
         private readonly ISettingsManager _settingsManager;
         private readonly Repository<KnowledgesTree> _repository;
-        private readonly string _cacheKey;
 
         public KnowlegesTreeRepository(ISettingsManager settingsManager)
         {
             _settingsManager = settingsManager;
             _repository = new Repository<KnowledgesTree>(settingsManager.Database, settingsManager.Redis);
-            _cacheKey = CacheUtils.GetEntityKey(TableName);
         }
 
         public IDatabase Database => _repository.Database;
@@ -29,20 +26,16 @@ namespace XBLMS.Core.Repositories
 
         public async Task<int> InsertAsync(KnowledgesTree item)
         {
-            return await _repository.InsertAsync(item, Q.CachingRemove(_cacheKey));
+            return await _repository.InsertAsync(item);
         }
 
         public async Task<bool> UpdateAsync(KnowledgesTree item)
         {
-            return await _repository.UpdateAsync(item, Q.CachingRemove(_cacheKey));
+            return await _repository.UpdateAsync(item);
         }
         public async Task<bool> DeleteAsync(int id)
         {
-            return await _repository.DeleteAsync(Q.WhereLike(nameof(KnowledgesTree.ParentPath), $"%'{id}'").CachingRemove(_cacheKey)) > 0;
-        }
-        public async Task<bool> DeleteAsync(List<int> ids)
-        {
-            return await _repository.DeleteAsync(Q.WhereIn(nameof(KnowledgesTree.Id), ids).CachingRemove(_cacheKey)) > 0;
+            return await _repository.DeleteAsync(Q.WhereLike(nameof(KnowledgesTree.ParentPath), $"%'{id}'%")) > 0;
         }
     }
 }

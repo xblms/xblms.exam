@@ -305,7 +305,7 @@ namespace XBLMS.Core.Utils
         /// 两个时间的差值，可以为秒，小时，天，分钟
         /// </summary>
         /// <returns></returns>
-        private static long DateDiff(string interval, DateTime startDate, DateTime endDate)
+        public static long DateDiff(string interval, DateTime startDate, DateTime endDate)
         {
             long retVal = 0;
             var ts = new TimeSpan(endDate.Ticks - startDate.Ticks);

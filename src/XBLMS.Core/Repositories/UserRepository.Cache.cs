@@ -3,6 +3,8 @@ using SqlKata;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using XBLMS.Core.Utils;
+using XBLMS.Dto;
+using XBLMS.Enums;
 using XBLMS.Models;
 using XBLMS.Utils;
 
@@ -101,16 +103,6 @@ namespace XBLMS.Core.Repositories
             );
         }
 
-        public async Task<User> GetByGuidAsync(string guid)
-        {
-            if (string.IsNullOrWhiteSpace(guid)) return null;
-
-            return await GetAsync(Q
-                .Where(nameof(User.Guid), guid)
-                .CachingGet(GetCacheKeyByGuid(guid))
-            );
-        }
-
         public async Task<User> GetByUserNameAsync(string userName)
         {
             if (string.IsNullOrWhiteSpace(userName)) return null;
@@ -141,14 +133,6 @@ namespace XBLMS.Core.Repositories
             );
         }
 
-        public async Task<string> GetDisplayAsync(int userId)
-        {
-            if (userId <= 0) return string.Empty;
-
-            var user = await GetByUserIdAsync(userId);
-            return GetDisplay(user);
-        }
-
         public string GetDisplay(User user)
         {
             if (user == null) return string.Empty;
@@ -156,12 +140,57 @@ namespace XBLMS.Core.Repositories
             return string.IsNullOrEmpty(user.DisplayName) || user.UserName == user.DisplayName ? user.UserName : $"{user.DisplayName}({user.UserName})";
         }
 
-        public async Task<(int allCount, int addCount, int deleteCount, int lockedCount, int unLockedCount)> GetDataCount()
+        private Query GetQueryByAuth(Query query, AdminAuth auth)
         {
-            var count = await _repository.CountAsync();
-            var lockedCount = await _repository.CountAsync(Q.WhereTrue(nameof(User.Locked)));
-            var unLockedCount = await _repository.CountAsync(Q.WhereNullOrFalse(nameof(User.Locked)));
+            if (auth.AuthDataType == AuthorityDataType.DataCreator)
+            {
+                query.Where(nameof(User.CreatorId), auth.AdminId);
+            }
+            else
+            {
+                if (auth.AuthDataShowAll)
+                {
+                    if (auth.CurCompanyId != 1)
+                    {
+                        query.WhereLike(nameof(User.CompanyParentPath), $"%'{auth.CurCompanyId}'%");
+                    }
+                }
+                else
+                {
+                    query.Where(nameof(User.CompanyId), auth.CurCompanyId);
+                }
+            }
+
+            return query;
+        }
+
+        public async Task<(int allCount, int addCount, int deleteCount, int lockedCount, int unLockedCount)> GetDataCount(AdminAuth auth)
+        {
+            var queryCount = Q.NewQuery();
+            var queryLocked = Q.WhereTrue(nameof(User.Locked));
+            var queryUnLocked = Q.WhereNullOrFalse(nameof(User.Locked));
+
+            queryCount = GetQueryByAuth(queryCount, auth);
+            queryLocked = GetQueryByAuth(queryLocked, auth);
+            queryUnLocked = GetQueryByAuth(queryUnLocked, auth);
+
+
+            var count = await _repository.CountAsync(queryCount);
+            var lockedCount = await _repository.CountAsync(queryLocked);
+            var unLockedCount = await _repository.CountAsync(queryUnLocked);
             return (count, 0, 0, lockedCount, unLockedCount);
+        }
+
+  
+
+        public async Task<int> CountTestMaxInAsync()
+        {
+            var userIds = new List<int>();
+            for(var i = 0; i < 100000; i++)
+            {
+                userIds.Add(i);
+            }
+            return await _repository.CountAsync(Q.WhereIn(nameof(User.Id), userIds));
         }
     }
 }

@@ -1,10 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using XBLMS.Core.Utils;
-using XBLMS.Models;
-using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Home
 {
@@ -21,161 +16,31 @@ namespace XBLMS.Web.Controllers.Home
             var (allPassPercent, allTotal, moniPassPercent, moniTotal, passPercent, total) = await _examManager.AnalysisMorePass(user.Id);
             var (answerTmTotal, answerPercent, allTmTotal, allPercent, collectTmTotal, collectPercent, wrongTmTotal, wrongPercent) = await _examManager.AnalysisPractice(user.Id);
 
-            var resultPaper = new ExamPaper();
-            var resultMoni = new ExamPaper();
+            var cerTotal = await _examCerUserRepository.CountAsync(user.Id);
 
-            var (paperTotal, paperList) = await _examPaperUserRepository.GetListAsync(user.Id, false, request.IsApp, "", "", 1, 1);
-            var (moniPaperTotal, moniPaperList) = await _examPaperUserRepository.GetListAsync(user.Id, true, request.IsApp, "", "", 1, 1);
+            var examQTotal = await _examQuestionnaireUserRepository.CountAsync(user.Id);
+            var examAssTotal = await _examAssessmentUserRepository.CountAsync(user.Id);
 
-            if (paperTotal > 0)
-            {
-                var paperUser = paperList[0];
-                var paper = await _examPaperRepository.GetAsync(paperUser.ExamPaperId);
-                await _examManager.GetPaperInfo(paper, user);
-                resultPaper = paper;
-            }
-            else
-            {
-                resultPaper = null;
-            }
-            if (moniPaperTotal > 0)
-            {
-                var paperUser = moniPaperList[0];
-                var paper = await _examPaperRepository.GetAsync(paperUser.ExamPaperId);
-                await _examManager.GetPaperInfo(paper, user);
-                resultMoni = paper;
-            }
-            else
-            {
-                resultMoni = null;
-            }
+            var (planTotalCredit, planTotalOverCredit) = await _studyPlanUserRepository.GetCreditAsync(user.Id);
+            var (totalCourse, totalOverCourse) = await _studyCourseUserRepository.GetTotalAsync(user.Id);
+            var totalDuration = await _studyCourseUserRepository.GetTotalDurationAsync(user.Id);
 
-            var openMenus = await _userMenuRepository.GetOpenMenusAsync();
+            var pointNotice = await _authManager.PointNotice(user.Id);
+            var config = await _configRepository.GetAsync();
 
-            var taskTotal = 0;
-            var taskPaperTotal = 0;
-            var taskPaperList = new List<ExamPaper>();
-            var todayExam = new ExamPaper();
-            var taskPaperIds = await _examPaperUserRepository.GetPaperIdsByUser(user.Id);
-            if (taskPaperIds != null && taskPaperIds.Count > 0 && ListUtils.Contains(openMenus, "examPaper"))
-            {
-                foreach (var paperId in taskPaperIds)
-                {
-                    var paper = await _examPaperRepository.GetAsync(paperId);
-                    if (paper != null)
-                    {
-                        var myExamTimes = await _examPaperStartRepository.CountAsync(paperId, user.Id);
-                        if ((paper.ExamBeginDateTime.Value < DateTime.Now && paper.ExamEndDateTime.Value > DateTime.Now))
-                        {
-                            if (!paper.Moni)
-                            {
-                                await _examManager.GetPaperInfo(paper, user);
-                                if (myExamTimes <= 0)
-                                {
-                                    taskPaperTotal++;
-                                    taskTotal++;
-                                    taskPaperList.Add(paper);
-                                }
-                                if (paper.ExamBeginDateTime.Value.Date == DateTime.Now.Date && todayExam.Id == 0)
-                                {
-                                    todayExam = paper;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            var taskQList = new List<ExamQuestionnaire>();
-            var (qPaperTotal, qPaperList) = await _examQuestionnaireUserRepository.GetTaskAsync(user.Id);
-            if (qPaperTotal > 0 && ListUtils.Contains(openMenus, "examQuestionnaire"))
-            {
-                foreach (var item in qPaperList)
-                {
-                    var paper = await _examQuestionnaireRepository.GetAsync(item.ExamPaperId);
-                    await _examManager.GetQuestionnaireInfo(paper, user);
-                    taskQList.Add(paper);
-                    taskTotal++;
-                }
-            }
-
-            var taskAssList = new List<ExamAssessment>();
-            var (assesstantTaskTotal, assesstantTaskList) = await _examAssessmentUserRepository.GetTaskAsync(user.Id);
-            if (assesstantTaskTotal > 0 && ListUtils.Contains(openMenus, "examAssessment"))
-            {
-                foreach (var item in assesstantTaskList)
-                {
-                    var assInfo = await _examAssessmentRepository.GetAsync(item.ExamAssId);
-                    _examManager.GetExamAssessmentInfo(assInfo, item, user);
-                    taskTotal++;
-                    taskAssList.Add(assInfo);
-                }
-            }
-
-            var topCer = new ExamCerUser();
-            var (cerTotal, cerList) = await _examCerUserRepository.GetListAsync(user.Id, 1, 8);
-            if (cerTotal > 0 && ListUtils.Contains(openMenus, "examPaperCer"))
-            {
-                var cerIndex = 0;
-                foreach (var item in cerList)
-                {
-                    var cerInfo = await _examCerRepository.GetAsync(item.CerId);
-                    if (cerInfo != null)
-                    {
-                        item.Set("CerName", cerInfo.Name);
-                        item.Set("CerOrganName", cerInfo.OrganName);
-                    }
-                    else
-                    {
-                        item.Set("CerName", "证书异常");
-                    }
-                    item.Set("AwartDate", item.CerDateTime.Value.ToString(DateUtils.FormatStringDateOnlyCN));
-                    var paper = await _examPaperRepository.GetAsync(item.ExamPaperId);
-                    if (paper != null)
-                    {
-                        item.Set("PaperName", paper.Title);
-                    }
-                    else
-                    {
-                        item.Set("PaperName", "试卷异常");
-                    }
-                    var start = await _examPaperStartRepository.GetAsync(item.ExamStartId);
-                    if (start != null)
-                    {
-                        item.Set("PaperScore", start.Score);
-                    }
-                    else
-                    {
-                        item.Set("PaperScore", "成绩异常");
-                    }
-                    if (cerIndex == 0)
-                    {
-                        topCer = item;
-                    }
-                    cerIndex++;
-                }
-            }
-
-            var dateStr = $"{DateTime.Now.ToString(DateUtils.FormatStringDateOnlyCN)} {DateTime.Now.ToString("dddd", new System.Globalization.CultureInfo("zh-CN"))}";
-
-            var knowList = await _knowlegesRepository.GetNewListAsync();
-            if(knowList!=null && knowList.Count > 0)
-            {
-                foreach (var item in knowList)
-                {
-                    item.Url = "";
-                }
-            }
             return new GetResult
             {
+                SystemCode = config.SystemCode,
+                PointNotice = pointNotice,
                 User = user,
                 AllPercent = allPassPercent,
                 ExamTotal = total,
                 ExamPercent = allPassPercent,
                 ExamMoniPercent = moniPassPercent,
                 ExamMoniTotal = moniTotal,
-
-                ExamPaper = resultPaper,
-                ExamMoni = resultMoni,
+                ExamCerTotal = cerTotal,
+                ExamQTotal = examQTotal,
+                ExamAssTotal = examAssTotal,
 
                 PracticeAnswerTmTotal = answerTmTotal,
                 PracticeAnswerPercent = answerPercent,
@@ -186,24 +51,14 @@ namespace XBLMS.Web.Controllers.Home
                 PracticeWrongTmTotal = wrongTmTotal,
                 PracticeWrongPercent = wrongPercent,
 
-                TaskPaperTotal = taskPaperTotal,
-                TaskQTotal = qPaperTotal,
-                TaskAssTotal = assesstantTaskTotal,
+                StudyPlanTotalCredit = planTotalCredit,
+                StudyPlanTotalOverCredit = planTotalOverCredit,
+                TotalCourse = totalCourse,
+                TotalOverCourse = totalOverCourse,
+                TotalDuration = totalDuration,
 
-                TopCer = topCer,
-                DateStr = dateStr,
-
-                CerList = cerList,
-                KnowList = knowList,
-                TodayExam = todayExam,
-                TaskPaperList = taskPaperList,
-                TaskQList = taskQList,
-                TaskAssList = taskAssList,
-                TaskTotal = taskTotal,
-
-                OpenMenus = openMenus,
-
-                Version = _settingsManager.Version
+                Version = _settingsManager.Version,
+                VersionName = _settingsManager.VersionName
             };
         }
     }

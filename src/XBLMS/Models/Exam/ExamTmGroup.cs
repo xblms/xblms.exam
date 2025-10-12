@@ -13,17 +13,15 @@ namespace XBLMS.Models
         public string GroupName { get; set; }
         [DataColumn]
         public TmGroupType GroupType { get; set; }
-        [DataColumn(Text = true)]
-        public List<int> TmIds { get; set; }
-        [DataColumn(Text = true)]
+        [DataColumn]
         public List<int> TreeIds { get; set; }
-        [DataColumn(Text = true)]
+        [DataColumn]
         public List<int> TxIds { get; set; }
-        [DataColumn(Text = true)]
-        public List<int> Nandus  { get; set; }
-        [DataColumn(Text = true)]
+        [DataColumn]
+        public List<int> Nandus { get; set; }
+        [DataColumn]
         public List<string> Zhishidians { get; set; }
-        [DataColumn(Text = true)]
+        [DataColumn]
         public string Description { get; set; }
         [DataColumn]
         public int TmTotal { get; set; }
@@ -37,6 +35,5 @@ namespace XBLMS.Models
         public bool OpenUser { get; set; } = false;
         [DataColumn]
         public List<int> OpenUserGroupIds { get; set; }
-
     }
 }

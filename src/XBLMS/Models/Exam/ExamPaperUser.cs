@@ -8,11 +8,17 @@ namespace XBLMS.Models
     public class ExamPaperUser : Entity
     {
         [DataColumn]
+        public int PlanId { get; set; }
+        [DataColumn]
+        public int CourseId { get; set; }
+        [DataColumn]
         public int UserId { get; set; }
         [DataColumn]
         public int ExamPaperId { get; set; }
         [DataColumn]
         public int ExamTimes { get; set; }
+        [DataColumn]
+        public int ExamTimesSubmit { get; set; }
         [DataColumn]
         public DateTime? ExamBeginDateTime { get; set; }
         [DataColumn]

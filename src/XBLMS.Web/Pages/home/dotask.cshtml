@@ -1,0 +1,51 @@
+@page
+@{ Layout = "_LayoutHome"; }
+@section Styles{
+    <style>
+        body,html {
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+}
+<div v-if="total>0">
+    <div class="rounded-0 shadow p-3 bg-white sticky-top">
+        <div class="fw-bolder text-center">
+            <span class="text-warning me-2">{{ total }}</span>个待办任务需要办理
+        </div>
+    </div>
+    <div class="p-5">
+        <el-tabs tab-position="top">
+                    <el-tab-pane :label="item.taskName+'('+item.taskTotal+')'" v-for="(item,index) in list">
+                        <div class="card shadow-none rounded-0 card-hover-with-bl border-3 border-left border-top-0 border-end-0 border-bottom-0 mb-3" v-for="task in item.taskList">
+                            <div class="card-body">
+                                <div class="row align-items-center g-3">
+                                    <div class="col">
+                                        <p class="mb-3 fw-bold">
+                                            {{task.taskTitle}}
+                                        </p>
+                                        <ul class="list-inline m-0 fw-light">
+                                            <li class="list-inline-item card-title">
+                                                {{ task.taskTypeName }}
+                                            </li>
+                                            <li class="list-inline-item">
+                                                有效期：{{ task.taskBeginDateTime }}-{{ task.taskEndDateTime }}
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-auto">
+                                        <el-button type="success" plain icon="el-icon-coffee-cup" class="rounded-pill" v-on:click.stop="btnDoClick(task)">开始办理</el-button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </el-tab-pane>
+                </el-tabs>
+    </div>
+</div>
+<div v-else class="text-center">
+    <el-empty description="没有待办任务"></el-empty>
+</div>
+@section Scripts{
+    <script src="/sitefiles/assets/js/home/dotask.js" type="text/javascript"></script>
+}

@@ -1,4 +1,4 @@
-var $url = "/exam/examPkRooms";
+﻿var $url = "/exam/examPkRooms";
 
 var data = utils.init({
   id: utils.getQueryInt("id"),

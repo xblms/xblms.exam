@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using XBLMS.Models;
 
+
 namespace XBLMS.Repositories
 {
     public partial interface IExamPaperRandomRepository : IRepository
@@ -13,7 +14,7 @@ namespace XBLMS.Repositories
         Task<int> InsertAsync(ExamPaperRandom item);
         Task<bool> UpdateAsync(ExamPaperRandom item);
         Task<int> DeleteByPaperAsync(int examPaperId);
-        Task DeleteAsync(int id,int examPaperId);
+        Task DeleteAsync(int id, int examPaperId);
 
     }
 }

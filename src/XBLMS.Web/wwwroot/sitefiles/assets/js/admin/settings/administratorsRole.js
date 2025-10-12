@@ -2,7 +2,8 @@
 var $urlDelete = $url + '/actions/delete';
 
 var data = utils.init({
-  roles: null
+  roles: null,
+  search: ''
 });
 
 var methods = {
@@ -10,7 +11,7 @@ var methods = {
     var $this = this;
 
     utils.loading(this, true);
-    $api.get($url).then(function (response) {
+    $api.get($url, { params: { keyWords: this.search } }).then(function (response) {
       var res = response.data;
 
       $this.roles = res.roles;
@@ -37,7 +38,9 @@ var methods = {
       utils.loading($this, false);
     });
   },
-
+  btnSearchClick: function () {
+    this.apiGet();
+  },
   btnAdminViewClick: function (id) {
     utils.openAdminView(id);
   },
@@ -57,12 +60,12 @@ var methods = {
     });
   },
 
-  btnEditClick: function(row) {
+  btnEditClick: function (row) {
     var $this = this;
     top.utils.openLayer({
       title: false,
       closebtn: 0,
-      url: utils.getSettingsUrl('administratorsRoleAdd', {roleId:row.id}),
+      url: utils.getSettingsUrl('administratorsRoleAdd', { roleId: row.id }),
       width: "68%",
       height: "78%",
       end: function () {
@@ -88,7 +91,7 @@ var methods = {
 
   },
 
-  btnCloseClick: function() {
+  btnCloseClick: function () {
     utils.removeTab();
   },
 };

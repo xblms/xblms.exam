@@ -20,20 +20,23 @@ namespace XBLMS.Web.Controllers.Home.Exam
 
             if (paper == null) { return this.Error("无效的问卷"); }
 
-            if (paper.Locked)
+            if (!paper.IsCourseUse)
             {
-                return this.Error("无效的问卷");
-            }
+                if (paper.Locked)
+                {
+                    return this.Error("无效的问卷");
+                }
 
-            if (paper.ExamEndDateTime < DateTime.Now || paper.ExamBeginDateTime >= DateTime.Now)
-            {
-                return this.Error("不在有效期内");
+                if ((paper.ExamEndDateTime < DateTime.Now || paper.ExamBeginDateTime >= DateTime.Now))
+                {
+                    return this.Error("不在有效期内");
+                }
             }
-
 
             var tmTotal = 0;
             var tmIndex = 0;
             var tmList = await _examQuestionnaireTmRepository.GetListAsync(paper.Id);
+
             if (tmList != null && tmList.Count > 0)
             {
                 foreach (var tm in tmList)
@@ -79,8 +82,6 @@ namespace XBLMS.Web.Controllers.Home.Exam
                         }
                         else
                         {
-
-
                             var optionsRandom = new List<KeyValuePair<string, string>>();
                             var options = ListUtils.ToList(tm.Get("options"));
                             var abcList = StringUtils.GetABC();

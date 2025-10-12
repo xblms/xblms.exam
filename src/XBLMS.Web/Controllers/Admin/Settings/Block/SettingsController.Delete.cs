@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using XBLMS.Dto;
+using XBLMS.Enums;
+using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Admin.Settings.Block
 {
@@ -9,7 +11,10 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Block
         [HttpPost, Route(RouteDelete)]
         public async Task<ActionResult<BoolResult>> Delete([FromBody] DeleteRequest request)
         {
-            var admin = await _authManager.GetAdminAsync();
+            if (!await _authManager.HasPermissionsAsync(MenuPermissionType.Delete))
+            {
+                return this.NoAuth();
+            }
 
             await _ruleRepository.DeleteAsync(request.RuleId);
 

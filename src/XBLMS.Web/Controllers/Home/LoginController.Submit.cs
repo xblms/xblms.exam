@@ -41,6 +41,7 @@ namespace XBLMS.Web.Controllers.Home
                 user = await _userRepository.GetByUserNameAsync(userName);
                 if (user != null)
                 {
+                    await _authManager.AddUserStatCount(StatType.UserLoginFailure, user);
                     await _logRepository.AddUserLogAsync(user, ipAddress, Constants.ActionsLoginFailure, "帐号或密码错误");
                 }
                 return this.Error(errorMessage);
@@ -50,13 +51,20 @@ namespace XBLMS.Web.Controllers.Home
 
             await _userRepository.UpdateLastActivityDateAndCountOfLoginAsync(user); // 记录最后登录时间、失败次数清零
 
-            await _statRepository.AddCountAsync(StatType.UserLogin);
+
+            await _authManager.AddUserStatCount(StatType.UserLogin, user);
             await _logRepository.AddUserLogAsync(user, ipAddress, Constants.ActionsLoginSuccess);
             var token = _authManager.AuthenticateUser(user, request.IsPersistent);
 
+            var cacheKey = Constants.GetUserSessionIdCacheKey(user.Id);
+            var sessionId = StringUtils.Guid();
+            await _dbCacheRepository.RemoveAndInsertAsync(cacheKey, sessionId);
+
+            await _authManager.AddPointsLogAsync(PointType.PointLogin, user, 0, string.Empty);
 
             return new SubmitResult
             {
+                SessionId = sessionId,
                 User = user,
                 Token = token
             };

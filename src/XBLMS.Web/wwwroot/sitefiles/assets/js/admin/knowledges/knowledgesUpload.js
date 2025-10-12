@@ -8,11 +8,11 @@ var data = utils.init({
   activeName: 'select',
   uploadFormpanel: false,
   uploadBtnLoad: false,
-  uploadLoading:false,
+  uploadLoading: false,
   fileList: [],
   fileListNo: [],
   fileListYes: [],
-  knowledgesList:[],
+  knowledgesList: [],
   errorOffset: 0,
 });
 
@@ -77,7 +77,7 @@ var methods = {
   uploadSuccess: function (response, file, fileList) {
     if (response.success) {
       this.fileListYes.push(file);
-      this.knowledgesList.push({ treeId: this.treeId, name: response.fileName, url: response.filePath, coverImgUrl: response.coverImagePath, locked: false });
+      this.knowledgesList.push({ treeId: this.treeId, name: response.fileName, url: response.filePath, coverImgUrl: response.coverImagePath, locked: false, onlyCompany: true });
     }
     else {
       var newFile = file;
@@ -124,6 +124,39 @@ var methods = {
     if (this.fileList.length <= 0) {
       this.uploadBtnLoad = false;
     }
+  },
+  btnSelectFileClick: function () {
+    top.utils.openLayer({
+      title: false,
+      closebtn: 0,
+      url: utils.getStudyUrl('studyCourseFilesSelect', { pf : window.name,fileType:'PDF' }),
+      width: "80%",
+      height: "80%"
+    });
+  },
+  selectFilesCallback: function (selectCallbackList) {
+    selectCallbackList.forEach(letFile => {
+      this.knowledgesList.push(
+        {
+          name: letFile.name,
+          url: letFile.url,
+          coverImgUrl: letFile.cover,
+          locked: false,
+          onlyCompany: true,
+          fileId: letFile.id
+        }
+      );
+    })
+  },
+  btnViewClick: function (row) {
+    var $this = this;
+    top.utils.openLayer({
+      title: false,
+      closebtn: 0,
+      url: utils.getStudyUrl("studyCourseFileLayerView", { id: row.fileId }),
+      width: "68%",
+      height: "99%"
+    });
   },
 };
 

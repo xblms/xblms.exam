@@ -59,6 +59,7 @@ namespace XBLMS.Core.Repositories
             var nameList = await _repository.GetAllAsync<string>(Q.Select(nameof(UserMenu.Name)).WhereNullOrFalse(nameof(UserMenu.Disabled)).CachingGet(CacheKey));
             return nameList.ToList();
         }
+
         public async Task ResetAsync()
         {
             await _repository.DeleteAsync(Q.CachingRemove(CacheKey));
@@ -70,61 +71,16 @@ namespace XBLMS.Core.Repositories
                 IconClass = "el-icon-s-home",
                 Link = "/home/dashboard/",
                 Taxis = 1,
-                
+
             });
 
             parentId = await InsertAsync(new UserMenu
             {
-                Name = "examPaper",
-                Text = "考试中心",
-                Link = "/home/exam/examPaper/",
-                IconClass = "el-icon-platform-eleme",
+                Name = "studyPlan",
+                Text = "学习中心",
+                Link = "/home/study/studyIndex/",
+                IconClass = "el-icon-star-on",
                 Taxis = 2
-            });
-
-            parentId = await InsertAsync(new UserMenu
-            {
-                Name = "examPaperMoni",
-                Text = "模拟自测",
-                Link = "/home/exam/examPaperMoni/",
-                IconClass = "el-icon-eleme",
-                Taxis = 3
-            });
-
-            parentId = await InsertAsync(new UserMenu
-            {
-                Name = "examQuestionnaire",
-                Text = "调查问卷",
-                Link = "/home/exam/examQuestionnaire/",
-                IconClass = "el-icon-question",
-                Taxis = 4
-            });
-
-            parentId = await InsertAsync(new UserMenu
-            {
-                Name = "examAssessment",
-                Text = "测评中心",
-                Link = "/home/exam/examAssessment/",
-                IconClass = "el-icon-magic-stick",
-                Taxis = 5
-            });
-
-            parentId = await InsertAsync(new UserMenu
-            {
-                Name = "examPk",
-                Text = "答题竞赛",
-                Link = "/home/exam/examPk/",
-                IconClass = "el-icon-trophy",
-                Taxis = 6
-            });
-
-            parentId = await InsertAsync(new UserMenu
-            {
-                Name = "examPractice",
-                Text = "刷题练习",
-                Link = "/home/exam/examPractice/",
-                IconClass = "el-icon-s-order",
-                Taxis = 7
             });
 
             parentId = await InsertAsync(new UserMenu
@@ -133,23 +89,69 @@ namespace XBLMS.Core.Repositories
                 Text = "知识库",
                 Link = "/home/knowledges/knowledges/",
                 IconClass = "el-icon-hot-water",
+                Taxis = 3
+            });
+
+            parentId = await InsertAsync(new UserMenu
+            {
+                Name = "examPaper",
+                Text = "考试中心",
+                Link = "/home/exam/examPaper/",
+                IconClass = "el-icon-platform-eleme",
+                Taxis = 4
+            });
+
+            parentId = await InsertAsync(new UserMenu
+            {
+                Name = "examPaperMoni",
+                Text = "模拟自测",
+                Link = "/home/exam/examPaperMoni/",
+                IconClass = "el-icon-eleme",
+                Taxis = 5
+            });
+
+            parentId = await InsertAsync(new UserMenu
+            {
+                Name = "examQuestionnaire",
+                Text = "调查问卷",
+                Link = "/home/exam/examQuestionnaire/",
+                IconClass = "el-icon-question",
+                Taxis = 6
+            });
+
+            parentId = await InsertAsync(new UserMenu
+            {
+                Name = "examAssessment",
+                Text = "测评中心",
+                Link = "/home/exam/examAssessment/",
+                IconClass = "el-icon-magic-stick",
+                Taxis = 7
+            });
+
+            parentId = await InsertAsync(new UserMenu
+            {
+                Name = "examPk",
+                Text = "答题竞赛",
+                Link = "/home/exam/examPk/",
+                IconClass = "el-icon-trophy",
                 Taxis = 8
             });
 
             parentId = await InsertAsync(new UserMenu
             {
-                Name = "examPaperScore",
-                Text = "考试成绩",
-                Link = "/home/exam/examPaperScore/",
-                IconClass = "el-icon-notebook-2",
+                Name = "examPractice",
+                Text = "刷题练习",
+                Link = "/home/exam/examPractice/",
+                IconClass = "el-icon-s-order",
                 Taxis = 9
             });
+
             parentId = await InsertAsync(new UserMenu
             {
-                Name = "examPaperCer",
-                Text = "获得证书",
-                Link = "/home/exam/examPaperCer/",
-                IconClass = "el-icon-medal",
+                Name = "mine",
+                Text = "我的",
+                Link = "/home/mine/",
+                IconClass = "el-icon-user",
                 Taxis = 10
             });
 

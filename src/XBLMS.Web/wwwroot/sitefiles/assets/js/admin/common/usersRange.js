@@ -2,9 +2,10 @@
 var $urlRange = $url + "/range";
 
 var $urlOtherData = $url + '/actions/otherData';
+var $urlTreeLazy = '/settings/organs/lazy';
 
 var data = utils.init({
-  title:'',
+  title: '',
   list: null,
   total: null,
   organs: null,
@@ -13,16 +14,21 @@ var data = utils.init({
     rangeType: '',
     organId: 0,
     organType: '',
-    keyword: '',
+    keyWords: '',
     pageIndex: 1,
-    pageSize: PER_PAGE
+    pageSize: PER_PAGE,
   },
   defaultProps: {
     children: 'children',
     label: 'name'
   },
   filterText: '',
-  multipleSelection: []
+  multipleSelection: [],
+  treeParentId: 0,
+  treeOrganType: 'company',
+  treeLoading: false,
+  topNode: null,
+  topResolve: null
 });
 
 var methods = {
@@ -35,13 +41,51 @@ var methods = {
       var res = response.data;
 
       $this.title = res.title;
-      $this.organs = res.organs;
     }).catch(function (error) {
       utils.error(error, { layer: true });
     }).then(function () {
       utils.loading($this, false);
       $this.apiGet();
     });
+  },
+
+  loadTree(node, resolve) {
+    if (node.level !== 0) {
+      let tree = node.data;
+      this.treeParentId = tree.id;
+      this.treeOrganType = tree.organType;
+    }
+    else {
+      this.topNode = node;
+      this.topResolve = resolve;
+    }
+
+    var organParams = {
+      keyWords: this.filterText,
+      parentId: this.treeParentId,
+      organType: this.treeOrganType,
+      showAdminTotal: false,
+      showUserTotal: true
+    };
+
+    var $this = this;
+    $this.treeLoading = true;
+    $api.get($urlTreeLazy, { params: organParams }).then(function (response) {
+      var res = response.data;
+      resolve(res.organs)
+    }).catch(function (error) {
+      utils.error(error);
+    }).then(function () {
+      $this.treeLoading = false;
+    });
+
+  },
+  loadTreeSearch: function () {
+    var $this = this;
+    this.treeParentId = 0;
+    this.treeOrganType = "company";
+    $this.topNode.childNodes = [];
+    $this.loadTree($this.topNode, $this.topResolve);
   },
   apiGet: function () {
     var $this = this;
@@ -133,14 +177,9 @@ var $vue = new Vue({
   el: '#main',
   data: data,
   methods: methods,
-  watch: {
-    filterText(val) {
-      this.$refs.tree.filter(val);
-    }
-  },
   created: function () {
     this.form.id = utils.getQueryInt("id");
     this.form.rangeType = utils.getQueryString("rangeType"),
-    this.apiGetOtherData();
+      this.apiGetOtherData();
   }
 });

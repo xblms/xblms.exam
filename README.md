@@ -9,74 +9,48 @@
 <br />
 <br />
 
+## 巨照
+
+<br />
+
+<img src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/admin/index.png">
+
+<br />
+<br />
+
+<img src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/home/index.png">
+
+<br />
+
 ## 演示环境
 
 > 管理端演示环境
 
 * 账号：admin，密码：123123
 
-* [点击前往管理端演示](http://182.92.223.118:5000/admin)
+* [点击前往管理端演示](http://182.92.223.118:5000/xblms-admin)
 
 > 用户端演示环境
 
-* 账号：test1，密码：123123
+* 账号：test，密码：123123
 
 * [点击前往用户端演示](http://182.92.223.118:5000/home)
 
 > 移动端演示环境
 
-* 账号：test1，密码：123123
-
-* 同一个账号不能同时登录，如果突然离线，有可能是其他用户登录后强制下线了
-
-* 防止踢来踢去，自己在后台创建管理员账号或者用户账号即可
-
 * 扫码前往移动端演示
 
 <img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/二维码.png"/>
 
-> 部分功能截图
-
-* 管理端
-
-<img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/admin/登录.png"/>
-<img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/admin/首页.png"/>
-<img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/admin/考试管理.png"/>
-<img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/admin/题目管理.png"/>
-<img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/admin/题库统计.png"/>
-
-* 用户端
-
-<img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/home/首页.png"/>
-<img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/home/考试中心.png"/>
-<img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/home/准备考试.png"/>
-<img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/home/考试中.png"/>
-<img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/home/考试成绩.png"/>
-
-* 移动端
-
-<img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/首页.png"/>
-<img width="200"  src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/考试中心.jpg"/>
-<img width="200"  src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/考试详细.jpg"/>
-<img width="200"  src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/考试中.jpg"/>
-<img width="200"  src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/交卷结果.jpg"/>
-<img width="200"  src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/考试成绩.jpg"/>
-<img width="200"  src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/查看答卷.jpg"/>
-<img width="200"  src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/问卷调查.jpg"/>
-<img width="200"  src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/刷题练习.jpg"/>
-<img width="200"  src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/刷题练习中.jpg"/>
-<img width="200"  src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/练习结果.jpg"/>
-<img width="200"  src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/刷题记录.jpg"/>
-<img width="200"  src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/我的.jpg"/>
-
+<br />
 
 ## 介绍
 
-基于 .NET Core 8 + Vue
+基于 .NET Core 8 + Vue。
 
-支持跨平台部署
+支持跨平台部署。
 
-支持人大金仓、达梦、OceanBase数据库 及 MySql、SqlServer、PostgreSql、SQLite 等数据库
+支持人大金仓、达梦、OceanBase、MariaDB、MySql、SqlServer、PostgreSql、SQLite 等多类型数据库。
 
 ### 优势
 
@@ -116,11 +90,12 @@
 
 ### 系统升级
 
-* 访问/admin/syncDatabase 进行数据库升级。发布最新的代码替换到原来的部署包即可升级部署文件，不要替换xblms.json文件。
+* 访问/xblms-admin/syncDatabase 进行数据库升级。
+* 发布最新的代码替换到原来的部署包即可升级部署文件，不要替换xblms.json文件。
 
 ## 发布手册
 
-* [发布和部署手册](https://gitee.com/xblms/xblmes/tree/master/src/XBLMS.Web/wwwroot/sitefiles/assets/uploadtemplates/doc)
+* 进群获取[qq群:1027427177]
 
 ## 支持环境
 ### 支持的操作系统
@@ -178,84 +153,6 @@
 ├── gulpfile.js (配置文件，用于发布)
 ├── xblms.sln (解决方案，用于开发)
 ```
-
-## 功能介绍
-### 管理端
-
-#### 首页
-- 管理员默认页面
-
-|功能|说明|
-|:-|:-|
-|基本信息|显示当前账号信息和欢迎词。|
-|预览信息|预览管理员信息。|
-|修改信息|修改基本信息。|
-|修改密码|修改登录密码。|
-|退出登录|退出系统。|
-
-#### 发布考试
-- 支持 正式考试、模拟自测 等模式
-- 支持 随机出题、手动选题、开考随机 等出题方式
-- 支持 手动阅卷、自动阅卷 等判分方式
-- 支持 证书绑定，考试通过即可获得证书
-
-|功能|说明|
-|:-|:-|
-|试卷分类|试卷分类管理，支持无线层级，支持批量添加。|
-|发布考试|发布考试，支持保存、发布、重新发布等操作。|
-|复制|复制并发布试卷。|
-|预览|预览试卷。|
-|修改|修改试卷。|
-|起停用|支持启用停用。|
-|删除|删除试卷。|
-|考试管理|考生管理、成绩管理、阅卷管理、统计图表等。|
-
-#### 阅卷
-- 管理员可以分配多个答卷给不同的阅卷老师进行阅卷，阅卷老师通过该功能进行判分。
-
-|功能|说明|
-|:-|:-|
-|阅卷|对答卷中的主观题进行判分。|
-|预览|预览阅卷。|
-
-#### 考试管理
-- 围绕考试的一些管理功能。
-
-|功能|说明|
-|:-|:-|
-|题型管理|支持 单选、多选、判断、填空、简答 等基本题型，支持基于基本题型扩展。|
-|题库管理|题目管理，支持题目批量导入、导出，支持预览。|
-|证书管理|发布证书，支持证书内容拖拽定位，支持预览。|
-|题目组|题目分组管理，可配置刷题，同时方便组卷。|
-
-#### 答题竞赛
-- 支持长连接，支持观战。
-
-|功能|说明|
-|:-|:-|
-|发布竞赛|支持最少2人、最多512人进行答题淘汰赛知道决赛。|
-|竞赛管理|支持排名，支持排位。|
-
-#### 问卷调查
-- 支持 内部问卷、外部问卷 等模式，外部问卷可以支持通过二维码进行填写，不需要登录系统。
-
-|功能|说明|
-|:-|:-|
-|发布|发布问卷。|
-|复制|复制问卷。|
-|预览|预览问卷内容。|
-|修改|修改问卷。|
-|起停用|支持启用停用。|
-|删除|删除问卷。|
-|问卷统计|统计图表。|
-
-#### 其他功能
-|功能|说明|
-|:-|:-|
-| 企业管理  | 组织管理、管理员管理、角色管理、用户管理、用户组管理 等  |  
-| 系统管理  | 管理员设置、用户设置、数据库管理、访问拦截管理 等  |  
-| 日志管理  | 管理员日志、用户日志、系统错误日志，日志设置 等  |  
-| 统计图表  | 用户登录统计、访问拦截统计 等  |  
 
 
 ## 编译
@@ -330,8 +227,6 @@ Copyright (C) 2024 XBLMS.EXAM
 
 <img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/ds.png"/>
 
-## 企业级应用解决方案
+## 对公业务请联系客服微信
 
-* [欢迎垂询，点击前往](http://182.92.223.118)
-
-* <img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/examzj.jpg"/>
+<img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/linkmewechat.jpg"/>

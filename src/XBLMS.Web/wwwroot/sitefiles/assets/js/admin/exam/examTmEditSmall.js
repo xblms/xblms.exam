@@ -1,4 +1,4 @@
-var $url = 'exam/examTm/tmEdit/getSmall';
+﻿var $url = 'exam/examTm/tmEdit/getSmall';
 var $urlsubmit = 'exam/examTm/tmEdit/submitSmall';
 
 var data = utils.init({

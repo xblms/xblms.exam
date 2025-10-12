@@ -19,9 +19,9 @@
 </el-card>
 <div class="py-8"></div>
 <div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 animate__animated animate__fadeInUp">
-    <el-button-group class="rounded-0">
-        <el-button icon="el-icon-view" type="success" v-on:click="btnViewClick" v-if="answerTotal>0">预览答题</el-button>
-        <el-button class="rounded-0" v-on:click="utils.closeLayerSelf" icon="el-icon-back">返 回</el-button>
+    <el-button-group>
+        <el-button class="rounded-start-pill" icon="el-icon-view" type="success" v-on:click="btnViewClick" v-if="answerTotal>0">预览答题</el-button>
+        <el-button :class="answerTotal>0?'rounded-end-pill':'rounded-pill'" v-on:click="utils.closeLayerSelf" icon="el-icon-back">返 回</el-button>
     </el-button-group>
 </div>
 @section Scripts{

@@ -56,7 +56,6 @@ var methods = {
     $api.post($urlDelete, {
       id: id
     }).then(function (response) {
-      var res = response.data;
       utils.success('操作成功！');
       $this.apiGet();
     }).catch(function (error) {
@@ -71,12 +70,7 @@ var methods = {
   },
 
   btnListClick: function (group) {
-    top.utils.openLayer({
-      title: '用户组：' + group.groupName,
-      url: utils.getSettingsUrl('users', { groupId: group.id }),
-      width: "90%",
-      height: "90%",
-    });
+    utils.openTopLeft('用户列表：' + group.groupName, utils.getSettingsUrl("usersGroupUserList", { groupId: group.id }));
   },
 
   btnDeleteClick: function (group) {
@@ -93,24 +87,7 @@ var methods = {
         }
       });
     }
-  },
-
-  btnSubmitClick: function () {
-    var $this = this;
-    this.$refs.form.validate(function (valid) {
-      if (valid) {
-        $this.apiSubmit();
-      }
-    });
-  },
-
-  btnCancelClick: function () {
-    this.panel = false;
-  },
-
-  btnCloseClick: function () {
-    utils.removeTab();
-  },
+  }
 };
 
 var $vue = new Vue({
@@ -118,7 +95,6 @@ var $vue = new Vue({
   data: data,
   methods: methods,
   created: function () {
-    var $this = this;
     this.apiGet();
   }
 });

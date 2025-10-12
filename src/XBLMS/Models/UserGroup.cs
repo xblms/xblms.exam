@@ -12,14 +12,14 @@ namespace XBLMS.Models
         public string GroupName { get; set; }
         [DataColumn]
         public UsersGroupType GroupType { get; set; }
-        [DataColumn(Text = true)]
-        public List<int> UserIds { get; set; }
+        [DataColumn]
+        public bool GroupRangeWithChildren { get; set; }
         [DataColumn(Text = true)]
         public List<int> CompanyIds { get; set; }
         [DataColumn(Text = true)]
         public List<int> DepartmentIds { get; set; }
         [DataColumn(Text = true)]
-        public List<int> DutyIds { get; set; }
+        public List<string> DutyNames { get; set; }
         [DataColumn]
         public int UserTotal { get; set; }
         [DataColumn(Text = true)]

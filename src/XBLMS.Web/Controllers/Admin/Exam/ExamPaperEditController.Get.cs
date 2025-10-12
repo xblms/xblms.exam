@@ -14,6 +14,8 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         [HttpGet, Route(Route)]
         public async Task<ActionResult<GetResult>> Get([FromQuery] IdRequest request)
         {
+            var adminAuth = await _authManager.GetAdminAuth();
+
             var paper = new ExamPaper();
             paper.Title = "在线考试-" + StringUtils.PadZeroes(await _examPaperRepository.MaxAsync() + 1, 5);
             if (request.Id > 0)
@@ -21,22 +23,20 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 paper = await _examPaperRepository.GetAsync(request.Id);
             }
 
-            var tree = await _examManager.GetExamPaperTreeCascadesAsync();
+            var tree = await _examManager.GetExamPaperTreeCascadesAsync(adminAuth);
             var txs = await _examTxRepository.GetListAsync();
-            if (txs == null || txs.Count == 0)
-            {
-                await _examTxRepository.ResetAsync();
-                txs = await _examTxRepository.GetListAsync();
-            }
-            var cers = await _examCerRepository.GetListAsync();
-            var tmGroups = await _examTmGroupRepository.GetListWithoutLockedAsync();
-            var userGroups = await _userGroupRepository.GetListWithoutLockedAsync();
+
+            var cers = await _examCerRepository.GetListAsync(adminAuth);
+            var tmGroups = await _examTmGroupRepository.GetListAsync(adminAuth, string.Empty, true);
+            var userGroups = await _userGroupRepository.GetListAsync(adminAuth, true);
             var configList = await _examPaperRandomConfigRepository.GetListAsync(request.Id);
             var fixedGroups = new List<ExamTmGroup>();
             if (tmGroups != null && tmGroups.Count > 0)
             {
-                fixedGroups.AddRange(tmGroups.Where(group => group.GroupType == TmGroupType.Fixed).ToList());
+                fixedGroups.AddRange(tmGroups.Where(group => group.GroupType == TmGroupType.Fixed && group.TmTotal > 0).ToList());
             }
+
+            var config = await _configRepository.GetAsync();
             return new GetResult
             {
                 Item = paper,
@@ -46,7 +46,8 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 TmGroupList = tmGroups,
                 TmFixedGroupList = fixedGroups,
                 UserGroupList = userGroups,
-                ConfigList = configList
+                ConfigList = configList,
+                SystemCode = config.SystemCode
             };
 
         }

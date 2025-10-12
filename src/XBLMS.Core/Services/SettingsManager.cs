@@ -43,6 +43,15 @@ namespace XBLMS.Core.Services
                     version = version.Substring(0, version.IndexOf("+"));
                 }
                 Version = version;
+
+                var versionName = entryAssembly.GetCustomAttribute<AssemblyCompanyAttribute>().Company;
+                if (StringUtils.Contains(version, "+"))
+                {
+                    versionName = version.Substring(0, version.IndexOf("+"));
+                }
+                VersionName = versionName;
+
+
                 FrameworkDescription = RuntimeInformation.FrameworkDescription;
                 OSDescription = RuntimeInformation.OSDescription;
                 string os;
@@ -80,6 +89,7 @@ namespace XBLMS.Core.Services
         public string ContentRootPath { get; }
         public string WebRootPath { get; }
         public string Version { get; }
+        public string VersionName { get; }
         public string FrameworkDescription { get; }
         public string OSArchitecture { get; set; }
         public string OSDescription { get; }
@@ -117,12 +127,12 @@ namespace XBLMS.Core.Services
 
         public string Encrypt(string inputString, string securityKey = null)
         {
-            return TranslateUtils.EncryptStringBySecretKey(inputString, !string.IsNullOrEmpty(securityKey) ? securityKey : SecurityKey);
+            return DesEncryptor.EncryptStringBySecretKey(inputString, !string.IsNullOrEmpty(securityKey) ? securityKey : SecurityKey);
         }
 
         public string Decrypt(string inputString, string securityKey = null)
         {
-            return TranslateUtils.DecryptStringBySecretKey(inputString, !string.IsNullOrEmpty(securityKey) ? securityKey : SecurityKey);
+            return DesEncryptor.DecryptStringBySecretKey(inputString, !string.IsNullOrEmpty(securityKey) ? securityKey : SecurityKey);
         }
 
         public void SaveSettings(bool isProtectData, bool isSafeMode, bool isDisablePlugins, DatabaseType databaseType, string databaseConnectionString, string redisConnectionString, string adminRestrictionHost, string[] adminRestrictionAllowList, string[] adminRestrictionBlockList, bool corsIsOrigins, string[] corsOrigins)

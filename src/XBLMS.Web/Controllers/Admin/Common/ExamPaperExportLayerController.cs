@@ -136,7 +136,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
                         var tmTitle = tm.Get("TitleHtml").ToString().Trim();
                         if (StringUtils.StartsWithIgnoreCase(tmTitle, "<p>"))
                         {
-                            tmTitle = StringUtils.ReplaceStartsWithIgnoreCase(tmTitle, "<p>", $"<p>{tmIndex}、");
+                            tmTitle = StringUtils.ReplaceStartsWithIgnoreCase(tmTitle, "<p>", $"<p>{tmIndex}.");
                             if (isScore)
                             {
                                 tmTitle = StringUtils.ReplaceEndsWithIgnoreCase(tmTitle, "</p>", $"（{answer.Score}/{tm.Score}分）</p>");
@@ -152,11 +152,11 @@ namespace XBLMS.Web.Controllers.Admin.Common
                         {
                             if (isScore)
                             {
-                                wordContent.Append($"<p>{tmIndex}、{tmTitle}（{answer.Score}/{tm.Score}分）</p>");
+                                wordContent.Append($"<p>{tmIndex}.{tmTitle}（{answer.Score}/{tm.Score}分）</p>");
                             }
                             else
                             {
-                                wordContent.Append($"<p>{tmIndex}、{tmTitle}（{tm.Score}分）</p>");
+                                wordContent.Append($"<p>{tmIndex}.{tmTitle}（{tm.Score}分）</p>");
                             }
 
                         }
@@ -200,7 +200,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
                         if (isGroup)
                         {
                             var smallList = await _examPaperRandomTmSmallRepository.GetListAsync(tm.Id);
-                            if(smallList!=null && smallList.Count > 0)
+                            if (smallList != null && smallList.Count > 0)
                             {
                                 var smallIndex = 1;
                                 foreach (var small in smallList)
@@ -274,6 +274,8 @@ namespace XBLMS.Web.Controllers.Admin.Common
                                     {
                                         wordContent.Append($"<p>标准答案：{small.Answer}</p>");
                                     }
+
+                                    answerList.Add(new KeyValuePair<int, string>(tmIndex, tm.Answer));
 
                                     smallIndex++;
                                 }

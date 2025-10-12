@@ -12,6 +12,8 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         [HttpPost, Route(RouteGetConfig)]
         public async Task<ActionResult<GetConfigResult>> GetConfig([FromBody] GetConfigRequest request)
         {
+            var adminAuth = await _authManager.GetAdminAuth();
+
             var result = new List<ExamPaperRandomConfig>();
             var txList = await _examTxRepository.GetListAsync();
             if (request.TxIds != null && request.TxIds.Count > 0)
@@ -19,52 +21,36 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 txList = txList.Where(tx => request.TxIds.Contains(tx.Id)).ToList();
             }
 
+            var isAll = true;
             var tmIds = new List<int>();
             var tmGroupIds = request.TmGroupIds;
 
-            var allTm = false;
             if (tmGroupIds != null && tmGroupIds.Count > 0)
             {
-                foreach (var tmGroupId in tmGroupIds)
+                (isAll, tmIds) = await GetConfigTm(tmGroupIds);
+            }
+            else
+            {
+                var myTmGroups = await _examTmGroupRepository.GetListAsync(adminAuth, string.Empty, true);
+                if (myTmGroups != null && myTmGroups.Count > 0)
                 {
-                    var tmGroup = await _examTmGroupRepository.GetAsync(tmGroupId);
-                    if (tmGroup != null)
+                    tmGroupIds = [];
+                    myTmGroups.ForEach(g =>
                     {
-                        if (tmGroup.GroupType == TmGroupType.Fixed && tmGroup.TmIds != null && tmGroup.TmIds.Count > 0)
-                        {
-                            tmIds.AddRange(tmGroup.TmIds);
-                        }
-                        if (tmGroup.GroupType == TmGroupType.Range)
-                        {
-                            var tmIdsByGroup = await _examTmRepository.Group_RangeIdsAsync(tmGroup);
-                            if (tmIdsByGroup != null && tmIdsByGroup.Count > 0)
-                            {
-                                tmIds.AddRange(tmIdsByGroup);
-                            }
-                        }
-                        if (tmGroup.GroupType == TmGroupType.All)
-                        {
-                            allTm = true;
-                        }
-                    }
+                        tmGroupIds.Add(g.Id);
+                    });
+                    (isAll, tmIds) = await GetConfigTm(tmGroupIds);
                 }
-
             }
 
             var tmTotal = 0;
             foreach (var tx in txList)
             {
-             
-                if (allTm)
-                {
-                    tmIds = null;
-                }
-
-                var count1 = await _examTmRepository.GetCountAsync(tmIds, tx.Id, 1);
-                var count2 = await _examTmRepository.GetCountAsync(tmIds, tx.Id, 2);
-                var count3 = await _examTmRepository.GetCountAsync(tmIds, tx.Id, 3);
-                var count4 = await _examTmRepository.GetCountAsync(tmIds, tx.Id, 4);
-                var count5 = await _examTmRepository.GetCountAsync(tmIds, tx.Id, 5);
+                var count1 = await _examTmRepository.GetCountAsync(isAll, tmIds, tx.Id, 1);
+                var count2 = await _examTmRepository.GetCountAsync(isAll, tmIds, tx.Id, 2);
+                var count3 = await _examTmRepository.GetCountAsync(isAll, tmIds, tx.Id, 3);
+                var count4 = await _examTmRepository.GetCountAsync(isAll, tmIds, tx.Id, 4);
+                var count5 = await _examTmRepository.GetCountAsync(isAll, tmIds, tx.Id, 5);
 
 
 
@@ -92,6 +78,42 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             {
                 Items = result
             };
+        }
+        private async Task<(bool isAll, List<int> tmIds)> GetConfigTm(List<int> tmGroupIds)
+        {
+            var isAll = false;
+            var tmIds = new List<int>();
+
+            if (tmGroupIds != null && tmGroupIds.Count > 0)
+            {
+                foreach (var tmGroupId in tmGroupIds)
+                {
+                    var tmGroup = await _examTmGroupRepository.GetAsync(tmGroupId);
+                    if (tmGroup != null)
+                    {
+                        if (tmGroup.GroupType == TmGroupType.All)
+                        {
+                            isAll = true;
+                            tmIds = null;
+                            break;
+                        }
+                        else
+                        {
+                            var tmIdsByGroup = await _examTmRepository.Group_RangeIdsAsync(tmGroup);
+                            if (tmIdsByGroup != null && tmIdsByGroup.Count > 0)
+                            {
+                                tmIds.AddRange(tmIdsByGroup);
+                            }
+                        }
+                    }
+                }
+                if (!isAll && tmIds != null)
+                {
+                    tmIds = tmIds.Distinct().ToList();
+                }
+
+            }
+            return (isAll, tmIds);
         }
 
         private void AutoConfigSet(int tmTotal, int setTotal, List<ExamPaperRandomConfig> configs)

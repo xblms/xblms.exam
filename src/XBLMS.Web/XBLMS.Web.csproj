@@ -3,7 +3,9 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <Version>8.1.8</Version>
+    <Version>8.2</Version>
+	<Authors>xblm</Authors>
+	<Company>xblms.exam</Company>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>..\..</DockerfileContext>
     <ApplicationIcon>logo.ico</ApplicationIcon>
@@ -22,6 +24,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.2" />
+    <PackageReference Include="Nishuihanlong" Version="2.0.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="5.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.14.0" />
     <PackageReference Include="System.IO.FileSystem" Version="4.3.0" />

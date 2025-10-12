@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using XBLMS.Core.Utils;
+using XBLMS.Dto;
 using XBLMS.Enums;
 using XBLMS.Models;
 using XBLMS.Repositories;
@@ -14,12 +15,14 @@ using XBLMS.Utils;
 
 namespace XBLMS.Core.Repositories
 {
-    public class ExamTmRepository : IExamTmRepository
+    public partial class ExamTmRepository : IExamTmRepository
     {
+        private readonly ICacheManager _cacheManager;
         private readonly Repository<ExamTm> _repository;
 
-        public ExamTmRepository(ISettingsManager settingsManager)
+        public ExamTmRepository(ISettingsManager settingsManager, ICacheManager cacheManager)
         {
+            _cacheManager = cacheManager;
             _repository = new Repository<ExamTm>(settingsManager.Database, settingsManager.Redis);
         }
         public IDatabase Database => _repository.Database;
@@ -27,6 +30,10 @@ namespace XBLMS.Core.Repositories
         public string TableName => _repository.TableName;
 
         public List<TableColumn> TableColumns => _repository.TableColumns;
+        public async Task<List<ExamTm>> GetAllAsync()
+        {
+            return await _repository.GetAllAsync();
+        }
         public async Task<bool> ExistsAsync(int id)
         {
             return await _repository.ExistsAsync(id);
@@ -45,90 +52,97 @@ namespace XBLMS.Core.Repositories
         {
             return await _repository.UpdateAsync(item);
         }
-        public async Task<List<ExamTm>> GetListAsync(List<int> tmIds)
+        public async Task UpdateTmGroupIdsAsync(ExamTm item)
         {
-            if (tmIds != null && tmIds.Count > 0)
+            await _repository.UpdateAsync(Q.Set(nameof(ExamTm.TmGroupIds), item.TmGroupIds).Where(nameof(ExamTm.Id), item.Id));
+        }
+        public async Task UpdateTmGroupIdsAsync(int groupId)
+        {
+            var tmList = await _repository.GetAllAsync(Q.WhereNullOrEmpty(nameof(ExamTm.TmGroupIds)).WhereLike(nameof(ExamTm.TmGroupIds), $"%'{groupId}'%"));
+            if (tmList != null && tmList.Count > 0)
             {
-                var list = await _repository.GetAllAsync(Q.WhereIn(nameof(ExamTm.Id), tmIds));
-                return list;
+                foreach (var tm in tmList)
+                {
+                    tm.TmGroupIds.Remove($"'{groupId}'");
+                    await UpdateTmGroupIdsAsync(tm);
+                }
             }
-            return null;
         }
-        public async Task<List<ExamTm>> GetListWithOutLockedAsync(List<int> tmIds)
-        {
-            if (tmIds != null && tmIds.Count > 0)
-            {
-                var list = await _repository.GetAllAsync(Q.WhereNullOrFalse(nameof(ExamTm.Locked)).WhereIn(nameof(ExamTm.Id), tmIds));
-                return list;
-            }
-            return null;
-        }
-        public async Task<(int total, List<ExamTm> list)> GetListAsync(List<int> withoutIds, List<int> treeIds, int txId, int nandu, string keyword, string order, string orderType, bool? isStop, int pageIndex, int pageSize)
-        {
-            var query = await GetQuery(treeIds, txId, nandu, keyword, order, orderType, isStop, withoutIds);
-            var count = await _repository.CountAsync(query);
-            var list = await _repository.GetAllAsync(query.ForPage(pageIndex, pageSize));
-            return (count, list);
-        }
-        public async Task<(int total, List<ExamTm> list)> GetListAsync(ExamTmGroup group, List<int> treeIds, int txId, int nandu, string keyword, string order, string orderType, bool? isStop, int pageIndex, int pageSize)
-        {
-            var query = await GetQuery(treeIds, txId, nandu, keyword, order, orderType, isStop, null, group);
-            var count = await _repository.CountAsync(query);
-            var list = await _repository.GetAllAsync(query.ForPage(pageIndex, pageSize));
-            return (count, list);
-        }
-        public async Task<(int total, List<ExamTm> list)> GetListAsync(ExamTmGroup group, int pageIndex, int pageSize)
-        {
-            var query = await GetQuery(null, 0, 0, "", "", "", false, null, group);
-            var count = await _repository.CountAsync(query);
-            var list = await _repository.GetAllAsync(query.ForPage(pageIndex, pageSize));
-            return (count, list);
-        }
-        public async Task<int> GetCountAsync(ExamTmGroup group, List<int> treeIds, int txId, int nandu, string keyword, string order, string orderType, bool? isStop, int pageIndex, int pageSize)
-        {
-            var query = await GetQuery(treeIds, txId, nandu, keyword, order, orderType, isStop, null, group);
-            var count = await _repository.CountAsync(query);
-            return count;
-        }
-        private async Task<Query> GetQuery(List<int> treeIds, int txId, int nandu, string keyword, string order, string orderType, bool? isStop, List<int> withoutIds = null, ExamTmGroup group = null)
+        public async Task<(int total, List<ExamTm> list)> GetSelectListAsync(AdminAuth auth, int groupId, bool isSelect, List<int> treeIds, int txId, int nandu, string keyword, string order, string orderType, int pageIndex, int pageSize)
         {
             var query = Q.NewQuery();
 
+            if (isSelect)//已安排
+            {
+                query.WhereNotNullOrEmpty(nameof(ExamTm.TmGroupIds)).WhereLike(nameof(ExamTm.TmGroupIds), $"%'{groupId}'%");
+            }
+            else
+            {
+                query.Where(q =>
+                {
+                    q.WhereNullOrEmpty(nameof(ExamTm.TmGroupIds)).OrWhereNotLike(nameof(ExamTm.TmGroupIds), $"%'{groupId}'%");
+                    return q;
+                });
+            }
+
+            query = GetQueryByAuth(query, auth);
+            query = GetQuery(query, null, treeIds, txId, nandu, keyword, order, orderType);
+            var count = await _repository.CountAsync(query);
+            var list = await _repository.GetAllAsync(query.ForPage(pageIndex, pageSize));
+            return (count, list);
+        }
+
+        public async Task<(int total, List<ExamTm> list)> GetListAsync(AdminAuth auth, ExamTmGroup group, List<int> treeIds, int txId, int nandu, string keyword, string order, string orderType, bool? isStop, int pageIndex, int pageSize)
+        {
+            var query = Q.NewQuery();
+
+            query = GetQueryByAuth(query, auth);
+            query = GetQuery(query, group, treeIds, txId, nandu, keyword, order, orderType);
+            var count = await _repository.CountAsync(query);
+            var list = await _repository.GetAllAsync(query.ForPage(pageIndex, pageSize));
+            return (count, list);
+        }
+
+        private Query GetQueryByAuth(Query query, AdminAuth auth)
+        {
+            if (auth.AuthDataType == AuthorityDataType.DataCreator)
+            {
+                query.Where(nameof(Role.CreatorId), auth.AdminId);
+            }
+            else
+            {
+                if (auth.AuthDataShowAll)
+                {
+                    if (auth.CurCompanyId != 1)
+                    {
+                        query.WhereLike(nameof(Role.CompanyParentPath), $"%'{auth.CurCompanyId}'%");
+                    }
+                }
+                else
+                {
+                    query.Where(nameof(Role.CompanyId), auth.CurCompanyId);
+                }
+            }
+
+            return query;
+        }
+        private Query GetQuery(Query query, ExamTmGroup group, List<int> treeIds, int txId, int nandu, string keyword, string order, string orderType)
+        {
             if (group != null)
             {
                 if (group.GroupType == TmGroupType.Fixed)
                 {
-                    if (group.TmIds != null && group.TmIds.Count > 0)
-                    {
-                        query.WhereIn(nameof(ExamTm.Id), group.TmIds);
-                    }
-                    else
-                    {
-                        return query.Where(nameof(ExamTm.Id), -1);
-                    }
+                    query.WhereLike(nameof(ExamTm.TmGroupIds), $"%'{group.Id}'%");
                 }
                 if (group.GroupType == TmGroupType.Range)
                 {
-                    var ids = await GetIdsAsync(group.TreeIds, group.TxIds, group.Nandus, group.Zhishidians, group.DateFrom, group.DateTo);
-                    if (ids != null && ids.Count > 0)
-                    {
-                        query.WhereIn(nameof(ExamTm.Id), ids);
-                    }
-                    else
-                    {
-                        return query.Where(nameof(ExamTm.Id), -1);
-                    }
+                    query = Group_GetRangeQuery(group, query);
                 }
             }
-
 
             if (treeIds != null && treeIds.Count > 0)
             {
                 query.WhereIn(nameof(ExamTm.TreeId), treeIds);
-            }
-            if (withoutIds != null && withoutIds.Count > 0)
-            {
-                query.WhereNotIn(nameof(ExamTm.Id), withoutIds);
             }
             if (txId > 0)
             {
@@ -147,17 +161,6 @@ namespace XBLMS.Core.Repositories
                     .OrWhereLike(nameof(ExamTm.Jiexi), like)
                     .OrWhereLike(nameof(ExamTm.Answer), like)
                 );
-            }
-            if (isStop.HasValue)
-            {
-                if (isStop.Value)
-                {
-                    query.WhereTrue(nameof(ExamTm.Locked));
-                }
-                else
-                {
-                    query.WhereNullOrFalse(nameof(ExamTm.Locked));
-                }
             }
             if (!string.IsNullOrWhiteSpace(order))
             {
@@ -211,6 +214,7 @@ namespace XBLMS.Core.Repositories
             return query;
         }
 
+
         public async Task<ExamTm> GetAsync(int id)
         {
             return await _repository.GetAsync(id);
@@ -224,34 +228,7 @@ namespace XBLMS.Core.Repositories
         {
             return await _repository.CountAsync(Q.Where(nameof(ExamTm.TxId), txId));
         }
-        public async Task<int> GetCountByTreeIdAsync(int treeId)
-        {
-            return await _repository.CountAsync(Q.Where(nameof(ExamTm.TreeId), treeId));
-        }
-        public async Task<int> GetCountByTreeIdsAsync(List<int> treeIds)
-        {
-            if(treeIds!=null && treeIds.Count() > 0)
-            {
-                return await _repository.CountAsync(Q.WhereIn(nameof(ExamTm.TreeId), treeIds));
-            }
-            return 0;
-        
-        }
 
-
-        public async Task<int> GetCountByWithoutStopAsync()
-        {
-            return await _repository.CountAsync(Q.WhereNullOrFalse(nameof(ExamTm.Locked)));
-        }
-        public async Task<int> GetCountByWithoutStopAndInIdsAsync(List<int> ids)
-        {
-            if (ids != null && ids.Count > 0)
-            {
-                return await _repository.CountAsync(Q.WhereNullOrFalse(nameof(ExamTm.Locked)).WhereIn(nameof(ExamTm.Id), ids));
-            }
-            return 0;
-
-        }
         private static Query GetTmGroupQuery(List<int> treeIds, List<int> txIds, List<int> nandus, List<string> zhishidianKeywords, DateTime? dateFrom, DateTime? dateTo)
         {
             var query = Q.NewQuery();
@@ -304,187 +281,33 @@ namespace XBLMS.Core.Repositories
 
             return await _repository.GetAllAsync<int>(query.Select(nameof(ExamTm.Id)));
         }
-        public async Task<List<int>> GetIdsWithOutLockedAsync()
+        public async Task<List<int>> GetIdsWithOutLockedAsync(int companyId = 0)
         {
-
             var query = Q.WhereNullOrFalse(nameof(ExamTm.Locked));
-
+            if (companyId > 0)
+            {
+                query.Where(nameof(ExamTm.CompanyId), companyId);
+            }
             return await _repository.GetAllAsync<int>(query.Select(nameof(ExamTm.Id)));
         }
-
-        public async Task<int> GetCountAsync(List<int> tmIds, int txId, int nandu)
+        public async Task<int> GetRealTotalAsync()
+        {
+            var query = Q.WhereNullOrFalse(nameof(ExamTm.Locked));
+            return await _repository.CountAsync(query);
+        }
+        public async Task<int> GetCountAsync(bool isAll, List<int> tmIds, int txId, int nandu)
         {
             var query = Q.
                 WhereNullOrFalse(nameof(ExamTm.Locked)).
                 Where(nameof(ExamTm.TxId), txId).
                 Where(nameof(ExamTm.Nandu), nandu);
-            if (tmIds != null && tmIds.Count > 0)
+            if (!isAll)
             {
                 query.WhereIn(nameof(ExamTm.Id), tmIds);
             }
-
             return await _repository.CountAsync(query);
-
-
-
         }
-        public async Task<List<int>> Group_RangeIdsAsync(ExamTmGroup group)
-        {
-            var query = Q.Select(nameof(ExamTm.Id)).WhereNullOrFalse(nameof(ExamTm.Locked));
 
-            if (group != null)
-            {
-                if (group.GroupType == TmGroupType.Range)
-                {
-                    var isRange = false;
-                    if (group.DateFrom.HasValue)
-                    {
-                        isRange = true;
-                        query.Where(nameof(ExamTm.CreatedDate), ">=", DateUtils.ToString(group.DateFrom));
-                    }
-                    if (group.DateTo.HasValue)
-                    {
-                        isRange = true;
-                        query.Where(nameof(ExamTm.CreatedDate), "<=", DateUtils.ToString(group.DateTo));
-                    }
-                    if (group.TreeIds != null && group.TreeIds.Count > 0)
-                    {
-                        isRange = true;
-                        query.WhereIn(nameof(ExamTm.TreeId), group.TreeIds);
-                    }
-                    if (group.TxIds != null && group.TxIds.Count > 0)
-                    {
-                        isRange = true;
-                        query.WhereIn(nameof(ExamTm.TxId), group.TxIds);
-                    }
-                    if (group.Nandus != null && group.Nandus.Count > 0)
-                    {
-                        isRange = true;
-                        query.WhereIn(nameof(ExamTm.Nandu), group.Nandus);
-                    }
-                    if (group.Zhishidians != null && group.Zhishidians.Count > 0)
-                    {
-                        isRange = true;
-                        query.Where(q =>
-                        {
-                            foreach (var zhishidian in group.Zhishidians)
-                            {
-                                var like = $"%{zhishidian}%";
-                                q.OrWhereLike(nameof(ExamTm.Zhishidian), like);
-                            }
-                            return q;
-                        });
-                    }
-                    if (isRange)
-                    {
-                        return await _repository.GetAllAsync<int>(query);
-                    }
-                    else
-                    {
-                        return null;
-                    }
-                }
-            }
-
-            return null;
-        }
-        public async Task<List<int>> Group_Practice_GetTmidsAsync(ExamTmGroup group,List<int> txIds,List<int> nds,List<string> zsds)
-        {
-            var query = Q.
-                Select(nameof(ExamTm.Id)).
-                WhereNullOrFalse(nameof(ExamTm.Locked));
-
-            if (txIds != null)
-            {
-                query.WhereIn(nameof(ExamTm.TxId),txIds);
-            }
-            else
-            {
-                return null;
-            }
-            if (nds != null)
-            {
-                query.WhereIn(nameof(ExamTm.Nandu), nds);
-            }
-            else
-            {
-                return null;
-            }
-            if (zsds != null)
-            {
-                query.Where(q =>{
-                    zsds.ForEach(zsd =>
-                    {
-                        q.OrWhereLike(nameof(ExamTm.Zhishidian), $"%{zsd}%");
-                    });
-                    return q;
-                });
-            }
-
-            if (group != null)
-            {
-                if (group.GroupType == TmGroupType.Fixed)
-                {
-                    if(group.TmIds!=null && group.TmIds.Count > 0)
-                    {
-                        query.WhereIn(nameof(ExamTm.Id), group.TmIds);
-                    }
-                    else
-                    {
-                        return null;
-                    }
-             
-                }
-                if (group.GroupType == TmGroupType.Range)
-                {
-                    var isRange = false;
-                    if (group.DateFrom.HasValue)
-                    {
-                        isRange = true;
-                        query.Where(nameof(ExamTm.CreatedDate), ">=", DateUtils.ToString(group.DateFrom));
-                    }
-                    if (group.DateTo.HasValue)
-                    {
-                        isRange = true;
-                        query.Where(nameof(ExamTm.CreatedDate), "<=", DateUtils.ToString(group.DateTo));
-                    }
-                    if (group.TreeIds != null && group.TreeIds.Count > 0)
-                    {
-                        isRange = true;
-                        query.WhereIn(nameof(ExamTm.TreeId), group.TreeIds);
-                    }
-                    if (group.TxIds != null && group.TxIds.Count > 0)
-                    {
-                        isRange = true;
-                        query.WhereIn(nameof(ExamTm.TxId), group.TxIds);
-                    }
-                    if (group.Nandus != null && group.Nandus.Count > 0)
-                    {
-                        isRange = true;
-                        query.WhereIn(nameof(ExamTm.Nandu), group.Nandus);
-                    }
-                    if (group.Zhishidians != null && group.Zhishidians.Count > 0)
-                    {
-                        isRange = true;
-                        query.Where(q =>
-                        {
-                            foreach (var zhishidian in group.Zhishidians)
-                            {
-                                var like = $"%{zhishidian}%";
-                                q.OrWhereLike(nameof(ExamTm.Zhishidian), like);
-                            }
-                            return q;
-                        });
-                    }
-                    if (!isRange)
-                    {
-                        return null;
-                    }
-                }
-            }
-
-            return await _repository.GetAllAsync<int>(query);
-        }
         public async Task<List<ExamTm>> GetListByRandomAsync(bool allTm, bool hasGroup, List<int> tmIds, int txId, int nandu1Count = 0, int nandu2Count = 0, int nandu3Count = 0, int nandu4Count = 0, int nandu5Count = 0)
         {
             var query = Q.
@@ -547,12 +370,35 @@ namespace XBLMS.Core.Repositories
             return null;
 
         }
-        public async Task<(int allCount, int addCount, int deleteCount, int lockedCount, int unLockedCount)> GetDataCount()
+        public async Task<(int allCount, int addCount, int deleteCount, int lockedCount, int unLockedCount)> GetDataCount(AdminAuth auth)
         {
-            var count = await _repository.CountAsync();
-            var lockedCount = await _repository.CountAsync(Q.WhereTrue(nameof(ExamTm.Locked)));
-            var unLockedCount = await _repository.CountAsync(Q.WhereNullOrFalse(nameof(ExamTm.Locked)));
+            var countQuery = Q.NewQuery();
+            var lockedCountQuery = Q.WhereTrue(nameof(ExamTm.Locked));
+            var unLockedCountQuery = Q.WhereNullOrFalse(nameof(ExamTm.Locked));
+
+            countQuery = GetQueryByAuth(countQuery, auth);
+            lockedCountQuery = GetQueryByAuth(lockedCountQuery, auth);
+            unLockedCountQuery = GetQueryByAuth(unLockedCountQuery, auth);
+
+            var count = await _repository.CountAsync(countQuery);
+            var lockedCount = await _repository.CountAsync(lockedCountQuery);
+            var unLockedCount = await _repository.CountAsync(unLockedCountQuery);
             return (count, 0, 0, lockedCount, unLockedCount);
         }
+
+        public async Task<(int count, int total)> GetTotalAndCountByTreeIdAsync(AdminAuth auth, int treeId)
+        {
+            var countquery = Q.NewQuery();
+            var totalquery = Q.NewQuery();
+
+            countquery = GetQueryByAuth(countquery, auth);
+            totalquery = GetQueryByAuth(totalquery, auth);
+
+            var count = await _repository.CountAsync(countquery.Where(nameof(ExamTm.TreeId), treeId));
+            var total = await _repository.CountAsync(totalquery.WhereLike(nameof(ExamTm.TreeParentPath), $"%'{treeId}'%"));
+
+            return (count, total);
+        }
+
     }
 }

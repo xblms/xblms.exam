@@ -37,9 +37,9 @@ namespace XBLMS.Core.Repositories
             return await _repository.UpdateAsync(item, Q.CachingRemove(_cacheKey));
         }
 
-        public async Task<bool> DeleteAsync(List<int> ids)
+        public async Task<bool> DeleteAsync(int id)
         {
-            return await _repository.DeleteAsync(Q.WhereIn(nameof(ExamPaperTree.Id), ids).CachingRemove(_cacheKey)) > 0;
+            return await _repository.DeleteAsync(Q.WhereLike(nameof(ExamPaperTree.ParentPath), $"%'{id}'%").CachingRemove(_cacheKey)) > 0;
         }
     }
 }

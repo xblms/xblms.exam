@@ -15,8 +15,8 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Logs
             {
                 return this.NoAuth();
             }
-
-            await _logRepository.DeleteAllUserLogsAsync();
+            var adminAuth = await _authManager.GetAdminAuth();
+            await _logRepository.DeleteAllUserLogsAsync(adminAuth);
 
             await _authManager.AddAdminLogAsync("清空用户日志");
             await _authManager.AddStatLogAsync(StatType.None, "清空用户日志");

@@ -40,7 +40,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
 
                     foreach (var item in tms)
                     {
-                        await _examManager.GetTmInfoByPaperViewAdmin(item, paper, startId);
+                        await _examManager.GetTmInfoByPaperAdmin(item, paper, startId);
                         item.Set("TmIndex", tmIndex);
                         tmIndex++;
                     }

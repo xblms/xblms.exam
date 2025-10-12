@@ -1,9 +1,7 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using System;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using XBLMS.Configuration;
 using XBLMS.Models;
 using XBLMS.Utils;
@@ -72,28 +70,6 @@ namespace XBLMS.Core.Services
             return tokenString;
         }
 
-        public async Task<string> RefreshAdministratorTokenAsync(string accessToken)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var principal = tokenHandler.ValidateToken(accessToken,
-                new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(StringUtils.GetSecurityKeyBytes(_settingsManager.SecurityKey)),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
-                }, out var validatedToken);
-            var jwtToken = validatedToken as JwtSecurityToken;
-            if (jwtToken == null || !jwtToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
-            {
-                throw new SecurityTokenException("Invalid token passed!");
-            }
-
-            var isPersistent = TranslateUtils.ToBool(_principal.Claims.SingleOrDefault(c => c.Type == Types.Claims.IsPersistent)?.Value);
-
-            var administrator = await _databaseManager.AdministratorRepository.GetByUserNameAsync(principal.Identity.Name);
-            return AuthenticateAdministrator(administrator, isPersistent);
-        }
 
         private ClaimsIdentity GetUserIdentity(User user, bool isPersistent)
         {
@@ -143,29 +119,6 @@ namespace XBLMS.Core.Services
             _cacheManager.AddOrUpdate(GetTokenCacheKey(user), tokenString);
 
             return tokenString;
-        }
-
-        public async Task<string> RefreshUserTokenAsync(string accessToken)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var principal = tokenHandler.ValidateToken(accessToken,
-                new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(StringUtils.GetSecurityKeyBytes(_settingsManager.SecurityKey)),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
-                }, out var validatedToken);
-            var jwtToken = validatedToken as JwtSecurityToken;
-            if (jwtToken == null || !jwtToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
-            {
-                throw new SecurityTokenException("Invalid token passed!");
-            }
-
-            var isPersistent = TranslateUtils.ToBool(_principal.Claims.SingleOrDefault(c => c.Type == Types.Claims.IsPersistent)?.Value);
-
-            var user = await _databaseManager.UserRepository.GetByUserNameAsync(principal.Identity.Name);
-            return AuthenticateUser(user, isPersistent);
         }
     }
 }

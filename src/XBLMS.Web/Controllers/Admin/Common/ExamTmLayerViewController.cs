@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
+using System.Collections.Generic;
 using XBLMS.Configuration;
+using XBLMS.Models;
 using XBLMS.Repositories;
 using XBLMS.Services;
 
@@ -17,15 +19,19 @@ namespace XBLMS.Web.Controllers.Admin.Common
         private readonly IExamTmRepository _examTmRepository;
         private readonly IAuthManager _authManager;
         private readonly IExamManager _examManager;
-        private readonly IExamTxRepository _examTxRepository;
+        private readonly ITableStyleRepository _tableStyleRepository;
 
-        public ExamTmLayerViewController(IAuthManager authManager, IExamTmRepository examTmRepository, IExamManager examManager, IExamTxRepository examTxRepository)
+        public ExamTmLayerViewController(IAuthManager authManager, IExamTmRepository examTmRepository, IExamManager examManager, ITableStyleRepository tableStyleRepository)
         {
             _authManager = authManager;
             _examTmRepository = examTmRepository;
             _examManager = examManager;
-            _examTxRepository = examTxRepository;
+            _tableStyleRepository = tableStyleRepository;
         }
-
+        public class GetResult
+        {
+            public List<Models.TableStyle> Styles { get; set; }
+            public ExamTm Item { get; set; }
+        }
     }
 }

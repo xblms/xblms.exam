@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
 namespace XBLMS.Web.Controllers.Admin.Exam
@@ -8,7 +8,9 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         [HttpGet, Route(Route)]
         public async Task<ActionResult<GetResult>> Get()
         {
-            var trees = await _examManager.GetExamPaperTreeCascadesAsync(true);
+            var adminAuth = await _authManager.GetAdminAuth();
+
+            var trees = await _examManager.GetExamPaperTreeCascadesAsync(adminAuth, true);
 
             return new GetResult
             {

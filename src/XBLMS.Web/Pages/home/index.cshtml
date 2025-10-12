@@ -2,162 +2,35 @@
 @{ Layout = "_LayoutHome"; }
 @section Styles{
     <link href="/sitefiles/assets/css/menu.css" rel="stylesheet" type="text/css" />
-    <style>
-        .el-tabs--border-card > .el-tabs__header .el-tabs__item.is-active {
-            color: #6600ff;
-            background-color: #fafafa;
-            border: none;
-            text-align: left !important;
-        }
-
-        .el-tabs--border-card > .el-tabs__header .el-tabs__item:first-child {
-            margin-left: 0 !important;
-        }
-
-        .el-tabs--top.el-tabs--border-card > .el-tabs__header .el-tabs__item:last-child {
-            <!-- width: 138px; -->
-        }
-
-        .el-tabs--border-card > .el-tabs__header .el-tabs__item.is-active:hover {
-        }
-
-        #sidebar .el-menu-item {
-            border-left: 5px solid #fafafa;
-        }
-
-        .el-menu-item:focus, .el-menu-item:hover{
-            border-left: 5px solid #6600ff !important;
-        }
-        #sidebar .el-menu-item.is-active{
-            border-left:5px solid #6600ff;
-            background-color: #fafafa !important;
-        }
-        #sidebar .title{
-            padding-left:25px;
-        }
-
-        .el-submenu {
-            border-left: 5px solid #fafafa;
-        }
-        #sidebar .el-menu-item, .el-submenu__title{
-            height: 50px;
-            line-height: 50px;
-        }
-        #sidebar .el-submenu .el-menu-item{
-            height: 50px;
-            line-height: 50px;
-        }
-        .logoStyle{
-            filter:opacity(0.1);
-        }
-
-        .logoStyle:hover {
-            filter: none;
-        }
-
-        #tabs{
-            background-color: #fafafa !important;
-        }
-        #sidebar{
-            background-color: #fafafa !important;
-        }
-
-            #sidebar .el-menu{
-                background-color: #fafafa !important;
-            }
-        .el-tabs--border-card > .el-tabs__header{
-            background-color:#fafafa !important;
-        }
-        .el-tabs--border-card{
-            background-color: #fafafa !important;
-        }
-        
-        </style>
 }
-<div id="sidebar" :style="{width: leftWidth + 'px'}">
-    <div class="title">
-        <span>
-            <span v-if="!isCollapse">
-                <el-link v-if="!isMobileMenu" :underline="false" v-on:click="isCollapse = true;">
-                    <i class="el-icon-s-fold" style="font-size: 16px;"></i><span style="font-size: 16px;margin-left:8px;">用户中心</span>
-                </el-link>
-            </span>
-            <span v-else>
-                <el-link v-if="!isMobileMenu" :underline="false" v-on:click="isCollapse = false;">
-                    <i class="el-icon-s-unfold" style="font-size: 16px;"></i>
-                </el-link>
-            </span>
-        </span>
+<div class="d-flex align-items-center flex-column" id="sidebar" :style="{width: leftWidth + 'px'}" style="background-color:#f3f3f3 !important;">
+    <div class="pt-5 text-center">
+        <img :src="avatarUrl || DEFAULT_AVATAR_URL" class="rounded-circle avatar-lg" />
+        <div class="mt-2">{{ displayName }}</div>
     </div>
-    <el-container style="padding-top: 0; padding-bottom: 0; overflow:hidden;">
-        <el-main style="padding: 0; margin: 0;">
-            <el-scrollbar class="scrollbar" :style="{height: ($(window).height() - 150) + 'px'}">
-                <el-menu v-if="menus"
-                         :default-openeds="defaultOpeneds"
-                         :unique-opened="true"
-                         :collapse="isCollapse"
-                         :default-active="defaultActiveIndex"
-                         :collapse-transition="false"
-                         v-on:select="btnSideMenuClick">
-
-                    <template v-for="level1 in menus">
-                        <template v-if="level1.children && level1.children.length > 0">
-
-                            <el-submenu :index="level1.id">
-                                <template slot="title">
-                                    <i v-if="level1.iconClass" :class="level1.iconClass"></i>
-                                    <span>{{ level1.text }}</span>
-                                </template>
-
-                                <template v-for="level2 in level1.children">
-
-                                    <template v-if="level2.children && level2.children.length > 0">
-
-                                        <el-submenu :index="level2.id">
-                                            <template slot="title">
-                                                <i v-if="level2.iconClass" :class="level2.iconClass"></i>
-                                                <span>{{ level2.text }}</span>
-                                            </template>
-
-                                            <template v-for="level3 in level2.children">
-                                                <el-menu-item :class="{'is-active': level3.id === defaultActive }" :index="getIndex(level1, level2, level3)">
-                                                    <i v-if="level3.iconClass" :class="level3.iconClass"></i>
-                                                    <span>{{ level3.text }}</span>
-                                                </el-menu-item>
-                                            </template>
-
-                                        </el-submenu>
-
-                                    </template>
-                                    <template v-else>
-                                        <el-menu-item :class="{'is-active': level2.id === defaultActive }" :index="getIndex(level1, level2)">
-                                            <i v-if="level2.iconClass" :class="level2.iconClass"></i>
-                                            <span>{{ level2.text }}</span>
-                                        </el-menu-item>
-                                    </template>
-                                </template>
-                            </el-submenu>
-                        </template>
-                        <template v-else>
-                            <el-menu-item :class="{'is-active': level1.id === defaultActive }" :index="getIndex(level1)">
-                                <i :class="level1.iconClass"></i>
-                                <span>{{ level1.text }}</span>
-                            </el-menu-item>
-                        </template>
-                    </template>
-                </el-menu>
-            </el-scrollbar>
-            <div v-if="!isCollapse" class="mt-3 text-center animate__animated animate__bounce">
-                <img :src="DEFAULT_LOGO_URL" height="38" class="logoStyle" />
-                <div class="mt-2 fs-6 text-gray-300">
-                    {{ DOCUMENTTITLE }}
-                </div>
+    <div class="mt-auto mb-auto">
+        <div class="mb-3">
+            <button class="btn border-0 btn-lg rounded-pill px-4" :class="defaultActive==='index'?'btn-dark':'btn-outline-dark'" v-on:click="btnTopMenuClick('index')"><i class="el-icon-star-off me-2"></i>待 办</button>
+        </div>
+                <div class="mb-3"> 
+            <button class="btn border-0 btn-lg rounded-pill px-4"  :class="defaultActive==='exam'?'btn-dark':'btn-outline-dark'" v-on:click="btnTopMenuClick('exam')"><i class="el-icon-eleme me-2"></i>考 试</button>
             </div>
-        </el-main>
-    </el-container>
+        <div class="mb-3" v-if="systemCode==='Elearning'">    
+            <button class="btn border-0 btn-lg rounded-pill px-4"  :class="defaultActive==='study'?'btn-dark':'btn-outline-dark'" v-on:click="btnTopMenuClick('study')"><i class="el-icon-reading me-2"></i>学 习</button>
+            </div>
+            <div class="mb-3">    
+            <button class="btn border-0 btn-lg rounded-pill px-4"  :class="defaultActive==='more'?'btn-dark':'btn-outline-dark'" v-on:click="btnTopMenuClick('more')"><i class="el-icon-more me-2"></i>更 多</button>
+            </div>
+        <div>   
+            <button class="btn border-0 btn-lg rounded-pill px-4"  :class="defaultActive==='mine'?'btn-dark':'btn-outline-dark'" v-on:click="btnTopMenuClick('mine')"><i class="el-icon-user me-2"></i>我 的</button>
+            </div>
+    </div>
+    <div class="pb-5">
+        <button class="btn btn-outline-dark btn-lg border-0 rounded-pill" v-on:click="loginOut"><i class="el-icon-switch-button me-2"></i>退 出</button>
+    </div>
 </div>
-<div class="rounded-0 border-5 border-primary" v-if="tabs && tabs.length > 0" id="tabs" :style="{width: (winWidth - leftWidth) + 'px', marginLeft: leftWidth + 'px'}">
-    <iframe class="rounded-0" :id="'frm-' + tabs[0].name" :src="tabs[0].url" style="width: 100%; height: 100%; border: none" :style="{height: (winHeight) + 'px'}"></iframe>
+<div :style="{width: (winWidth - leftWidth) + 'px', marginLeft: leftWidth + 'px'}">
+    <iframe class="rounded-0" id="frmRight" ref="frmRight" :src="defaultSrc" style="width: 100%; height: 100%; border: none" :style="{height: (winHeight) + 'px'}"></iframe>
 </div>
 <template>
     <el-drawer :title="topFrameTitle" destroy-on-close
@@ -165,7 +38,7 @@
                :visible.sync="topFrameDrawer"
                direction="ltr">
                <div slot="title" class="text-center">{{topFrameTitle}}</div>
-        <iframe :src="topFrameSrc" style="width: 100%; height: 100%; border: none" :style="{height: (winHeight - 100) + 'px'}"></iframe>
+        <iframe :src="topFrameSrc" style="width: 100%; height: 100%; border: none" :style="{height: (winHeight - 56) + 'px'}"></iframe>
     </el-drawer>
 </template>
 @section Scripts{

@@ -26,7 +26,7 @@ var methods = {
           $this.securityKey = val.value;
           $this.apiSubmit();
         }).catch(() => {
-          top.location.href="/admin/"
+          top.location.href ="/xblms-admin/"
         });
       }
     }).catch(function (error) {
@@ -68,7 +68,7 @@ var methods = {
     }
   },
   btnBackClick: function () {
-    top.location.href = "/admin/";
+    top.location.href = "/xblms-admin/";
   }
 };
 
@@ -77,7 +77,7 @@ var $vue = new Vue({
   data: data,
   methods: methods,
   created: function () {
-    document.title = DOCUMENTTITLE_DATABASEUPDATE;
+    document.title = "系统升级";
     this.apiGet();
   }
 });

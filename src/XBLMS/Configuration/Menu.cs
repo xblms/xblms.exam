@@ -56,5 +56,6 @@ namespace XBLMS.Configuration
         public IList<Menu> Children { get; set; }
         public bool IsPermission { get; set; }
         public string Name { get; set; }
+        public IList<string> SystemCode { get; set; }
     }
 }

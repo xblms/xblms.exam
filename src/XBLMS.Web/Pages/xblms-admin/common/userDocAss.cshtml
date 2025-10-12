@@ -1,0 +1,104 @@
+﻿@page
+@{ Layout = "_Layout"; }
+
+@section Styles{
+    <link href="/sitefiles/assets/lib/geeks/css/theme.min.css" rel="stylesheet" type="text/css" />
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+            background: #fafafa;
+        }
+
+        html {
+            padding: 0;
+            margin: 0;
+            background: #fafafa;
+        }
+    </style>
+}
+
+<div class="p-3">
+    <el-form v-on:submit.native.prevent :inline="true" :model="form" :size="euiSize">
+        <el-form-item label="时间：从">
+            <el-date-picker v-model="form.dateFrom"
+                            type="date"
+                            value-format="yyyy-MM-ddTHH:mm:ss.000Z"
+                            placeholder="选择开始日期">
+            </el-date-picker>
+        </el-form-item>
+        <el-form-item label="到">
+            <el-date-picker v-model="form.dateTo"
+                            type="date"
+                            value-format="yyyy-MM-ddTHH:mm:ss.000Z"
+                            placeholder="选择结束日期">
+            </el-date-picker>
+        </el-form-item>
+        <el-form-item>
+            <el-button type="primary" v-on:click="btnSearchClick" icon="el-icon-search">查 询</el-button>
+        </el-form-item>
+    </el-form>
+    <el-table :data="list" :size="euiSize"
+              style="width: 100%">
+        <el-table-column label="#"
+                         type="index"
+                         width="60"
+                         align="left">
+            <template scope="scope">
+                <span>{{(form.pageIndex - 1) * form.pageSize + scope.$index + 1}}</span>
+            </template>
+        </el-table-column>
+        <el-table-column label="测评">
+            <template slot-scope="scope">
+                {{ scope.row.assName }}
+            </template>
+        </el-table-column>
+        <el-table-column prop="configName" label="测评结果">
+            <template slot-scope="scope">
+                <span v-if="scope.row.submitType==='Submit'">
+                    {{ scope.row.configName }}
+                </span>
+                <span v-else>/</span>
+            </template>
+        </el-table-column>
+        <el-table-column prop="totalScore" label="总分" width="100">
+            <template slot-scope="scope">
+                <span v-if="scope.row.submitType==='Submit'">
+                    {{ scope.row.totalScore }}
+                </span>
+                <span v-else>/</span>
+            </template>
+        </el-table-column>
+        <el-table-column label="提交时间" width="330">
+            <template slot-scope="scope">
+                <span v-if="scope.row.submitType==='Submit'">
+                    {{ scope.row.examBeginDateTime }}/{{ scope.row.examEndDateTime }}
+                </span>
+                <span v-else>/</span>
+            </template>
+        </el-table-column>
+        <el-table-column label="状态" width="100">
+            <template slot-scope="scope">
+                <el-tag effect="dark" type="success" v-if="scope.row.submitType==='Submit'" size="mini">已提交</el-tag>
+                <span v-else>/</span>
+            </template>
+        </el-table-column>
+        @await Html.PartialAsync("_PartialTableEmpty")
+    </el-table>
+    <div style="height:18px;"></div>
+    <el-row>
+        <el-col :span="24" align="left">
+            <el-pagination background
+                           v-on:current-change="handleCurrentChange"
+                           :current-page="form.pageIndex"
+                           :page-size="form.pageSize"
+                           layout="total, prev, pager, next, jumper"
+                           :total="total">
+            </el-pagination>
+        </el-col>
+    </el-row>
+</div>
+
+@section Scripts{
+<script src="/sitefiles/assets/js/admin/common/userDocAss.js" type="text/javascript"></script>
+}

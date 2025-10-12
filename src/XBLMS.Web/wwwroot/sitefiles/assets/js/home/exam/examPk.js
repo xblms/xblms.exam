@@ -1,4 +1,4 @@
-var $url = "/exam/examPk";
+﻿var $url = "/exam/examPk";
 var $urlRooms = $url + "/rooms";
 
 var data = utils.init({
@@ -75,15 +75,8 @@ var methods = {
     this.roomForm.pageIndex++;
     this.apiGetRoom();
   },
-  btnViewClick: function (id) {
-    var $this = this;
-    top.utils.openLayer({
-      title: false,
-      closebtn: 0,
-      url: utils.getExamUrl('examPkRooms', { id: id }),
-      width: "100%",
-      height: "100%"
-    });
+  btnViewClick: function (row) {
+    utils.openTopLeft(row.name, utils.getExamUrl('examPkRooms', { id: row.id }));
   },
   btnViewRoomClick: function (room) {
     if (room.inRoom) {

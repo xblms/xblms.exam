@@ -51,7 +51,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
             tms.AppendFormat(@"<p>2</p>");
             tms.AppendFormat(@"<p>3</p>");
             tms.AppendFormat(@"<p>4</p>");
-            tms.AppendFormat(@"<p>题目1注释|多选1题|E|1|1|多选题知识点|多选题题目解析|?</p>");
+            tms.AppendFormat(@"<p>题目1注释|多选1题|E|1|1|多选题知识点|多选题题目解析</p>");
 
             tms.AppendFormat(@"<p></p>");
 

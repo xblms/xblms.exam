@@ -1,0 +1,94 @@
+﻿@page
+@{ Layout = "_Layout"; }
+@section Styles{
+    <style>
+        .el-tree-node__content{
+            height:100% !important;
+        }
+    </style>
+}
+<el-row :gutter="0">
+    <el-col :span="6">
+        @await Html.PartialAsync("_PartialTree")
+    </el-col>
+    <el-col :span="18">
+        <el-card shadow="never" style="border-radius:0;">
+            <el-form v-on:submit.native.prevent :inline="true" :size="euiSize">
+                <el-form-item label="知识库">
+                    <el-input clearable v-model="formInline.keywords" placeholder="关键字" prefix-icon="el-icon-search"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button icon="el-icon-search" type="primary" v-on:click="btnSearchClick">查 询</el-button>
+                    <el-button plain icon="el-icon-plus" type="primary" v-on:click="btnAddClick">新 增</el-button>
+                </el-form-item>
+            </el-form>
+            <el-table ref="knowledgesTable" :data="list" :size="euiSize"
+                      style="width: 100%" :height="$(window).height()-163">
+                <el-table-column label="#"
+                                 type="index"
+                                 width="60"
+                                 align="left">
+                    <template scope="scope">
+                        <span>{{(formInline.pageIndex - 1) * formInline.pageSize + scope.$index + 1}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="标题" show-overflow-tooltip prop="name">
+                    <template slot-scope="scope">
+                        <el-tooltip placement="left">
+                            <div slot="content"><img :src="scope.row.coverImgUrl" width="100" /></div>
+                            <el-link size="mini" type="primary" v-on:click="btnViewClick(scope.row)">
+                                <span>{{ scope.row.name }}</span>
+                            </el-link>
+                        </el-tooltip>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="likes" label="点赞"
+                                 width="80">
+                </el-table-column>
+                <el-table-column prop="collects" label="收藏"
+                                 width="80">
+                </el-table-column>
+                <el-table-column prop="createdDate" label="创建时间"
+                                 width="150">
+                </el-table-column>
+                <el-table-column label="状态" width="80">
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.locked"><el-tag size="mini" type="danger" effect="dark">下架</el-tag></span>
+                        <span v-else>
+                            <el-tag size="mini" type="success" effect="dark">上架</el-tag>
+                        </span>
+                    </template>
+                </el-table-column>
+                <el-table-column width="100">
+                    <template slot-scope="scope">
+                        <el-dropdown :show-timeout="0" placement="left">
+                            <el-button icon="el-icon-arrow-left" size="mini" v-on:click.stop="return false">
+                                操作
+                            </el-button>
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item icon="el-icon-unlock" v-if="scope.row.locked" v-on:click.native="btnUnLockClick(scope.row.id)">上架</el-dropdown-item>
+                                <el-dropdown-item icon="el-icon-lock" v-else v-on:click.native="btnLockClick(scope.row.id)">下架</el-dropdown-item>
+                                <el-dropdown-item icon="el-icon-edit" v-on:click.native="btnEditClick(scope.row.id)">修改</el-dropdown-item>
+                                <el-dropdown-item icon="el-icon-delete" style="color:red;" v-on:click.native="btnDeleteClick(scope.row.id)" divided>删除</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
+                    </template>
+                </el-table-column>
+                @await Html.PartialAsync("_PartialTableEmpty")
+            </el-table>
+
+            <div style="text-align: center; margin-top: 13px;">
+                <el-pagination v-on:current-change="handleCurrentChange" background
+                               :current-page="formInline.pageIndex"
+                               :page-size="formInline.pageSize"
+                               layout="total, prev, pager, next, jumper"
+                               :total="total">
+                </el-pagination>
+            </div>
+        </el-card>
+    </el-col>
+</el-row>
+
+@section Scripts{
+    <script src="/sitefiles/assets/js/admin/knowledges/knowledges.js" type="text/javascript"></script>
+}

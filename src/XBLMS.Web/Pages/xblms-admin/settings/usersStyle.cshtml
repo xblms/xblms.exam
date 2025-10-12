@@ -1,0 +1,42 @@
+﻿@page
+@{ Layout = "_Layout"; }
+<el-card class="box-card">
+    <el-form :inline="true" :size="euiSize">
+        <el-form-item>
+            <el-button v-on:click="btnAddClick" icon="el-icon-plus" size="mini" plain type="primary">
+                新增字段
+            </el-button>
+        </el-form-item>
+    </el-form>
+    <el-table :data="styles" :size="euiSize" :height="($(window).height() - 115)">
+        <el-table-column label="#" type="index" :default-sort="{prop: 'createdDate', order: 'descending'}" width="60">
+        </el-table-column>
+        <el-table-column label="字段名" prop="attributeName"></el-table-column>
+        <el-table-column label="显示名称" prop="displayName"></el-table-column>
+        <el-table-column label="提交类型" prop="typeName"></el-table-column>
+        <el-table-column label="状态" width="100">
+            <template slot-scope="scope">
+                <el-tag type="danger" effect="dark" size="mini" v-if="scope.row.locked">停用</el-tag>
+                <el-tag type="success" effect="dark" size="mini" v-else>启用</el-tag>
+            </template>
+        </el-table-column>
+        <el-table-column label="创建时间" prop="createdDate" width="150"></el-table-column>
+        <el-table-column width="100">
+            <template slot-scope="scope">
+                <el-dropdown :show-timeout="0" placement="left">
+                    <el-button size="mini" v-on:click.stop="return false">
+                        操作<i class="el-icon-arrow-down el-icon--right"></i>
+                    </el-button>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item icon="el-icon-edit" v-on:click.native="handleCommand('edit',scope.row)">修改</el-dropdown-item>
+                        <el-dropdown-item icon="el-icon-delete" v-on:click.native="handleCommand('delete',scope.row)" style="color:red;">删除</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+            </template>
+        </el-table-column>
+        @await Html.PartialAsync("_PartialTableEmpty")
+    </el-table>
+</el-card>
+@section Scripts{
+<script src="/sitefiles/assets/js/admin/settings/usersStyle.js" type="text/javascript"></script>
+ }

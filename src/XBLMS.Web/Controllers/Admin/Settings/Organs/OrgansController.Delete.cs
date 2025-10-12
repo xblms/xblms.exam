@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using XBLMS.Dto;
 using XBLMS.Enums;
@@ -20,7 +19,9 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Organs
             var organ = request.Organs;
             if (organ.OrganType == "company")
             {
-                await _companyRepository.DeleteAsync(organ.Id);
+                var delIds = await _companyRepository.GetIdsAsync(organ.Id);
+                await _companyRepository.DeleteByIdsAsync(delIds);
+                await _organDepartmentRepository.DeleteByCompanyIdsAsync(delIds);
                 await _authManager.AddAdminLogAsync("删除单位", organ.Name);
 
                 await _authManager.AddStatLogAsync(StatType.CompanyDelete, "删除单位", organ.Id, organ.Name, organ);
@@ -29,62 +30,19 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Organs
 
             if (organ.OrganType == "department")
             {
-                await _organDepartmentRepository.DeleteAsync(organ.Id);
+                var delIds = await _organDepartmentRepository.GetIdsAsync(organ.Id);
+                await _organDepartmentRepository.DeleteByIdsAsync(delIds);
                 await _authManager.AddAdminLogAsync("删除部门", organ.Name);
 
                 await _authManager.AddStatLogAsync(StatType.DepartmentDelete, "删除部门", organ.Id, organ.Name, organ);
                 await _authManager.AddStatCount(StatType.DepartmentDelete);
             }
 
-            if (organ.OrganType == "duty")
-            {
-                await _organDutyRepository.DeleteAsync(organ.Id);
-                await _authManager.AddAdminLogAsync("删除岗位", organ.Name);
-
-                await _authManager.AddStatLogAsync(StatType.DutyDelete, "删除岗位", organ.Id, organ.Name, organ);
-                await _authManager.AddStatCount(StatType.DutyDelete);
-            }
-
-            await DeleteOrgans(organ.Children);
 
             return new BoolResult
             {
                 Value = true,
             };
         }
-        private async Task DeleteOrgans(List<OrganTree> organs)
-        {
-            if (organs != null && organs.Count > 0)
-            {
-                foreach (var organ in organs)
-                {
-                    if (organ.OrganType == "company")
-                    {
-                        await _companyRepository.DeleteAsync(organ.Id);
-                        await _authManager.AddAdminLogAsync("删除单位", organ.Name);
-                        await _authManager.AddStatLogAsync(StatType.CompanyDelete, "删除单位", organ.Id, organ.Name, organ);
-                        await _authManager.AddStatCount(StatType.CompanyDelete);
-                    }
-
-                    if (organ.OrganType == "department")
-                    {
-                        await _organDepartmentRepository.DeleteAsync(organ.Id);
-                        await _authManager.AddAdminLogAsync("删除部门", organ.Name);
-                        await _authManager.AddStatLogAsync(StatType.DepartmentDelete, "删除部门", organ.Id, organ.Name, organ);
-                        await _authManager.AddStatCount(StatType.DepartmentDelete);
-                    }
-
-                    if (organ.OrganType == "duty")
-                    {
-                        await _organDutyRepository.DeleteAsync(organ.Id);
-                        await _authManager.AddAdminLogAsync("删除岗位", organ.Name);
-                        await _authManager.AddStatLogAsync(StatType.DutyDelete, "删除岗位", organ.Id, organ.Name, organ);
-                        await _authManager.AddStatCount(StatType.DutyDelete);
-                    }
-                    await DeleteOrgans(organ.Children);
-                }
-            }
-        }
-
     }
 }

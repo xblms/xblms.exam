@@ -15,7 +15,7 @@ var data = utils.init({
 var methods = {
   apiGet: function () {
     var $this = this;
-
+    top.document.title = "刷题练习";
     if (this.total === 0) {
       utils.loading(this, true);
     }

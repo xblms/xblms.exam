@@ -15,56 +15,203 @@
         }
     </style>
 }
-<div class="bg-cover py-8 px-3 text-white text-center rounded-0" :style="{'background-image':'url('+(user.avatarbgUrl || DEFAULT_AVATAR_BG_URL)+')'}">
-    <div class="py-5"></div>
-    <div class="pb-1">
-        <span class="text-white bg-black bg-opacity-10 px-2 py-1">
-            <span class="fs-6 text-white px-3 py-1" style="background-color: rgba(0, 0, 0, 0.1);"><i class="bi bi-calendar-event me-2"></i>{{ dateStr }}</span>
-        </span>
-    </div>
-</div>
-<div class="p-3 animate__animated animate__zoomIn">
-    <div class="mt-n8">
-        <div class="bg-white p-2 rounded-pill d-flex justify-content-between align-items-center smooth-shadow-lg">
-            <span class="d-flex justify-content-start align-items-center">
-                <i class="bi bi-person-fill me-2 fs-2 ms-4"></i><span>欢迎：{{ user.displayName }}</span>
-            </span>
-            <img :src="user.avatarUrl || DEFAULT_AVATAR_URL" class="img-fluid avatar-xl rounded-circle bg-light p-1">
+<div class="bg-cover" :style="{'background-image':'url('+(user.avatarbgUrl || DEFAULT_AVATAR_BG_URL)+')'}" style="height:190px;">
+    <div class="container position-relative">
+        <div class="position-absolute top-0 end-0 p-3">
+            <span class="rounded-pill text-white px-3 py-2" style="background-color: rgba(0, 0, 0, 0.1);"><i class="bi bi-calendar4-event me-3"></i>{{ dateStr }}</span>
         </div>
     </div>
 </div>
-<div class="text-uppercase text-warning fw-semibold mt-5 mb-2 text-center">
-    <i class="bi bi-flag-fill me-2"></i>今日考试
-</div>
-<div class="mx-2" v-if="todayExam && todayExam.id>0 && utils.contains(openMenus,'examPaper')">
-    <div class="card bg-primary my-3 shadow-lg mx-8 rounded-5" v-on:click="btnViewPaperClick(todayExam.id)">
-        <div class="card-body text-center text-white">
-            <div class="row mb-3">
-                <div class="col-12">
-                    <div>
-                        <span class="text-light">{{ todayExam.title }}</span>
+<section class="card p-2 rounded-0 border-start-0 border-top-0 border-end-0 shadow-none">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-12 py-2">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="position-relative mt-n8">
+                        <img :src="user.avatarUrl || DEFAULT_AVATAR_URL" class="shadow-lg rounded-circle avatar-xl border-white border border-4 position-relative" />
+                        <div class="mt-2">
+                            你好：）{{ user.displayName }}
+                        </div>
                     </div>
-                    <div class="mt-2" v-if="todayExam.myExamTimes>0">
-                        <span>
-                            <i class="bi bi-person-check-fill me-2"></i>已参与
-                        </span>
+                    <div>
+                        <template v-if="taskTotal>0">
+                            <el-badge :value="taskTotal">
+                                <button class="btn btn-sm btn-outline-warning border-0" v-on:click="btnTaskClick"><i class="bi bi-flag me-1"></i>待办</button>
+                            </el-badge>
+                        </template>
+                        <template v-else>
+                            <button class="btn btn-sm btn-outline-white border-0" v-on:click="btnTaskClick"><i class="bi bi-flag me-1"></i>待办 0</button>
+                        </template>
+                        <button class="btn btn-sm btn-outline-warning border-0" v-on:click="btnEventClick"><i class="bi bi-calendar3 me-1"></i>日 程</button>
                     </div>
                 </div>
             </div>
-            <div>
-                <span class="fs-3 text-warning fw-bold">{{ todayExam.examStartDateTimeStr }} </span>
+        </div>
+    </div>
+</section>
+<div class="p-3">
+    <div class="p-3 pb-2 mt-2">
+        <h5 class="d-flex justify-content-between align-items-center">
+            <span class="fw-bolder"><i class="bi bi-flag-fill me-2 text-warning"></i> 当前学习任务</span>
+            <el-link :underline="false"  v-on:click="btnMoreMenuClick('studyPlan')">更多<i class="el-icon-more ms-2"></i></el-link>
+        </h5>
+    </div>
+    <a href="javascript:;" class="card position-relative rounded-5 border-0 shadow-none" v-if="studyPlan && studyPlan.id>0" v-on:click="studyPlan.isStudy ? btnViewPlanClick(studyPlan.id) : utils.error('计划不在有效期内')">
+        <div class="bg-cover rounded-top-5 py-5" :style="{'background-image':'url('+studyPlan.plan.coverImg+')'}"><div class="py-5"></div></div>
+        <div class="position-absolute top-50 end-0 translate-middle-y pe-3 mt-n8">
+            <img width="99" src="/sitefiles/assets/images/status/weikaishi.png" v-if="studyPlan.state==='Weikaishi'" />
+            <img width="99" src="/sitefiles/assets/images/status/xuexizhong.png" v-if="studyPlan.state==='Xuexizhong'" />
+            <img width="99" src="/sitefiles/assets/images/status/yidabiao.png" v-if="studyPlan.state==='Yidabiao'" />
+            <img width="99" src="/sitefiles/assets/images/status/weidabiao.png" v-if="studyPlan.state==='Weidabiao'" />
+            <img width="99" src="/sitefiles/assets/images/status/yiwancheng.png" v-if="studyPlan.state==='Yiwancheng'" />
+        </div>
+        <el-card class="rounded-bottom-5">
+            <div class="row">
+                <div class="col-12">
+                    <div class="d-flex flex-column gap-3 py-3">
+                        <div class="d-flex flex-column gap-4">
+                            <h3 class="mb-0 card-title">{{ studyPlan.plan.planName }}</h3>
+                            <div class="fw-light px-2">
+                                <div>
+                                    <span class="text-warning me-2">进度</span>
+                                    <span class="text-dark fw-bold"><span class="fw-bold text-success">{{ studyPlan.overCourseTotal }}</span>/{{ studyPlan.plan.totalCount }}</span>
+                                </div>
+                                <div>
+                                    年度 {{ studyPlan.plan.planYear }} 
+                                    学分 <span class="text-dark fw-bold"><span class="fw-bold text-success">{{ studyPlan.totalCredit }}</span>/{{ studyPlan.plan.planCredit }}</span>
+                                </div>
+                                <div>
+                                    截止 {{ studyPlan.plan.planBeginDateTimeStr }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="progress w-100" role="progressbar">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-success text-end" :style="{width:(utils.formatPercentFloat((studyPlan.overCourseTotal+studyPlan.overSelectCourseTotal),(studyPlan.plan.totalCount+studyPlan.plan.selectTotalCount)))+'%'}">{{ utils.formatPercentFloat((studyPlan.overCourseTotal+studyPlan.overSelectCourseTotal),(studyPlan.plan.totalCount+studyPlan.plan.selectTotalCount)) }}%</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="d-flex align-items-center justify-content-between px-2">
+                        <div>
+                            <div class="text-warning"><i class="bi bi-clipboard-check-fill me-2"></i>完成必修课</div>
+                        </div>
+                        <div>
+                            <span class="fw-bold text-success">{{ studyPlan.overCourseTotal }}</span> / {{ studyPlan.plan.totalCount }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="d-flex align-items-center justify-content-between px-2">
+                        <div>
+                            <div class="mb-0">
+                                <i class="bi bi-clipboard-check me-2"></i>完成选修课 
+                            </div>
+                        </div>
+                        <div>
+                            <span class="fw-bold text-success">{{ studyPlan.overSelectCourseTotal }}</span> /
+                            <span :class="studyPlan.overSelectCourseTotal>=studyPlan.plan.selectCourseOverCount ? 'text-success' : ' text-danger'" v-if="studyPlan.plan.selectCourseOverByCount">{{ studyPlan.overSelectCourseTotal }}</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div>
-                <span class="fs-3">开考</span>
+        </el-card>
+    </a>
+    <div class="card rounded-pill shadow-none" v-else>
+        <div class="card-body">
+            <div class="text-center">
+                <small><i class="bi bi-clipboard me-2"></i>暂无安排</small>
             </div>
         </div>
     </div>
 </div>
-<div class="mx-8" v-else>
-    <div class="card my-3 mx-8 rounded-pill border-0 shadow-lg">
-        <div class="card-body py-3">
+<el-card class="rounded-0 border-0 py-3 my-5">
+    <div class="row g-3">
+        <div class="col-xl-5 col-lg-5 col-md-5 col-5">
+            <div class="card border-end-0 border-bottom-0 border-top-0 border-5 rounded-0 card-hover-with-icon shadow-lg border-warning" v-on:click="btnMoreMenuClick('studyPlan')">
+                <div class="card-body text-center py-3">
+                    <div class="icon-shape icon-xxl rounded-circle bg-warning text-white mb-4 card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-activity" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M6 2a.5.5 0 0 1 .47.33L10 12.036l1.53-4.208A.5.5 0 0 1 12 7.5h3.5a.5.5 0 0 1 0 1h-3.15l-1.88 5.17a.5.5 0 0 1-.94 0L6 3.964 4.47 8.171A.5.5 0 0 1 4 8.5H.5a.5.5 0 0 1 0-1h3.15l1.88-5.17A.5.5 0 0 1 6 2Z"></path>
+                        </svg>
+                    </div>
+                    <div class="text-center">
+                        <p class="mb-2">累计学分</p>
+                        <div class="mb-0">
+                            <span>{{ studyPlanTotalOverCredit }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-7 col-lg-7 col-md-7 col-7">
+            <div class="row g-3">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-12">
+                    <div class="card rounded-0 border-start-0 border-bottom-0 border-top-0 border-5 border-success card-hover-with-icon shadow-lg" v-on:click="btnMoreMenuClick('studyCourse')">
+                        <div class="card-body d-flex align-items-center justify-content-between py-3">
+                            <div class="icon-shape icon rounded-circle bg-success text-white card-icon p-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-palette" viewBox="0 0 16 16">
+                                    <path d="M8 5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm4 3a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM5.5 7a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm.5 6a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"></path>
+                                    <path d="M16 8c0 3.15-1.866 2.585-3.567 2.07C11.42 9.763 10.465 9.473 10 10c-.603.683-.475 1.819-.351 2.92C9.826 14.495 9.996 16 8 16a8 8 0 1 1 8-8zm-8 7c.611 0 .654-.171.655-.176.078-.146.124-.464.07-1.119-.014-.168-.037-.37-.061-.591-.052-.464-.112-1.005-.118-1.462-.01-.707.083-1.61.704-2.314.369-.417.845-.578 1.272-.618.404-.038.812.026 1.16.104.343.077.702.186 1.025.284l.028.008c.346.105.658.199.953.266.653.148.904.083.991.024C14.717 9.38 15 9.161 15 8a7 7 0 1 0-7 7z"></path>
+                                </svg>
+                            </div>
+                            <div class="text-end">
+                                <div class="mb-0">完成课程</div>
+                                <div class="mb-0 ">
+                                    <span class="text-success">{{ totalOverCourse }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-12 col-lg-12 col-md-12 col-12">
+                    <div class="card rounded-0 border-start-0 border-bottom-0 border-top-0 border-5 border-primary card-hover-with-icon shadow-lg" v-on:click="btnMoreMenuClick('studyCourse')">
+                        <div class="card-body d-flex align-items-center justify-content-between py-3">
+                            <div class="icon-shape icon rounded-circle bg-primary text-white card-icon p-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-code-slash" viewBox="0 0 16 16">
+                                    <path d="M10.478 1.647a.5.5 0 1 0-.956-.294l-4 13a.5.5 0 0 0 .956.294l4-13zM4.854 4.146a.5.5 0 0 1 0 .708L1.707 8l3.147 3.146a.5.5 0 0 1-.708.708l-3.5-3.5a.5.5 0 0 1 0-.708l3.5-3.5a.5.5 0 0 1 .708 0zm6.292 0a.5.5 0 0 0 0 .708L14.293 8l-3.147 3.146a.5.5 0 0 0 .708.708l3.5-3.5a.5.5 0 0 0 0-.708l-3.5-3.5a.5.5 0 0 0-.708 0z"></path>
+                                </svg>
+                            </div>
+                            <div class="text-end">
+                                <div class="mb-0">学习时长</div>
+                                <div class="mb-0 ">
+                                    <span class="text-success fs-6">{{ utils.formatDurationCN(totalDuration) }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</el-card>
+<div class="p-3">
+    <div class="p-3 pb-2">
+        <h5 class="border-start border-5 border-primary ps-2 d-flex justify-content-between align-items-center">
+            <span class="fw-bolder">今日考试安排</span>
+            <el-link :underline="false" v-on:click="btnMoreMenuClick('exam')">更多<i class="el-icon-more ms-2"></i></el-link>
+        </h5>
+    </div>
+    <div v-if="todayExam && todayExam.id>0 && utils.contains(openMenus,'examPaper')">
+        <div class="card shadow-lg rounded-5" v-on:click="btnViewPaperClick(todayExam.id)">
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <div>
+                        {{ todayExam.title }}
+                    </div>
+                </div>
+                <div class="mb-2">
+                    <span class="h1 text-warning">{{ todayExam.examStartDateTimeStr }} </span>
+                </div>
+                <div>
+                    <span>开考</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card rounded-pill mb-3 shadow-none" v-else>
+        <div class="card-body">
             <div class="text-center">
-                <small><i class="bi bi-clipboard me-2"></i>无安排</small>
+                <small><i class="bi bi-clipboard me-2"></i>暂无安排</small>
             </div>
         </div>
     </div>
@@ -73,8 +220,7 @@
     <div class="rounded-0 mb-3" v-on:click="top.$vue.btnAppMenuClick('exam')" v-if="utils.contains(openMenus,'examPaper')">
         <div class="text-center">
             <div class="m-0">
-              <i class="bi bi-journal-medicalme-2 text-warning"></i>
-                累计考试<span class="text-primary fw-bold mx-2">{{ examTotal }}</span>场次
+              累计考试<span class="text-primary fw-bolder mx-2">{{ examTotal }}</span>场次
             </div>
             <div class="m-0">
                 <apexchart height="380" type="radialBar" :options="passChartOptions" :series="passSeries"></apexchart>
@@ -84,8 +230,7 @@
     <div class="rounded-0 mb-3" v-else>
         <div class="text-center">
             <div class="m-0">
-                <i class="bi bi-journal-medicalme-2 text-warning"></i>
-                累计考试<span class="text-primary fw-bold mx-2">{{ examTotal }}</span>场次
+                累计考试<span class="text-primary fw-bolder mx-2">{{ examTotal }}</span>场次
             </div>
             <div class="m-0">
                 <apexchart height="380" type="radialBar" :options="passChartOptions" :series="passSeries"></apexchart>
@@ -93,9 +238,9 @@
         </div>
     </div>
     <div class="mb-3">
-        <div class="row g-3">
-            <div class="col-xl-6 col-lg-6 col-md-6 col-6" v-if="utils.contains(openMenus,'examPaperMoni')">
-                <div class="card rounded-start-pill border-start-0 border-bottom-0 border-end-0 border-5 border-primary card-hover-with-icon shadow-lg" v-on:click="btnMoreMenuClick('moni')">
+        <div class="row g-0">
+            <div class="col-xl-6 col-lg-6 col-md-6 col-6 border-end">
+                <div class="card rounded-start-pill border-start-0 border-bottom-0 border-end-0 border-5 border-primary card-hover-with-icon shadow-lg" v-on:click="btnMoreMoniClick">
                     <div class="card-body d-flex align-items-center justify-content-between py-3">
                         <div>
                             <i class="bi bi-journals text-warning fs-3"></i>
@@ -109,16 +254,16 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xl-6 col-lg-6 col-md-6 col-6" v-if="utils.contains(openMenus,'examPractice')">
-                <div class="card rounded-end-pill border-start-0 border-end-0 border-bottom-0 border-5 border-primary card-hover-with-icon shadow-lg" v-on:click="btnMoreMenuClick('shuati')">
+            <div class="col-xl-6 col-lg-6 col-md-6 col-6">
+                <div class="card rounded-end-pill border-start-0 border-end-0 border-bottom-0 border-5 border-primary card-hover-with-icon shadow-lg" v-on:click="btnMoreShuatiClick">
                     <div class="card-body d-flex align-items-center justify-content-between py-3">
-                        <div class="text-end">
+                        <div>
                             <div class="mb-2 fs-6">刷题<span class="text-primary fw-bold mx-2 fs-4">{{ practiceAnswerTmTotal }}</span>道</div>
                             <div class="mb-0 fs-6">
                                 正确率<span class="text-primary fw-bold mx-1 fs-4">{{ practiceAnswerPercent }}</span>%
                             </div>
                         </div>
-                        <div>
+                        <div class="text-end">
                             <i class="bi bi-journal-check text-success fs-3"></i>
                         </div>
                     </div>
@@ -127,23 +272,46 @@
         </div>
     </div>
 </div>
-<div class="card bg-warning rounded-0">
+<div class="card bg-warning rounded-0" ref="divTask" id="divTask">
     <div class="card-body">
         <div class="task-list">
-            <div class="text-center mb-3">
+            <div class="text-center">
                 <div>
                     <h2 class="mb-0 text-white fw-bold"><i class="bi bi-flag-fill me-2"></i>{{ taskTotal }} 个待办</h2>
                 </div>
             </div>
-            <div class="task-kanban mt-3" v-if="taskTotal>0">
+            <div class="task-kanban mt-5" v-if="taskTotal>0">
                 <div class="d-flex flex-row overflow-x-auto">
+                    <div class="me-3" style="min-width:200px;" v-for="taskPlan in taskPlanList" v-if="taskPlanList && taskPlanList.length>0">
+                        <a class="card mb-3" href="javascript:;" v-on:click="btnViewPlanClick(taskPlan.id)">
+                            <div class="card-body p-3 d-flex flex-column gap-2 card-lift">
+                                <div><el-tag effect="dark" size="mini">计 划</el-tag></div>
+                                <div>
+                                    <span class="fw-bolder">{{ taskPlan.plan.planName }}</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <div>
+                                            <span class="fs-6">
+                                                {{ taskPlan.plan.planBeginDateTimeStr }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <span class="me-2 align-middle">
+                                            <span class="fw-semibold fs-6">{{ taskPlan.plan.planYear }}</span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
                     <div class="me-3" style="min-width:200px;" v-for="taskExam in taskPaperList" v-if="taskPaperList && taskPaperList.length>0">
                         <a class="card mb-3" href="javascript:;" v-on:click="btnViewPaperClick(taskExam.id)">
-                            <div class="card-body p-3 d-flex flex-column gap-2 card-lift">
+                            <div class="card-body p-3 d-flex flex-column gap-2">
+                                <div><el-tag effect="dark" size="mini">考 试</el-tag></div>
                                 <div>
-                                    <el-tag effect="dark" size="mini">考 试</el-tag>
-                                    <br />
-                                    <span class="h5">{{ taskExam.title }}</span>
+                                    <span class="fw-bolder">{{ taskExam.title }}</span>
                                 </div>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="d-flex align-items-center">
@@ -164,11 +332,10 @@
                     </div>
                     <div class="me-3" style="min-width:200px;" v-for="taskQ in taskQList" v-if="taskQList && taskQList.length>0">
                         <a class="card mb-3" href="javascript:;" v-on:click="btnViewQClick(taskQ.id)">
-                            <div class="card-body p-3 d-flex flex-column gap-2 card-lift">
+                            <div class="card-body p-3 d-flex flex-column gap-2">
+                                <div><el-tag effect="dark" size="mini" type="warning">问卷调查</el-tag></div>
                                 <div>
-                                    <span class="badge bg-warning">问卷调查</span>
-                                    <br />
-                                    <span class="h5">{{ taskQ.title }}</span>
+                                    <span class="fw-bolder">{{ taskQ.title }}</span>
                                 </div>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="d-flex align-items-center">
@@ -184,11 +351,10 @@
                     </div>
                     <div class="me-3" style="min-width:200px;" v-for="taskAss in taskAssList" v-if="taskAssList && taskAssList.length>0">
                         <a class="card mb-3" href="javascript:;" v-on:click="btnViewAssClick(taskAss.id)">
-                            <div class="card-body p-3 d-flex flex-column gap-2 card-lift">
+                            <div class="card-body p-3 d-flex flex-column gap-2">
+                                <div><el-tag effect="dark" size="mini" type="warning">测 评</el-tag></div>
                                 <div>
-                                    <span class="badge bg-warning">测 评</span>
-                                    <br />
-                                    <span class="h5">{{ taskAss.title }}</span>
+                                    <span class="fw-bolder">{{ taskAss.title }}</span>
                                 </div>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="d-flex align-items-center">
@@ -210,13 +376,13 @@
 <div class="p-3">
     <div class="p-3 pb-2 mt-2">
         <h5 class="border-start border-5 border-primary ps-2 d-flex justify-content-between align-items-center">
-            <span>最新考试安排</span>
-            <el-link :underline="false" v-on:click="btnMoreMenuClick('exam')">更多<i class="el-icon-more ms-2"></i></el-link>
+            <span class="fw-bolder">最新考试安排</span>
+            <el-link :underline="false" v-if="utils.contains(openMenus,'examPaper')" v-on:click="btnMoreMenuClick('exam')">更多<i class="el-icon-more ms-2"></i></el-link>
         </h5>
     </div>
-    <div class="card rounded-0 mb-3 shadow-lg" v-if="examPaper && utils.contains(openMenus,'examPaper')" v-on:click="btnViewPaperClick(examPaper.id)">
+    <div class="card rounded-5 mb-3 shadow-lg" v-if="examPaper && examPaper.id>0 && utils.contains(openMenus,'examPaper')" v-on:click="btnViewPaperClick(examPaper.id)">
         <div class="card-body">
-            <div class="mb-3">
+            <div class="mb-3 fw-bolder">
                 {{ examPaper.title }}
             </div>
             <div class="row align-items-center g-3">
@@ -246,14 +412,14 @@
             <div><i class="bi bi-calendar2 me-2 text-warning"></i>{{ examPaper.examStartDateTimeStr }}</div>
         </div>
     </div>
-    <div class="card rounded-0 mb-3 shadow-lg" v-else>
+    <div class="card rounded-pill mb-3 shadow-none" v-else>
         <div class="card-body">
-            <div class="text-center p-5">
+            <div class="text-center">
                 <small><i class="bi bi-clipboard me-2"></i>暂无安排</small>
             </div>
         </div>
     </div>
-    <div v-if="utils.contains(openMenus,'examPk')"  class="card rounded-0 mt-5 shadow-lg bg-cover border border-dark border-5" style="background-image:url(/sitefiles/assets/images/pk/coverapp.jpg)" v-on:click="btnPkMoreMenuClick">
+    <div v-if="utils.contains(openMenus,'examPk')" class="card rounded-0 mt-5 shadow-lg bg-cover border border-dark border-5" style="background-image:url(/sitefiles/assets/images/pk/coverapp.jpg)" v-on:click="btnPkMoreMenuClick">
         <div class="card-body btn-paomadeng">
             <span class="btn-paomadeng-span"></span><span class="btn-paomadeng-span"></span><span class="btn-paomadeng-span"></span><span class="btn-paomadeng-span"></span>
             <div class="text-center py-5 text-light">
@@ -267,11 +433,11 @@
     <template v-if="utils.contains(openMenus,'examPractice')">
         <div class="p-3 pb-2 mt-4">
             <h5 class="border-start border-5 border-primary ps-2 d-flex justify-content-between align-items-center">
-                <span>刷题练习</span>
-                <el-link :underline="false" v-on:click="btnMoreMenuClick('shuati')">更多<i class="el-icon-more ms-2"></i></el-link>
+                <span class="fw-bolder">刷题练习</span>
+                <el-link :underline="false" v-on:click="btnMoreShuatiClick">更多<i class="el-icon-more ms-2"></i></el-link>
             </h5>
         </div>
-        <div class="card rounded-0 mb-3 shadow-lg">
+        <div class="card rounded-5 mb-3 shadow-lg">
             <div class="card-body">
                 <div>
                     <div class="d-flex justify-content-between align-items-center">
@@ -340,7 +506,6 @@
                                     </div>
                                 </el-button>
                             </div>
-                        
                         </div>
                     </div>
                 </div>
@@ -349,13 +514,13 @@
     </template>
     <div class="p-3 pb-2 mt-4">
         <h5 class="border-start border-5 border-primary ps-2 d-flex justify-content-between align-items-center">
-            <span>最新模拟测试</span>
-            <el-link :underline="false" v-on:click="btnMoreMenuClick('moni')">更多<i class="el-icon-more ms-2"></i></el-link>
+            <span class="fw-bolder">最新模拟测试</span>
+            <el-link v-if="utils.contains(openMenus,'examPaperMoni')" :underline="false" v-on:click="btnMoreMoniClick">更多<i class="el-icon-more ms-2"></i></el-link>
         </h5>
     </div>
-    <div class="card rounded-0 mb-3 shadow-lg" v-if="examMoni && utils.contains(openMenus,'examPaperMoni')" v-on:click="btnViewPaperClick(examMoni.id)">
+    <div class="card rounded-5 mb-3 shadow-lg" v-if="examMoni && examMoni.id>0 && utils.contains(openMenus,'examPaperMoni')" v-on:click="btnViewPaperClick(examMoni.id)">
         <div class="card-body">
-            <div class="mb-3">
+            <div class="mb-3 fw-bolder">
                 {{ examMoni.title }}
             </div>
             <div class="row align-items-center g-3">
@@ -385,42 +550,19 @@
             <div><i class="bi bi-calendar2 me-2 text-warning"></i>{{ examMoni.examStartDateTimeStr }}</div>
         </div>
     </div>
-    <div class="card rounded-0 mb-3 shadow-lg" v-else>
+    <div class="card rounded-pill mb-3 shadow-none" v-else>
         <div class="card-body">
-            <div class="text-center p-5">
+            <div class="text-center">
                 <small><i class="bi bi-clipboard me-2"></i>暂无安排</small>
             </div>
         </div>
     </div>
-    <template v-if="utils.contains(openMenus,'examPaperCer')">
-        <div class="p-3 pb-2 mt-4">
-            <h5 class="border-start border-5 border-primary ps-2">
-                <span>最近获得证书</span>
-            </h5>
-        </div>
-        <div class="card rounded-0 mb-3 shadow-lg" v-if="topCer && topCer.id>0" v-on:click="btnViewCer(topCer)">
-            <div class="card-body">
-                <div class="card card-hover">
-                    <div class="row g-0">
-                        <img :src="topCer.cerImg" class="w-100 rounded-0">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card rounded-0 mb-3 shadow-lg" v-else>
-            <div class="card-body">
-                <div class="text-center p-5">
-                    <small><i class="bi bi-clipboard me-2"></i>暂无证书</small>
-                </div>
-            </div>
-        </div>
-    </template>
 </div>
 <template v-if="utils.contains(openMenus,'knowleges')">
     <div class="p-3 pb-2">
         <div class="px-3">
             <h5 class="border-start border-5 border-primary ps-2 d-flex justify-content-between align-items-center">
-                <span>新上知识库</span>
+                <span class="fw-bolder">新上知识库</span>
                 <el-link :underline="false" v-on:click="goKnowledges">更多<i class="el-icon-more ms-2"></i></el-link>
             </h5>
         </div>
@@ -434,9 +576,9 @@
                             <img :src="know.coverImgUrl" class="img-fluid card-img shadow-lg">
                         </div>
                         <div class="p-1">
-                            <small><span class="me-2"><i class="bi bi-star-fill"></i> {{ know.likes }}</span><span><i class="bi bi-heart-fill"></i> {{ know.collects }}</span></small>
-                            <div>
-                                <a href="javascript:;" class="text-dark">{{ know.name }}</a>
+                            <small><span class="me-2"><i class="bi bi-star"></i> {{ know.likes }}</span><span><i class="bi bi-heart"></i> {{ know.collects }}</span></small>
+                            <div class="fw-bolder">
+                                {{ know.name }}
                             </div>
                         </div>
                     </div>
@@ -444,10 +586,10 @@
             </div>
         </div>
     </div>
-    <div class="card rounded-4 mb-3 shadow-lg" v-else>
+    <div class="card rounded-pill mb-3 shadow-none" v-else>
         <div class="card-body">
-            <div class="text-center p-5">
-                <small><i class="bi bi-clipboard me-2"></i>暂无内容</small>
+            <div class="text-center">
+                <small><i class="bi bi-clipboard me-2"></i>暂无数据</small>
             </div>
         </div>
     </div>

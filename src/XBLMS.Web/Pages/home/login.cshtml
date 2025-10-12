@@ -13,81 +13,65 @@
             font-size: 18px;
         }
 
-        html {
+        html,body {
             overflow: hidden;
-        }
-
-        .wrapper-page {
-            max-width: 399px;
-            margin: 58px auto;
         }
     </style>
 }
-
-<div class="wrapper-page">
-    <div class="mb-5 text-center">
-        <div class="h1 fw-bold">{{ DOCUMENTTITLECN }}</div>
-    </div>
-    <el-card style="box-shadow:0 0 16px 2px rgba(102,0,255,0.25);">
-        <div slot="header" class="clearfix">
-            <el-row style="display:flex;align-items:center;justify-content:space-between;">
-                <el-col :span="16">
-                    <div class="fw-bold">
-                        用户中心-请登录
+<section class="container d-flex flex-column vh-100">
+    <div class="row align-items-center justify-content-center g-0 h-lg-100">
+        <div class="col-8 col-md-10">
+            <div class="row bg-white" style="box-shadow:0 0 16px 2px rgba(102,0,255,0.25);">
+                <div class="col-6 bg-primary bg-cover p-8" :style="{'background-image':'url('+(DEFAULT_LOGINBG_URL)+')'}">
+                    <div class="d-flex flex-column text-white" :style="{height: ($(window).height()-300) + 'px'}">
+                        <div class="mb-auto">
+                            <p>
+                                <img :src="DEFAULT_LOGO_URL" height="88" class="p-2 bg-white rounded-pill" />
+                            </p>
+                            <div>{{ versionName }}</div>
+                            <p>
+                                <div class="h2">{{ systemCodeName }}</div>
+                            </p>
+                        </div>
+                        <div class="mt-auto"><span class="text-warning">{{ versionName }} v{{ version }}</span></div>
                     </div>
-                </el-col>
-                <el-col :span="8" style="text-align:right;">
-                    <img :src="DEFAULT_LOGO_URL" width="66" />
-                </el-col>
-            </el-row>
-        </div>
-
-        <el-alert v-if="pageAlert" style="margin-bottom: 10px;" :closable="false" :type="pageAlert.type" v-html="pageAlert.title"></el-alert>
-
-        <el-form v-on:submit.native.prevent ref="formAccount" :model="form" label-width="0" status-icon>
-            <el-form-item prop="account" :rules="[{ required: true, message: '请输入用户名/手机号/邮箱' }]">
-                <el-input ref="account" v-model="form.account" placeholder="请输入用户名/手机号/邮箱" autocomplete="off" v-on:keyup.enter.native="btnSubmitClick">
-                    <template slot="prepend">
-                        <i class="el-icon-user-solid"></i>
-                    </template>
-                </el-input>
-            </el-form-item>
-            <el-form-item prop="password" :rules="[{ required: true, message: '请输入密码' }]">
-                <el-input v-model="form.password" type="password" name="password" placeholder="请输入密码" autocomplete="off" v-on:keyup.enter.native="btnSubmitClick">
-                    <template slot="prepend">
-                        <i class="el-icon-lock"></i>
-                    </template>
-                </el-input>
-            </el-form-item>
-
-            <el-form-item v-if="!isUserCaptchaDisabled" prop="captchaValue" :rules="[{ required: true, message: '请输入验证码' }]">
-                <el-input v-model="form.captchaValue" placeholder="请输入验证码" autocomplete="off" v-on:keyup.enter.native="btnSubmitClick">
-                    <template slot="prepend">
-                        <i class="el-icon-picture"></i>
-                    </template>
-                    <template slot="append">
-                        <a href="javascript:;" v-on:click="btnCaptchaClick">
-                            <img v-show="captchaUrl" style="display: none; height: 30px;" :src="captchaUrl">
-                        </a>
-                    </template>
-                </el-input>
-            </el-form-item>
-        </el-form>
-        <div>
-            <el-checkbox v-model="form.isPersistent" style="margin-right: 10px; margin-bottom: 5px;">
-                下次自动登录
-            </el-checkbox>
-        </div>
-        <div style="margin: 10px 0;">
-            <div class="p-2 bg-light rounded-pill">
-                <el-button type="primary" plain v-on:click="btnSubmitClick" class="w-100 py-3  rounded-pill">登 录<i class="bi bi-box-arrow-in-right ms-3"></i></el-button>
+                </div>
+                <div class="col-6 d-flex align-items-center justify-content-center p-8">
+                    <div class="w-100">
+                        <el-form v-on:submit.native.prevent ref="form" :model="form" label-width="0" status-icon>
+                        <el-form-item>
+                            <h2>用户登录</h2>
+                        </el-form-item>
+                        <el-form-item v-if="pageAlert">
+                            <el-alert size="mini" :closable="false" :type="pageAlert.type" v-html="pageAlert.title" class="py-1"></el-alert>
+                        </el-form-item>
+                        <el-form-item prop="account" :rules="[{ required: true, message: '请输入用户名' }]">
+                            <el-input ref="account" v-model="form.account" placeholder="请输入用户名" autocomplete="off" v-on:keyup.enter.native="btnSubmitClick">
+                            </el-input>
+                        </el-form-item>
+                        <el-form-item prop="password" :rules="[{ required: true, message: '请输入密码' }]">
+                            <el-input v-model="form.password" show-password name="password" placeholder="请输入密码" autocomplete="off" v-on:keyup.enter.native="btnSubmitClick">
+                            </el-input>
+                        </el-form-item>
+                        <el-form-item v-if="!isUserCaptchaDisabled" prop="captchaValue" :rules="[{ required: true, message: '请输入验证码' }]">
+                            <el-input v-model="form.captchaValue" placeholder="请输入验证码" autocomplete="off" v-on:keyup.enter.native="btnSubmitClick">
+                                <template slot="append">
+                                    <a href="javascript:;" v-on:click="btnCaptchaClick">
+                                        <img v-show="captchaUrl" style="display: none; height: 30px;" :src="captchaUrl">
+                                    </a>
+                                </template>
+                            </el-input>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button type="primary" plain v-on:click="btnSubmitClick" class="w-100 mt-3 py-3 fw-bolder">登 录<i class="bi bi-box-arrow-in-right ms-3"></i></el-button>
+                        </el-form-item>
+                    </el-form>
+                    </div>
+                </div>
             </div>
         </div>
-    </el-card>
-    <div class="text-muted text-center" style="margin-top:18px;">
-        <small>{{ DOCUMENTTITLE }}<span class="ms-2 text-warning">v{{ version }}</span></small>
     </div>
-</div>
+</section>
 
 @section Scripts{
     <script src="/sitefiles/assets/lib/md5-2.10.0.min.js" type="text/javascript"></script>

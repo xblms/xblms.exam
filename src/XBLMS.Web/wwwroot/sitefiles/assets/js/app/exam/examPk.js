@@ -57,7 +57,7 @@ var methods = {
       }
 
     }).catch(function (error) {
-      utils.error(error);
+      utils.error(error, { layer: true });
     }).then(function () {
       $this.loadMoreLoading = false;
       utils.loading($this, false);
@@ -85,7 +85,7 @@ var methods = {
       }
 
     }).catch(function (error) {
-      utils.error(error);
+      utils.error(error, { layer: true });
     }).then(function () {
       $this.roomLoadMoreLoading = false;
       utils.loading($this, false);
@@ -137,7 +137,7 @@ var methods = {
 
     }
     else {
-      utils.error(room.inRoomMsg);
+      utils.error(room.inRoomMsg, { layer: true });
     }
 
   }

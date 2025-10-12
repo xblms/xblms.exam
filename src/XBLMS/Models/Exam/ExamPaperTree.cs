@@ -12,6 +12,7 @@ namespace XBLMS.Models
         [DataColumn]
         public int ParentId { get; set; }
         public List<ExamPaperTree> Children { get; set; }
-
+        [DataColumn]
+        public List<string> ParentPath { get; set; }
     }
 }

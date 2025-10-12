@@ -24,8 +24,9 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
         private readonly IRoleRepository _roleRepository;
         private readonly IAdministratorsInRolesRepository _administratorsInRolesRepository;
         private readonly IAdministratorRepository _administratorRepository;
+        private readonly IConfigRepository _configRepository;
 
-        public AdministratorsRoleAddController(ICacheManager cacheManager, ISettingsManager settingsManager, IAuthManager authManager, IRoleRepository roleRepository, IAdministratorsInRolesRepository administratorsInRolesRepository, IAdministratorRepository administratorRepository)
+        public AdministratorsRoleAddController(ICacheManager cacheManager, ISettingsManager settingsManager, IAuthManager authManager, IRoleRepository roleRepository, IAdministratorsInRolesRepository administratorsInRolesRepository, IAdministratorRepository administratorRepository, IConfigRepository configRepository)
         {
             _cacheManager = cacheManager;
             _settingsManager = settingsManager;
@@ -33,6 +34,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
             _administratorsInRolesRepository = administratorsInRolesRepository;
             _roleRepository = roleRepository;
             _administratorRepository = administratorRepository;
+            _configRepository = configRepository;
         }
 
         public class GetRequest

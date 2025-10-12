@@ -10,9 +10,9 @@ namespace XBLMS.Web.Controllers.Admin.Knowledges
         [HttpPost, Route(Route)]
         public async Task<ActionResult<BoolResult>> Submit([FromBody] GetSubmitRequest request)
         {
-            var admin = await _authManager.GetAdminAsync();
             var item = await _knowlegesRepository.GetAsync(request.Item.Id);
 
+            item.OnlyCompany = request.Item.OnlyCompany;
             item.Name = request.Item.Name;
             item.CoverImgUrl = request.Item.CoverImgUrl;
             await _knowlegesRepository.UpdateAsync(item);

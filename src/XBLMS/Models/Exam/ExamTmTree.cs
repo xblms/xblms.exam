@@ -12,6 +12,8 @@ namespace XBLMS.Models
         [DataColumn]
         public int ParentId { get; set; }
         public List<ExamTmTree> Children { get; set; }
+        [DataColumn]
+        public List<string> ParentPath { get; set; }
 
     }
 }

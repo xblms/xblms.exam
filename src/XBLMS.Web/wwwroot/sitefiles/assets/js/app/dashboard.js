@@ -78,6 +78,13 @@ var data = utils.init({
   examMoniTotal: 0,
   examMoniPercent: 0,
 
+  studyPlan: null,
+  studyPlanTotalCredit: 0,
+  studyPlanTotalOverCredit: 0,
+  totalCourse: 0,
+  totalOverCourse: 0,
+  totalDuration: 0,
+
   practiceAnswerTmTotal: 0,
   practiceAnswerPercent: 0,
   practiceAllTmTotal: 0,
@@ -94,19 +101,21 @@ var data = utils.init({
   taskQTotal: 0,
   taskDialogVisible: false,
   taskAssTotal: 0,
-  knowList:null,
+  knowList: null,
   topCer: null,
   dateStr: '',
 
   openMenus: [],
 
+  taskPlanList: null,
   taskPaperList: null,
   taskQList: null,
   taskAssList: null,
   taskTotal: 0,
   todayExam: null,
+  todayExamTotal: 0,
+  todayExamOverTotal: 0,
   version: null
-
 });
 
 var methods = {
@@ -118,6 +127,13 @@ var methods = {
       var res = response.data;
 
       $this.user = res.user;
+
+      $this.studyPlan = res.studyPlan;
+      $this.studyPlanTotalCredit = res.studyPlanTotalCredit;
+      $this.studyPlanTotalOverCredit = res.studyPlanTotalOverCredit;
+      $this.totalCourse = res.totalCourse;
+      $this.totalOverCourse = res.totalOverCourse;
+      $this.totalDuration = res.totalDuration;
 
       $this.examTotal = res.examTotal;
       $this.examPercent = res.examPercent;
@@ -146,17 +162,22 @@ var methods = {
       $this.taskQTotal = res.taskQTotal;
       $this.taskAssTotal = res.taskAssTotal;
 
+      $this.taskPlanList = res.taskPlanList;
       $this.taskPaperList = res.taskPaperList;
       $this.taskQList = res.taskQList;
       $this.taskAssList = res.taskAssList;
       $this.taskTotal = res.taskTotal;
 
       $this.todayExam = res.todayExam;
+      $this.todayExamTotal = res.todayExamTotal;
+      $this.todayExamOverTotal = res.todayExamOverTotal;
       $this.knowList = res.knowList;
 
       $this.openMenus = res.openMenus;
 
       $this.version = res.version;
+
+      top.utils.pointNotice(res.pointNotice);
       setTimeout(function () {
         $this.passSeries = [100];
       }, 1000);
@@ -171,8 +192,62 @@ var methods = {
       utils.loading($this, false);
     });
   },
+  btnTaskClick: function () {
+    var eid = '#divTask';
+    var scrollTop = ($(eid).offset().top);
+    document.documentElement.scrollTop = document.body.scrollTop = scrollTop;
+  },
+  btnViewPlanClick: function (id) {
+    var $this = this;
+    top.utils.openLayer({
+      title: false,
+      closebtn: 0,
+      url: utils.getStudyUrl('studyPlanInfo', { id: id }),
+      width: "100%",
+      height: "100%",
+      end: function () {
+        $this.apiGet(id);
+      }
+    });
+  },
+  btnMoreMoniClick: function () {
+    var $this = this;
+    top.utils.openLayer({
+      title: false,
+      closebtn: 0,
+      url: utils.getExamUrl('examPaperMoni'),
+      width: "100%",
+      height: "100%",
+      end: function () {
+        $this.setDocumentTitle();
+      }
+    });
+  },
+  btnMoreShuatiClick: function () {
+    var $this = this;
+    top.utils.openLayer({
+      title: false,
+      closebtn: 0,
+      url: utils.getExamUrl('examPractice'),
+      width: "100%",
+      height: "100%",
+      end: function () {
+        $this.setDocumentTitle();
+      }
+    });
+  },
   btnPkMoreMenuClick: function () {
-    location.href = utils.getExamUrl("examPk");
+    var $this = this;
+    top.utils.openLayer({
+      title: false,
+      closebtn: 0,
+      url: utils.getExamUrl('examPk'),
+      width: "100%",
+      height: "100%",
+      end: function () {
+        $this.setDocumentTitle();
+      }
+    });
   },
   btnAssMoreMenuClick: function () {
     location.href = utils.getExamUrl("examAssessment");
@@ -246,7 +321,7 @@ var methods = {
       height: "100%"
     });
   },
-  goKnowledges: function (id) {
+  goKnowledges: function () {
     var $this = this;
     top.utils.openLayer({
       title: false,
@@ -316,6 +391,19 @@ var methods = {
       title: row.name,
       id: row.id,
       src: row.cerImg + '?r=' + Math.random()
+    })
+  },
+  btnEventClick: function () {
+    var $this = this;
+    top.utils.openLayer({
+      title: false,
+      closebtn: 0,
+      url: utils.getRootUrl('event'),
+      width: "100%",
+      height: "100%",
+      end: function () {
+        $this.setDocumentTitle();
+      }
     })
   },
   setDocumentTitle: function () {

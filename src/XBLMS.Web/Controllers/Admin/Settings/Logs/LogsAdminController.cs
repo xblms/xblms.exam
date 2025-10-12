@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using XBLMS.Configuration;
 using XBLMS.Dto;
@@ -44,11 +43,12 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Logs
 
         public async Task<PageResult<Log>> GetResultsAsync(SearchRequest request)
         {
+            var adminAuth = await _authManager.GetAdminAuth();
             var adminIds = new List<int>();
             if (!string.IsNullOrEmpty(request.UserName))
             {
                 adminIds = await _administratorRepository.GetAdministratorIdsAsync(request.UserName);
-                if (!adminIds.Any())
+                if (adminIds == null || adminIds.Count == 0)
                 {
                     return new PageResult<Log>
                     {
@@ -58,8 +58,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Logs
                 }
             }
 
-            var count = await _logRepository.GetAdminLogsCountAsync(adminIds, request.Keyword, request.DateFrom, request.DateTo);
-            var allLogs = await _logRepository.GetAdminLogsAsync(adminIds, request.Keyword, request.DateFrom, request.DateTo, request.Offset, request.Limit);
+            var (count,allLogs) = await _logRepository.GetAdminLogsAsync(adminAuth, adminIds, request.Keyword, request.DateFrom, request.DateTo, request.Offset, request.Limit);
             var logs = new List<Log>();
 
             foreach (var log in allLogs)

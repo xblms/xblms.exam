@@ -11,13 +11,13 @@ namespace XBLMS.Web.Controllers.Home.Knowledges
             var user = await _authManager.GetUserAsync();
             if (user == null) { return Unauthorized(); }
 
-
-            var (total, list) = await _knowlegesRepository.GetListAsync(user.Id, request.TreeId, true, request.Like, request.Collect, request.Keywords, request.PageIndex, request.PageSize);
+            var (total, list) = await _knowlegesRepository.GetListAsync(user.CompanyId, user.Id, request.TreeId, true, request.Like, request.Collect, request.Keywords, request.PageIndex, request.PageSize);
             if (total > 0)
             {
                 foreach (var item in list)
                 {
                     item.Url = "";
+                    item.CoverImgUrl = await _pathManager.GetServerFileUrl(item.CoverImgUrl);
                 }
             }
             return new GetResult

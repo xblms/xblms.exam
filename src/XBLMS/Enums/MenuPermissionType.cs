@@ -18,5 +18,7 @@ namespace XBLMS.Enums
 
         [DataEnum(DisplayName = "清除缓存", Value = "SystemClearCache")] SystemClearCache,
         [DataEnum(DisplayName = "重启系统", Value = "SystemRestart")] SystemRestart,
+
+        [DataEnum(DisplayName = "下载", Value = "Download")] Download,
     }
 }

@@ -57,14 +57,17 @@ var methods = {
       password: this.form.password ? this.toBase64(this.form.password) : '',
     }).then(function (response) {
       var res = response.data;
-
-      top.utils.success('操作成功！');
+      if (res.value) {
+        utils.success("操作成功", { layer: true });
+        setTimeout(function () {
+          utils.closeLayer();
+        }, 1000);
+      }
 
     }).catch(function (error) {
       utils.error(error, { layer: true });
     }).then(function () {
       utils.loading($this, false);
-      utils.closeLayer();
     });
   },
 

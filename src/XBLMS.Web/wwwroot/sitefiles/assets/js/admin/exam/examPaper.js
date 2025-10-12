@@ -91,6 +91,7 @@ var methods = {
       utils.error(error);
     }).then(function () {
       utils.loading($this, false);
+      $this.apiGetTree();
       $this.btnSearchClick();
     });
   },
@@ -173,6 +174,7 @@ var methods = {
         width: "98%",
         height: "98%",
         end: function () {
+          $this.apiGetTree();
           $this.btnSearchClick();
         }
       });
@@ -191,6 +193,7 @@ var methods = {
       width: "98%",
       height: "98%",
       end: function () {
+        $this.apiGetTree();
         $this.btnSearchClick();
       }
     });

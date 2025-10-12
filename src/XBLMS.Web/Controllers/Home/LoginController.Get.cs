@@ -12,11 +12,12 @@ namespace XBLMS.Web.Controllers.Home
             var config = await _configRepository.GetAsync();
             if (config.IsHomeClosed) return this.Error("用户中心已被禁用！");
 
-
             return new GetResult
             {
                 Version = _settingsManager.Version,
-                IsUserCaptchaDisabled = config.IsUserCaptchaDisabled
+                VersionName = _settingsManager.VersionName,
+                IsUserCaptchaDisabled = config.IsUserCaptchaDisabled,
+                SystemCodeName = config.SystemCodeName
             };
         }
     }

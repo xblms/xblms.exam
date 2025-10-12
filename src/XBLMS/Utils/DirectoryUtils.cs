@@ -26,6 +26,7 @@ namespace XBLMS.Utils
             public const string Users = "users";
             public const string Cer = "cer";
             public const string Knowledges = "knowledges";
+            public const string Coursefiles = "kejian";
 
             public const string Upload = "upload";
             public const string Avatar = "avatar";

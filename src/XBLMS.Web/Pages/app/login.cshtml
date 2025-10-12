@@ -5,32 +5,32 @@
     <style>
         html {
             overflow: hidden;
-        }
-        .el-input__inner
-        {
-            border-radius:0 !important;
+            background-color:#6600ff;
         }
     </style>
 }
 
 <div>
-    <div class="py-5 text-center animate__animated animate__fadeInDown">
+    <div class="py-5 text-center">
         <div class="py-3">
-            <img :src="DEFAULT_LOGO_URL" height="66" />
+            <img :src="DEFAULT_LOGO_URL" height="68" class="p-2 bg-white rounded-pill shadow-lg animate__animated animate__fadeInDown" />
+            <div class="h1 fw-bold m-0 mt-3 text-white">{{ systemCodeName }}</div>
         </div>
     </div>
-    <el-card class="box-card rounded-0 mx-3">
-        <div class="h1 fw-bold mb-3">
-            登录
-        </div>
-        <el-alert class="rounded-0 fs-6" v-if="pageAlert" style="margin-bottom: 10px;" :closable="false" :type="pageAlert.type" v-html="pageAlert.title"></el-alert>
+    <el-card class="box-card rounded-0 mx-3" style="box-shadow:0 0 16px 2px rgba(102,0,255,0.25);">
         <el-form size="medium" v-on:submit.native.prevent ref="formAccount" :model="form" label-width="0" status-icon>
-            <el-form-item prop="account" :rules="[{ required: true, message: '请输入用户名/手机号/邮箱' }]">
-                <el-input ref="account" v-model="form.account" placeholder="请输入用户名/手机号/邮箱" autocomplete="off" v-on:keyup.enter.native="btnSubmitClick">
+            <el-form-item class="text-center">
+                <span class="fw-bolder h2">用户登录</span>
+            </el-form-item>
+            <el-form-item v-if="pageAlert" class="m-0">
+                <el-alert class="p-0 bg-white fs-6" :closable="false" :type="pageAlert.type" v-html="pageAlert.title"></el-alert>
+            </el-form-item>
+            <el-form-item prop="account" :rules="[{ required: true, message: '请输入用户名' }]">
+                <el-input ref="account" v-model="form.account" placeholder="请输入用户名" autocomplete="off" v-on:keyup.enter.native="btnSubmitClick">
                 </el-input>
             </el-form-item>
             <el-form-item prop="password" :rules="[{ required: true, message: '请输入密码' }]">
-                <el-input v-model="form.password" type="password" name="password" placeholder="请输入密码" autocomplete="off" v-on:keyup.enter.native="btnSubmitClick">
+                <el-input v-model="form.password" show-password name="password" placeholder="请输入密码" autocomplete="off" v-on:keyup.enter.native="btnSubmitClick">
                 </el-input>
             </el-form-item>
             <el-form-item v-if="!isUserCaptchaDisabled" prop="captchaValue" :rules="[{ required: true, message: '请输入验证码' }]">
@@ -43,9 +43,14 @@
                 </el-input>
             </el-form-item>
         </el-form>
-        <button type="button" v-on:click="btnSubmitClick" class="btn btn-primary rounded-0 w-100">登 录<i class="bi bi-box-arrow-in-right ms-3"></i></button>
+        <button type="button" v-on:click="btnSubmitClick" class="btn btn-primary rounded-0 my-2 w-100">登 录<i class="bi bi-box-arrow-in-right ms-3"></i></button>
     </el-card>
-    <div class="mt-5 text-center animate__animated animate__fadeInUpBig fs-5">{{ DOCUMENTTITLE }}<span class="ms-2 text-warning">v{{ version }}</span></div>
+    <div class="mt-5 text-center fs-5">
+        <div class="text-white">
+            {{ versionName }}
+        </div>
+        <div class="mt-2 text-warning animate__animated animate__fadeInUpBig">v{{ version }}</div>
+    </div>
 </div>
 
 @section Scripts{

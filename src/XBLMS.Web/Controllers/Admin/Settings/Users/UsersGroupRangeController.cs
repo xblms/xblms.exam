@@ -18,7 +18,6 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
         private const string Route = "settings/usersGroupRange";
         private const string RouteOtherData = Route+"/actions/otherData";
         private const string RouteRange = Route + "/actions/range";
-        private const string RouteExport = Route + "/actions/export";
 
         private readonly IAuthManager _authManager;
         private readonly IPathManager _pathManager;
@@ -48,8 +47,8 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
             public string Order { get; set; }
             public int LastActivityDate { get; set; }
             public string Keyword { get; set; }
-            public int Offset { get; set; }
-            public int Limit { get; set; }
+            public int PageIndex { get; set; }
+            public int PageSize { get; set; }
             public List<int> RangeUserIds { get; set; }
             public bool RangeAll { get; set; }
         }
@@ -61,6 +60,5 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
             public int Count { get; set; }
             public string GroupName { get; set; }
         }
-
     }
 }

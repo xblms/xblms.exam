@@ -1,0 +1,76 @@
+﻿@page
+@{ Layout = "_Layout"; }
+
+<el-card>
+    <div slot="header" class="clearfix">
+        <span>{{ id > 0 ? "修改" : "新增" }}课程评价</span>
+        <el-button style="float: right;padding:3px 0;" type="text" v-on:click="utils.closeLayerSelf"><i class="el-icon-close"></i></el-button>
+    </div>
+    <div>
+        <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-180) + 'px' }">
+            <div style="margin-right:18px;">
+                <el-form v-on:submit.native.prevent ref="form" :model="form" :size="euiSize" status-icon label-width="100px">
+                    <el-form-item label="标题" prop="title" :rules="[{ required: true, message: '请输入课程评价标题' }]">
+                        <el-input v-model="form.title"></el-input>
+                    </el-form-item>
+                    <el-form-item label="星数">
+                        <el-input-number v-model="form.maxStar" :min="5" :max="10" v-on:change="scoreChange"></el-input-number>
+                        <div class="tips">1颗星1分</div>
+                    </el-form-item>
+                    <el-form-item label="总分">
+                        <div>{{ form.totalScore }}</div>
+                    </el-form-item>
+                    <el-form-item label="评价项">
+                        <el-table ref="itemList"
+                                  :row-key="Math.random()"
+                                  :data="itemList"
+                                  border
+                                  style="width: 100%"
+                                  size="mini"
+                                  :default-sort="{prop: 'taxis', order: 'asc'}"
+                                  empty-text="请添加项">
+                            <el-table-column type="index" label="#"
+                                             width="60">
+                            </el-table-column>
+                            <el-table-column label="评价项">
+                                <template slot-scope="scope">
+                                    <el-input v-model.trim="scope.row.title"></el-input>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="类别" width="100">
+                                <template slot-scope="scope">
+                                    <el-tag size="mini" v-if="scope.row.textContent">文本</el-tag>
+                                    <el-tag size="mini" type="warning" v-else>评星<i class="el-icon-star-on"></i></el-tag>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="排序" width="160" prop="taxis">
+                                <template slot-scope="scope">
+                                    <el-input-number v-model="scope.row.taxis" :min="1" :max="100"></el-input-number>
+                                </template>
+                            </el-table-column>
+                            <el-table-column width="70">
+                                <template slot-scope="scope">
+                                    <el-button type="danger" size="mini" icon="el-icon-delete" v-on:click.stop="btnRemoveClick(scope.row)">
+                                    </el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" icon="el-icon-plus" v-on:click.stop="btnAddItemClick(true)">添加评星</el-button>
+                        <el-button plain type="primary" icon="el-icon-plus" v-on:click.stop="btnAddItemClick(false)">添加文本</el-button>
+                    </el-form-item>
+                </el-form>
+                </div>
+        </el-scrollbar>
+    </div>
+</el-card>
+<el-row align="center" style="margin-top:18px;">
+    <el-col :span="24" align="center">
+        <el-button icon="el-icon-check" type="primary" v-on:click="btnSubmitClick" :size="euiSize">确 定</el-button>
+        <el-button icon="el-icon-close" :size="euiSize" v-on:click="utils.closeLayerSelf">取 消</el-button>
+    </el-col>
+</el-row>
+
+@section Scripts{
+<script src="/sitefiles/assets/js/admin/study/studyCourseEvaluationEdit.js" type="text/javascript"></script> }

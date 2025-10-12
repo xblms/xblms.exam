@@ -33,9 +33,7 @@ var methods = {
               $this.tmList.push(ctm);
             })
           }
-
         });
-
         $this.markChange();
       }
 

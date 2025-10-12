@@ -38,6 +38,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
             var tmIndex = 1;
             var txIndex = 1;
             var txList = new List<ExamPaperRandomConfig>();
+
             foreach (var config in configs)
             {
                 var tx = await _examTxRepository.GetAsync(config.TxId);
@@ -50,7 +51,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
 
                         foreach (var item in tms)
                         {
-                            await _examManager.GetTmInfoByPaperMark(item, paper, startId);
+                            await _examManager.GetTmInfoByPaperAdmin(item, paper, startId);
                             item.Set("TmIndex", tmIndex);
                             tmIndex++;
                         }

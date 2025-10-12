@@ -2,6 +2,7 @@ using Datory;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using XBLMS.Dto;
 using XBLMS.Models;
 using XBLMS.Repositories;
 using XBLMS.Services;
@@ -23,17 +24,18 @@ namespace XBLMS.Core.Repositories
 
         public List<TableColumn> TableColumns => _repository.TableColumns;
 
-        public async Task<(int total, List<ExamTmAnalysisTm> list)> GetListAsync(string orderType, string keyWords, int analysisId, int pageIndex, int pageSize)
+        public async Task<(int total, List<ExamTmAnalysisTm> list)> GetListAsync(AdminAuth auth, string orderType, string keyWords, int analysisId, int pageIndex, int pageSize)
         {
             var query = Q.Where(nameof(ExamTmAnalysisTm.AnalysisId), analysisId);
+
             if (!string.IsNullOrEmpty(keyWords))
             {
                 var like = $"%{keyWords}%";
                 query.Where(q => q
-                    .WhereLike(nameof(ExamTm.Title), like)
-                    .OrWhereLike(nameof(ExamTm.Zhishidian), like)
-                    .OrWhereLike(nameof(ExamTm.Jiexi), like)
-                    .OrWhereLike(nameof(ExamTm.Answer), like)
+                    .WhereLike(nameof(ExamTmAnalysisTm.Title), like)
+                    .OrWhereLike(nameof(ExamTmAnalysisTm.Zhishidian), like)
+                    .OrWhereLike(nameof(ExamTmAnalysisTm.Jiexi), like)
+                    .OrWhereLike(nameof(ExamTmAnalysisTm.Answer), like)
                 );
             }
             var total = await _repository.CountAsync(query);
@@ -69,12 +71,11 @@ namespace XBLMS.Core.Repositories
 
             var txIds = await _repository.GetAllAsync<int>(Q.
                 Select(nameof(ExamTmAnalysisTm.TxId)).
-                Where(nameof(ExamTmAnalysisTm.AnalysisId), analysisId).
-                GroupBy(nameof(ExamTmAnalysisTm.TxId)));
+                Where(nameof(ExamTmAnalysisTm.AnalysisId), analysisId));
 
             if (txIds != null && txIds.Count > 0)
             {
-                txIds = txIds.Distinct().ToList();
+                txIds= txIds.Distinct().ToList();
                 foreach (var txId in txIds)
                 {
                     var txWrongTotal = await _repository.SumAsync(nameof(ExamTmAnalysisTm.WrongCount), Q.Where(nameof(ExamTmAnalysisTm.TxId), txId).Where(nameof(ExamTmAnalysisTm.AnalysisId), analysisId));
@@ -102,12 +103,12 @@ namespace XBLMS.Core.Repositories
 
             var zsds = await _repository.GetAllAsync<string>(Q.
                 Select(nameof(ExamTmAnalysisTm.Zhishidian)).
-                Where(nameof(ExamTmAnalysisTm.AnalysisId), analysisId).
-                GroupBy(nameof(ExamTmAnalysisTm.Zhishidian)));
+                Where(nameof(ExamTmAnalysisTm.AnalysisId), analysisId));
 
             if (zsds != null && zsds.Count > 0)
             {
                 zsds = zsds.Distinct().ToList();
+
                 foreach (var zsd in zsds)
                 {
                     if (!string.IsNullOrEmpty(zsd))

@@ -1,6 +1,8 @@
 var $url = "/exam/examQuestionnairing";
 var $urlSubmitPaper = $url + "/submitPaper";
 var data = utils.init({
+  planId: utils.getQueryInt('planId'),
+  courseId: utils.getQueryInt('courseId'),
   id: utils.getQueryInt('id'),
   pr: utils.getQueryString('pr'),
   ps: utils.getQueryString('ps'),
@@ -28,11 +30,7 @@ var methods = {
       }
 
       $this.tmList = res.tmList;
-
       $this.tmTotal = $this.paper.tmTotal;
-
-
-
     }).catch(function (error) {
       utils.error(error, { layer: true });
     }).then(function () {
@@ -50,7 +48,6 @@ var methods = {
     this.getAnswerTotal(setTm);
   },
   answerChange: function (setTm) {
-
     if (setTm.tx === "Duoxuanti") {
       setTm.answer = setTm.optionsValues.join('');
     }
@@ -69,9 +66,7 @@ var methods = {
 
     var smallTm = this.tmList.find(item => item.id === setTm.id);
 
-
     this.tmList.forEach(tm => {
-
       if (tm.parentId > 0 && tm.id === setTm.id) {
         tm.answerStatus = setTm.answerStatus;
         tm.answer = setTm.answer;
@@ -91,18 +86,17 @@ var methods = {
   apiSubmitPaper: function () {
     var $this = this;
     utils.loading($this, true, "正在提交问卷...");
-    $api.post($urlSubmitPaper, { id: this.id, tmList: this.tmList }).then(function (response) {
+    $api.post($urlSubmitPaper, { id: this.id, planId: this.planId, courseId: this.courseId, tmList: this.tmList }).then(function (response) {
       var res = response.data;
       if (res.value) {
-        utils.success("已提交");
+        utils.success("已提交问卷");
       }
     }).catch(function (error) {
       utils.error(error, { layer: true });
     }).then(function () {
       if ($this.paper.published) {
-        document.body.innerHTML = "已提交问卷，可以安全离开此页面";
+        document.body.innerHTML = "<div class='card card-body rounded-5 text-center fw-bolder text-success'><p><i class='el-icon-check fs-1'></i></p><p>已提交问卷，可以安全离开此页面</p></div>";
         document.body.style.display = "block";
-
       }
       else {
         utils.closeLayerSelf();
@@ -131,7 +125,7 @@ var methods = {
   checkAnswer: function () {
     for (let i = 0; i < this.tmList.length; i++) {
       let letTm = this.tmList[i];
-      if (!letTm.answerStatus && letTm.parentId===0) {
+      if (!letTm.answerStatus && letTm.parentId === 0) {
         this.tmDidScroll(letTm.id);
         utils.error('请完善问卷', { layer: true });
         return false;

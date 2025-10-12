@@ -1,5 +1,7 @@
 ﻿using System.Threading.Tasks;
+using XBLMS.Dto;
 using XBLMS.Enums;
+using XBLMS.Models;
 
 namespace XBLMS.Services
 {
@@ -13,6 +15,10 @@ namespace XBLMS.Services
 
         Task AddUserLogAsync(string action);
         Task AddStatLogAsync(StatType statType, string statTypeStr, int objectId = 0, string objectName = "", object entity = null);
-        Task AddStatCount(StatType statType);
+        Task AddStatCount(StatType statType, Administrator admin = null);
+        Task AddUserStatCount(StatType statType, User user = null);
+        Task AddPointsLogAsync(PointType pointType, User user, int objectId = 0, string objectName = "", bool isNotice = false);
+        Task<PointNotice> PointNotice(PointType type, int userId);
+        Task<PointNotice> PointNotice(int userId);
     }
 }

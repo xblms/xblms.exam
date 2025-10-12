@@ -1,4 +1,4 @@
-var $url = '/event';
+﻿var $url = '/event';
 
 var data = utils.init({
   eventData: [],
@@ -40,20 +40,37 @@ var methods = {
       dayMaxEvents: true,
       events: this.eventData,
       eventClick: function (arg) {
-        $this.btnViewPaperClick(arg.event.id);
+        if (arg.event.groupId === 'exam') {
+          $this.btnViewPaperClick(arg.event.id);
+        }
+        if (arg.event.groupId === 'offline') {
+          $this.btnViewOfflineClick(arg.event);
+        }
       },
     });
 
     calendar.render();
   },
   btnViewPaperClick: function (id) {
-    var $this = this;
     top.utils.openLayer({
       title: false,
       closebtn: 0,
       url: utils.getExamUrl('examPaperInfo', { id: id }),
       width: "78%",
       height: "98%"
+    });
+  },
+  btnViewOfflineClick: function (row) {
+    var planId = 0;
+    if (row.allow !== null) {
+      planId = row.allow;
+    }
+    top.utils.openLayer({
+      title: false,
+      closebtn: 0,
+      url: utils.getStudyUrl('studyCourseOfflineInfo', { id: row.id, planId: planId }),
+      width: "100%",
+      height: "100%"
     });
   },
 };

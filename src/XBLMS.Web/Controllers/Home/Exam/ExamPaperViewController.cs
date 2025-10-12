@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
-using System.Collections.Generic;
 using XBLMS.Configuration;
 using XBLMS.Models;
 using XBLMS.Repositories;
@@ -56,7 +55,8 @@ namespace XBLMS.Web.Controllers.Home.Exam
         {
             public string Watermark { get; set; }
             public ExamPaper Item { get; set; }
-            public List<ExamPaperRandomConfig> TxList { get; set; }
+            public string TxList { get; set; }
+            public string Salt { get; set; }
         }
     }
 }

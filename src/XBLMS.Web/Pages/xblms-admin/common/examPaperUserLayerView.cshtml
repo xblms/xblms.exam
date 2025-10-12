@@ -1,0 +1,262 @@
+@page
+@{ Layout = "_Layout"; }
+
+@section Styles{
+    <link href="/sitefiles/assets/lib/geeks/css/theme.min.css" rel="stylesheet" type="text/css" />
+    <style>
+        .el-input__inner {
+            border-radius: 0;
+            border-top-width: 0px;
+            border-left-width: 0px;
+            border-right-width: 0px;
+            border-bottom-width: 2px;
+            background: none;
+        }
+
+        .el-radio {
+            white-space: normal;
+        }
+
+        .el-checkbox__label {
+            display: inline-grid;
+            word-wrap: break-word;
+            line-height: 20px;
+            white-space: pre-line;
+        }
+
+        .number {
+            color: red;
+        }
+
+        html {
+            background-color: #f1f1f1;
+        }
+    </style>
+    <link href="/sitefiles/assets/css/watermark.css" rel="stylesheet" type="text/css" />
+}
+
+@await Html.PartialAsync("_PartialWatermark")
+<template v-if="paper">
+    <div class="d-flex justify-content-between align-items-center px-8 py-3">
+        <span><span class="fw-bold fs-4">答卷预览：{{ paper.title }}<span class="fw-light fs-5">（共：{{ paper.tmTotal }}题，总分：{{ paper.totalScore }}分，及格分：{{ paper.passScore }}分）</span></span></span>
+        <div class="d-flex justify-content-between align-items-center">
+            <el-avatar size="small" :src="paper.userAvatar || DEFAULT_AVATAR_URL"></el-avatar><span class="ms-2">考生：{{ paper.userDisplayName }}</span>
+        </div>
+    </div>
+    <div class="px-8">
+        <el-row :gutter="8">
+            <el-col :span="18">
+                <el-card v-if="tm" class="rounded-4">
+                    <div slot="header" class="d-flex justify-content-between align-items-center">
+                        <div>第<span class="px-1">{{ tm.tmIndex }}</span>题（<span>{{ tm.txName }}</span>）</div>
+                        <div><span>{{ tm.answerInfo.score }}/<span class="fs-6">{{ tm.score }}分</span></span></div>
+                    </div>
+                    <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-325) + 'px' }" ref="answerScrollbar">
+                        <div class="pe-3">
+                            <div v-if="tm.baseTx==='Zuheti'">
+                                <div class="mb-3 fw-bold">
+                                    <div v-html="tm.titleHtml"></div>
+                                </div>
+                                <div class="mb-3" v-for="small in tm.smallLists">
+                                    <el-card>
+                                        <div class="d-flex justify-content-between align-items-center py-3">
+                                            <div>第<span class="px-1">{{ small.tmIndex }}</span>小题（<span>{{ small.txName }}</span>）</div>
+                                            <div><span>{{ small.answerInfo.score }}/<span class="fs-6">{{ small.score }}分</span></span></div>
+                                        </div>
+                                        <div class="mb-3 fw-bold">
+                                            <div v-if="small.baseTx==='Tiankongti'">
+                                                <span v-if="small.titleList && small.titleList.length>0">
+                                                    <span v-for="tmContent in small.titleList">
+                                                        <span v-if="utils.contains(tmContent.value,'___')">
+                                                            <el-input disabled v-model.trim="small.answerInfo.optionsValues[tmContent.key]" style="width:130px;"></el-input>
+                                                        </span>
+                                                        <span v-else v-html="tmContent.value"></span>
+                                                    </span>
+                                                </span>
+                                                <div v-else v-html="small.titleHtml"></div>
+                                            </div>
+                                            <div v-else v-html="small.titleHtml"></div>
+                                        </div>
+                                        <div class="list-group" v-if="small.baseTx!=='Tiankongti'">
+                                            <div v-if="small.baseTx==='Danxuanti' || small.baseTx==='Panduanti'">
+                                                <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in small.optionsRandom">
+                                                    <div class="d-flex justify-content-start align-items-start">
+                                                        <div class="me-1 position-relative">
+                                                            {{optionsABC[optionIndex]}}.
+                                                        </div>
+                                                        <div>
+                                                            <el-radio disabled :label="option.key" v-model="small.answerInfo.answer">
+                                                                <span v-html="option.value"></span>
+                                                            </el-radio>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div v-else-if="small.baseTx==='Duoxuanti'">
+                                                <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in small.optionsRandom">
+                                                    <div class="d-flex justify-content-start align-items-start">
+                                                        <div class="me-1 position-relative">
+                                                            {{optionsABC[optionIndex]}}.
+                                                        </div>
+                                                        <div>
+                                                            <el-checkbox disabled :true-label="option.key" false-label="" v-model="small.answerInfo.optionsValues[optionsABC.indexOf(option.key)]">
+                                                                <span v-html="option.value"></span>
+                                                            </el-checkbox>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div v-else-if="small.baseTx==='Jiandati'">
+                                                <el-input disabled :key="small.id" type="textarea" resize="none" v-model.trim="small.answerInfo.answer" :autosize="{ minRows: 3}" maxlength="333" style="width:100%;"
+                                                          show-word-limit></el-input>
+                                            </div>
+                                            <div v-else>
+                                                未知题型
+                                            </div>
+                                        </div>
+                                        <div class="p-3 mt-3 mb-3 fs-5 text-white" :class="small.isRight && small.score===small.answerInfo.score ? 'bg-success' : 'bg-danger'">
+                                            <div class="mt-2">考生答案：{{ small.answerInfo.answer }}</div>
+                                            <div class="mt-2">标准答案：{{ small.answer }}</div>
+                                            <div class="mt-2">解析：<span v-html="small.jiexi"></span></div>
+                                        </div>
+                                    </el-card>
+                                </div>
+                            </div>
+                            <div v-else>
+                                <div class="mb-3 fw-bold">
+                                    <div v-if="tm.baseTx==='Tiankongti'">
+                                        <span v-if="tm.titleList && tm.titleList.length>0">
+                                            <span v-for="tmContent in tm.titleList">
+                                                <span v-if="utils.contains(tmContent.value,'___')">
+                                                    <el-input disabled v-model.trim="tm.answerInfo.optionsValues[tmContent.key]" style="width:130px;"></el-input>
+                                                </span>
+                                                <span v-else v-html="tmContent.value"></span>
+                                            </span>
+                                        </span>
+                                        <div v-else v-html="tm.titleHtml"></div>
+                                    </div>
+                                    <div v-else v-html="tm.titleHtml"></div>
+                                </div>
+                                <div class="list-group" v-if="tm.baseTx!=='Tiankongti'">
+                                    <div v-if="tm.baseTx==='Danxuanti' || tm.baseTx==='Panduanti'">
+                                        <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.optionsRandom">
+                                            <div class="d-flex justify-content-start align-items-start">
+                                                <div class="me-1 position-relative">
+                                                    {{optionsABC[optionIndex]}}.
+                                                </div>
+                                                <div>
+                                                    <el-radio disabled :label="option.key" v-model="tm.answerInfo.answer">
+                                                        <span v-html="option.value"></span>
+                                                    </el-radio>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div v-else-if="tm.baseTx==='Duoxuanti'">
+                                        <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.optionsRandom">
+                                            <div class="d-flex justify-content-start align-items-start">
+                                                <div class="me-1 position-relative">
+                                                    {{optionsABC[optionIndex]}}.
+                                                </div>
+                                                <div>
+                                                    <el-checkbox disabled :true-label="option.key" false-label="" v-model="tm.answerInfo.optionsValues[optionsABC.indexOf(option.key)]">
+                                                        <span v-html="option.value"></span>
+                                                    </el-checkbox>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div v-else-if="tm.baseTx==='Jiandati'">
+                                        <el-input disabled :key="tm.id" type="textarea" resize="none" v-model.trim="tm.answerInfo.answer" :autosize="{ minRows: 3}" maxlength="333" style="width:100%;"
+                                                  show-word-limit></el-input>
+                                    </div>
+                                    <div v-else>
+                                        未知题型
+                                    </div>
+                                </div>
+                                <div class="p-3 mt-3 mb-3 fs-5 me-3 text-white" :class="tm.score===tm.answerInfo.score ? 'bg-success' : 'bg-danger'">
+                                    <div class="mt-2">考生答案：{{ tm.answerInfo.answer }}</div>
+                                    <div class="mt-2">标准答案：{{ tm.answer }}</div>
+                                    <div class="mt-2">解析：<span v-html="tm.jiexi"></span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </el-scrollbar>
+                    <div class="pt-3 text-center">
+                        <el-button v-on:click="btnUpClick" icon="el-icon-arrow-left" circle :disabled="tm.tmIndex===1"></el-button>
+                        <span class="px-5">{{ tm.tmIndex }}/{{ paper.tmTotal }}</span>
+                        <el-button v-on:click="btnDownClick" icon="el-icon-arrow-right" circle :disabled="tm.tmIndex===paper.tmTotal"></el-button>
+                    </div>
+                </el-card>
+                <el-card v-else>
+                    <div :style="{ height: ($(window).innerHeight()-315) + 'px' }">
+                        <el-skeleton :rows="6" animated>
+                            <el-skeleton-item variant="h3" style="width: 50%;" />
+                            <el-skeleton-item variant="h3" style="width: 50%;" />
+                            <el-skeleton-item variant="h3" style="width: 50%;" />
+                            <el-skeleton-item variant="h3" style="width: 50%;" />
+                            <el-skeleton-item variant="h3" style="width: 50%;" />
+                            <el-skeleton-item variant="h3" style="width: 50%;" />
+                        </el-skeleton>
+                    </div>
+                </el-card>
+            </el-col>
+            <el-col :span="6">
+                <el-card class="rounded-4" shadow="never">
+                    <div slot="header">
+                        <div class="row">
+                            <div class="col">答题卡</div>
+                            <div class="col-auto">
+                                <el-tag size="mini" type="danger" class="me-1">错误</el-tag>
+                                <el-tag size="mini" effect="dark" type="success">正确</el-tag>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-268) + 'px' }">
+                            <ul class="list-group mb-1" v-for="(tx,txIndex) in list">
+                                <li class="list-group-item border-0 p-1 fw-light">{{ tx.txIndex }}、{{tx.txName}}</li>
+                                <li class="list-group-item border-0 p-1">
+                                    <span v-for="tabTm in tx.tmList" v-on:click="btnGetTm(tabTm.id)" style="margin-right:3px; margin-bottom:3px;cursor:pointer;">
+                                        <el-tag :key="tabTm.id" size="mini" type="success" effect="dark" v-if="getTmAnswerStatus(tabTm.id)">
+                                            {{ tabTm.tmIndex }}
+                                        </el-tag>
+                                        <el-tag :key="tabTm.id" size="mini" type="danger" v-else>
+                                            {{ tabTm.tmIndex }}
+                                        </el-tag>
+                                    </span>
+                                </li>
+                            </ul>
+                        </el-scrollbar>
+                    </div>
+                </el-card>
+            </el-col>
+        </el-row>
+    </div>
+    <div class="px-8 py-3">
+        <el-row :gutter="8">
+            <el-col :span="18" class="d-flex justify-content-between align-items-center pt-3">
+                <div>
+                    主观题：<span class="fs-3 me-2">{{ paper.userSScore }}</span>
+                    客观题：<span class="fs-3 me-2">{{ paper.userOScore }}</span>
+                    成绩：<span class="fs-3">{{ paper.userScore }}</span>
+                </div>
+                <div>
+                    <div v-if="paper.isTiming">
+                        用时：{{ paper.useTime }}
+                    </div>
+                    <div v-else>
+                        不计时考试
+                    </div>
+                </div>
+            </el-col>
+            <el-col :span="6" v-if="paper.openExist">
+                <el-button class="btn btn-outline-primary w-100 py-3 rounded-4" v-on:click="utils.closeLayerSelf" icon="el-icon-close">退出预览</el-button>
+            </el-col>
+        </el-row>
+    </div>
+</template>
+
+@section Scripts{
+    <script src="/sitefiles/assets/js/admin/common/examPaperUserLayerView.js" type="text/javascript"></script>
+}

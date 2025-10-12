@@ -1,4 +1,4 @@
-var $url = "/exam/examPaper";
+﻿var $url = "/exam/examPaper";
 var $urlItem = $url + "/item";
 
 var data = utils.init({

@@ -1,0 +1,39 @@
+@page
+@{ Layout = "_LayoutApp"; }
+@section Styles{
+    <style>
+        .el-checkbox{
+            margin-right:5px;
+            margin-bottom: 5px;
+        }
+
+            .el-button + .el-button, .el-checkbox.is-bordered + .el-checkbox.is-bordered{
+                margin-left: 0;
+            }
+    </style>
+}
+<el-card>
+    <div slot="header" class="d-flex justify-content-between align-items-center">
+        <div><span>选择知识点</span></div>
+        <div>
+            <el-radio size="mini" v-model="order" label="total" v-on:input="apiGet">按数量</el-radio>
+            <el-radio size="mini" v-model="order" label="name" v-on:input="apiGet">按名称</el-radio>
+        </div>
+    </div>
+    <div>
+        <el-checkbox-group v-model="zsdSelect" size="mini">
+            <el-checkbox border :label="zsd.key" :key="zsd.key" v-for="zsd in zsdList">{{ zsd.key }}（{{ zsd.value }}）</el-checkbox>
+        </el-checkbox-group>
+    </div>
+</el-card>
+<div class="py-8"></div>
+<div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 animate__animated animate__fadeInUp">
+    <el-button-group class="rounded-0">
+        <el-button class="rounded-0" icon="el-icon-check" type="success" v-on:click="btnSubmitClick">确 定</el-button>
+        <el-button class="rounded-0" icon="el-icon-close" v-on:click="utils.closeLayerSelf">取 消</el-button>
+    </el-button-group>
+</div>
+
+@section Scripts{
+    <script src="/sitefiles/assets/js/app/exam/examPracticeReadyZsd.js" type="text/javascript"></script>
+}

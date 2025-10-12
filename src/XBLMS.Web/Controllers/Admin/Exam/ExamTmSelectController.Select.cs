@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 using System.Threading.Tasks;
 using XBLMS.Dto;
 
@@ -12,16 +11,31 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         public async Task<ActionResult<BoolResult>> Select([FromBody] GetSeletRemoveRequest request)
         {
             var group = await _examTmGroupRepository.GetAsync(request.Id);
-            if (group.TmIds != null)
+            if (request.Ids != null && request.Ids.Count > 0)
             {
-                group.TmIds.AddRange(request.Ids);
+                var addTotal = 0;
+                foreach (var tmId in request.Ids)
+                {
+                    var tm = await _examTmRepository.GetAsync(tmId);
+                    if (tm.TmGroupIds != null)
+                    {
+                        if (!tm.TmGroupIds.Contains($"'{group.Id}'"))
+                        {
+                            tm.TmGroupIds.Add($"'{group.Id}'");
+                            addTotal++;
+                        }
+                    }
+                    else
+                    {
+                        addTotal++;
+                        tm.TmGroupIds = [$"'{group.Id}'"];
+                    }
+                    await _examTmRepository.UpdateTmGroupIdsAsync(tm);
+                }
+                group.TmTotal = group.TmTotal + addTotal;
+                await _examTmGroupRepository.UpdateAsync(group);
             }
-            else
-            {
-                group.TmIds = request.Ids;
-            }
-            group.TmIds = group.TmIds.ToList().Distinct().OrderBy(x => x).ToList().ToList();
-            await _examTmGroupRepository.UpdateAsync(group);
+            await _authManager.AddAdminLogAsync("题目组安排题目", $"{group.GroupName}");
             return new BoolResult
             {
                 Value = true

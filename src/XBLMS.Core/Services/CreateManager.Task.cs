@@ -26,18 +26,29 @@ namespace XBLMS.Core.Services
                         var start = DateTime.Now;
                         var timeSpan = DateUtils.GetRelatedDateTimeString(start);
 
-
-                        if (task.CreateType == CreateType.SubmitAnswerSmall)
-                        {
-                            await ExecuteSubmitAnswerSmallAsync(task.ExamPaperAnswerSmall);
-                        }
                         if (task.CreateType == CreateType.SubmitAnswer)
                         {
                             await ExecuteSubmitAnswerAsync(task.ExamPaperAnswer);
                         }
+                        if (task.CreateType == CreateType.SubmitAnswerSmall)
+                        {
+                            await ExecuteSubmitAnswerSmallAsync(task.ExamPaperAnswerSmall);
+                        }
                         if (task.CreateType == CreateType.SubmitPaper)
                         {
-                            await ExecuteSubmitPaperAsync(task.StartId);
+                            await ExecuteSubmitPaperAsync(task.TaskId);
+                        }
+                        if (task.CreateType == CreateType.ExamAwardCer)
+                        {
+                            if (task.Wait)
+                            {
+                                CreateExamAwardCerAsync(task.TaskId);
+                            }
+                            else
+                            {
+                                await ExecuteAwardCer(task.TaskId);
+                            }
+
                         }
 
                         AddSuccessLog(task, timeSpan);
@@ -46,9 +57,10 @@ namespace XBLMS.Core.Services
                     {
                         if (task.CreateType == CreateType.SubmitPaper)
                         {
-                            var start = await _databaseManager.ExamPaperStartRepository.GetAsync(task.StartId);
+                            var start = await _databaseManager.ExamPaperStartRepository.GetAsync(task.TaskId);
                             if (start != null)
                             {
+                                start.IsMark = true;
                                 start.IsSubmit = true;
                                 await _databaseManager.ExamPaperStartRepository.UpdateAsync(start);
                             }
@@ -115,19 +127,22 @@ namespace XBLMS.Core.Services
             {
                 if (taskInfo.CreateType == CreateType.SubmitPaper)
                 {
-                    ids.Add(taskInfo.StartId);
+                    ids.Add(taskInfo.TaskId);
                 }
             }
             return ids;
         }
-
+        public bool WaitingForExaming()
+        {
+            return PendingTasks.Exists(task => task.CreateType == CreateType.SubmitPaper || task.CreateType == CreateType.SubmitAnswer);
+        }
 
         public CreateTaskSummary GetTaskSummary()
         {
             var list = new List<CreateTaskSummaryItem>();
             var answerCount = 0;
             var paperCount = 0;
-  
+
 
             foreach (var taskInfo in PendingTasks.ToArray())
             {

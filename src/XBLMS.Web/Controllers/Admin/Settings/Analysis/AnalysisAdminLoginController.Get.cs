@@ -18,11 +18,13 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Analysis
                 return this.NoAuth();
             }
 
+            var adminAuth = await _authManager.GetAdminAuth();
+
             var lowerDate = TranslateUtils.ToDateTime(request.DateFrom);
             var higherDate = TranslateUtils.ToDateTime(request.DateTo, DateTime.Now);
 
-            var successStats = await _statRepository.GetStatsAsync(lowerDate, higherDate, StatType.AdminLoginSuccess);
-            var failureStats = await _statRepository.GetStatsAsync(lowerDate, higherDate, StatType.UserLogin);
+            var successStats = await _statRepository.GetStatsAsync(adminAuth, lowerDate, higherDate, StatType.AdminLoginSuccess);
+            var failureStats = await _statRepository.GetStatsAsync(adminAuth, lowerDate, higherDate, StatType.UserLogin);
 
             var getStats = new List<GetStat>();
             var totalDays = (higherDate - lowerDate).TotalDays;
@@ -30,14 +32,14 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Analysis
             {
                 var date = lowerDate.AddDays(i).ToString("M-d");
 
-                var success = successStats.FirstOrDefault(x => x.CreatedDate.HasValue && x.CreatedDate.Value.ToString("M-d") == date);
-                var failure = failureStats.FirstOrDefault(x => x.CreatedDate.HasValue && x.CreatedDate.Value.ToString("M-d") == date);
+                var success = successStats.Where(x => x.CreatedDate.HasValue && x.CreatedDate.Value.ToString("M-d") == date);
+                var failure = failureStats.Where(x => x.CreatedDate.HasValue && x.CreatedDate.Value.ToString("M-d") == date);
 
                 getStats.Add(new GetStat
                 {
                     Date = date,
-                    Success = success?.Count ?? 0,
-                    Failure = failure?.Count ?? 0
+                    Success = success.Sum(x => x.Count),
+                    Failure = failure.Sum(x => x.Count)
                 });
             }
 

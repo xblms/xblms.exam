@@ -1,6 +1,9 @@
 ﻿using Datory;
+using SqlKata;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using XBLMS.Dto;
+using XBLMS.Enums;
 using XBLMS.Models;
 using XBLMS.Repositories;
 using XBLMS.Services;
@@ -43,20 +46,22 @@ namespace XBLMS.Core.Repositories
         {
             return await _repository.GetAsync(id);
         }
-        public async Task<List<ExamAssessmentConfig>> GetListWithoutLockedAsync()
+        public async Task<List<ExamAssessmentConfig>> GetListWithoutLockedAsync(AdminAuth auth)
         {
             var query = Q.WhereNullOrFalse(nameof(ExamAssessmentConfig.Locked));
+
+            query = GetQueryByAuth(query, auth);
 
             query.OrderByDesc(nameof(ExamAssessmentConfig.Id));
 
             return await _repository.GetAllAsync(query);
         }
 
-        public async Task<(int total, List<ExamAssessmentConfig> list)> GetListAsync(string keyWords, int pageIndex, int pageSize)
+        public async Task<(int total, List<ExamAssessmentConfig> list)> GetListAsync(AdminAuth auth, string keyWords, int pageIndex, int pageSize)
         {
             var query = Q.NewQuery();
 
-
+            query = GetQueryByAuth(query, auth);
 
             if (!string.IsNullOrEmpty(keyWords))
             {
@@ -77,6 +82,30 @@ namespace XBLMS.Core.Repositories
                 return maxId.Value + 1;
             }
             return 1;
+        }
+
+        private Query GetQueryByAuth(Query query, AdminAuth auth)
+        {
+            if (auth.AuthDataType == AuthorityDataType.DataCreator)
+            {
+                query.Where(nameof(ExamAssessmentConfig.CreatorId), auth.AdminId);
+            }
+            else
+            {
+                if (auth.AuthDataShowAll)
+                {
+                    if (auth.CurCompanyId != 1)
+                    {
+                        query.WhereLike(nameof(ExamAssessmentConfig.CompanyParentPath), $"%'{auth.CurCompanyId}'%");
+                    }
+                }
+                else
+                {
+                    query.Where(nameof(ExamAssessmentConfig.CompanyId), auth.CurCompanyId);
+                }
+            }
+
+            return query;
         }
     }
 }

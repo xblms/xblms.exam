@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.EMMA;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using XBLMS.Dto;
@@ -14,6 +13,8 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         [HttpGet, Route(Route)]
         public async Task<ActionResult<GetSearchResults>> GetSearch([FromQuery] GetSearchRequest request)
         {
+            var adminAuth = await _authManager.GetAdminAuth();
+            var config = await _configRepository.GetAsync();
             var treeIds = new List<int>();
             if (request.TreeId > 0)
             {
@@ -27,23 +28,32 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 }
             }
 
-
-
             var group = await _examTmGroupRepository.GetAsync(request.TmGroupId);
 
-            var (total, list) = await _examTmRepository.GetListAsync(group, treeIds, request.TxId, request.Nandu, request.Keyword, request.Order, request.OrderType, request.IsStop, request.PageIndex, request.PageSize);
+            var isAdmin = adminAuth.AuthType == AuthorityType.Admin || adminAuth.AuthType == AuthorityType.AdminCompany;
+            var realTotal = 0;
+
+            var (total, list) = await _examTmRepository.GetListAsync(adminAuth, group, treeIds, request.TxId, request.Nandu, request.Keyword, request.Order, request.OrderType, request.IsStop, request.PageIndex, request.PageSize);
             if (total > 0)
             {
                 foreach (var tm in list)
                 {
                     await _examManager.GetTmInfo(tm);
                 }
+
+                if (isAdmin)
+                {
+                    realTotal = await _examTmRepository.GetRealTotalAsync();
+                }
             }
 
             return new GetSearchResults
             {
+                IsAdmin = isAdmin,
+                TmRealTotal = realTotal,
+                IsCache = config.ExamTmCache,
                 Items = list,
-                Total = total,
+                Total = total
             };
         }
 
@@ -58,7 +68,6 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             var tm = await _examTmRepository.GetAsync(request.Id);
             if (tm == null) return this.NotFound();
             await _examTmRepository.DeleteAsync(request.Id);
-            await _examTmSmallRepository.DeleteByParentIdAsync(request.Id);
 
             await DeleteTm(new List<int> { tm.Id });
 
@@ -84,7 +93,6 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 var info = await _examTmRepository.GetAsync(id);
                 if (info == null) continue;
                 await _examTmRepository.DeleteAsync(info.Id);
-                await _examTmSmallRepository.DeleteByParentIdAsync(info.Id);
 
                 await _authManager.AddAdminLogAsync("删除题目", $"{StringUtils.StripTags(info.Title)}");
                 await _authManager.AddStatLogAsync(StatType.ExamTmDelete, "删除题目", info.Id, StringUtils.StripTags(info.Title), info);

@@ -14,18 +14,25 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
                 return this.NoAuth();
             }
 
-            var organs = await _organManager.GetOrganTreeTableDataAsync();
             if (userId > 0)
             {
                 var user = await _userRepository.GetByUserIdAsync(userId);
-                var company = await _organManager.GetCompanyAsync(user.CompanyId);
-                var department = await _organManager.GetDepartmentAsync(user.DepartmentId);
-                var duty = await _organManager.GetDutyAsync(user.DutyId);
+                var organId = user.CompanyId;
+                var organType = "company";
+                var organName = "";
 
-                var organId = "";
-                if (company != null) { organId = company.Guid; }
-                if (department != null) { organId = department.Guid; }
-                if (duty != null) { organId = duty.Guid; }
+                if (user.DepartmentId > 0)
+                {
+                    var department = await _organManager.GetDepartmentAsync(user.DepartmentId);
+                    organId = user.DepartmentId;
+                    organType = "department";
+                    organName = department.Name;
+                }
+                else
+                {
+                    var company = await _organManager.GetCompanyAsync(user.CompanyId);
+                    organName = company.Name;
+                }
 
                 return new GetResult
                 {
@@ -36,14 +43,13 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
                     Mobile = user.Mobile,
                     Email = user.Email,
                     OrganId = organId,
-                    Organs = organs,
-                    Locked= user.Locked,
+                    OrganType = organType,
+                    OrganName = organName,
+                    Locked = user.Locked,
+                    DutyName = user.DutyName
                 };
             }
-            return new GetResult
-            {
-                Organs = organs,
-            };
+            return new GetResult();
 
 
         }

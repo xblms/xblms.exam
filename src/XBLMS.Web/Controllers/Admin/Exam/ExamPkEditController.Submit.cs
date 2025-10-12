@@ -33,7 +33,8 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             var vsList = new List<int>();
             vsList.AddRange([2, 4, 8, 16, 32, 64, 128, 256, 512]);
 
-            var admin = await _authManager.GetAdminAsync();
+            var adminAuth = await _authManager.GetAdminAuth();
+            var admin = adminAuth.Admin;
             var pk = request.Item;
 
 
@@ -60,106 +61,55 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                     return this.Error("参赛者数量为0");
                 }
 
-                var tmIds = new List<int>();
-                if (pk.TmGroupIds.Count > 0)
-                {
-                    foreach (var tmGroupId in pk.TmGroupIds)
-                    {
-                        var tmGroup = await _tmGroupRepository.GetAsync(tmGroupId);
-                        if (tmGroup != null)
-                        {
-                            if (tmGroup.GroupType == TmGroupType.All)
-                            {
-                                tmIds = await _examTmRepository.GetIdsWithOutLockedAsync();
-                                break;
-                            }
-                            else if (tmGroup.GroupType == TmGroupType.Fixed)
-                            {
-                                if (tmGroup.TmIds != null && tmGroup.TmIds.Count > 0)
-                                {
-                                    tmIds.AddRange(tmGroup.TmIds);
-                                }
-                            }
-                            else
-                            {
-                                var letIds = await _examTmRepository.GetIdsAsync(tmGroup.TreeIds, tmGroup.TxIds, tmGroup.Nandus, tmGroup.Zhishidians, tmGroup.DateFrom, tmGroup.DateTo);
-                                if (letIds != null && letIds.Count > 0)
-                                {
-                                    tmIds.AddRange(letIds);
-                                }
-                            }
-                        }
-                    }
-                }
-                tmIds = tmIds.Distinct().ToList();
+                var objectiveTxIds = await _examTxRepository.GetIdsAsync(true);
+                var tmIds = await _examManager.GetTmIdsByTmGroups(pk.TmGroupIds, objectiveTxIds);
 
-                var pkTmids = new List<int>();
-                if (tmIds.Count > 0)
-                {
-                    foreach (var tmId in tmIds)
-                    {
-                        var tm = await _examTmRepository.GetAsync(tmId);
-                        if (tm != null)
-                        {
-                            var tx = await _examTxRepository.GetAsync(tm.TxId);
-                            if (tx != null && (tx.ExamTxBase == ExamTxBase.Danxuanti || tx.ExamTxBase == ExamTxBase.Duoxuanti || tx.ExamTxBase == ExamTxBase.Panduanti))
-                            {
-                                pkTmids.Add(tm.Id);
-                            }
-                        }
-                    }
-                }
-                else
+                if (tmIds == null || tmIds.Count == 0)
                 {
                     return this.Error("竞赛题目不能为空且必须是客观题，请检查题目组");
                 }
 
+                var pkTmids = tmIds;
+                pk.CompanyId = adminAuth.CurCompanyId;
+                pk.CreatorId = admin.Id;
+                pk.DepartmentId = admin.DepartmentId;
+                pk.CompanyParentPath = adminAuth.CompanyParentPath;
+                pk.DepartmentParentPath = admin.DepartmentParentPath;
+                pk.Vs = 0;
+                pk.Current = 0;
+                pk.Mark = "";
 
-                if (pkTmids.Count > 0)
+
+                var pkId = await _examPkRepository.InsertAsync(pk);
+                pk.Id = pkId;
+
+                foreach (var pkuserId in userIds)
                 {
-                    pk.CompanyId = admin.CompanyId;
-                    pk.CreatorId = admin.Id;
-                    pk.DepartmentId = admin.DepartmentId;
-                    pk.Vs = 0;
-                    pk.Current = 0;
-                    pk.Mark = "";
-
-
-                    var pkId = await _examPkRepository.InsertAsync(pk);
-                    pk.Id = pkId;
-
-                    foreach (var pkuserId in userIds)
+                    await _examPkUserRepository.InsertAsync(new ExamPkUser
                     {
-                        await _examPkUserRepository.InsertAsync(new ExamPkUser
-                        {
-                            CompanyId = admin.CompanyId,
-                            DepartmentId = admin.DepartmentId,
-                            CreatorId = admin.Id,
-                            UserId = pkuserId,
-                            PkId = pk.Id,
-                            KeyWords = pk.Name,
-                            KeyWordsAdmin = await _organManager.GetUserKeyWords(pkuserId),
-                        });
-                    }
-                    if (pkTmids.Count > 100)
-                    {
-                        pkTmids = pkTmids.OrderBy(o => StringUtils.Guid()).ToList();
-                        pkTmids = ListUtils.GetRandomList(pkTmids, 100);
-                    }
-                    else
-                    {
-                        SetPkTms(pkTmids);
-                    }
-
-                    await SetPk(pk, userIds, vsList, pkTmids, 1);
-                    await _authManager.AddAdminLogAsync("新增竞赛", $"{pk.Name}");
-                    await _authManager.AddStatLogAsync(StatType.ExamPkAdd, "新增竞赛", pk.Id, pk.Name);
-                    await _authManager.AddStatCount(StatType.ExamPkAdd);
+                        CompanyId = admin.CompanyId,
+                        DepartmentId = admin.DepartmentId,
+                        CreatorId = admin.Id,
+                        UserId = pkuserId,
+                        PkId = pk.Id,
+                        KeyWords = pk.Name,
+                        KeyWordsAdmin = await _organManager.GetUserKeyWords(pkuserId),
+                    });
+                }
+                if (pkTmids.Count > 100)
+                {
+                    pkTmids = pkTmids.OrderBy(o => StringUtils.Guid()).ToList();
+                    pkTmids = ListUtils.GetRandomList(pkTmids, 100);
                 }
                 else
                 {
-                    return this.Error("竞赛题目不能为空且必须是客观题，请检查题目组");
+                    SetPkTms(pkTmids);
                 }
+
+                await SetPk(pk, userIds, vsList, pkTmids, 1);
+                await _authManager.AddAdminLogAsync("新增竞赛", $"{pk.Name}");
+                await _authManager.AddStatLogAsync(StatType.ExamPkAdd, "新增竞赛", pk.Id, pk.Name);
+                await _authManager.AddStatCount(StatType.ExamPkAdd);
             }
 
 

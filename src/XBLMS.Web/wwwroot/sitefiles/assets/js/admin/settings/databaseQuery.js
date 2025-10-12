@@ -21,6 +21,13 @@ var methods = {
       $this.results = res.results;
       $this.properties = res.properties;
       $this.count = res.count;
+
+      if (res.count > 0) {
+        utils.success("查询成功");
+      }
+      else {
+        utils.error("空数据");
+      }
     }).catch(function (error) {
       utils.error(error);
     }).then(function () {

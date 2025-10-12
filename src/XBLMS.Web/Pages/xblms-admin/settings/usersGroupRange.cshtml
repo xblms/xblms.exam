@@ -1,0 +1,137 @@
+﻿@page
+@{ Layout = "_Layout"; }
+@section Styles{
+    <style>
+        .el-tree-node__content{
+            height:100% !important;
+        }
+    </style>
+}
+<el-row :gutter="16">
+    <el-col :span="5" style="padding-left:13px;">
+        <el-form v-on:submit.native.prevent :size="euiSize">
+            <el-form-item label="">
+                <el-input placeholder="关键字查询"
+                          v-model="filterText" prefix-icon="el-icon-search" clearable>
+                    <el-button slot="append" v-on:click="loadTreeSearch" icon="el-icon-search" :loading="treeLoading">查 询</el-button>
+                </el-input>
+            </el-form-item>
+        </el-form>
+        <el-scrollbar class="scrollbar" :style="{height: $(window).innerHeight()-100 + 'px'}">
+            <div style="padding-right:15px;">
+                <el-tree class="filter-tree"
+                         :data="organs"
+                         :empty-text="treeLoading?'正在加载...':'暂无数据'"
+                         v-on:node-click="btnTreeClick"
+                         node-key="guid"
+                         :props="{children: 'children', isLeaf:'isLeaf',label:'name'}"
+                         accordion
+                         :load="loadTree"
+                         lazy
+                         :filter-node-method="filterNode"
+                         ref="tree">
+                    <template slot-scope="{ node,data }">
+                        <span style="width:100%;font-size:14px;padding:5px 0;"><span v-html="node.label"></span><span style="color:darkgray;">({{ data.userCount }}/{{ data.userAllCount }})</span></span>
+                    </template>
+                </el-tree>
+            </div>
+        </el-scrollbar>
+    </el-col>
+    <el-col :span="19">
+        <el-card>
+            <div slot="header">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <div><span>{{ groupName }}-用户安排</span></div>
+                    <div :span="12"><el-button circle v-on:click="utils.closeLayer(false)" icon="el-icon-close"></el-button></div>
+                </div>
+            </div>
+            <el-form v-on:submit.native.prevent :inline="true" :model="formInline" :size="euiSize">
+                <el-form-item label="">
+                    <el-radio-group v-model="formInline.range" v-on:input="btnSearchClick">
+                        <el-radio-button :label="0">待安排</el-radio-button>
+                        <el-radio-button :label="1">已安排</el-radio-button>
+                    </el-radio-group>
+                </el-form-item>
+                <el-form-item label="">
+                    <el-input prefix-icon="el-icon-search" clearable v-model="formInline.keyword" placeholder="关键字查询"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" icon="el-icon-search" v-on:click="btnSearchClick">查询</el-button>
+                    <template v-if="formInline.range==0">
+                        <el-button :size="euiSize" plain type="primary" icon="el-icon-plus" v-on:click="btnRangeClick('select')">
+                            批量安排
+                        </el-button>
+                    </template>
+                    <template v-else>
+                        <el-button :size="euiSize" plain type="warning" icon="el-icon-minus" v-on:click="btnRangeClick('select')">
+                            批量移出
+                        </el-button>
+                    </template>
+                </el-form-item>
+            </el-form>
+            <el-table :data="items" :size="euiSize" ref="userTable" v-on:selection-change="handleSelectionChange" v-on:row-click="rowClick"
+                      style="width: 100%" :height="$(window).innerHeight()-232">
+                <el-table-column type="selection" align="left"
+                                 width="28">
+                </el-table-column>
+                <el-table-column label="#"
+                                 type="index"
+                                 width="60"
+                                 align="left">
+                    <template scope="scope">
+                        <span>{{(formInline.pageIndex - 1) * formInline.pageSize + scope.$index + 1}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="账号" show-overflow-tooltip>
+                    <template slot-scope="scope">
+                        <el-link :underline="false" type="primary" v-on:click="btnViewClick(scope.row)">{{scope.row.userName}}</el-link>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="displayName" show-overflow-tooltip
+                                 label="姓名">
+                </el-table-column>
+                <el-table-column prop="organNames" show-overflow-tooltip
+                                 label="组织">
+                </el-table-column>
+                <el-table-column prop="lastActivityDate"
+                                 label="上次登录">
+                </el-table-column>
+                <el-table-column prop="countOfLogin"
+                                 label="登录次数">
+                </el-table-column>
+                <el-table-column label="" align="right" width="150">
+                    <template slot-scope="scope">
+                        <el-button-group>
+                            <template v-if="formInline.range==0">
+                                <el-button plain size="mini" icon="el-icon-plus" type="primary" v-on:click="btnRangeClick('only',scope.row.id)">
+                                    安 排
+                                </el-button>
+                            </template>
+                            <template v-else>
+                                <el-button plain size="mini" icon="el-icon-minus" type="warning" v-on:click="btnRangeClick('only',scope.row.id)">
+                                    移 出
+                                </el-button>
+                            </template>
+                        </el-button-group>
+                    </template>
+                </el-table-column>
+                @await Html.PartialAsync("_PartialTableEmpty")
+            </el-table>
+
+            <div style="margin-top: 10px;">
+                <el-pagination v-on:current-change="handleCurrentChange" background
+                               v-on:size-change="handleSizeChange"
+                               :current-page="formInline.pageIndex"
+                               :page-size="formInline.pageSize"
+                               :page-sizes="pageSizes"
+                               layout="total,sizes, prev, pager, next, jumper"
+                               :total="count">
+                </el-pagination>
+            </div>
+        </el-card>
+    </el-col>
+</el-row>
+
+@section Scripts{
+    <script src="/sitefiles/assets/js/admin/settings/usersGroupRange.js" type="text/javascript"></script>
+}

@@ -8,5 +8,7 @@ namespace XBLMS.Enums
     public enum RangeType
     {
         [DataEnum(DisplayName = "考试安排",Value = "Exam")] Exam,
+        [DataEnum(DisplayName = "调查安排", Value = "ExamQuestionnaire")] ExamQuestionnaire,
+        [DataEnum(DisplayName = "测评安排", Value = "ExamAssessment")] ExamAssessment,
     }
 }

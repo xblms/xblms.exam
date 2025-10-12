@@ -43,10 +43,11 @@ namespace XBLMS.Web.Controllers.Admin
                 administrator = await _administratorRepository.GetByUserNameAsync(userName);
                 if (administrator != null)
                 {
+                    await _authManager.AddStatCount(StatType.AdminLoginFailure, administrator);
                     await _administratorRepository.UpdateLastActivityDateAndCountOfFailedLoginAsync(administrator); // 记录最后登录时间、失败次数+1
                 }
 
-                await _statRepository.AddCountAsync(StatType.AdminLoginFailure);
+
                 return this.Error(errorMessage);
             }
 
@@ -56,7 +57,7 @@ namespace XBLMS.Web.Controllers.Admin
 
             var token = _authManager.AuthenticateAdministrator(administrator, request.IsPersistent);
 
-            await _statRepository.AddCountAsync(StatType.AdminLoginSuccess);
+            await _authManager.AddStatCount(StatType.AdminLoginSuccess, administrator);
             await _logRepository.AddAdminLogAsync(administrator, PageUtils.GetIpAddress(Request), Constants.ActionsLoginSuccess);
 
             var cacheKey = Constants.GetSessionIdCacheKey(administrator.Id);

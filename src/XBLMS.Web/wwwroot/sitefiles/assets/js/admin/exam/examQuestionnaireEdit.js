@@ -4,6 +4,8 @@ var $urlUploadTm = $url + '/uploadTm';
 var data = utils.init({
   id: utils.getQueryInt('id'),
   copyId: utils.getQueryInt('copyId'),
+  isCourseUse: utils.getQueryBoolean('isCourseUse'),
+  isSelect: false,
   form: null,
   tmList: [],
   submitDialogVisible: false,
@@ -16,18 +18,22 @@ var data = utils.init({
   errorMsgList: [],
   uploadExcelTmList: [],
   userGroupList: null,
-  successTotal: 0
+  successTotal: 0,
+  systemCode: null
 });
 
 var methods = {
   apiGet: function () {
     var $this = this;
 
+    this.isSelect = this.isCourseUse;
+
     utils.loading(this, true);
     $api.get($url, { params: { id: this.id } }).then(function (response) {
       var res = response.data;
 
       $this.userGroupList = res.userGroupList;
+      $this.systemCode = res.systemCode;
 
       $this.form = _.assign({}, res.item);
       if ($this.id > 0) {
@@ -38,6 +44,9 @@ var methods = {
           $this.form.title = $this.form.title + "-复制";
           $this.form.submitType = "Save";
         }
+      }
+      else {
+        $this.form.isCourseUse = $this.isCourseUse;
       }
     }).catch(function (error) {
       utils.error(error, { layer: true });
@@ -99,13 +108,13 @@ var methods = {
       var res = response.data;
       if (res.value) {
         utils.success("操作成功");
+        utils.closeLayerSelf();
       }
 
     }).catch(function (error) {
       utils.error(error, { layer: true });
     }).then(function () {
       utils.loading($this, false);
-      utils.closeLayerSelf();
     });
   },
   submitValid: function () {
@@ -141,7 +150,6 @@ var methods = {
     this.tmList = res.tmList;
     this.errorMsgList = res.errorMsgList;
     this.successTotal = res.successTotal;
-
     this.uploadResult = true;
     utils.success("导入完成，请查看导入结果", { layer: true });
   },

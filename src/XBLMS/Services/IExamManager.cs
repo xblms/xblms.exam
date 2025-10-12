@@ -7,22 +7,20 @@ namespace XBLMS.Services
 {
     public partial interface IExamManager
     {
-        Task GetSmallListByPaper(ExamPaperRandomTm tm, int startId, ExamPaper paper);
         Task<ExamTmSmall> GetSmallTmInfo(int tmId);
         Task<ExamTm> GetTmInfo(int tmId);
         Task GetTmInfo(ExamTm tm);
         Task GetTmDeleteInfo(ExamTm tm);
         Task GetTmInfoByPaper(ExamTm tm);
         Task GetTmInfoByPaperUser(ExamPaperRandomTm tm, ExamPaper paper, int startId, bool paperView = false);
-        Task GetTmInfoByPaperViewAdmin(ExamPaperRandomTm tm, ExamPaper paper, int startId);
-        Task GetTmInfoByPaperMark(ExamPaperRandomTm tm, ExamPaper paper, int startId);
+        Task GetTmInfoByPaperAdmin(ExamPaperRandomTm tm, ExamPaper paper, int startId);
         Task GetTmInfoByPracticing(ExamTm tm);
-        Task GetTmInfoByPracticeView(ExamTm tm,int practiceId);
+        Task GetTmInfoByPracticeView(ExamTm tm, int practiceId);
 
-        Task<List<Cascade<int>>> GetExamTmTreeCascadesAsync(bool isTotal = false);
-        Task<List<Cascade<int>>> GetExamPaperTreeCascadesAsync(bool isTotal = false);
-        Task<List<Cascade<int>>> GetKnowlegesTreeCascadesAsync(bool isTotal = false);
-        Task GetPaperInfo(ExamPaper paper, User user, bool cjList = false);
+        Task<List<Cascade<int>>> GetExamTmTreeCascadesAsync(AdminAuth auth, bool isTotal = false);
+        Task<List<Cascade<int>>> GetExamPaperTreeCascadesAsync(AdminAuth auth, bool isTotal = false);
+        Task<List<Cascade<int>>> GetKnowlegesTreeCascadesAsync(AdminAuth auth, bool isTotal = false);
+        Task GetPaperInfo(ExamPaper paper, User user, int planId = 0, int courseId = 0, bool cjList = false);
         Task GetPaperInfo(ExamPaper paper, User user, ExamPaperStart start);
         Task<(bool Success, string msg)> CheckExam(int paperId, int userId);
 

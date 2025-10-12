@@ -35,6 +35,8 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
 
             config.IsAdminCaptchaDisabled = request.IsAdminCaptchaDisabled;
 
+            config.AdminDefaultPassword = request.AdminDefaultPassword;
+
             await _configRepository.UpdateAsync(config);
 
             await _authManager.AddAdminLogAsync("修改管理员设置");

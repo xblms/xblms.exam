@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+Ôªøusing Microsoft.AspNetCore.Mvc;
 using System.Collections;
 using System.Threading.Tasks;
 using XBLMS.Dto;
@@ -18,15 +18,16 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 return this.NoAuth();
             }
 
-            var admin = await _authManager.GetAdminAsync();
+            var adminAuth = await _authManager.GetAdminAuth();
+            var admin = adminAuth.Admin;
 
             var insertedTreeIdHashtable = new Hashtable { [1] = request.ParentId };
-            var names = request.Names.Split('\n');
+            var names = request.Names.Split("\n");
             foreach (var item in names)
             {
                 if (string.IsNullOrEmpty(item)) continue;
 
-                var count = StringUtils.GetStartCount("£≠", item) == 0 ? StringUtils.GetStartCount("-", item) : StringUtils.GetStartCount("£≠", item);
+                var count = StringUtils.GetStartCount("Ôºç", item) == 0 ? StringUtils.GetStartCount("-", item) : StringUtils.GetStartCount("Ôºç", item);
                 var name = item.Substring(count, item.Length - count);
                 count++;
 
@@ -44,19 +45,25 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
                     var parentId = (int)insertedTreeIdHashtable[count];
 
-                    var insertedTkId = await _examPaperTreeRepository.InsertAsync(new ExamPaperTree
+                    var insertedTreeId = await _examPaperTreeRepository.InsertAsync(new ExamPaperTree
                     {
                         Name = name,
                         ParentId = parentId,
-                        CompanyId=admin.CompanyId,
-                        DepartmentId= admin.DepartmentId,
-                        CreatorId= admin.CreatorId
+                        CompanyId = adminAuth.CurCompanyId,
+                        DepartmentId = admin.DepartmentId,
+                        CreatorId = admin.Id,
+                        CompanyParentPath = adminAuth.CompanyParentPath,
+                        DepartmentParentPath = admin.DepartmentParentPath,
                     });
 
-                    await _authManager.AddAdminLogAsync("–¬‘ˆ ‘æÌ∑÷¿‡", $"{name}");
+                    var insertTree = await _examPaperTreeRepository.GetAsync(insertedTreeId);
+                    insertTree.ParentPath = await _examPaperTreeRepository.GetParentPathAsync(insertTree.Id);
+                    await _examPaperTreeRepository.UpdateAsync(insertTree);
+
+                    await _authManager.AddAdminLogAsync("Êñ∞Â¢ûËØïÂç∑ÂàÜÁ±ª", $"{name}");
 
 
-                    insertedTreeIdHashtable[count + 1] = insertedTkId;
+                    insertedTreeIdHashtable[count + 1] = insertedTreeId;
                 }
             }
             return new BoolResult

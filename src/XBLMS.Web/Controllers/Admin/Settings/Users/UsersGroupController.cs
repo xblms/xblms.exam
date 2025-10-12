@@ -52,7 +52,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
         public class GetEditResult
         {
             public UserGroup Group { get; set; }
-            public List<OrganTree> Organs { get; set; }
+            public List<SelectOrgans> Organs { get; set; }
             public List<Select<string>> GroupTypeSelects { get; set; }
             public List<string> SelectOrganIds { get; set; }
         }
@@ -66,6 +66,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
         public class SelectOrgans
         {
             public int Id { get; set; }
+            public string Name { get; set; }
             public string Type { get; set; }
         }
     }

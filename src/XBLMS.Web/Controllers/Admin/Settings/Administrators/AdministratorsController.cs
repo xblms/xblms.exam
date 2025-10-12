@@ -68,6 +68,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
             public bool Locked { get; set; }
             public string Roles { get; set; }
             public AuthorityType Auth { get; set; }
+            public int CreatorId { get; set; }
         }
 
         public class GetResult

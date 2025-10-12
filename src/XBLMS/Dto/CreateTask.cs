@@ -5,9 +5,14 @@ namespace XBLMS.Dto
 {
     public class CreateTask
     {
-        public CreateTask(CreateType createType,ExamPaperAnswer examPaperAnswer)
+        public CreateTask(CreateType createType, ExamPaperAnswer examPaperAnswer)
         {
             ExamPaperAnswer = examPaperAnswer;
+            CreateType = createType;
+        }
+        public CreateTask(CreateType createType, int taskId)
+        {
+            TaskId = taskId;
             CreateType = createType;
         }
         public CreateTask(CreateType createType, ExamPaperAnswerSmall examPaperAnswerSmall)
@@ -15,14 +20,10 @@ namespace XBLMS.Dto
             ExamPaperAnswerSmall = examPaperAnswerSmall;
             CreateType = createType;
         }
-        public CreateTask(CreateType createType,int startId)
-        {
-            StartId = startId;
-            CreateType = createType;
-        }
         public CreateType CreateType { get; set; }
         public ExamPaperAnswer ExamPaperAnswer { get; set; }
         public ExamPaperAnswerSmall ExamPaperAnswerSmall { get; set; }
-        public int StartId { get; set; }
+        public int TaskId { get; set; }
+        public bool Wait { get; set; }
     }
 }

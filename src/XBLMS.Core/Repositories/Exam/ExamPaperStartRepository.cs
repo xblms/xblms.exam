@@ -42,13 +42,14 @@ namespace XBLMS.Core.Repositories
         {
             await _repository.DeleteAsync(Q.Where(nameof(ExamPaperStart.ExamPaperId), paperId));
         }
-        public async Task DeleteByUserId(int userId)
-        {
-            await _repository.DeleteAsync(Q.Where(nameof(ExamPaperStart.UserId), userId));
-        }
         public async Task DeleteAsync(int id)
         {
             await _repository.DeleteAsync(id);
+        }
+
+        public async Task DeleteByUserId(int userId)
+        {
+            await _repository.DeleteAsync(Q.Where(nameof(ExamPaperStart.UserId), userId));
         }
         public async Task ClearByPaperAndUserAsync(int paperId, int userId)
         {
@@ -58,9 +59,19 @@ namespace XBLMS.Core.Repositories
         {
             return await _repository.GetAsync(id);
         }
-        public async Task<ExamPaperStart> GetNoSubmitAsync(int paperId, int userId)
+        public async Task<ExamPaperStart> GetNoSubmitAsync(int planId, int courseId, int paperId, int userId)
         {
             return await _repository.GetAsync(Q.
+                WhereNullOrFalse(nameof(ExamPaperStart.IsSubmit)).
+                Where(nameof(ExamPaperStart.ExamPaperId), paperId).
+                Where(nameof(ExamPaperStart.PlanId), planId).
+                Where(nameof(ExamPaperStart.CourseId), courseId).
+                Where(nameof(ExamPaperStart.UserId), userId));
+        }
+        public async Task<int> GetNoSubmitIdAsync(int paperId, int userId)
+        {
+            return await _repository.GetAsync<int>(Q.
+                Select(nameof(ExamPaperStart.Id)).
                 WhereNullOrFalse(nameof(ExamPaperStart.IsSubmit)).
                 Where(nameof(ExamPaperStart.ExamPaperId), paperId).
                 Where(nameof(ExamPaperStart.UserId), userId));
@@ -68,14 +79,6 @@ namespace XBLMS.Core.Repositories
         public async Task<List<ExamPaperStart>> GetNoSubmitListAsync(int paperId, int userId)
         {
             return await _repository.GetAllAsync(Q.
-                WhereNullOrFalse(nameof(ExamPaperStart.IsSubmit)).
-                Where(nameof(ExamPaperStart.ExamPaperId), paperId).
-                Where(nameof(ExamPaperStart.UserId), userId));
-        }
-        public async Task<int> GetNoSubmitIdAsync(int paperId, int userId)
-        {
-            return await _repository.GetAsync<int>(Q.
-                Select(nameof(ExamPaperStart.Id)).
                 WhereNullOrFalse(nameof(ExamPaperStart.IsSubmit)).
                 Where(nameof(ExamPaperStart.ExamPaperId), paperId).
                 Where(nameof(ExamPaperStart.UserId), userId));
@@ -125,11 +128,16 @@ namespace XBLMS.Core.Repositories
             var list = await _repository.GetAllAsync(query.ForPage(pageIndex, pageSize));
             return (total, list);
         }
-        public async Task<(int total, List<ExamPaperStart> list)> GetListByAdminAsync(int paperId, string dateFrom, string dateTo, string keyWords, int pageIndex, int pageSize, bool isMark = true)
+        public async Task<(int total, List<ExamPaperStart> list)> GetListByAdminAsync(int paperId, int planId, int courseId, string dateFrom, string dateTo, string keyWords, int pageIndex, int pageSize, bool isMark = true)
         {
             var query = Q.
                 WhereTrue(nameof(ExamPaperStart.IsSubmit)).
                 Where(nameof(ExamPaperStart.ExamPaperId), paperId);
+
+            if (planId > 0 || courseId > 0)
+            {
+                query.Where(nameof(ExamPaperStart.PlanId), planId).Where(nameof(ExamPaperStart.CourseId), courseId);
+            }
 
             if (isMark)
             {
@@ -195,14 +203,15 @@ namespace XBLMS.Core.Repositories
                 Where(nameof(ExamPaperStart.ExamPaperId), paperId));
         }
 
-
-        public async Task<decimal> GetMaxScoreAsync(int userId, int paperId)
+        public async Task<decimal> GetMaxScoreAsync(int userId, int paperId, int planId, int courseId)
         {
             var maxItem = await _repository.GetAsync(Q.
                  WhereTrue(nameof(ExamPaperStart.IsSubmit)).
                  WhereTrue(nameof(ExamPaperStart.IsMark)).
                  Where(nameof(ExamPaperStart.ExamPaperId), paperId).
                  Where(nameof(ExamPaperStart.UserId), userId).
+                 Where(nameof(ExamPaperStart.PlanId), planId).
+                 Where(nameof(ExamPaperStart.CourseId), courseId).
                  OrderByDesc(nameof(ExamPaperStart.Score)).Limit(1));
             if (maxItem != null)
             {
@@ -210,7 +219,6 @@ namespace XBLMS.Core.Repositories
             }
             return 0;
         }
-
 
         public async Task<decimal> GetMaxScoreAsync(int paperId)
         {
@@ -248,10 +256,11 @@ namespace XBLMS.Core.Repositories
         public async Task<int> CountDistinctAsync(int paperId)
         {
             var userIds = await _repository.GetAllAsync<int>(Q.
-                Select(nameof(ExamPaperStart.UserId)).
-                WhereTrue(nameof(ExamPaperStart.IsMark)).
-                WhereTrue(nameof(ExamPaperStart.IsSubmit)).
-                Where(nameof(ExamPaperStart.ExamPaperId), paperId));
+               Select(nameof(ExamPaperStart.UserId)).
+               WhereTrue(nameof(ExamPaperStart.IsMark)).
+               WhereTrue(nameof(ExamPaperStart.IsSubmit)).
+               Where(nameof(ExamPaperStart.ExamPaperId), paperId));
+
             if (userIds != null && userIds.Count > 0)
             {
                 return userIds.Distinct().Count();
@@ -283,16 +292,18 @@ namespace XBLMS.Core.Repositories
         public async Task<int> CountByPassDistinctAsync(int paperId, int passScore)
         {
             var userIds = await _repository.GetAllAsync<int>(Q.
-                  Select(nameof(ExamPaperStart.UserId)).
-                  Where(nameof(ExamPaperStart.Score), ">=", passScore).
-                  WhereTrue(nameof(ExamPaperStart.IsMark)).
-                  WhereTrue(nameof(ExamPaperStart.IsSubmit)).
-              Where(nameof(ExamPaperStart.ExamPaperId), paperId));
+            Select(nameof(ExamPaperStart.UserId)).
+            Where(nameof(ExamPaperStart.Score), ">=", passScore).
+            WhereTrue(nameof(ExamPaperStart.IsMark)).
+            WhereTrue(nameof(ExamPaperStart.IsSubmit)).
+            Where(nameof(ExamPaperStart.ExamPaperId), paperId));
+
             if (userIds != null && userIds.Count > 0)
             {
                 return userIds.Distinct().Count();
             }
             return 0;
+
         }
         public async Task<int> CountByMarkAsync(int paperId)
         {

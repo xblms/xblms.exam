@@ -1,0 +1,127 @@
+﻿@page
+@{ Layout = "_Layout"; }
+@section Styles{
+    <link href="/sitefiles/assets/lib/geeks/css/theme.min.css" rel="stylesheet" type="text/css" />
+}
+<template>
+    <el-row :gutter="5" class="pt-8">
+        <el-col :span="6" class="text-center pt-2">
+            <apexchart type="radialBar" :options="passChartOptions" :series="passSeries" height="310"></apexchart>
+            <div class="py-1"></div>
+            <apexchart type="radialBar" :options="nopassChartOptions" :series="nopassSeries" height="310"></apexchart>
+        </el-col>
+        <el-col :span="18">
+            <el-card class="bg-light me-5 rounded-5 p-5">
+                <el-row :gutter="18">
+                    <el-col :span="8">
+                        <el-card class="rounded-pill card-lift fw-bolder">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>总分</span>
+                                <span class="fw-bold">{{ totalScore }}</span>
+                            </div>
+                        </el-card>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-card class="rounded-pill card-lift fw-bolder">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>及格分</span>
+                                <span class="fw-bold">{{ passScore }}</span>
+                            </div>
+                        </el-card>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-card class="rounded-pill card-lift fw-bolder">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>考生数量</span>
+                                <span class="fw-bold">{{ totalUser }}</span>
+                            </div>
+                        </el-card>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="18" class="mt-5">
+                    <el-col :span="8">
+                        <el-card class="rounded-pill card-lift fw-bolder">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>最高分</span>
+                                <span class="fw-bold">{{ maxScore }}</span>
+                            </div>
+                        </el-card>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-card class="rounded-pill card-lift fw-bolder">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>最低分</span>
+                                <span class="fw-bold">{{ minScore }}</span>
+                            </div>
+                        </el-card>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-card class="rounded-pill card-lift fw-bolder">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>平均分</span>
+                                <span class="fw-bold">{{ utils.formatAvg(totalUserScore,totalExamTimes) }}</span>
+                            </div>
+                        </el-card>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="18" class="mt-5 d-flex justify-content-between align-items-center">
+                    <el-col :span="8">
+                        <el-card class="rounded-pill card-lift fw-bolder bg-primary text-white">
+                            <div class="d-flex justify-content-between align-items-center px-3">
+                                <span>参考人数</span>
+                                <span class="fw-bold fs-1">{{ totalExamTimesDistinct }}</span>
+                            </div>
+                        </el-card>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-card class="rounded-pill card-lift fw-bolder bg-success text-white">
+                            <div class="d-flex justify-content-between align-items-center px-3">
+                                <span>及格人数</span>
+                                <span class="fw-bold fs-1">{{ totalPassDistinct }}</span>
+                            </div>
+                        </el-card>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-card class="rounded-pill card-lift fw-bolder">
+                            <div class="d-flex justify-content-between align-items-center ps-3">
+                                <span>及格率</span>
+                                <el-progress type="circle" :percentage="utils.formatPercentFloat(totalPassDistinct,totalExamTimesDistinct)" :width="88" :stroke-width="10" color="#67C23A"></el-progress>
+                            </div>
+                        </el-card>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="18" class="mt-3 d-flex justify-content-between align-items-center">
+                    <el-col :span="8">
+                        <el-card class="rounded-pill card-lift fw-bolder">
+                            <div class="d-flex justify-content-between align-items-center px-3">
+                                <span>参考人次</span>
+                                <span class="fw-bold fs-1">{{ totalExamTimes }}</span>
+                            </div>
+                        </el-card>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-card class="rounded-pill card-lift fw-bolder">
+                            <div class="d-flex justify-content-between align-items-center px-3">
+                                <span>及格人次</span>
+                                <span class="fw-bold fs-1">{{ totalPass }}</span>
+                            </div>
+                        </el-card>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-card class="rounded-pill card-lift fw-bolder">
+                            <div class="d-flex justify-content-between align-items-center ps-3">
+                                <span>及格率</span>
+                                <el-progress type="circle" :percentage="utils.formatPercentFloat(totalPass,totalExamTimes)" :width="88" :stroke-width="10" color="#67C23A"></el-progress>
+                            </div>
+                        </el-card>
+                    </el-col>
+                </el-row>
+            </el-card>
+        </el-col>
+    </el-row>
+</template>
+@section Scripts{
+    <script src="/sitefiles/assets/lib/apexcharts/apexcharts.js" type="text/javascript"></script>
+    <script src="/sitefiles/assets/lib/apexcharts/vue-apexcharts.js" type="text/javascript"></script>
+    <script src="/sitefiles/assets/js/admin/exam/examPaperManagerAnalysis.js" type="text/javascript"></script>
+}

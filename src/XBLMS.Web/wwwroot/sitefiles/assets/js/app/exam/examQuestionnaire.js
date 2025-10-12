@@ -32,7 +32,7 @@ var methods = {
       $this.total = res.total;
 
     }).catch(function (error) {
-      utils.error(error);
+      utils.error(error, { layer: true });
     }).then(function () {
       utils.loading($this, false);
       $this.loadMoreLoading = false;
@@ -49,7 +49,7 @@ var methods = {
       });
 
       $this.$set($this.list, pIndex, res.item);
-
+      top.utils.pointNotice(res.pointNotice);
 
     }).catch(function (error) {
     }).then(function () {
@@ -66,25 +66,12 @@ var methods = {
     this.apiGet();
   },
   btnViewClick: function (paper) {
-    //var $this = this;
-    //top.utils.openLayer({
-    //  title: false,
-    //  closebtn: 0,
-    //  url: utils.getExamUrl('examQuestionnairing', { id: paper.id }),
-    //  width: "100%",
-    //  height: "100%",
-    //  end: function () {
-    //    $this.apiGetItem(paper.id);
-    //  }
-    //});
-
-
 
     if (paper.submitType === 'Submit') {
-      utils.success("已提交")
+      utils.success("已提交", { layer: true })
     }
     else if (!paper.state) {
-      utils.success("不在有效期内！")
+      utils.warning("不在有效期内！", { layer: true })
     }
     else {
       var $this = this;
@@ -99,20 +86,6 @@ var methods = {
         }
       });
     }
-  },
-  btnAppMenuClick: function (common) {
-    if (common === 'index') {
-      location.href = utils.getIndexUrl();
-    }
-    if (common === 'exam') {
-      location.href = utils.getExamUrl("examPaper");
-    }
-    if (common === 'wenjuan') {
-      location.href = utils.getExamUrl("examQuestionnaire");
-    }
-    if (common === 'mine') {
-      location.href = utils.getRootUrl('mine');
-    }
   }
 };
 
@@ -121,7 +94,7 @@ var $vue = new Vue({
   data: data,
   methods: methods,
   created: function () {
-    document.title = "问卷调查";
+    top.document.title = "问卷调查";
     this.apiGet();
   },
 });

@@ -2,9 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
-using System.Collections.Generic;
 using XBLMS.Configuration;
-using XBLMS.Dto;
 using XBLMS.Repositories;
 using XBLMS.Services;
 
@@ -37,24 +35,28 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
         {
             public int UserId { get; set; }
             public string UserName { get; set; }
+            public string DutyName { get; set; }
             public string DisplayName { get; set; }
             public string AvatarUrl { get; set; }
             public string Mobile { get; set; }
             public string Email { get; set; }
-            public string OrganId { get; set; }
+            public int OrganId { get; set; }
+            public string OrganType { get; set; }
+            public string OrganName { get; set; }
             public bool Locked { get; set; }
-            public List<OrganTree> Organs { get; set; }
         }
         public class SubmitRequest
         {
             public int UserId { get; set; }
             public string UserName { get; set; }
+            public string DutyName { get; set; }
             public string DisplayName { get; set; }
             public string Password { get; set; }
             public string AvatarUrl { get; set; }
             public string Mobile { get; set; }
             public string Email { get; set; }
-            public string OrganId { get; set; }
+            public int OrganId { get; set; }
+            public string OrganType { get; set; }
             public bool Locked { get; set; }
         }
         public class UploadRequest

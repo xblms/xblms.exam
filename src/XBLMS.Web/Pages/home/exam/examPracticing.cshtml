@@ -49,11 +49,13 @@
             <div class="pe-3">
                 <div v-if="tm.baseTx==='Zuheti'">
                     <div class="mb-3 fw-bold">
-                        <div v-html="tm.titleHtml"></div>
+                        <el-card>
+                            <div v-html="tm.titleHtml"></div>
+                        </el-card>
                     </div>
                     <div class="mb-3" v-for="(small,smallIndex) in tm.smallList">
                         <div class="mb-3">
-                            <div>第<span class="px-1">{{ (smallIndex+1) }}</span>小题（<span>{{ small.txName }}</span>）</div>
+                            <div class="fw-light">第<span class="px-1">{{ (smallIndex+1) }}</span>小题（<span>{{ small.txName }}</span>）</div>
                             <div v-if="small.baseTx==='Tiankongti'">
                                 <span v-if="small.titleList && small.titleList.length>0">
                                     <span v-for="tmContent in small.titleList">
@@ -71,7 +73,7 @@
                             <div v-if="small.baseTx==='Danxuanti' || small.baseTx==='Panduanti'">
                                 <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in small.optionsRandom">
                                     <div class="d-flex justify-content-start align-items-center">
-                                        <div class="me-1 position-relative">
+                                        <div>
                                             {{optionsABC[optionIndex]}}
                                         </div>
                                         <div class="w-100 pt-1">
@@ -85,7 +87,7 @@
                             <div v-else-if="small.baseTx==='Duoxuanti'">
                                 <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in small.optionsRandom">
                                     <div class="d-flex justify-content-start align-items-center">
-                                        <div class="me-1 position-relative">
+                                        <div>
                                             {{optionsABC[optionIndex]}}
                                         </div>
                                         <div class="w-100 pt-1">
@@ -131,7 +133,7 @@
                         <div v-if="tm.baseTx==='Danxuanti' || tm.baseTx==='Panduanti'">
                             <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.optionsRandom">
                                 <div class="d-flex justify-content-start align-items-center">
-                                    <div class="me-1 position-relative">
+                                    <div>
                                         {{optionsABC[optionIndex]}}
                                     </div>
                                     <div class="w-100 pt-1">
@@ -145,7 +147,7 @@
                         <div v-else-if="tm.baseTx==='Duoxuanti'">
                             <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.optionsRandom">
                                 <div class="d-flex justify-content-start align-items-center">
-                                    <div class="me-1 position-relative">
+                                    <div>
                                         {{optionsABC[optionIndex]}}
                                     </div>
                                     <div class="w-100 pt-1">

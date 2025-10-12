@@ -1,4 +1,4 @@
-var $url = "/exam/examPaperCer";
+﻿var $url = "/exam/examPaperCer";
 
 var data = utils.init({
   form: {

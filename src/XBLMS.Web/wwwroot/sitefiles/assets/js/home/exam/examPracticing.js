@@ -17,7 +17,7 @@ var data = utils.init({
   tm: null,
   tmIndex: 0,
   watermark: null,
-  answerResult: null
+  answerResult:null
 });
 
 var methods = {
@@ -34,6 +34,7 @@ var methods = {
 
       $this.watermark = res.watermark;
 
+      top.utils.pointNotice(res.pointNotice);
 
       $this.apiGetTmInfo($this.tmIds[0])
 
@@ -49,8 +50,7 @@ var methods = {
 
     $api.get($urlTm, { params: { id: tmid } }).then(function (response) {
       var res = response.data;
-      $this.tm = res.item;
-
+      $this.tm = JSON.parse(utils.AESDecrypt(res.tm, res.salt));
     }).catch(function (error) {
       utils.error(error, { layer: true });
     }).then(function () {
@@ -65,7 +65,6 @@ var methods = {
     if (setTm.baseTx === "Duoxuanti") {
       answer = setTm.optionsValues.join('');
     }
-    var completionStatus = true;
     if (setTm.baseTx === "Tiankongti") {
       answer = setTm.optionsValues.join(',');
     }
@@ -177,7 +176,7 @@ var methods = {
       utils.loading($this, false);
     });
   },
-  btnWrongRemoveClick: function () {
+  btnWrongRemoveClick: function(){
     this.apiWrongRemove();
   },
   apiWrongRemove: function () {
@@ -200,7 +199,7 @@ var methods = {
     this.goResult();
   },
   goResult: function () {
-    utils.loading(this, true, "正在统计练习...");
+    utils.loading(this, true,"正在统计练习...");
     location.href = utils.getExamUrl("examPracticeResult", { id: this.id });
   }
 };

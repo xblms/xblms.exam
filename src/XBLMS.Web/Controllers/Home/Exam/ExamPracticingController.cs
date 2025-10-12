@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using System.Collections.Generic;
 using XBLMS.Configuration;
-using XBLMS.Models;
+using XBLMS.Dto;
 using XBLMS.Repositories;
 using XBLMS.Services;
 
@@ -21,31 +21,25 @@ namespace XBLMS.Web.Controllers.Home.Exam
         private const string RouteCollectionRemove = Route + "/collectionRemove";
         private const string RouteWrongRemove = Route + "/wrongRemove";
 
-
-        private const string RoutePricticingTmIds = Route + "/tmids";
-
-        private const string RoutePricticingSubmit = Route + "/submit";
-
-
+        private const string RoutePricticingTmIds = Route+ "/tmids";
+        private const string RoutePricticingSubmit = Route+"/submit";
         private const string RouteCollectionSubmit = Route + "/collectionSubmit";
-
         private const string RouteError = Route + "home/exam/practice/error";
         private const string RouteErrorDel = Route + "home/exam/practice/error/del";
-
 
         private readonly IAuthManager _authManager;
         private readonly IConfigRepository _configRepository;
         private readonly IDatabaseManager _databaseManager;
         private readonly IAdministratorRepository _adminRepository;
         private readonly IExamTmRepository _examTmRepository;
-        private readonly IExamTmSmallRepository _examTmSmallRepository;
         private readonly IExamPracticeRepository _examPracticeRepository;
         private readonly IExamTxRepository _examTxRepository;
         private readonly IExamManager _examManager;
         private readonly IExamPracticeAnswerRepository _examPracticeAnswerRepository;
-        private readonly IExamPracticeAnswerSmallRepository _examPracticeAnswerSmallRepository;
         private readonly IExamPracticeCollectRepository _examPracticeCollectRepository;
         private readonly IExamPracticeWrongRepository _examPracticeWrongRepository;
+        private readonly IExamPracticeAnswerSmallRepository _examPracticeAnswerSmallRepository;
+        private readonly IExamTmSmallRepository _examTmSmallRepository;
 
 
         public ExamPracticingController(IAuthManager authManager,
@@ -55,12 +49,12 @@ namespace XBLMS.Web.Controllers.Home.Exam
             IAdministratorRepository administratorRepository,
             IExamPracticeRepository examPracticeRepository,
             IExamTmRepository examTmRepository,
-            IExamTmSmallRepository examTmSmallRepository,
             IExamTxRepository examTxRepository,
             IExamPracticeAnswerRepository examPracticeAnswerRepository,
             IExamPracticeAnswerSmallRepository examPracticeAnswerSmallRepository,
             IExamPracticeCollectRepository examPracticeCollectRepository,
-            IExamPracticeWrongRepository examPracticeWrongRepository)
+            IExamPracticeWrongRepository examPracticeWrongRepository,
+            IExamTmSmallRepository examTmSmallRepository)
         {
             _authManager = authManager;
             _examManager = examManager;
@@ -68,13 +62,18 @@ namespace XBLMS.Web.Controllers.Home.Exam
             _databaseManager = databaseManager;
             _adminRepository = administratorRepository;
             _examTmRepository = examTmRepository;
-            _examTmSmallRepository = examTmSmallRepository;
             _examPracticeRepository = examPracticeRepository;
             _examTxRepository = examTxRepository;
             _examPracticeWrongRepository = examPracticeWrongRepository;
             _examPracticeCollectRepository = examPracticeCollectRepository;
             _examPracticeAnswerRepository = examPracticeAnswerRepository;
             _examPracticeAnswerSmallRepository = examPracticeAnswerSmallRepository;
+            _examTmSmallRepository = examTmSmallRepository;
+        }
+        public class GetTmResult
+        {
+            public string Tm { get; set; }
+            public string Salt { get; set; }
         }
         public class GetSubmitAnswerRequest
         {
@@ -92,6 +91,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
         }
         public class GetSubmitAnswerResult
         {
+            public PointNotice PointNotice { get; set; }
             public bool IsRight { get; set; }
             public string Answer { get; set; }
             public string Jiexi { get; set; }
@@ -117,6 +117,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
         }
         public class GetResult
         {
+            public PointNotice PointNotice { get; set; }
             public string Watermark { get; set; }
             public int Total { get; set; }
             public List<int> TmIds { get; set; }

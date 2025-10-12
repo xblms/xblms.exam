@@ -119,7 +119,6 @@
             ]
         ],
         initialFrameHeight: 320,
-        emotionLocalization: true,
         enableAutoSave: !1,
         saveInterval: 9999999999999,
         allHtmlEnabled: !1,

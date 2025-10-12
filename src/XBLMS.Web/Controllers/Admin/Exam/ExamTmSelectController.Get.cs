@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using XBLMS.Dto;
 
 namespace XBLMS.Web.Controllers.Admin.Exam
 {
@@ -12,6 +10,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         [HttpGet, Route(Route)]
         public async Task<ActionResult<GetSearchResults>> Get([FromQuery] GetSearchRequest request)
         {
+            var adminAuth = await _authManager.GetAdminAuth();
             var treeIds = new List<int>();
             if (request.TreeId > 0)
             {
@@ -24,9 +23,8 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                     treeIds.Add(request.TreeId);
                 }
             }
-            var group = await _examTmGroupRepository.GetAsync(request.Id);
 
-            var (total, list) = await _examTmRepository.GetListAsync(group.TmIds, treeIds, request.TxId, request.Nandu, request.Keyword, request.Order, request.OrderType, request.IsStop, request.PageIndex, request.PageSize);
+            var (total, list) = await _examTmRepository.GetSelectListAsync(adminAuth, request.Id, false, treeIds, request.TxId, request.Nandu, request.Keyword, request.Order, request.OrderType, request.PageIndex, request.PageSize);
             if (total > 0)
             {
                 foreach (var tm in list)
@@ -43,23 +41,24 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         }
         [RequestSizeLimit(long.MaxValue)]
         [HttpGet, Route(RouteGetIn)]
-        public async Task<ActionResult<GetSearchResults>> GetSelect([FromQuery] IdRequest request)
+        public async Task<ActionResult<GetSearchResults>> GetSelect([FromQuery] GetSearchRequest request)
         {
+            var adminAuth = await _authManager.GetAdminAuth();
             var group = await _examTmGroupRepository.GetAsync(request.Id);
 
-            var list = await _examTmRepository.GetListAsync(group.TmIds);
-            if (list != null && list.Count > 0)
+            var (total, list) = await _examTmRepository.GetSelectListAsync(adminAuth, request.Id, true, null, 0, 0, string.Empty, request.Order, string.Empty, request.PageIndex, request.PageSize);
+            if (total > 0)
             {
                 foreach (var tm in list)
                 {
                     await _examManager.GetTmInfo(tm);
                 }
-                list = list.ToList().OrderBy(tm => tm.Get("TxTaxis")).ToList();
             }
 
             return new GetSearchResults
             {
-                Items = list
+                Items = list,
+                Total = total,
             };
         }
     }

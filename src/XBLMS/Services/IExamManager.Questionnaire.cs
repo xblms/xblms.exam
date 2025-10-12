@@ -8,7 +8,6 @@ namespace XBLMS.Services
     {
         Task GetQuestionnaireInfo(ExamQuestionnaire paper, User user);
         Task ClearQuestionnaire(int examPaperId);
-        Task ArrangeQuestionnaire(ExamQuestionnaire paper);
         Task SetQuestionnairTm(List<ExamQuestionnaireTm> tmList,int paperId);
     }
 

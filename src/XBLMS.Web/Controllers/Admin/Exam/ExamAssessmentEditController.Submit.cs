@@ -27,8 +27,8 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 }
             }
 
-
-            var admin = await _authManager.GetAdminAsync();
+            var adminAuth = await _authManager.GetAdminAuth();
+            var admin = adminAuth.Admin;
             var assInfo = request.Item;
 
 
@@ -41,10 +41,9 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                     assInfo.SubmitType = request.SubmitType;
 
                     await _examManager.ClearExamAssessment(assInfo.Id);
-
-                    await _examManager.ArrangerExamAssessment(assInfo);
-
                     await _examManager.SerExamAssessmentTm(request.TmList, assInfo.Id);
+
+                    _examManager.ArrangeAssessmentTask(assInfo.Id);
 
                     await _authManager.AddAdminLogAsync("重新发布测评", $"{assInfo.Title}");
                     await _authManager.AddStatLogAsync(StatType.ExamAssUpdate, "重新发布测评", assInfo.Id, assInfo.Title, last);
@@ -68,9 +67,11 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             else
             {
                 assInfo.SubmitType = request.SubmitType;
-                assInfo.CompanyId = admin.CompanyId;
+                assInfo.CompanyId = adminAuth.CurCompanyId; 
                 assInfo.CreatorId = admin.Id;
                 assInfo.DepartmentId = admin.DepartmentId;
+                assInfo.CompanyParentPath = adminAuth.CompanyParentPath;
+                assInfo.DepartmentParentPath = admin.DepartmentParentPath;
 
                 var paperId = await _examAssessmentRepository.InsertAsync(assInfo);
                 assInfo.Id = paperId;
@@ -80,7 +81,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
                 if (request.SubmitType == SubmitType.Submit)
                 {
-                    await _examManager.ArrangerExamAssessment(assInfo);
+                    _examManager.ArrangeAssessmentTask(assInfo.Id);
 
                     await _authManager.AddAdminLogAsync("发布测评", $"{assInfo.Title}");
                     await _authManager.AddStatLogAsync(StatType.ExamAssAdd, "发布测评", assInfo.Id, assInfo.Title);

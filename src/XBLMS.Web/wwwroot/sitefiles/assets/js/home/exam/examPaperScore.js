@@ -50,14 +50,7 @@ var methods = {
   },
   btnViewClick: function (paper) {
     if (paper.paper.secrecyPaperContent) {
-      var $this = this;
-      top.utils.openLayer({
-        title: false,
-        closebtn: 0,
-        url: utils.getExamUrl('examPaperView', { id: paper.id }),
-        width: "100%",
-        height: "100%"
-      });
+      top.utils.openTopLeft(paper.paper.title, utils.getExamUrl("examPaperView", { id: paper.id }));
     }
     else {
       utils.error("不允许查看答卷");

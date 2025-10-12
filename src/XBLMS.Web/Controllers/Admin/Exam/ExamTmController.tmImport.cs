@@ -1,20 +1,14 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
-using Markdig.Extensions.Figures;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using NPOI.SS.Formula.Functions;
-using NPOI.SS.UserModel;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 using XBLMS.Configuration;
 using XBLMS.Core.Utils;
-using XBLMS.Dto;
 using XBLMS.Enums;
 using XBLMS.Models;
 using XBLMS.Utils;
-using static XBLMS.Web.Controllers.Admin.Settings.Administrators.AdministratorsController;
 
 namespace XBLMS.Web.Controllers.Admin.Exam
 {
@@ -48,13 +42,12 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         [HttpPost, Route(RouteImportExcel)]
         public async Task<ActionResult<GetImportResult>> Import([FromQuery] int treeId, [FromForm] IFormFile file)
         {
-            var admin = await _authManager.GetAdminAsync();
+            var adminAuth = await _authManager.GetAdminAuth();
+            var admin = adminAuth.Admin;
 
             var cacheKey = CacheUtils.GetEntityKey("tmImport", admin.Id);
             var cacheInfo = new CacheResultImportTm() { IsError = false, IsOver = false };
             _cacheManager.AddOrUpdateAbsolute(cacheKey, cacheInfo, 1);
-
-            var companyId = admin.CompanyId;
 
             if (file == null)
             {
@@ -88,6 +81,9 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             var errorMessageList = new List<string> { };
             var sheet = ExcelUtils.Read(filePath);
 
+            var tree = await _examTmTreeRepository.GetAsync(treeId);
+
+            var styles = await _tableStyleRepository.GetExamTmStylesAsync(false);
 
             if (sheet != null)
             {
@@ -98,12 +94,9 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                     cacheInfo.TmCurrent = 0;
                     _cacheManager.AddOrUpdateAbsolute(cacheKey, cacheInfo, 1);
 
-
                     for (var i = 1; i < sheet.Rows.Count; i++) //行
                     {
                         if (i == 1) continue;
-
-                        //Thread.Sleep(100);
 
                         var row = sheet.Rows[i];
 
@@ -131,12 +124,11 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                         var answer = row[6].ToString().Trim();
                         var options = new List<string>();
 
-
                         var rowIndexName = i + 1;
-
 
                         if (!string.IsNullOrEmpty(tx) && !string.IsNullOrEmpty(title))
                         {
+
                             var txInfo = await _examTxRepository.GetAsync(tx);
                             if (txInfo == null)
                             {
@@ -145,10 +137,12 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                                 _cacheManager.AddOrUpdateAbsolute(cacheKey, cacheInfo, 1);
 
                                 failure++;
-                                continue;
+                                break;
                             }
+
                             var isGroup = txInfo.ExamTxBase == ExamTxBase.Zuheti;
                             var smallCount = 0;
+
                             if (isGroup)
                             {
                                 smallCount = TranslateUtils.ToInt(answer);
@@ -162,7 +156,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                                     break;
                                 }
                             }
-                            if (!isGroup)
+                            else
                             {
                                 if (txInfo.ExamTxBase != ExamTxBase.Tiankongti && txInfo.ExamTxBase != ExamTxBase.Jiandati)
                                 {
@@ -219,21 +213,25 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                                 }
 
                             }
+
+
                             try
                             {
-                                var examInfo = new ExamTm
+                                var examTmInfo = new ExamTm
                                 {
                                     TreeId = treeId,
                                     TxId = txInfo.Id,
                                     Title = title,
-                                    Answer = isGroup ? "" : answer,
+                                    Answer = answer,
                                     Score = scoreDouble,
                                     Zhishidian = zhishidian,
                                     Nandu = nandu,
                                     Jiexi = jiexi,
-                                    CompanyId = companyId,
+                                    CompanyId = adminAuth.CurCompanyId,
                                     CreatorId = admin.Id,
-                                    DepartmentId = admin.DepartmentId
+                                    DepartmentId = admin.DepartmentId,
+                                    CompanyParentPath = adminAuth.CompanyParentPath,
+                                    DepartmentParentPath = admin.DepartmentParentPath,
                                 };
 
                                 if (options.Count > 0 && !isGroup)
@@ -270,11 +268,11 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                                             answers[answerIndex] = "";
                                         }
                                     }
-                                    examInfo.Set("options", options.ToArray());
-                                    examInfo.Set("optionsValues", answers.ToArray());
+                                    examTmInfo.Set("options", options.ToArray());
+                                    examTmInfo.Set("optionsValues", answers.ToArray());
                                 }
 
-                                if (await _examTmRepository.ExistsAsync(examInfo.Title, examInfo.TxId))
+                                if (await _examTmRepository.ExistsAsync(examTmInfo.Title, examTmInfo.TxId))
                                 {
                                     cacheInfo.TmCurrent++;
                                     errorMessageList.Add($"【行{rowIndexName}:题库中已经存在相同题型的题目，请勿重复导入】");
@@ -286,16 +284,22 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                                     {
                                         i = i + smallCount + 1;
                                     }
+
                                     continue;
                                 }
                                 else
                                 {
-                                    var tmid = await _examTmRepository.InsertAsync(examInfo);
+                                    if (tree != null)
+                                    {
+                                        examTmInfo.TreeParentPath = tree.ParentPath;
+                                    }
+
+                                    var tmid = await _examTmRepository.InsertAsync(examTmInfo);
 
                                     if (tmid > 0)
                                     {
-                                        await _authManager.AddAdminLogAsync("新增题目-导入", $"{StringUtils.StripTags(examInfo.Title)}");
-                                        await _authManager.AddStatLogAsync(StatType.ExamTmAdd, "新增题目", tmid, StringUtils.StripTags(examInfo.Title));
+                                        await _authManager.AddAdminLogAsync("新增题目-导入", $"{StringUtils.StripTags(examTmInfo.Title)}");
+                                        await _authManager.AddStatLogAsync(StatType.ExamTmAdd, "新增题目", tmid, StringUtils.StripTags(examTmInfo.Title));
                                         await _authManager.AddStatCount(StatType.ExamTmAdd);
 
                                         success++;
@@ -308,7 +312,6 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                                             await ImportSmall(tmid, sheet, TranslateUtils.ToInt(answer), (i + 1), (smallCount + i));
                                             i = smallCount + i;
                                         }
-
                                     }
                                     else
                                     {

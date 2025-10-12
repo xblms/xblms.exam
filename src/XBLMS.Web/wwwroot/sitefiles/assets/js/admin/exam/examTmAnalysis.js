@@ -28,17 +28,14 @@ var data = utils.init({
 var methods = {
   apiGetData: function () {
     var $this = this;
-    utils.loading(this, true);
     $api.get($urlData).then(function (response) {
       var res = response.data;
 
       $this.typeList = res.typeList;
 
     }).catch(function (error) {
-      utils.loading($this, false);
       utils.error(error);
     }).then(function () {
-      utils.loading($this, false);
     });
   },
   apiGetPaper: function (query) {
@@ -59,7 +56,7 @@ var methods = {
   },
   apiGet: function () {
     var $this = this;
-    utils.loading(this, false);
+
     utils.loading(this, true, '首次加载或者重新统计的时候需要花点时间，请耐心等待...');
     $api.get($url, { params: $this.form }).then(function (response) {
       var res = response.data;
@@ -182,6 +179,7 @@ var $vue = new Vue({
   data: data,
   methods: methods,
   created: function () {
+    utils.loading(this, false);
     this.apiGetData();
     this.apiGet();
   }

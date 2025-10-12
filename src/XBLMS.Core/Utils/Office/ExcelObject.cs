@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using XBLMS.Dto;
 using XBLMS.Enums;
 using XBLMS.Models;
 using XBLMS.Services;
@@ -22,7 +23,7 @@ namespace XBLMS.Core.Utils.Office
             _examManager = examManager;
         }
 
-        public async Task CreateExcelFileForUsersAsync(List<int> userIds, string filePath)
+        public async Task CreateExcelFileForUsersAsync(AdminAuth auth, int organId, string organType, UserGroup group, int dayOfLastActivity, string keyword, string order, string filePath)
         {
             DirectoryUtils.CreateDirectoryIfNotExists(DirectoryUtils.GetDirectoryPath(filePath));
             FileUtils.DeleteFileIfExists(filePath);
@@ -32,28 +33,31 @@ namespace XBLMS.Core.Utils.Office
                 "组织",
                 "用户名",
                 "姓名",
+                "岗位",
                 "邮箱",
                 "手机",
                 "注册时间",
                 "最后一次活动时间",
                 "登录次数"
             };
-            var rows = new List<List<string>>();
 
-            foreach (var id in userIds)
+            var rows = new List<List<string>>();
+            var (total, userList) = await _databaseManager.UserRepository.GetListAsync(auth, organId, organType, group, dayOfLastActivity, keyword, order, 0, int.MaxValue);
+            foreach (var userInfo in userList)
             {
-                var userInfo = await _organManager.GetUser(id);
-                rows.Add(new List<string>
-                {
+                await _organManager.GetUser(userInfo);
+                rows.Add(
+                [
                     userInfo.Get("OrganNames").ToString(),
                     userInfo.UserName,
                     userInfo.DisplayName,
+                    userInfo.DutyName,
                     userInfo.Email,
                     userInfo.Mobile,
                     DateUtils.GetDateAndTimeString(userInfo.CreatedDate),
                     DateUtils.GetDateAndTimeString(userInfo.LastActivityDate),
                     userInfo.CountOfLogin.ToString()
-                });
+                ]);
             }
 
             ExcelUtils.Write(filePath, head, rows);
@@ -77,15 +81,17 @@ namespace XBLMS.Core.Utils.Office
                 "上次修改时间",
                 "题目内容",
                 "答案",
-                "候选项",
+                "候选项"
             };
+
+
             var rows = new List<List<string>>();
 
             foreach (var tm in tmList)
             {
                 await _examManager.GetTmInfo(tm);
-
                 var tx = await _databaseManager.ExamTxRepository.GetAsync(tm.TxId);
+
                 if (tx.ExamTxBase == ExamTxBase.Zuheti)
                 {
                     var smallList = await _databaseManager.ExamTmSmallRepository.GetListAsync(tm.Id);
@@ -171,7 +177,6 @@ namespace XBLMS.Core.Utils.Office
                     }
                     rows.Add(excelList);
                 }
-
             }
             ExcelUtils.Write(filePath, head, rows);
         }

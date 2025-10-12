@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections;
 using System.Threading.Tasks;
 using XBLMS.Dto;
@@ -18,7 +18,8 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 return this.NoAuth();
             }
 
-            var admin = await _authManager.GetAdminAsync();
+            var adminAuth = await _authManager.GetAdminAuth();
+            var admin = adminAuth.Admin;
 
             var insertedTreeIdHashtable = new Hashtable { [1] = request.ParentId };
             var names = request.Names.Split('\n');
@@ -48,10 +49,16 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                     {
                         Name = name,
                         ParentId = parentId,
-                        CompanyId=admin.CompanyId,
-                        DepartmentId= admin.DepartmentId,
-                        CreatorId= admin.CreatorId
+                        CompanyId = adminAuth.CurCompanyId,
+                        DepartmentId = admin.DepartmentId,
+                        CreatorId = admin.Id,
+                        CompanyParentPath = adminAuth.CompanyParentPath,
+                        DepartmentParentPath = admin.DepartmentParentPath,
                     });
+
+                    var insertTree = await _examTmTreeRepository.GetAsync(insertedTkId);
+                    insertTree.ParentPath = await _examTmTreeRepository.GetParentPathAsync(insertTree.Id);
+                    await _examTmTreeRepository.UpdateAsync(insertTree);
 
                     await _authManager.AddAdminLogAsync("新增题目分类", $"{name}");
 

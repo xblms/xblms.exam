@@ -29,17 +29,41 @@
         }
     </style>
 }
+<el-card class="mb-3 sticky-top">
+    <div class="row">
+        <div class="col-4">
+            <div class="d-flex flex-column border-end border-bottom border-bottom-0 gap-1 p-3">
+                <h3 class="mb-0">{{ item.rightCount }}</h3>
+                <span class="fw-medium text-success">正 确</span>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="d-flex flex-column border-end border-bottom border-bottom-0 gap-1 p-3">
+                <h3 class="mb-0">{{ item.answerCount-item.rightCount }}</h3>
+                <span class="fw-medium text-danger">错误</span>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="d-flex flex-column gap-1 p-3">
+                <h3 class="mb-0 text-success">{{ utils.formatPercentFloat(item.rightCount,item.answerCount) }}%</h3>
+                <span class="fw-medium">正确率</span>
+            </div>
+        </div>
+    </div>
+</el-card>
 <div class="p-3">
     <div class="mb-3" v-for="(tm,tmIndex) in tmList">
-        <el-card class="position-relative">
+        <el-card class="position-relative" shadow="never">
             <div class="position-absolute top-0 start-0 fw-bold fst-italic" :class="tm.answerInfo.isRight?'text-success':'text-danger'">{{ tmIndex+1 }}、</div>
             <div v-if="tm.baseTx==='Zuheti'" :id="'tmid_'+tm.id">
                 <div class="mb-3 fw-bold">
-                    <div v-html="tm.titleHtml"></div>
+                    <el-card>
+                        <div v-html="tm.titleHtml"></div>
+                    </el-card>
                 </div>
                 <div v-for="(small,smallIndex) in tm.smallLists">
-                    <div class="mb-3">
-                        <div>第<span class="px-1">{{ (smallIndex+1) }}</span>小题（<span>{{ small.txName }}</span>）</div>
+                    <div class="mt-3">
+                        <div class="fw-light">第<span class="px-1">{{ (smallIndex+1) }}</span>小题（<span>{{ small.txName }}</span>）</div>
                         <div v-if="small.baseTx==='Tiankongti'">
                             <span v-if="small.titleList && small.titleList.length>0">
                                 <span v-for="tmContent in small.titleList">
@@ -82,8 +106,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div v-else-if="small.baseTx==='Jiandati'">
-                            <el-input :key="small.id" type="textarea" resize="none" v-model.trim="small.answerInfo.answer" :autosize="{ minRows: 3}" maxlength="333" style="width:100%;"
+                        <div v-else-if="tm.baseTx==='Jiandati'">
+                            <el-input :key="tm.id" type="textarea" resize="none" v-model.trim="small.answerInfo.answer" :autosize="{ minRows: 3}" maxlength="333" style="width:100%;"
                                       show-word-limit></el-input>
                         </div>
                         <div v-else>
@@ -161,7 +185,7 @@
 <div class="py-8"></div>
 <div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 animate__animated animate__fadeInUp">
     <el-button-group class="rounded-0">
-        <el-button class="rounded-0" icon="el-icon-close" v-on:click="utils.closeLayerSelf">退出预览</el-button>
+        <el-button type="primary" class="rounded-pill" icon="el-icon-close" v-on:click="utils.closeLayerSelf">退出预览</el-button>
     </el-button-group>
 </div>
 @section Scripts{

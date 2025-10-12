@@ -24,6 +24,8 @@ namespace XBLMS.Web.Controllers.Home.Exam
         private const string RouteReadySubmit = RouteReady + "/submit";
         private const string RouteReadySearch = RouteReady + "/search";
 
+        private const string RouteReadyZsd = Route + "/readyZsd";
+
         private readonly IConfigRepository _configRepository;
         private readonly IAuthManager _authManager;
         private readonly IExamPaperUserRepository _examPaperUserRepository;
@@ -89,7 +91,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
         {
             public int Total { get; set; }
             public List<ExamPractice> List { get; set; }
-        } 
+        }
         public class GetTotalResult
         {
             public int CollectTotal { get; set; }
@@ -108,12 +110,14 @@ namespace XBLMS.Web.Controllers.Home.Exam
         }
         public class GetReadyRequest
         {
+            public List<int> TmGroupIds { get; set; }
             public GetReadySearchResult Search { get; set; }
             public List<ExamTx> TxList { get; set; }
             public ExamPractice Item { get; set; }
         }
         public class GetReadySearchRequest
         {
+            public List<int> TmGroupIds { get; set; }
             public List<int> TxIds { get; set; }
             public List<int> Nds { get; set; }
             public List<string> Zsds { get; set; }
@@ -123,5 +127,18 @@ namespace XBLMS.Web.Controllers.Home.Exam
             public int TmCount { get; set; }
             public List<int> TmIds { get; set; }
         }
+
+
+        public class GetReadyZsdRequest
+        {
+            public string Order { get; set; }
+            public List<int> TxIds { get; set; }
+            public List<int> Nds { get; set; }
+            public List<int> TmGroupIds { get; set; }
+        }
+        public class GetReadyZsdResult
+        {
+            public List<KeyValuePair<string, int>> ZsdList { get; set; }
+        } 
     }
 }

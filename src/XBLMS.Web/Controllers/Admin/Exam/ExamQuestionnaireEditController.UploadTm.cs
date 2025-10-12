@@ -1,7 +1,6 @@
 ﻿using Datory;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using NPOI.SS.Formula.Functions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -51,7 +50,6 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 var tmTotal = sheet.Rows.Count - 2;
                 if (tmTotal > 0)
                 {
-
                     var parentId = 0;
                     var smallTx = ExamQuestionnaireTxType.Danxuanti;
                     var parentTx = ExamQuestionnaireTxType.Danxuanti;
@@ -59,7 +57,6 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                     for (var i = 1; i < sheet.Rows.Count; i++) //行
                     {
                         if (i == 1) continue;
-
 
                         var row = sheet.Rows[i];
 
@@ -190,7 +187,6 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                                 tm.Set("Options", options);
                                 tmList.Add(tm);
                             }
-
                         }
                         else
                         {
@@ -203,7 +199,6 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 {
                     errorMessageList.Add($"模板中没有编辑题目，请重新编辑模板文件后导入");
                 }
-
             }
 
             FileUtils.DeleteFileIfExists(filePath);

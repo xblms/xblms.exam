@@ -63,11 +63,14 @@ namespace XBLMS.Core.Services
 
             return (true, "", returnUrl);
         }
+
+
         public async Task<(bool success, string msg, string path)> UploadCover(IFormFile file)
         {
             if (file == null) return (false, Constants.ErrorUpload, "");
 
             var fileName = _pathManager.GetUploadFileName(file.FileName);
+            var realName = PathUtils.GetFileNameWithoutExtension(fileName);
 
             var returnUrl = "";
 
@@ -81,7 +84,7 @@ namespace XBLMS.Core.Services
             returnUrl = _pathManager.GetCoverUploadUrl(fileName);
 
 
-            return (true, "", returnUrl);
+            return (true, realName, returnUrl);
         }
     }
 }

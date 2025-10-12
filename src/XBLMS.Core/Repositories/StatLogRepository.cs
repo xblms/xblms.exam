@@ -1,7 +1,7 @@
 ﻿using Datory;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using XBLMS.Dto;
 using XBLMS.Enums;
 using XBLMS.Models;
 using XBLMS.Repositories;
@@ -28,37 +28,47 @@ namespace XBLMS.Core.Repositories
             return await _repository.GetAsync(id);
         }
 
-        public async Task InsertAsync(StatType statType, string statTypeStr, string ip, int adminId, int ohjectId, string objectName, string entity)
+        public async Task InsertAsync(Administrator admin, StatType statType, string statTypeStr, string ip, int ohjectId, string objectName, string entity)
         {
             await _repository.InsertAsync(new StatLog
             {
                 IpAddress = ip,
                 StatType = statType,
                 StatTypeStr = statTypeStr,
-                AdminId = adminId,
+                AdminId = admin.Id,
                 ObjectId = ohjectId,
                 ObjectName = objectName,
-                LastEntity = entity
+                LastEntity = entity,
+                CreatorId = admin.Id,
+                CompanyParentPath = admin.CompanyParentPath,
+                DepartmentParentPath = admin.DepartmentParentPath,
+                DepartmentId = admin.DepartmentId,
+                CompanyId = admin.AuthDataCurrentOrganId
             });
         }
 
 
-        public async Task<(int total, List<StatLog> list)> GetListAsync(DateTime? lowerDate, DateTime? higherDate, int adminId, int pageIndex, int pageSize)
+        public async Task<(int total, List<StatLog> list)> GetListAsync(AdminAuth auth, int pageIndex, int pageSize)
         {
             var query = Q.NewQuery();
 
-            if (adminId > 0)
+            if (auth.AuthDataType == AuthorityDataType.DataCreator)
             {
-                query.Where(nameof(Stat.AdminId), adminId);
+                query.Where(nameof(StatLog.CreatorId), auth.AdminId);
             }
-            if (lowerDate.HasValue)
+            else
             {
-                query.Where(nameof(Stat.CreatedDate), ">=", lowerDate.Value);
-            }
-
-            if (higherDate.HasValue)
-            {
-                query.Where(nameof(Stat.CreatedDate), "<=", higherDate.Value);
+                if (auth.AuthDataShowAll)
+                {
+                    if (auth.CurCompanyId != 1)
+                    {
+                        query.WhereLike(nameof(StatLog.CompanyParentPath), $"%'{auth.CurCompanyId}'%");
+                    }
+                }
+                else
+                {
+                    query.Where(nameof(StatLog.CompanyId), auth.CurCompanyId);
+                }
             }
             var total = await _repository.CountAsync(query);
             var list = await _repository.GetAllAsync(query.OrderByDesc(nameof(Stat.Id)).ForPage(pageIndex, pageSize));

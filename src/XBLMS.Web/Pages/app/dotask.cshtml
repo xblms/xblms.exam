@@ -1,0 +1,55 @@
+@page
+@{ Layout = "_LayoutApp"; }
+@section Styles{
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+}
+<el-card class="rounded-0 border-0 sticky-top">
+    <div class="text-center">
+        <span class="text-warning fw-bold">{{ total }}</span> 个待办需要办理
+    </div>
+</el-card>
+<div class="p-3" v-if="total>0">
+        <div v-for="(item,index) in list">
+            <div class="p-3">
+                <div class="border-start border-3 border-primary ps-2 fw-border">
+                    <span class="fw-bolder">{{ item.taskName }}</span>（{{item.taskTotal}}）
+                </div>
+            </div>
+            <div v-for="(task,index) in item.taskList" v-on:click="btnDoClick(task)">
+                <div class="card shadow-none rounded-0 card-hover-with-bl border-top-0 border-end-0 border-bottom-0 mb-3">
+                    <div class="card-body">
+                        <div class="row align-items-center g-3">
+                            <div class="col">
+                                <p class="my-2 fw-bold">
+                                    {{task.taskTitle}}
+                                </p>
+                                <ul class="list-inline m-0 fw-light">
+                                    <li class="list-inline-item">
+                                        <i class="el-icon-date me-2"></i><span>{{ task.taskBeginDateTime }}-{{ task.taskEndDateTime }}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="my-3 text-center">
+            <small>没有更多了</small>
+        </div>
+        <div class="py-8"></div>
+</div>
+<div class="pt-8" v-else>
+    <el-empty :image-size="88"></el-empty>
+</div>
+<div style="position:fixed;right:10%;bottom:15%;" class="text-center">
+    <el-button class="fs-3 shadow-lg" type="warning" icon="el-icon-date" circle v-on:click="btnEventClick"></el-button>
+</div>
+@section Scripts{
+    <script src="/sitefiles/assets/js/app/dotask.js" type="text/javascript"></script>
+}

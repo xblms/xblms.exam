@@ -25,6 +25,16 @@ namespace XBLMS.Core.Services
         public string ContentRootPath => _settingsManager.ContentRootPath;
         public string WebRootPath => _settingsManager.WebRootPath;
 
+        public async Task<string> GetServerFileUrl(string url)
+        {
+            var config = await _databaseManager.ConfigRepository.GetAsync();
+            if (config.BushuFilesServer)
+            {
+                return PageUtils.Combine(config.BushuFilesServerUrl, url);
+            }
+            return url;
+        }
+
         public string GetAdminUrl(params string[] paths)
         {
             return PageUtils.Combine($"/{Constants.AdminDirectory}", PageUtils.Combine(paths), "/");

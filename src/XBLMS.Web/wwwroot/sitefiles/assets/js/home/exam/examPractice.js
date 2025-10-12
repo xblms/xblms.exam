@@ -3,6 +3,10 @@ var $urlTotal = $url + "/total";
 var $urlSubmit = $url + "/submit";
 var $urlDelete = $url + "/del";
 
+
+var $urlLog = "/exam/examPracticeLog";
+var $urlLogDelete = $urlLog + "/del";
+
 var data = utils.init({
   list: [],
   total: 0,
@@ -12,7 +16,16 @@ var data = utils.init({
     pageIndex: 1,
     pageSize: PER_PAGE
   },
-  loadMoreLoading: false
+  loadMoreLoading: false,
+  logForm: {
+    dateFrom: '',
+    dateTo: '',
+    pageIndex: 1,
+    pageSize: PER_PAGE
+  },
+  logList: [],
+  logTotal: 0,
+  logLoadMoreLoading: false
 });
 
 var methods = {
@@ -50,6 +63,7 @@ var methods = {
 
     }).catch(function (error) {
     }).then(function () {
+      $this.apiLogGet();
     });
   },
   btnCreateClick: function (practiceType, groupId, groupTmTotal) {
@@ -164,8 +178,73 @@ var methods = {
       $this.btnSearchClick();
     });
   },
-  btnLogClick: function () {
-    location.href = utils.getExamUrl('examPracticeLog');
+  apiLogGet: function () {
+    var $this = this;
+
+    if (this.total === 0) {
+      utils.loading(this, true);
+    }
+    $api.get($urlLog, { params: this.logForm }).then(function (response) {
+      var res = response.data;
+
+      if (res.list && res.list.length > 0) {
+        res.list.forEach(paper => {
+          $this.logList.push(paper);
+        });
+      }
+      $this.logTotal = res.total;
+
+    }).catch(function (error) {
+      utils.error(error);
+    }).then(function () {
+      utils.loading($this, false);
+      $this.logLoadMoreLoading = false;
+    });
+  },
+  btnLogSearchClick: function () {
+    this.logForm.pageIndex = 1;
+    this.logList = [];
+    this.apiLogGet();
+  },
+  btnLogLoadMoreClick: function () {
+    this.logLoadMoreLoading = true;
+    this.logForm.pageIndex++;
+    this.apiLogGet();
+  },
+  goPracticeResult: function (id) {
+    top.utils.openLayer({
+      title: false,
+      closebtn: 0,
+      url: utils.getExamUrl('examPracticeResult', { id: id }),
+      width: "68%",
+      height: "88%",
+    });
+  },
+  btnLogClearClick: function () {
+    var $this = this;
+    top.utils.alertWarning({
+      title: '清空练习记录',
+      text: '此操作将清空所有练习记录，确定吗？',
+      callback: function () {
+        $this.apiClear();
+      }
+    });
+  },
+  apiClear: function () {
+    var $this = this;
+
+    utils.loading(this, true);
+    $api.post($urlLogDelete).then(function (response) {
+      var res = response.data;
+      if (res.value) {
+        utils.success("操作成功");
+      }
+    }).catch(function (error) {
+      utils.error(error);
+    }).then(function () {
+      utils.loading($this, false);
+      $this.apiLogGet();
+    });
   }
 };
 

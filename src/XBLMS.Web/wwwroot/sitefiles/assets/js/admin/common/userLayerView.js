@@ -3,7 +3,8 @@
 var data = utils.init({
   id: utils.getQueryInt('id'),
   user: null,
-  groupName: null
+  groupName: null,
+  systemCode: null,
 });
 
 var methods = {
@@ -18,6 +19,7 @@ var methods = {
     }).then(function (response) {
       var res = response.data;
 
+      $this.systemCode = res.systemCode;
       $this.user = res.user;
       $this.groupName = res.groupName;
     }).catch(function (error) {
@@ -26,7 +28,15 @@ var methods = {
       utils.loading($this, false);
     });
   },
-
+  btnDocClick: function () {
+    top.utils.openLayer({
+      title: false,
+      closebtn: 0,
+      url: utils.getCommonUrl('userDocLayerView', { id: this.id }),
+      width: "98%",
+      height: "98%"
+    });
+  },
   btnCancelClick: function () {
     utils.closeLayerSelf();
   }

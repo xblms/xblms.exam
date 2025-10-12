@@ -1,6 +1,4 @@
-﻿using Datory;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using XBLMS.Dto;
 using XBLMS.Models;
@@ -10,216 +8,322 @@ namespace XBLMS.Core.Services
 {
     public partial class OrganManager
     {
-        public async Task<string> GetOrganName(int dutyId, int departmentId, int companyId)
+        public async Task<string> GetOrganName(int departmentId, int companyId)
         {
             var names = new List<string>();
-            var dutys = new List<OrganDuty>();
-            var ds = new List<OrganDepartment>();
-            var cs = new List<OrganCompany>();
-            if (dutyId > 0)
-            {
-                dutys = await _dutyRepository.GetPathNamesAsync(dutyId);
-            }
+
             if (departmentId > 0)
             {
-                ds = await _departmentRepository.GetPathNamesAsync(departmentId);
-            }
-            if (companyId > 0)
-            {
-                cs = await _companyRepository.GetPathNamesAsync(companyId);
-            }
-            if (cs.Count > 0)
-            {
-                foreach (var c in cs)
+                var department = await _departmentRepository.GetAsync(departmentId);
+                if (department.ParentNames != null)
                 {
-                    names.Add(c.Name);
+                    names.AddRange(department.ParentNames);
                 }
             }
-            if (ds.Count > 0)
+            else
             {
-                foreach (var d in ds)
+                if (companyId > 0)
                 {
-                    names.Add(d.Name);
+                    var company = await _companyRepository.GetAsync(companyId);
+                    if (company.ParentNames != null)
+                    {
+                        names.AddRange(company.ParentNames);
+                    }
+                    else
+                    {
+                        names.Add(company.Name);
+                    }
                 }
             }
-            if (dutys.Count > 0)
-            {
-                foreach (var d in dutys)
-                {
-                    names.Add(d.Name);
-                }
-            }
-            return ListUtils.ToString(names, ">");
+
+            return ListUtils.ToString(names, "/");
         }
 
-        public async Task<List<OrganTree>> GetOrganTreeTableDataAsync()
+        public async Task<List<OrganTree>> GetOrganTreeTableDataLazyByChangeAsync(AdminAuth auth, int parentId, string keyWords)
         {
             var list = new List<OrganTree>();
-            var allCompanys = await _companyRepository.GetListAsync();
-            var allOrgan = new List<OrganTree>();
+
+            var parentGuid = string.Empty;
+            var allCompanys = new List<OrganCompany>();
+            if (!string.IsNullOrEmpty(keyWords))
+            {
+                allCompanys = await _companyRepository.GetListAsync(auth, keyWords);
+            }
+            else
+            {
+                if (parentId > 0)
+                {
+                    var parent = await _companyRepository.GetAsync(parentId);
+                    parentGuid = parent.Guid;
+                    allCompanys = await _companyRepository.GetListAsync(parentId);
+                }
+                else
+                {
+                    var tomCompany = await _companyRepository.GetAsync(auth.CompanyId);
+                    allCompanys.Add(tomCompany);
+                }
+            }
+
             foreach (var company in allCompanys)
             {
-                var userCount = await _userRepository.GetCountAsync(company.Id, 0, 0);
-                var adminCount = await _administratorRepository.GetCountAsync(company.Id, 0, 0);
-                var cids = await GetCompanyIdsAsync(company.Id);
-                var adminChildCount = await _administratorRepository.GetCountAsync(cids, null, null);
-                var userChildCount = await _userRepository.GetCountAsync(cids, null, null);
+                var adminTotal = 0;
+                var adminCount = 0;
+                var userTotal = 0;
+                var userCount = 0;
 
-                allOrgan.Add(new OrganTree
+                var fullName = company.Name;
+                if (!string.IsNullOrEmpty(keyWords))
+                {
+                    var parentNames = string.IsNullOrEmpty(ListUtils.ToString(company.ParentNames, "/")) ? company.Name : ListUtils.ToString(company.ParentNames, "/");
+                    fullName = StringUtils.ReplaceIgnoreCase(parentNames, keyWords, $"<span style='color:red;'>{keyWords}</span>");
+                }
+
+                list.Add(new OrganTree
                 {
                     Id = company.Id,
                     Guid = company.Guid,
+                    ParentGuid = parentGuid,
                     Name = company.Name,
+                    FullName = fullName,
                     OrganType = "company",
                     OrganTypeName = "单位",
                     ParentId = company.ParentId,
                     AdminCount = adminCount,
-                    AdminAllCount = adminChildCount,
+                    AdminAllCount = adminTotal,
                     UserCount = userCount,
-                    UserAllCount = userChildCount,
-                });
-            }
+                    UserAllCount = userTotal,
+                    LastModifiedDate = company.LastModifiedDate,
+                    HasChildren = string.IsNullOrEmpty(keyWords) && await _companyRepository.HasChildren(company.Id),
 
-            var topOrgans = allOrgan.Where(c => c.ParentId == 0).ToList();
-            foreach (var cur in topOrgans)
-            {
-                await SetOrganChildren(allOrgan, cur);
-                list.Add(cur);
+                });
             }
 
             return list;
         }
-        private async Task SetOrganChildren(List<OrganTree> all, OrganTree parentOrgan)
+
+        public async Task<List<OrganTree>> GetOrganTreeTableDataLazySearchAsync(AdminAuth auth, string keyWords, bool showAdminTotal = true, bool showUserTotal = true)
         {
-            var children = all.Where(c => c.ParentId == parentOrgan.Id).ToList();
-
-            var departmentChildren = await SetDepartment(parentOrgan.Id);
-
-            if (children.Count > 0 || departmentChildren.Count > 0)
+            var list = new List<OrganTree>();
+            var allCompanys = await _companyRepository.GetListAsync(auth, keyWords);
+            foreach (var company in allCompanys)
             {
-                var pchildren = new List<OrganTree>();
-                pchildren.AddRange(children);
-                pchildren.AddRange(departmentChildren);
-                parentOrgan.Children = pchildren;
-            }
+                var adminTotal = 0;
+                var adminCount = 0;
+                var userTotal = 0;
+                var userCount = 0;
 
-            foreach (var child in children)
-            {
-                await SetOrganChildren(all, child);
-            }
-        }
-
-        private async Task<List<OrganTree>> SetDepartment(int companyId)
-        {
-            var departments = await _departmentRepository.GetListAsync(companyId);
-
-            var allOrgan = new List<OrganTree>();
-            foreach (var dept in departments)
-            {
-                var userCount = await _userRepository.GetCountAsync(0, dept.Id, 0);
-                var adminCount = await _administratorRepository.GetCountAsync(0, dept.Id, 0);
-                var dids = await GetDepartmentIdsAsync(dept.Id);
-                var adminChildCount = await _administratorRepository.GetCountAsync(null, dids, null);
-                var userChildCount = await _userRepository.GetCountAsync(null, dids, null);
-
-                allOrgan.Add(new OrganTree
+                if (showAdminTotal)
                 {
-                    Id = dept.Id,
-                    Guid = dept.Guid,
-                    Name = dept.Name,
+                    (adminTotal, adminCount) = await _administratorRepository.GetCountByCompanyAsync(auth, company.Id);
+                }
+                if (showUserTotal)
+                {
+                    (userTotal, userCount) = await _userRepository.GetCountByCompanyAsync(auth, company.Id);
+                }
+
+                var parentNames = string.IsNullOrEmpty(ListUtils.ToString(company.ParentNames, "/")) ? company.Name : ListUtils.ToString(company.ParentNames, "/");
+                var fullName = StringUtils.ReplaceIgnoreCase(parentNames, keyWords, $"<span style='color:red;'>{keyWords}</span>");
+                list.Add(new OrganTree
+                {
+                    Id = company.Id,
+                    Guid = company.Guid,
+                    Name = company.Name,
+                    FullName = fullName,
+                    OrganType = "company",
+                    OrganTypeName = "单位",
+                    ParentId = company.ParentId,
+                    AdminCount = adminCount,
+                    AdminAllCount = adminTotal,
+                    UserCount = userCount,
+                    UserAllCount = userTotal,
+                    LastModifiedDate = company.LastModifiedDate,
+                    HasChildren = false,
+                    IsLeaf = true
+                });
+            }
+
+            var allDepartments = await _departmentRepository.GetListAsync(auth, keyWords);
+            foreach (var department in allDepartments)
+            {
+                var adminTotal = 0;
+                var adminCount = 0;
+                var userTotal = 0;
+                var userCount = 0;
+
+                if (showAdminTotal)
+                {
+                    (adminTotal, adminCount) = await _administratorRepository.GetCountByDepartmentAsync(auth, department.Id);
+                }
+                if (showUserTotal)
+                {
+                    (userTotal, userCount) = await _userRepository.GetCountByDepartmentAsync(auth, department.Id);
+                }
+
+                var parentNames = string.IsNullOrEmpty(ListUtils.ToString(department.ParentNames, "/")) ? department.Name : ListUtils.ToString(department.ParentNames, "/");
+                var fullName = StringUtils.ReplaceIgnoreCase(parentNames, keyWords, $"<span style='color:red;'>{keyWords}</span>");
+                list.Add(new OrganTree
+                {
+                    Id = department.Id,
+                    Guid = department.Guid,
+                    Name = department.Name,
+                    FullName = fullName,
                     OrganType = "department",
                     OrganTypeName = "部门",
-                    ParentId = dept.ParentId,
+                    ParentId = department.ParentId,
                     AdminCount = adminCount,
-                    AdminAllCount = adminChildCount,
+                    AdminAllCount = adminTotal,
                     UserCount = userCount,
-                    UserAllCount = userChildCount,
+                    UserAllCount = userTotal,
+                    LastModifiedDate = department.LastModifiedDate,
+                    HasChildren = false,
+                    IsLeaf = true
                 });
             }
-            var topDepartmentList = allOrgan.Where(p => p.ParentId == 0).ToList();
-
-            var DepartmentTree = new List<OrganTree>();
-            foreach (var item in topDepartmentList)
-            {
-                var children = item;
-                await SetDepartmentChildren(allOrgan, children);
-                DepartmentTree.Add(children);
-            }
-            return DepartmentTree;
+            return list;
         }
-
-        private async Task SetDepartmentChildren(List<OrganTree> all, OrganTree parent)
+        public async Task<List<OrganTree>> GetOrganTreeTableDataLazyAsync(AdminAuth auth, int parentId, string organType, bool showAdminTotal = true, bool showUserTotal = true)
         {
-            var subitems = all.Where(c => c.ParentId == parent.Id).ToList();
-
-            var dutyChildren = await SetDuty(parent.Id);
-
-            if (subitems.Count > 0 || dutyChildren.Count > 0)
+            var list = new List<OrganTree>();
+            if (organType == "company")
             {
-                var children = new List<OrganTree>();
-                children.AddRange(subitems);
-                children.AddRange(dutyChildren);
-                parent.Children = children;
-            }
-
-            foreach (var item in subitems)
-            {
-                await SetDepartmentChildren(all, item);
-            }
-
-        }
-
-        private async Task<List<OrganTree>> SetDuty(int departmentId)
-        {
-            var dutys = await _dutyRepository.GetListAsync(departmentId);
-
-            var allOrgan = new List<OrganTree>();
-            foreach (var duty in dutys)
-            {
-                var userCount = await _userRepository.GetCountAsync(0, 0, duty.Id);
-                var adminCount = await _administratorRepository.GetCountAsync(0, 0, duty.Id);
-                var dutyids = await GetDutyIdsAsync(duty.Id);
-                var adminChildCount = await _administratorRepository.GetCountAsync(null, null, dutyids);
-                var userChildCount = await _userRepository.GetCountAsync(null, null, dutyids);
-
-                allOrgan.Add(new OrganTree
+                var allCompanys = new List<OrganCompany>();
+                var parentGuid = string.Empty;
+                if (parentId > 0)
                 {
-                    Id = duty.Id,
-                    Guid = duty.Guid,
-                    Name = duty.Name,
-                    OrganType = "duty",
-                    OrganTypeName = "岗位",
-                    ParentId = duty.ParentId,
-                    AdminCount = adminCount,
-                    AdminAllCount = adminChildCount,
-                    UserCount = userCount,
-                    UserAllCount = userChildCount,
-                });
-            }
-            var topDutyList = allOrgan.Where(p => p.ParentId == 0).ToList();
+                    var parent = await _companyRepository.GetAsync(parentId);
+                    parentGuid = parent.Guid;
+                    allCompanys = await _companyRepository.GetListAsync(parentId);
+                }
+                else
+                {
+                    var tomCompany = await _companyRepository.GetAsync(auth.CompanyId);
+                    allCompanys.Add(tomCompany);
+                }
 
-            var DutyTree = new List<OrganTree>();
-            foreach (var item in topDutyList)
-            {
-                var children = item;
-                SetDutyChildren(allOrgan, children);
-                DutyTree.Add(children);
+
+                foreach (var company in allCompanys)
+                {
+                    var adminTotal = 0;
+                    var adminCount = 0;
+                    var userTotal = 0;
+                    var userCount = 0;
+                    if (showAdminTotal)
+                    {
+                        (adminTotal, adminCount) = await _administratorRepository.GetCountByCompanyAsync(auth, company.Id);
+                    }
+                    if (showUserTotal)
+                    {
+                        (userTotal, userCount) = await _userRepository.GetCountByCompanyAsync(auth, company.Id);
+                    }
+
+                    list.Add(new OrganTree
+                    {
+                        Id = company.Id,
+                        Guid = company.Guid,
+                        ParentGuid = parentGuid,
+                        Name = company.Name,
+                        FullName = company.Name,
+                        OrganType = "company",
+                        OrganTypeName = "单位",
+                        ParentId = company.ParentId,
+                        AdminCount = adminCount,
+                        AdminAllCount = adminTotal,
+                        UserCount = userCount,
+                        UserAllCount = userTotal,
+                        LastModifiedDate = company.LastModifiedDate,
+                        HasChildren = await _companyRepository.HasChildren(company.Id) || await _departmentRepository.HasChildren(0, company.Id),
+
+                    });
+                }
+                var allDepartments = await _departmentRepository.GetListAsync(0, parentId);
+                foreach (var department in allDepartments)
+                {
+                    var adminTotal = 0;
+                    var adminCount = 0;
+                    var userTotal = 0;
+                    var userCount = 0;
+                    if (showAdminTotal)
+                    {
+                        (adminTotal, adminCount) = await _administratorRepository.GetCountByDepartmentAsync(auth, department.Id);
+                    }
+                    if (showUserTotal)
+                    {
+                        (userTotal, userCount) = await _userRepository.GetCountByDepartmentAsync(auth, department.Id);
+                    }
+
+                    list.Add(new OrganTree
+                    {
+                        Id = department.Id,
+                        Guid = department.Guid,
+                        ParentGuid = parentGuid,
+                        Name = department.Name,
+                        FullName = department.Name,
+                        OrganType = "department",
+                        OrganTypeName = "部门",
+                        ParentId = department.ParentId,
+                        AdminCount = adminCount,
+                        AdminAllCount = adminTotal,
+                        UserCount = userCount,
+                        UserAllCount = userTotal,
+                        LastModifiedDate = department.LastModifiedDate,
+                        HasChildren = await _departmentRepository.HasChildren(department.Id, department.CompanyId),
+                    });
+                }
             }
-            return DutyTree;
+            else
+            {
+                var allDepartments = new List<OrganDepartment>();
+                var parentGuid = string.Empty;
+
+                if (parentId > 0)
+                {
+                    var dinfo = await _departmentRepository.GetAsync(parentId);
+                    if (dinfo != null)
+                    {
+                        parentGuid = dinfo.Guid;
+                    }
+                    allDepartments = await _departmentRepository.GetListAsync(dinfo.Id, dinfo.CompanyId);
+
+                }
+
+
+                foreach (var department in allDepartments)
+                {
+                    var adminTotal = 0;
+                    var adminCount = 0;
+                    var userTotal = 0;
+                    var userCount = 0;
+                    if (showAdminTotal)
+                    {
+                        (adminTotal, adminCount) = await _administratorRepository.GetCountByDepartmentAsync(auth, department.Id);
+                    }
+                    if (showUserTotal)
+                    {
+                        (userTotal, userCount) = await _userRepository.GetCountByDepartmentAsync(auth, department.Id);
+                    }
+
+                    list.Add(new OrganTree
+                    {
+                        Id = department.Id,
+                        Guid = department.Guid,
+                        ParentGuid = parentGuid,
+                        Name = department.Name,
+                        FullName = department.Name,
+                        OrganType = "department",
+                        OrganTypeName = "部门",
+                        ParentId = department.ParentId,
+                        AdminCount = adminCount,
+                        AdminAllCount = adminTotal,
+                        UserCount = userCount,
+                        UserAllCount = userTotal,
+                        LastModifiedDate = department.LastModifiedDate,
+                        HasChildren = await _departmentRepository.HasChildren(department.Id, department.CompanyId),
+                    });
+                }
+            }
+
+            return list;
         }
-        private static void SetDutyChildren(List<OrganTree> all, OrganTree parent)
-        {
-            var subitems = all.Where(c => c.ParentId == parent.Id).ToList();
 
-            if (subitems.Count > 0)
-            {
-                parent.Children = new List<OrganTree>(subitems);
-            }
-
-            foreach (var item in subitems)
-            {
-                SetDutyChildren(all, item);
-            }
-        }
     }
 }

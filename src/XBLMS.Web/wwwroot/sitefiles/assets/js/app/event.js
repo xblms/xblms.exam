@@ -40,7 +40,12 @@ var methods = {
       dayMaxEvents: true,
       events: this.eventData,
       eventClick: function (arg) {
-        $this.btnViewAppPaperClick(arg.event.id);
+        if (arg.event.groupId === 'exam') {
+          $this.btnViewPaperClick(arg.event.id);
+        }
+        if (arg.event.groupId === 'offline') {
+          $this.btnViewOfflineClick(arg.event);
+        }
       },
     });
 
@@ -55,6 +60,19 @@ var methods = {
       height: "100%"
     });
   },
+  btnViewOfflineClick: function (row) {
+    var planId = 0;
+    if (row.allow !== null) {
+      planId = row.allow;
+    }
+    top.utils.openLayer({
+      title: false,
+      closebtn: 0,
+      url: utils.getStudyUrl('studyCourseOfflineInfo', { id: row.id, planId: planId }),
+      width: "100%",
+      height: "100%"
+    });
+  },
 };
 
 var $vue = new Vue({
@@ -62,7 +80,7 @@ var $vue = new Vue({
   data: data,
   methods: methods,
   created: function () {
-    top.document.title = "考试日程";
+    top.document.title = "日程";
     utils.loading(this, false);
     this.apiGet();
   },

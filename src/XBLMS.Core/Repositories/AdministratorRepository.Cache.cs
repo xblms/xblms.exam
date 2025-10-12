@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using XBLMS.Core.Utils;
+using XBLMS.Dto;
 using XBLMS.Models;
 using XBLMS.Utils;
 
@@ -34,6 +35,11 @@ namespace XBLMS.Core.Repositories
         private string GetCacheKeyByEmail(string email)
         {
             return CacheUtils.GetEntityKey(TableName, "email", email);
+        }
+
+        public async Task<int> GetMaxId()
+        {
+            return await _repository.GetAsync<int>(Q.Select(nameof(Administrator.Id)).AsMax(nameof(Administrator.Id)));
         }
 
         private List<string> GetCacheKeys(Administrator admin)
@@ -154,11 +160,20 @@ namespace XBLMS.Core.Repositories
             return string.IsNullOrEmpty(admin.DisplayName) || admin.UserName == admin.DisplayName ? admin.UserName : $"{admin.DisplayName}({admin.UserName})";
         }
 
-        public async Task<(int allCount, int addCount, int deleteCount, int lockedCount, int unLockedCount)> GetDataCount()
+        public async Task<(int allCount, int addCount, int deleteCount, int lockedCount, int unLockedCount)> GetDataCount(AdminAuth auth)
         {
-            var count = await _repository.CountAsync();
-            var lockedCount= await _repository.CountAsync(Q.WhereTrue(nameof(Administrator.Locked)));
-            var unLockedCount = await _repository.CountAsync(Q.WhereNullOrFalse(nameof(Administrator.Locked)));
+
+            var queryCount = Q.NewQuery();
+            var queryLocked = Q.WhereTrue(nameof(Administrator.Locked));
+            var queryUnLocked = Q.WhereNullOrFalse(nameof(Administrator.Locked));
+
+            queryCount = GetQueryByAuth(queryCount, auth);
+            queryLocked = GetQueryByAuth(queryLocked, auth);
+            queryUnLocked = GetQueryByAuth(queryUnLocked, auth);
+
+            var count = await _repository.CountAsync(queryCount);
+            var lockedCount = await _repository.CountAsync(queryLocked);
+            var unLockedCount = await _repository.CountAsync(queryUnLocked);
             return (count, 0, 0, lockedCount, unLockedCount);
         }
     }

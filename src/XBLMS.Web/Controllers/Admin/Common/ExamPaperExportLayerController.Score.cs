@@ -136,7 +136,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
 
             DirectoryUtils.CreateDirectoryIfNotExists(zipFilePath);
 
-            var (total, list) = await _examPaperStartRepository.GetListByAdminAsync(request.PaperId, request.DateFrom, request.DateTo, request.Keywords, 1, int.MaxValue);
+            var (total, list) = await _examPaperStartRepository.GetListByAdminAsync(request.PaperId, 0, 0, request.DateFrom, request.DateTo, request.Keywords, 1, int.MaxValue);
             foreach (var start in list)
             {
                 var user = await _userRepository.GetByUserIdAsync(start.UserId);

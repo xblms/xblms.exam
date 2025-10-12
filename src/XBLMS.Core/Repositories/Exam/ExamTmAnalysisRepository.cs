@@ -28,9 +28,10 @@ namespace XBLMS.Core.Repositories
             return await _repository.ExistsAsync(id);
         }
 
-        public async Task<ExamTmAnalysis> GetAsync(TmAnalysisType type,int paperId)
+        public async Task<ExamTmAnalysis> GetAsync(TmAnalysisType type, int paperId, int companyId)
         {
             return await _repository.GetAsync(Q.
+                  Where(nameof(ExamTmAnalysis.CompanyId), companyId).
                 Where(nameof(ExamTmAnalysis.TmAnalysisExamPapaerId), paperId).
                 Where(nameof(ExamTmAnalysis.TmAnalysisType), type.GetValue()));
         }

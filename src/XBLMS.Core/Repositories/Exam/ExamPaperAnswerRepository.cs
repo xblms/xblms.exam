@@ -11,11 +11,11 @@ namespace XBLMS.Core.Repositories
 {
     public partial class ExamPaperAnswerRepository : IExamPaperAnswerRepository
     {
-        private readonly ISettingsManager _settingsManager;
         private readonly IExamPaperRepository _examPaperRepository;
+        private readonly ISettingsManager _settingsManager;
         private readonly Repository<ExamPaperAnswer> _repository;
 
-        public ExamPaperAnswerRepository(ISettingsManager settingsManager,IExamPaperRepository examPaperRepository)
+        public ExamPaperAnswerRepository(ISettingsManager settingsManager, IExamPaperRepository examPaperRepository)
         {
             _settingsManager = settingsManager;
             _examPaperRepository = examPaperRepository;
@@ -59,22 +59,19 @@ namespace XBLMS.Core.Repositories
         {
             var tableName = await GetTableNameAsync(examPaperId);
             var repository = await GetRepositoryAsync(tableName);
-
             await repository.DeleteAsync(Q.Where(nameof(ExamPaperAnswer.ExamPaperId), examPaperId).Where(nameof(ExamPaperAnswer.UserId), userId));
         }
 
-        public async Task<ExamPaperAnswer> GetAsync(int id,int examPaperId)
+        public async Task<ExamPaperAnswer> GetAsync(int id, int examPaperId)
         {
             var tableName = await GetTableNameAsync(examPaperId);
             var repository = await GetRepositoryAsync(tableName);
-
             return await repository.GetAsync(Q.Where(nameof(ExamPaperAnswer.Id), id));
         }
         public async Task<ExamPaperAnswer> GetAsync(int tmId, int startId, int examPaperId)
         {
             var tableName = await GetTableNameAsync(examPaperId);
             var repository = await GetRepositoryAsync(tableName);
-
             return await repository.GetAsync(Q.
                 Where(nameof(ExamPaperAnswer.ExamPaperId), examPaperId).
                 Where(nameof(ExamPaperAnswer.ExamStartId), startId).
@@ -82,11 +79,10 @@ namespace XBLMS.Core.Repositories
         }
 
 
-        public async Task<decimal> ScoreSumAsync(int startId,int examPaperId)
+        public async Task<decimal> ScoreSumAsync(int startId, int examPaperId)
         {
             var tableName = await GetTableNameAsync(examPaperId);
             var repository = await GetRepositoryAsync(tableName);
-
             var scoreList = await repository.GetAllAsync<decimal>(Q.
                 Select(nameof(ExamPaperAnswer.Score)).
                 Where(nameof(ExamPaperAnswer.ExamStartId), startId));
@@ -98,11 +94,10 @@ namespace XBLMS.Core.Repositories
 
             return 0;
         }
-        public async Task<decimal> ObjectiveScoreSumAsync(int startId,int examPaperId)
+        public async Task<decimal> ObjectiveScoreSumAsync(int startId, int examPaperId)
         {
             var tableName = await GetTableNameAsync(examPaperId);
             var repository = await GetRepositoryAsync(tableName);
-
             var scoreList = await repository.GetAllAsync<decimal>(Q.
               Select(nameof(ExamPaperAnswer.Score)).
               Where(nameof(ExamPaperAnswer.ExamTmType), ExamTmType.Objective.GetValue()).
@@ -115,11 +110,10 @@ namespace XBLMS.Core.Repositories
 
             return 0;
         }
-        public async Task<decimal> SubjectiveScoreSumAsync(int startId,int examPaperId)
+        public async Task<decimal> SubjectiveScoreSumAsync(int startId, int examPaperId)
         {
             var tableName = await GetTableNameAsync(examPaperId);
             var repository = await GetRepositoryAsync(tableName);
-
             var scoreList = await repository.GetAllAsync<decimal>(Q.
              Select(nameof(ExamPaperAnswer.Score)).
              Where(nameof(ExamPaperAnswer.ExamTmType), ExamTmType.Subjective.GetValue()).

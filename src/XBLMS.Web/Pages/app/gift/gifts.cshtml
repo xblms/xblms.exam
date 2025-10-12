@@ -1,0 +1,75 @@
+@page
+@{ Layout = "_LayoutApp"; }
+@section Styles{
+    <style>
+        .el-form-item {
+            margin-bottom: 0px;
+        }
+        .el-input__inner {
+            border-radius: 0 !important;
+        }
+        body {
+            padding: 0;
+            margin: 0;
+        }
+
+        html {
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+}
+<div class="bg-cover position-relative" style="background-image:url('/sitefiles/assets/images/cover/gifts.png');">
+    <div class="container py-8">
+        <span class="p-0 m-0 fw-bolder h1 text-gray-1000 d-flex align-items-center"><i class="el-icon-present me-3 fs-1"></i><span>积分商城</span></span>
+    </div>
+</div>
+<el-card class="rounded-0 sticky-top">
+    <el-input prefix-icon="el-icon-search" clearable placeholder="关键字" v-model="form.keyWords">
+        <el-button slot="append" icon="el-icon-search" v-on:click="btnSearchClick">查 询</el-button>
+    </el-input>
+</el-card>
+<div class="p-3">
+    <div v-if="total>0">
+        <div class="row g-3">
+            <div class="col-6" v-for="gift in list">
+                <div class="card h-100" v-on:click="btnViewClick(gift)">
+                    <div class="carousel slide">
+                        <el-carousel height="180px" :interval="2000" arrow="never">
+                            <el-carousel-item v-for="item in gift.coverImg" :key="item">
+                                <el-image :src="item" style="height:100%;width:100%;"
+                                          fit="cover"></el-image>
+                            </el-carousel-item>
+                        </el-carousel>
+                    </div>
+                    <div class="card-body d-flex flex-column gap-2">
+                        <div class="d-flex flex-column gap-2">
+                            <h4 class="mb-0"><a href="javascript:;" class="text-inherit">{{ gift.name }}</a></h4>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <h4 class="mb-0"><i class="bi bi-database-check text-warning"></i> {{ gift.point }}</h4>
+                            <div>
+                                <i class="el-icon-user"></i> {{ gift.shopTotal }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="my-5 text-center">
+            <el-button class="border-0 rounded-pill" icon="el-icon-refresh-right" v-if="total>pushTotal" v-on:click="btnLoadMoreClick" :loading="loadMoreLoading">加载剩余的 {{total-pushTotal}} 条</el-button>
+            <small v-else>没有更多了</small>
+        </div>
+    </div>
+    <div class="pt-10" v-else>
+        <el-empty :image-size="55"></el-empty>
+    </div>
+</div>
+<div class="py-8"></div>
+<div class="py-8"></div>
+<div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 animate__animated animate__fadeInUp">
+    <el-button class="rounded-pill" type="primary" v-on:click="utils.closeLayerSelf" icon="el-icon-back">返 回</el-button>
+</div>
+@section Scripts{
+    <script src="/sitefiles/assets/js/app/gift/gifts.js" type="text/javascript"></script>
+}

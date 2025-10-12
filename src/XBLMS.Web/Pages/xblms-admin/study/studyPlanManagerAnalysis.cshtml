@@ -1,0 +1,163 @@
+﻿@page
+@{ Layout = "_Layout"; }
+@section Styles{
+    <link href="/sitefiles/assets/lib/geeks/css/theme.min.css" rel="stylesheet" type="text/css" />
+}
+
+<el-row :gutter="6" class="mx-3 pt-5">
+    <el-col :span="6" class="text-center">
+        <apexchart type="radialBar" :options="passChartOptions" :series="passSeries" height="310"></apexchart>
+        <div class="py-1"></div>
+        <apexchart type="radialBar" :options="pass1ChartOptions" :series="pass1Series" height="310"></apexchart>
+    </el-col>
+    <el-col :span="18">
+        <el-card class="bg-light">
+            <div>
+                <el-row :gutter="18">
+                    <el-col :span="8">
+                        <el-card class="rounded-pill card-lift fw-bolder">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>计划学分</span>
+                                <span class="fw-bold">{{ plan.planCredit }}</span>
+                            </div>
+                        </el-card>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-card class="rounded-pill card-lift fw-bolder">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>必修课学分</span>
+                                <span class="fw-bold">{{ plan.totalCreditCourse }}</span>
+                            </div>
+                        </el-card>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-card class="rounded-pill card-lift fw-bolder">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>选修课学分</span>
+                                <span class="fw-bold">{{ plan.totalCreditSelectCourse }}</span>
+                            </div>
+                        </el-card>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="18" class="mt-3">
+                    <el-col :span="6">
+                        <el-card class="rounded-pill card-lift fw-bolder bg-primary text-white">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>培训人数</span>
+                                <span class="fw-bold">{{ plan.totalUser }}</span>
+                            </div>
+                        </el-card>
+                    </el-col>
+                    <el-col :span="6">
+                        <el-card class="rounded-pill card-lift fw-bolder bg-success text-white">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>完成人数</span>
+                                <span class="fw-bold">{{ plan.totalPassUser }}</span>
+                            </div>
+                        </el-card>
+                    </el-col>
+                    <el-col :span="6">
+                        <el-card class="rounded-pill card-lift fw-bolder">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>达标人数</span>
+                                <span class="fw-bold">{{ plan.totalPass1User }}</span>
+                            </div>
+                        </el-card>
+                    </el-col>
+                    <el-col :span="6">
+                        <el-card class="rounded-pill card-lift fw-bolder">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>平均学分</span>
+                                <span class="fw-bold">{{ plan.avgCredit }}</span>
+                            </div>
+                        </el-card>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="18" class="mt-5">
+                    <el-col :span="8">
+                        <el-card class="rounded-pill card-lift fw-bolder">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>课程数量</span>
+                                <span class="fw-bold">{{ plan.totalCourse }}</span>
+                            </div>
+                        </el-card>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-card class="rounded-pill card-lift fw-bolder">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>必修课数量</span>
+                                <span class="fw-bold">{{ plan.countCourse }}</span>
+                            </div>
+                        </el-card>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-card class="rounded-pill card-lift fw-bolder">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>选修课数量</span>
+                                <span class="fw-bold">{{ plan.countSelectCourse }}</span>
+                            </div>
+                        </el-card>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="18" class="mt-5 d-flex justify-content-between align-items-center">
+                    <el-col :span="8">
+                        <el-card class="rounded-pill card-lift fw-bolder">
+                            <div class="d-flex justify-content-between align-items-center px-3">
+                                <span>必修课完成人数</span>
+                                <span class="fw-bold fs-1">{{ plan.totalOverCourseUser }}</span>
+                            </div>
+                        </el-card>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-card class="rounded-pill card-lift fw-bolder">
+                            <div class="d-flex justify-content-between align-items-center px-3">
+                                <span>必修课平均学分</span>
+                                <span class="fw-bold fs-3">{{ plan.avgCourseCredit }}</span>
+                            </div>
+                        </el-card>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-card class="rounded-pill card-lift fw-bolder">
+                            <div class="d-flex justify-content-between align-items-center ps-3">
+                                <span>必修课完成率</span>
+                                <el-progress type="circle" :percentage="utils.formatPercentFloat(plan.totalOverCourseUser,plan.totalUser)" :width="88" :stroke-width="10" color="#67C23A"></el-progress>
+                            </div>
+                        </el-card>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="18" class="mt-3 d-flex justify-content-between align-items-center">
+                    <el-col :span="8">
+                        <el-card class="rounded-pill card-lift fw-bolder">
+                            <div class="d-flex justify-content-between align-items-center px-3">
+                                <span>选修课完成人数</span>
+                                <span class="fw-bold fs-1">{{ plan.totalOverSelectCourseUser }}</span>
+                            </div>
+                        </el-card>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-card class="rounded-pill card-lift fw-bolder">
+                            <div class="d-flex justify-content-between align-items-center px-3">
+                                <span>选修课平均学分</span>
+                                <span class="fw-bold fs-3">{{ plan.avgOverSelectCredit }}</span>
+                            </div>
+                        </el-card>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-card class="rounded-pill card-lift fw-bolder">
+                            <div class="d-flex justify-content-between align-items-center ps-3">
+                                <span>选修课完成率</span>
+                                <el-progress type="circle" :percentage="utils.formatPercentFloat(plan.totalOverSelectCourseUser,plan.totalUser)" :width="88" :stroke-width="10" color="#67C23A"></el-progress>
+                            </div>
+                        </el-card>
+                    </el-col>
+                </el-row>
+            </div>
+        </el-card>
+    </el-col>
+</el-row>
+
+@section Scripts{
+    <script src="/sitefiles/assets/lib/apexcharts/apexcharts.js" type="text/javascript"></script>
+    <script src="/sitefiles/assets/lib/apexcharts/vue-apexcharts.js" type="text/javascript"></script>
+    <script src="/sitefiles/assets/js/admin/study/studyPlanManagerAnalysis.js" type="text/javascript"></script>
+}
