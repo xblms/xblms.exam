@@ -222,10 +222,6 @@ npm run copy-linux-arm64
 
 <img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/ds.png"/>
 
-## 更多想法请联系我们
-
-<img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/linkmewechat.jpg"/>
-
 ## License
 
 [GNU Affero General Public License v3.0](LICENSE)
