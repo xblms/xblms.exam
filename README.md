@@ -9,7 +9,7 @@
 <br />
 <br />
 
-## 剧照
+## 系统展示
 
 <br />
 
@@ -227,6 +227,6 @@ Copyright (C) 2024 XBLMS.EXAM
 
 <img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/ds.png"/>
 
-## 更多想法请联系客服
+## 更多想法请联系我们
 
 <img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/linkmewechat.jpg"/>
