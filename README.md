@@ -27,13 +27,13 @@
 
 > 管理端演示环境
 
-* 演示账号：admin/123123
+* admin/123123
 
 * [点击前往管理端演示](http://182.92.223.118:5000/xblms-admin)
 
 > 用户端演示环境
 
-* 演示账号：test/123123
+* test/123123
 
 * [点击前往用户端演示](http://182.92.223.118:5000/home)
 
@@ -221,6 +221,10 @@ npm run copy-linux-arm64
 ## 打赏
 
 <img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/ds.png"/>
+
+## 更多想法请联系我们
+
+<img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/linkmewechat.jpg"/>
 
 ## License
 
