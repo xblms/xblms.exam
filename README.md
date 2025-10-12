@@ -27,13 +27,13 @@
 
 > 管理端演示环境
 
-* 账号：admin，密码：123123
+* 演示账号：admin/123123
 
 * [点击前往管理端演示](http://182.92.223.118:5000/xblms-admin)
 
 > 用户端演示环境
 
-* 账号：test，密码：123123
+* 演示账号：test/123123
 
 * [点击前往用户端演示](http://182.92.223.118:5000/home)
 
@@ -96,7 +96,7 @@
 
 ## 发布手册
 
-* 进群获取[qq:1027427177]
+* 进交流群获取
 
 ## 支持环境
 ### 支持的操作系统
@@ -218,12 +218,6 @@ npm run copy-linux-arm64
 
 如发现问题或对产品有任何建议，请提交至 [Gitee Issues](https://gitee.com/xblms/xblmes/issues)。
 
-## License
-
-[GNU Affero General Public License v3.0](LICENSE)
-
-Copyright (C) 2024 XBLMS.EXAM
-
 ## 打赏
 
 <img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/ds.png"/>
@@ -231,3 +225,9 @@ Copyright (C) 2024 XBLMS.EXAM
 ## 更多想法请联系我们
 
 <img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/linkmewechat.jpg"/>
+
+## License
+
+[GNU Affero General Public License v3.0](LICENSE)
+
+Copyright (C) 2024 XBLMS.EXAM
