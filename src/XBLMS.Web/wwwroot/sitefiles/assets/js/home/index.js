@@ -72,7 +72,7 @@ var methods = {
   btnTopMenuClick: function (command) {
     this.defaultActive = command;
     if (command === 'index') {
-      this.defaultSrc = utils.getRootUrl("dotaskindex");
+      this.defaultSrc = utils.getRootUrl("dotaskIndex");
     }
     if (command === 'study') {
       this.defaultSrc = utils.getStudyUrl("studyIndex");
