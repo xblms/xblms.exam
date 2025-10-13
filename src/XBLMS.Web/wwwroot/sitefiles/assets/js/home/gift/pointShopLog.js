@@ -31,6 +31,9 @@ var methods = {
         });
       }
       $this.total = res.total;
+      if ($this.total === 0) {
+        location.href = utils.getRootUrl("empty");
+      }
 
     }).catch(function (error) {
       utils.error(error);
