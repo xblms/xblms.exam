@@ -1,4 +1,4 @@
-var $url = "/doTask";
+﻿var $url = "/doTask";
 
 
 var data = utils.init({
