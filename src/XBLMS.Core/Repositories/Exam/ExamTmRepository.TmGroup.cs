@@ -151,7 +151,7 @@ namespace XBLMS.Core.Repositories
 
             if (group != null)
             {
-                query = Group_GetRangeQuery(group, query);
+                query = Group_GetQuery(group, query);
             }
             var zsdList = await _repository.GetAllAsync<string>(query);
             if (zsdList != null)
