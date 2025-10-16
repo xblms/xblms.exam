@@ -8,7 +8,6 @@ using XBLMS.Core.Utils.Office;
 using XBLMS.Enums;
 using XBLMS.Models;
 using XBLMS.Utils;
-using XLMS.Core.Utils.Office;
 
 namespace XBLMS.Web.Controllers.Admin.Study
 {

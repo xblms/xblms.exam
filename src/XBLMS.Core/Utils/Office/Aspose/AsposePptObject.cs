@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using XBLMS.Utils;
 
-namespace XLMS.Core.Utils.Office
+namespace XBLMS.Core.Utils.Office
 {
     public static class AsposePptObject
     {
@@ -16,7 +16,12 @@ namespace XLMS.Core.Utils.Office
                 var pptFilename = PathUtils.GetFileName(fileUrl);
                 var pdffileName = PathUtils.GetFileNameWithoutExtension(fileUrl) + StringUtils.GetShortGuid() + ".pdf";
                 var pdfPath = PathUtils.Combine(StringUtils.ReplaceEndsWithIgnoreCase(fileUrl, pptFilename, ""), pdffileName);
-                ppt.Save(pdfPath, Aspose.Slides.Export.SaveFormat.Pdf);
+
+                using (var fs = new FileStream(pdfPath, FileMode.Create))
+                {
+                    ppt.Save(fs, Aspose.Slides.Export.SaveFormat.Pdf);
+                }
+
                 return (pdfPath, true, "");
             }
             catch (Exception ex)

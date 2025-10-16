@@ -1,8 +1,7 @@
 using Aspose.Pdf;
 using Aspose.Pdf.Devices;
-using XBLMS.Core.Utils;
 
-namespace XLMS.Core.Utils.Office
+namespace XBLMS.Core.Utils.Office
 {
     public static class AsposePdfObject
     {

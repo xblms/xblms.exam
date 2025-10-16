@@ -1,4 +1,4 @@
-﻿namespace XLMS.Web.Controllers.Admin.Settings.Files
+﻿namespace XBLMS.Web.Controllers.Admin.Settings.Files
 {
     public partial class FileController
     {

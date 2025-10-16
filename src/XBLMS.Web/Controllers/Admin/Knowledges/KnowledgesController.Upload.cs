@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 using XBLMS.Configuration;
+using XBLMS.Core.Utils.Office;
 using XBLMS.Utils;
-using XLMS.Core.Utils.Office;
 
 namespace XBLMS.Web.Controllers.Admin.Knowledges
 {

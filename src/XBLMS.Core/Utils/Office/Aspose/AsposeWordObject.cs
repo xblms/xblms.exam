@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using XBLMS.Utils;
 
-namespace XLMS.Core.Utils.Office
+namespace XBLMS.Core.Utils.Office
 {
     public static class AsposeWordObject
     {
