@@ -119,7 +119,7 @@ namespace XBLMS.Core.Services
             {
                 tm.Answer = "";
             }
-            GetTmOptionsRandom(tm, paper.IsExamingTmOptionRandomView && paperView);
+            GetTmOptionsRandom(tm, paper.IsExamingTmOptionRandomView && !paperView);
 
             await GetSmallListByPaper(tm, startId, paper);
         }
