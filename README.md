@@ -72,7 +72,7 @@
 
 ## 技术文档
 
-* [前往查看技术文档](https://gitee.com/xblms/xblmes/raw/master/docs)
+* [前往查看技术文档](https://gitee.com/xblms/xblmes/tree/master/docs)
 
 * 或进入聊天群获取
 
