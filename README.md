@@ -56,7 +56,7 @@
 
 支持人大金仓、达梦、OceanBase、MariaDB、MySql、SqlServer、PostgreSql、SQLite 等多种类型数据库。
 
-支持基本的考试和培训功能，可以在系统配置中切换系统类型。
+支持基于考试和培训的基本功能，可以在系统配置中切换系统类型。
 
 
 ### 版本
