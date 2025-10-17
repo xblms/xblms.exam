@@ -54,37 +54,10 @@
 
 支持跨平台部署。
 
-支持人大金仓、达梦、OceanBase、MariaDB、MySql、SqlServer、PostgreSql、SQLite 等多类型数据库。
+支持人大金仓、达梦、OceanBase、MariaDB、MySql、SqlServer、PostgreSql、SQLite 等多种类型数据库。
 
-### 优势
+支持基本的考试和培训功能，可以在系统配置中切换系统类型。
 
-* 一码多库：一套代码，多种类型数据库随意搭配。
-
-* NoSql：无数据库脚本，无sql语句，code first高级版，基于实体对象自动生成数据库结构。
-
-* 一键切换：备份、还原、迁移、切换数据库分分钟搞定。
-
-* 前后端分离：.netcore api restfull 提供轻量级的数据服务，搭配vue前端框架，开发部署简单高效。
-
-* 一码多端：一套代码，适配pc端多端浏览器和移动端多端终端，响应式布局+element轻松实现耳目一新的ui用户体验。
-
-* 跨平台：适配国内主流CPU、操作系统、国产数据库。
-
-* 全方位安全机制
-
-	1、完整且丰富的日志功能（管理员日志+用户日志+错误日志+数据日志）
-
-    2、前后端安全（SQL注入、跨站脚本、非法文件上传、越权访问）
-
-	3、轻松运维（无界面数据查询+审计）
-
-	4、访问限制（白名单、黑名单、ip、ip段、区域）
-
-	5、安全模式，自定义系统安全措施
-
-* 技术支持+个性化定制（非常专业）
-
-* 性能（.net 8 史无前例）
 
 ### 版本
 
@@ -97,9 +70,11 @@
 * 访问/xblms-admin/syncDatabase 进行数据库升级。
 * 发布最新的代码替换到原来的部署包即可升级部署文件，不要替换xblms.json文件。
 
-## 发布手册
+## 技术文档
 
-* 进群获取[qq群:1027427177]
+* [前往查看技术文档](https://gitee.com/xblms/xblmes/raw/master/docs)
+
+* 或进入聊天群获取
 
 ## 支持环境
 ### 支持的操作系统
@@ -231,6 +206,8 @@ Copyright (C) 2024 XBLMS.EXAM
 
 <img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/ds.png"/>
 
-## 对公业务请联系客服微信
+## 对公
+
+* 对公业务请联系客服微信
 
 <img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/linkmewechat.jpg"/>
