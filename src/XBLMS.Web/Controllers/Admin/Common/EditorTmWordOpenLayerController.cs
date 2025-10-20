@@ -86,9 +86,6 @@ namespace XBLMS.Web.Controllers.Admin.Common
 
             var resultTmHtml = string.Empty;
 
-            var styles = await _tableStyleRepository.GetExamTmStylesAsync(false);
-            var styleCount = styles?.Count ?? 0;
-
             if (!string.IsNullOrEmpty(tmHtml))
             {
                 var tmhtmlList = ListUtils.GetStringList(tmHtml, "<p><br/></p>");
@@ -185,10 +182,14 @@ namespace XBLMS.Web.Controllers.Admin.Common
                                                 {
                                                     for (int answerIndex = 0; answerIndex < answers.Count; answerIndex++)
                                                     {
-                                                        if (!htmlAnswer.Contains(answers[answerIndex]))
+                                                        try
                                                         {
-                                                            answers[answerIndex] = string.Empty;
+                                                            if (!htmlAnswer.Contains(answers[answerIndex]))
+                                                            {
+                                                                answers[answerIndex] = string.Empty;
+                                                            }
                                                         }
+                                                        catch { continue; }
                                                     }
                                                 }
                                                 if (options.Count > 0 && answers.Count > 0)
@@ -263,22 +264,10 @@ namespace XBLMS.Web.Controllers.Admin.Common
                                                     info.Set("options", options);
                                                     info.Set("optionsValues", answers);
 
-
-                                                    if (styleCount > 0 && tmRemarkList.Count > 6)
-                                                    {
-                                                        foreach (var style in styles)
-                                                        {
-                                                            info.Set(style.AttributeName, style.Get($"{style.AttributeName}Value"));
-                                                        }
-                                                    }
-
                                                     successTotal++;
                                                     successTmList.Add(info);
                                                 }
                                             }
-
-
-
                                         }
                                     }
                                     else
@@ -300,7 +289,6 @@ namespace XBLMS.Web.Controllers.Admin.Common
                             }
                             errorTms.Add(errorTm);
                         }
-
                     }
                 }
             }
@@ -316,7 +304,6 @@ namespace XBLMS.Web.Controllers.Admin.Common
 
                 resultTmHtml += $"{error.TmHtml}<p><br/></p>";
             }
-
 
             return (total, successTotal, errorTotal, successTmList, resultTmHtml);
 

@@ -26,6 +26,7 @@ namespace XBLMS.Web.Controllers.Home
         private readonly IStudyPlanUserRepository _studyPlanUserRepository;
         private readonly IStudyManager _studyManager;
         private readonly IStudyPlanRepository _studyPlanRepository;
+        private readonly IConfigRepository _configRepository;
 
         public DoTeskController(IAuthManager authManager,
             IExamPaperUserRepository examPaperUserRepository,
@@ -36,7 +37,8 @@ namespace XBLMS.Web.Controllers.Home
             IExamAssessmentRepository examAssessmentRepository,
             IStudyPlanUserRepository studyPlanUserRepository,
             IStudyManager studyManager,
-            IStudyPlanRepository studyPlanRepository)
+            IStudyPlanRepository studyPlanRepository,
+            IConfigRepository configRepository)
         {
             _authManager = authManager;
             _examPaperUserRepository = examPaperUserRepository;
@@ -48,6 +50,7 @@ namespace XBLMS.Web.Controllers.Home
             _studyPlanUserRepository = studyPlanUserRepository;
             _studyManager = studyManager;
             _studyPlanRepository = studyPlanRepository;
+            _configRepository = configRepository;
         }
 
         public class GetResult

@@ -17,6 +17,8 @@ namespace XBLMS.Web.Controllers.Home
             var user = await _authManager.GetUserAsync();
             if (user == null) return Unauthorized();
 
+            var config = await _configRepository.GetAsync();
+
             var result = new GetResult();
             result.Total = 0;
             result.List = new List<GetResultInfo>();
@@ -119,38 +121,40 @@ namespace XBLMS.Web.Controllers.Home
                 taskList = new List<DoTask>();
             }
 
-
-            var (planTotal, planList) = await _studyPlanUserRepository.GetTaskListAsync(user.Id);
-            var planUser = new StudyPlanUser();
-            if (planTotal > 0)
+            if (config.SystemCode == SystemCode.Elearning)
             {
-                for (var i = 0; i < planList.Count; i++)
+                var (planTotal, planList) = await _studyPlanUserRepository.GetTaskListAsync(user.Id);
+                var planUser = new StudyPlanUser();
+                if (planTotal > 0)
                 {
-                    var item = planList[i];
-                    var plan = await _studyPlanRepository.GetAsync(item.PlanId);
-                    if (plan != null)
+                    for (var i = 0; i < planList.Count; i++)
                     {
-                        result.Total++;
-                        taskTotal++;
-                        taskList.Add(new DoTask
+                        var item = planList[i];
+                        var plan = await _studyPlanRepository.GetAsync(item.PlanId);
+                        if (plan != null)
                         {
-                            TaskId = item.Id,
-                            TaskType = TaskType.StudyPlan,
-                            TaskTypeName = TaskType.StudyPlan.GetDisplayName(),
-                            TaskTitle = plan.PlanName,
-                            TaskBeginDateTime = plan.PlanBeginDateTime.Value.ToString(DateUtils.FormatStringDateTimeCN),
-                            TaskEndDateTime = plan.PlanEndDateTime.Value.ToString(DateUtils.FormatStringDateTimeCN)
-                        });
+                            result.Total++;
+                            taskTotal++;
+                            taskList.Add(new DoTask
+                            {
+                                TaskId = item.Id,
+                                TaskType = TaskType.StudyPlan,
+                                TaskTypeName = TaskType.StudyPlan.GetDisplayName(),
+                                TaskTitle = plan.PlanName,
+                                TaskBeginDateTime = plan.PlanBeginDateTime.Value.ToString(DateUtils.FormatStringDateTimeCN),
+                                TaskEndDateTime = plan.PlanEndDateTime.Value.ToString(DateUtils.FormatStringDateTimeCN)
+                            });
+                        }
                     }
+                    result.List.Add(new GetResultInfo
+                    {
+                        TaskName = TaskType.StudyPlan.GetDisplayName(),
+                        TaskTotal = taskTotal,
+                        TaskList = taskList
+                    });
                 }
-                result.List.Add(new GetResultInfo
-                {
-                    TaskName = TaskType.StudyPlan.GetDisplayName(),
-                    TaskTotal = taskTotal,
-                    TaskList = taskList
-                });
             }
-
+          
             return result;
         }
     }
