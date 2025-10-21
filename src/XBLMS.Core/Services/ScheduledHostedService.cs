@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Net.NetworkInformation;
 using System.Threading;
 using System.Threading.Tasks;
 using XBLMS.Enums;
@@ -13,25 +12,17 @@ namespace XBLMS.Core.Services
 {
     public partial class ScheduledHostedService : BackgroundService
     {
-        private readonly Ping _ping;
         private readonly ILogger<ScheduledHostedService> _logger;
         private static readonly TimeSpan FREQUENCY = TimeSpan.FromSeconds(5);
         private readonly ISettingsManager _settingsManager;
-        private readonly ICreateManager _createManager;
-        private readonly IPathManager _pathManager;
         private readonly IDatabaseManager _databaseManager;
-        private readonly IOrganManager _organManager;
 
         public ScheduledHostedService(ILogger<ScheduledHostedService> logger, IServiceProvider serviceProvider)
         {
-            _ping = new Ping();
             _logger = logger;
             serviceProvider = serviceProvider.CreateScope().ServiceProvider;
             _settingsManager = serviceProvider.GetRequiredService<ISettingsManager>();
-            _createManager = serviceProvider.GetRequiredService<ICreateManager>();
-            _pathManager = serviceProvider.GetRequiredService<IPathManager>();
             _databaseManager = serviceProvider.GetRequiredService<IDatabaseManager>();
-            _organManager = serviceProvider.GetRequiredService<IOrganManager>();
         }
 
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
