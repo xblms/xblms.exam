@@ -51,6 +51,7 @@ namespace XBLMS.Web.Controllers.Admin.Study
             public string Cover { get; set; }
             public string CoverView { get; set; }
             public string Url { get; set; }
+            public bool IsVideo { get; set; }
         }
         public class GetQueryResultPath
         {

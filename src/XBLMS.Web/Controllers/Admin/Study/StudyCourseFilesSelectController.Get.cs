@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using XBLMS.Core.Utils;
+using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Admin.Study
 {
@@ -40,6 +41,7 @@ namespace XBLMS.Web.Controllers.Admin.Study
                             Cover = file.CoverUrl,
                             CoverView = await _pathManager.GetServerFileUrl(file.CoverUrl),
                             Url = file.Url,
+                            IsVideo = FileUtils.IsPlayer(file.FileType)
                         });
                     }
                 }
@@ -82,7 +84,8 @@ namespace XBLMS.Web.Controllers.Admin.Study
                             DateTimeStr = file.LastModifiedDate.Value.ToString(DateUtils.FormatStringDateOnlyCN),
                             Cover = file.CoverUrl,
                             CoverView = await _pathManager.GetServerFileUrl(file.CoverUrl),
-                            Url = file.Url
+                            Url = file.Url,
+                            IsVideo = FileUtils.IsPlayer(file.FileType)
                         });
                     }
                 }

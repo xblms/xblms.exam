@@ -71,8 +71,8 @@
                              width="120">
                 <template slot-scope="scope">
                     <span v-if="scope.row.type==='File'">
-                        <span v-if="scope.row.fileType==='PDF'">{{ scope.row.duration }}P</span>
-                        <span v-else>{{ utils.formatDuration(scope.row.duration) }}</span>
+                        <span v-if="scope.row.isVideo">{{ utils.formatDuration(scope.row.duration) }}</span>
+                        <span v-else>{{ scope.row.duration }}P</span>
                     </span>
                 </template>
             </el-table-column>
