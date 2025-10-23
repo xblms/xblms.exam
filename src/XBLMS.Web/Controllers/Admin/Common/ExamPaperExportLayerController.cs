@@ -71,7 +71,11 @@ namespace XBLMS.Web.Controllers.Admin.Common
             _examPaperAnswerSmallRepository = examPaperAnswerSmallRepository;
         }
 
-
+        public class GetResult
+        {
+            public bool Success { get; set; }
+            public string Msg { get; set; }
+        }
         public class GetReqest
         {
             public int Id { get; set; }

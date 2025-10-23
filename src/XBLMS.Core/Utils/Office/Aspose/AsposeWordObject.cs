@@ -1,4 +1,4 @@
-using Aspose.Words;
+﻿using Aspose.Words;
 using System;
 using System.IO;
 using XBLMS.Utils;
@@ -27,6 +27,21 @@ namespace XBLMS.Core.Utils.Office
             catch (Exception ex)
             {
                 return ("", false, ex.Message);
+            }
+
+        }
+        public static (bool success, string msg) GetWordUrl(string wordPath,string htmlpath)
+        {
+            try
+            {
+                RemoveWatermark();
+                Document doc = new Document(htmlpath);
+                doc.Save(wordPath, SaveFormat.Docx);
+                return (true, "");
+            }
+            catch (Exception ex)
+            {
+                return (false, ex.Message);
             }
 
         }

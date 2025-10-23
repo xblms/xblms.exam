@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Aspose.Pdf.Operators;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,7 +16,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
     public partial class ExamPaperExportLayerController
     {
         [HttpGet, Route(RouteScore)]
-        public async Task<ActionResult<StringResult>> ExportScore([FromQuery] GetReqest request)
+        public async Task<ActionResult<GetResult>> ExportScore([FromQuery] GetReqest request)
         {
             var wordurl = string.Empty;
 
@@ -27,20 +28,27 @@ namespace XBLMS.Web.Controllers.Admin.Common
             var configs = await _examPaperRandomConfigRepository.GetListAsync(paper.Id);
             if (configs == null || configs.Count == 0) { return NotFound(); }
 
-
-            if (request.Type == ExamPaperExportType.PaperScoreOnlyOne)
+            var result = new GetResult();
+            try
             {
-                wordurl = await ExportScoreOnlyOne(request, randomIds, paper, configs);
+                if (request.Type == ExamPaperExportType.PaperScoreOnlyOne)
+                {
+                    wordurl = await ExportScoreOnlyOne(request, randomIds, paper, configs);
+                }
+                if (request.Type == ExamPaperExportType.PaperScoreRar)
+                {
+                    wordurl = await ExportScorerRar(request, randomIds, paper, configs);
+                }
+                result.Success = true;
+                result.Msg = wordurl;
             }
-            if (request.Type == ExamPaperExportType.PaperScoreRar)
+            catch (Exception ex)
             {
-                wordurl = await ExportScorerRar(request, randomIds, paper, configs);
+                result.Success = false;
+                result.Msg = ex.Message;
             }
 
-            return new StringResult
-            {
-                Value = wordurl
-            };
+            return result;
         }
         public async Task<string> ExportScoreOnlyOne(GetReqest request, List<int> randomIds, ExamPaper paper, List<ExamPaperRandomConfig> configs)
         {
@@ -118,7 +126,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
 
             await FileUtils.WriteTextAsync(fileHtmlPath, wordContent.ToString());
             var result = WordManager.HtmlToWord(fileHtmlPath, fileWordPath);
-
+      
             var wordurl = _pathManager.GetDownloadFilesUrl(wordFileName);
 
             FileUtils.DeleteFileIfExists(fileHtmlPath);

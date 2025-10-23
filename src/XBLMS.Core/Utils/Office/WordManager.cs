@@ -74,7 +74,11 @@ namespace XBLMS.Core.Utils.Office
             return $"data:{picType};base64,{Convert.ToBase64String(imgByte)}";
         }
 
-        public static string HtmlToWord(string fileHtmlPath, string fileWordPath)
+        public static (bool success,string msg) HtmlToWord(string fileHtmlPath, string fileWordPath)
+        {
+            return AsposeWordObject.GetWordUrl(fileWordPath, fileHtmlPath);
+        }
+        public static string HtmlToWordByXml(string fileHtmlPath, string fileWordPath)
         {
             var sourceHtmlFi = new FileInfo(fileHtmlPath);
             var destDocxFi = new FileInfo(fileWordPath);

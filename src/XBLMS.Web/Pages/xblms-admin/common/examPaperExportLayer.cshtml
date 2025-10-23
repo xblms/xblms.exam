@@ -7,12 +7,19 @@
         <el-button style="float: right;padding:3px 0;" type="text" v-on:click="utils.closeLayerSelf"><i class="el-icon-close"></i></el-button>
     </div>
     <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-180) + 'px' }">
-        <el-result icon="success" title="操作成功" v-if="url">
-            <template slot="extra">
-                <el-button type="primary" plain v-on:click="btnDownloadClick" icon="el-icon-download" :size="euiSize">点击下载</el-button>
-            </template>
-        </el-result>
-        <div v-else>
+        <template v-if="exportStatus">
+                    <el-result icon="success" title="操作成功" v-if="exportSuccess">
+                        <template slot="extra">
+                            <el-button type="primary" plain v-on:click="btnDownloadClick" icon="el-icon-download" :size="euiSize">点击下载</el-button>
+                        </template>
+                    </el-result>
+                    <el-result icon="error" title="错误提示" v-else>
+                        <template slot="subTitle">
+    <span>{{ url }}</span>
+  </template>
+    </el-result>
+        </template>
+        <template v-else>
             <el-form :inline="true">
                 <el-form-item label="">
                     <el-checkbox v-model="withAnswer">包含正确答案</el-checkbox>
@@ -21,7 +28,8 @@
                     <el-button type="primary" icon="el-icon-download" :size="euiSize" v-on:click="btnExportClick">开始导出</el-button>
                 </el-form-item>
             </el-form>
-        </div>
+        </template>
+
     </el-scrollbar>
 </el-card>
 <el-row align="center" style="margin-top:18px;">

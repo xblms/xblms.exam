@@ -8,7 +8,9 @@ var data = utils.init({
   dateFrom: utils.getQueryString('dateFrom'),
   dateTo: utils.getQueryString('dateTo'),
   keywords: utils.getQueryString('keywords'),
-  url: null
+  url: null,
+  exportSuccess: null,
+  exportStatus: false
 });
 
 var methods = {
@@ -30,7 +32,9 @@ var methods = {
       }
     }).then(function (response) {
       var res = response.data;
-      $this.url = res.value;
+      $this.url = res.msg;
+      $this.exportSuccess = res.success;
+      $this.exportStatus = true;
 
     }).catch(function (error) {
       utils.error(error, { layer: true });

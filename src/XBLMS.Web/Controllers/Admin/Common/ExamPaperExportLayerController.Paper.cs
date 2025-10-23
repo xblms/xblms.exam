@@ -14,7 +14,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
     public partial class ExamPaperExportLayerController
     {
         [HttpGet, Route(Route)]
-        public async Task<ActionResult<StringResult>> Export([FromQuery] GetReqest request)
+        public async Task<ActionResult<GetResult>> Export([FromQuery] GetReqest request)
         {
             var wordurl = string.Empty;
 
@@ -26,20 +26,27 @@ namespace XBLMS.Web.Controllers.Admin.Common
             var configs = await _examPaperRandomConfigRepository.GetListAsync(paper.Id);
             if (configs == null || configs.Count == 0) { return NotFound(); }
 
-      
-            if (request.Type == ExamPaperExportType.PaperOnlyOne)
+            var result = new GetResult();
+            try
             {
-                wordurl = await ExportPaperOnlyOne(request, randomIds, paper, configs);
+                if (request.Type == ExamPaperExportType.PaperOnlyOne)
+                {
+                    wordurl = await ExportPaperOnlyOne(request, randomIds, paper, configs);
+                }
+                if (request.Type == ExamPaperExportType.PaperRar)
+                {
+                    wordurl = await ExportPaperRar(request, randomIds, paper, configs);
+                }
+                result.Success = true;
+                result.Msg = wordurl;
             }
-            if (request.Type == ExamPaperExportType.PaperRar)
+            catch (Exception ex)
             {
-                wordurl = await ExportPaperRar(request, randomIds, paper, configs);
+                result.Success = false;
+                result.Msg = ex.Message;
             }
 
-            return new StringResult
-            {
-                Value = wordurl
-            };
+            return result;
         }
         public async Task<string> ExportPaperOnlyOne(GetReqest request, List<int> randomIds, ExamPaper paper, List<ExamPaperRandomConfig> configs)
         {
