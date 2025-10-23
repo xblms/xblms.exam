@@ -181,13 +181,12 @@ namespace XBLMS.Core.Repositories
             return query;
         }
 
-        public async Task<(int total, List<Log> list)> GetAdminLogsAsync(AdminAuth auth, List<int> adminIds, string keyword, string dateFrom, string dateTo, int offset, int limit)
+        public async Task<(int total, List<Log> list)> GetAdminLogsAsync(AdminAuth auth, List<int> adminIds, string keyword, string dateFrom, string dateTo, int pageIndex, int pageSize)
         {
             var query = GetAdminQuery(adminIds, keyword, dateFrom, dateTo);
-
             query = GetQueryByAuth(query, auth);
             var total = await _repository.CountAsync(query);
-            query.Offset(offset).Limit(limit);
+            query.ForPage(pageIndex, pageSize);
             var list = await _repository.GetAllAsync(query);
             return (total, list);
         }
@@ -228,7 +227,7 @@ namespace XBLMS.Core.Repositories
             return query;
         }
 
-        public async Task<(int total, List<Log> list)> GetUserLogsAsync(AdminAuth auth, int userId, string keyword, string dateFrom, string dateTo, int offset, int limit)
+        public async Task<(int total, List<Log> list)> GetUserLogsAsync(AdminAuth auth, int userId, string keyword, string dateFrom, string dateTo, int pageIndex, int pageSize)
         {
             var query = GetUserQuery(userId, keyword, dateFrom, dateTo);
 
@@ -236,7 +235,8 @@ namespace XBLMS.Core.Repositories
 
             var total = await _repository.CountAsync(query);
 
-            query.Offset(offset).Limit(limit);
+            query.ForPage(pageIndex, pageSize);
+
             var list = await _repository.GetAllAsync(query);
             return (total, list);
         }

@@ -38,7 +38,7 @@
                          width="60"
                          align="left">
             <template scope="scope">
-                <span>{{(formInline.currentPage - 1) * formInline.limit + scope.$index + 1}}</span>
+                <span>{{(formInline.pageIndex - 1) * formInline.pageSize + scope.$index + 1}}</span>
             </template>
         </el-table-column>
         <el-table-column label="用户">
@@ -66,8 +66,8 @@
         <el-col :span="24" align="center">
             <el-pagination background
                            v-on:current-change="handleCurrentChange"
-                           :current-page="formInline.currentPage"
-                           :page-size="formInline.limit"
+                           :current-page="formInline.pageIndex"
+                           :page-size="formInline.pageSize"
                            layout="total, prev, pager, next, jumper"
                            :total="count">
             </el-pagination>

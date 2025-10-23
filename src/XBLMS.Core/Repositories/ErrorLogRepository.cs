@@ -1,4 +1,4 @@
-using Datory;
+﻿using Datory;
 using SqlKata;
 using System;
 using System.Collections.Generic;
@@ -58,20 +58,14 @@ namespace XBLMS.Core.Repositories
             return await _repository.GetAsync(logId);
         }
 
-        private Query GetQuery(string category, string keyword, string dateFrom, string dateTo)
+        private Query GetQuery(string keyword, string dateFrom, string dateTo)
         {
             var query = Q.OrderByDesc(nameof(ErrorLog.Id));
 
-            if (string.IsNullOrEmpty(category) && string.IsNullOrEmpty(keyword) && string.IsNullOrEmpty(dateFrom) && string.IsNullOrEmpty(dateTo))
+            if (string.IsNullOrEmpty(keyword) && string.IsNullOrEmpty(dateFrom) && string.IsNullOrEmpty(dateTo))
             {
                 return query;
             }
-
-            if (!string.IsNullOrEmpty(category))
-            {
-                query.Where(nameof(ErrorLog.Category), category);
-            }
-
 
             if (!string.IsNullOrEmpty(keyword))
             {
@@ -103,15 +97,15 @@ namespace XBLMS.Core.Repositories
             return query;
         }
 
-        public async Task<int> GetCountAsync(string category, string keyword, string dateFrom, string dateTo)
+        public async Task<int> GetCountAsync(string keyword, string dateFrom, string dateTo)
         {
-            return await _repository.CountAsync(GetQuery(category, keyword, dateFrom, dateTo));
+            return await _repository.CountAsync(GetQuery(keyword, dateFrom, dateTo));
         }
 
-        public async Task<List<ErrorLog>> GetAllAsync(string category, string keyword, string dateFrom, string dateTo, int offset, int limit)
+        public async Task<List<ErrorLog>> GetAllAsync(string keyword, string dateFrom, string dateTo, int pageIndex, int pageSize)
         {
-            var query = GetQuery(category, keyword, dateFrom, dateTo);
-            query.Offset(offset).Limit(limit);
+            var query = GetQuery(keyword, dateFrom, dateTo);
+            query.ForPage(pageIndex, pageSize);
             return await _repository.GetAllAsync(query);
         }
     }

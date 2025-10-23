@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using XBLMS.Dto;
+using XBLMS.Models;
 using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Admin.Settings.Logs
@@ -7,7 +9,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Logs
     public partial class LogsErrorController
     {
         [HttpPost, Route(Route)]
-        public async Task<ActionResult<SearchResult>> Get([FromBody] SearchRequest request)
+        public async Task<ActionResult<PageResult<ErrorLog>>> Get([FromBody] SearchRequest request)
         {
             if (!await _authManager.HasPermissionsAsync())
             {

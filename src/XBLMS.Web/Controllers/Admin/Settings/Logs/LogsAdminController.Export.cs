@@ -33,6 +33,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Logs
             };
             var rows = new List<List<string>>();
 
+            request.PageSize = int.MaxValue;
             var results = await GetResultsAsync(request);
             foreach (var item in results.Items)
             {

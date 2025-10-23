@@ -10,19 +10,16 @@ var data = utils.init({
     dateTo: '',
     userName: '',
     keyword: '',
-    currentPage: 1,
-    offset: 0,
-    limit: 30
+    pageIndex: 1,
+    pageSize: PER_PAGE
   }
 });
 
 var methods = {
   apiGet: function () {
     var $this = this;
-
     $api.post($url, this.formInline).then(function (response) {
       var res = response.data;
-
       $this.items = res.items;
       $this.count = res.count;
     }).catch(function (error) {
@@ -34,12 +31,9 @@ var methods = {
 
   apiDelete: function () {
     var $this = this;
-
     utils.loading(this, true);
     $api.post($urlDelete).then(function (response) {
-      var res = response.data;
-
-      $this.items = [];
+      $this.btnSearchClick();
     }).catch(function (error) {
       utils.error(error);
     }).then(function () {
@@ -49,7 +43,6 @@ var methods = {
 
   btnDeleteClick: function () {
     var $this = this;
-
     top.utils.alertDelete({
       title: '清空用户日志',
       text: '此操作将会清空用户日志，且数据无法恢复，请谨慎操作！',
@@ -65,16 +58,10 @@ var methods = {
 
   btnExportClick() {
     var $this = this;
-
-    var body = _.assign({}, this.formInline);
-    body.currentPage = 1;
-    body.offset = 0;
-    body.limit = 0;
-
+    this.formInline.pageIndex = 1;
     utils.loading(this, true);
-    $api.post($urlExport, body).then(function (response) {
+    $api.post($urlExport, this.formInline).then(function (response) {
       var res = response.data;
-
       window.open(res.value);
     }).catch(function (error) {
       utils.error(error);
@@ -84,43 +71,13 @@ var methods = {
   },
 
   btnSearchClick() {
-    var $this = this;
-
-    this.formInline.currentPage = 1;
-    this.formInline.offset = 0;
-    this.formInline.limit = 30;
-
-    utils.loading(this, true);
-    $api.post($url, this.formInline).then(function (response) {
-      var res = response.data;
-
-      $this.items = res.items;
-      $this.count = res.count;
-    }).catch(function (error) {
-      utils.error(error);
-    }).then(function () {
-      utils.loading($this, false);
-    });
+    this.formInline.pageIndex = 1;
+    this.apiGet();
   },
 
   handleCurrentChange: function(val) {
-    var $this = this;
-
-    this.formInline.currentPage = val;
-    this.formInline.offset = this.formInline.limit * (val - 1);
-
-    utils.loading(this, true);
-    $api.post($url, this.formInline).then(function (response) {
-      var res = response.data;
-
-      $this.items = res.items;
-      $this.count = res.count;
-    }).catch(function (error) {
-      utils.error(error);
-    }).then(function () {
-      utils.loading($this, false);
-    });
-    window.scrollTo(0, 0);
+    this.formInline.pageIndex = val;
+    this.apiGet();
   },
 
   btnCloseClick: function() {

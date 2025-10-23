@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using XBLMS.Configuration;
-using XBLMS.Core.Utils;
 using XBLMS.Dto;
 using XBLMS.Models;
 using XBLMS.Repositories;
@@ -32,35 +30,25 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Logs
             _errorLogRepository = errorLogRepository;
         }
 
-        public class SearchRequest : PageRequest
+        public class SearchRequest
         {
-            public string Category { get; set; }
             public string Keyword { get; set; }
             public string DateFrom { get; set; }
             public string DateTo { get; set; }
+            public int PageIndex { get; set; }
+            public int PageSize { get; set; }
         }
 
-        public class SearchResult : PageResult<ErrorLog>
+
+        public async Task<PageResult<ErrorLog>> GetResultsAsync(SearchRequest request)
         {
-            public List<Select<string>> Categories { get; set; }
-        }
+            var count = await _errorLogRepository.GetCountAsync(request.Keyword, request.DateFrom, request.DateTo);
+            var logs = await _errorLogRepository.GetAllAsync(request.Keyword, request.DateFrom, request.DateTo, request.PageIndex, request.PageSize);
 
-        public async Task<SearchResult> GetResultsAsync(SearchRequest request)
-        {
-            var count = await _errorLogRepository.GetCountAsync(request.Category, request.Keyword, request.DateFrom, request.DateTo);
-            var logs = await _errorLogRepository.GetAllAsync(request.Category, request.Keyword, request.DateFrom, request.DateTo, request.Offset, request.Limit);
-
-            var categories = new List<Select<string>>();
-            foreach (var category in LogUtils.AllCategoryList.Value)
-            {
-                categories.Add(new Select<string>(category.Key, category.Value));
-            }
-
-            return new SearchResult
+            return new PageResult<ErrorLog>
             {
                 Items = logs,
-                Count = count,
-                Categories = categories
+                Count = count
             };
         }
     }

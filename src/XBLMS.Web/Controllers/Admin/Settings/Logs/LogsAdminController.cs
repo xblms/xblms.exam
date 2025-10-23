@@ -33,12 +33,14 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Logs
             _logRepository = logRepository;
         }
 
-        public class SearchRequest : PageRequest
+        public class SearchRequest
         {
             public string UserName { get; set; }
             public string Keyword { get; set; }
             public string DateFrom { get; set; }
             public string DateTo { get; set; }
+            public int PageIndex { get; set; }
+            public int PageSize { get; set; }
         }
 
         public async Task<PageResult<Log>> GetResultsAsync(SearchRequest request)
@@ -58,7 +60,7 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Logs
                 }
             }
 
-            var (count,allLogs) = await _logRepository.GetAdminLogsAsync(adminAuth, adminIds, request.Keyword, request.DateFrom, request.DateTo, request.Offset, request.Limit);
+            var (count,allLogs) = await _logRepository.GetAdminLogsAsync(adminAuth, adminIds, request.Keyword, request.DateFrom, request.DateTo, request.PageIndex, request.PageSize);
             var logs = new List<Log>();
 
             foreach (var log in allLogs)

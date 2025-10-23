@@ -1,4 +1,4 @@
-using Datory;
+﻿using Datory;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using XBLMS.Models;
@@ -15,9 +15,9 @@ namespace XBLMS.Repositories
 
         Task<ErrorLog> GetErrorLogAsync(int logId);
 
-        Task<int> GetCountAsync(string category, string keyword, string dateFrom, string dateTo);
+        Task<int> GetCountAsync(string keyword, string dateFrom, string dateTo);
 
-        Task<List<ErrorLog>> GetAllAsync(string category, string keyword, string dateFrom,
-            string dateTo, int offset, int limit);
+        Task<List<ErrorLog>> GetAllAsync(string keyword, string dateFrom,
+            string dateTo, int pageIndex, int pageSie);
     }
 }
