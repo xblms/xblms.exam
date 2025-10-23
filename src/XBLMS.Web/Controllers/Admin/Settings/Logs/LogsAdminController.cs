@@ -69,8 +69,13 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Logs
                 if (admin != null)
                 {
                     log.Set("displanyName", admin.DisplayName);
-                    logs.Add(log);
                 }
+                else
+                {
+                    log.Set("displanyName", "已删除");
+                    log.AdminId = 0;
+                }
+                logs.Add(log);
             }
 
             return new PageResult<Log>

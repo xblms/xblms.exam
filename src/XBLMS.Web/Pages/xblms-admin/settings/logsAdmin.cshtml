@@ -43,7 +43,8 @@
         <el-table-column width="180"
                          label="管理员">
             <template slot-scope="scope">
-                <el-link :underline="false" type="primary" v-on:click="btnAdminView(scope.row.creatorId)">{{scope.row.displanyName}}</el-link>
+                <el-link :underline="false" type="primary" v-on:click="btnAdminView(scope.row.adminId)" v-if="scope.row.adminId>0">{{scope.row.displanyName}}</el-link>
+                <el-tag v-else size="mini" type="danger" effect="dark">{{scope.row.displanyName}}</el-tag>
             </template>
         </el-table-column>
         <el-table-column width="180"

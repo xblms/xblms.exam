@@ -67,11 +67,17 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Logs
             foreach (var log in userLogs)
             {
                 var user = await _userRepository.GetByUserIdAsync(log.UserId);
-                if (user == null) continue;
-
-                var userName = _userRepository.GetDisplay(user);
-                log.Set("userName", userName);
-                log.Set("userGuid", user.Guid);
+                if (user == null)
+                {
+                    log.UserId = 0;
+                    log.Set("userName", "已删除");
+                }
+                else
+                {
+                    var userName = _userRepository.GetDisplay(user);
+                    log.Set("userName", userName);
+                    log.Set("userGuid", user.Guid);
+                }
                 logs.Add(log);
             }
 
