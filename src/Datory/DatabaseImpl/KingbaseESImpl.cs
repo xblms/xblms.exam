@@ -1,4 +1,4 @@
-using Dapper;
+﻿using Dapper;
 using Datory.Utils;
 using Kdbndp;
 using SqlKata.Compilers;
