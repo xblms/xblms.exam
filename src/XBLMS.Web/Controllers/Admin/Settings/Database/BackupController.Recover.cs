@@ -1,8 +1,10 @@
 ﻿using Datory;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using XBLMS.Dto;
@@ -112,40 +114,28 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Database
                     if (ListUtils.ContainsIgnoreCase(includes, tableName)) continue;
                     try
                     {
-                        var metadataFilePath = PathUtils.Combine(_settingsManager.WebRootPath, directionryPath, tableName, "_metadata.json");
+                        await RecoverTable(tableName, directionryPath, errorTableNames);
 
-                        if (!FileUtils.IsFileExists(metadataFilePath)) continue;
-
-                        var tableInfo = TranslateUtils.JsonDeserialize<TableInfo>(await FileUtils.ReadTextAsync(metadataFilePath, Encoding.UTF8));
-
-                        if (await _settingsManager.Database.IsTableExistsAsync(tableName))
+                        if (_databaseManager.ExamPaperRepository.TableName.Equals(tableName))
                         {
-                            await _settingsManager.Database.DropTableAsync(tableName);
-                        }
-
-                        await _settingsManager.Database.CreateTableAsync(tableName, tableInfo.Columns);
-
-                        if (tableInfo.RowFiles.Count > 0)
-                        {
-                            for (var i = 0; i < tableInfo.RowFiles.Count; i++)
+                            var tableIdList = await _databaseManager.ExamPaperRepository.Select_GetSeparateStorageIdList();
+                            if (tableIdList != null && tableIdList.Count > 0)
                             {
-                                var fileName = tableInfo.RowFiles[i];
-                                var filepath = PathUtils.Combine(_settingsManager.WebRootPath, directionryPath, fileName);
-                                var objects = TranslateUtils.JsonDeserialize<List<JObject>>(
-                                    await FileUtils.ReadTextAsync(filepath, Encoding.UTF8));
-
-                                try
+                                foreach (var tableId in tableIdList)
                                 {
-                                    var repository = new Repository(_settingsManager.Database, tableName,
-                                        tableInfo.Columns);
-                                    await repository.BulkInsertAsync(objects);
-                                }
-                                catch
-                                {
-                                    errorTableNames.Add(tableName);
+                                    var ExamPaperAnswer_TableName = _databaseManager.ExamPaperAnswerRepository.GetNewTableNameAsync(tableId);
+                                    await RecoverTable(ExamPaperAnswer_TableName, directionryPath, errorTableNames);
+                                    var ExamPaperRandomConfig_TableName = _databaseManager.ExamPaperRandomConfigRepository.GetNewTableNameAsync(tableId);
+                                    await RecoverTable(ExamPaperRandomConfig_TableName, directionryPath, errorTableNames);
+                                    var ExamPaperRandom_TableName = _databaseManager.ExamPaperRandomRepository.GetNewTableNameAsync(tableId);
+                                    await RecoverTable(ExamPaperRandom_TableName, directionryPath, errorTableNames);
+                                    var ExamPaperRandomTm_TableName = _databaseManager.ExamPaperRandomTmRepository.GetNewTableNameAsync(tableId);
+                                    await RecoverTable(ExamPaperRandomTm_TableName, directionryPath, errorTableNames);
                                 }
                             }
                         }
+
+
                     }
                     catch (Exception ex)
                     {
@@ -169,6 +159,45 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Database
                 };
             }
 
+        }
+        private async Task RecoverTable(string tableName, string directionryPath, List<string> errorTableNames)
+        {
+            var metadataFilePath = PathUtils.Combine(_settingsManager.WebRootPath, directionryPath, tableName, "_metadata.json");
+
+            if (FileUtils.IsFileExists(metadataFilePath))
+            {
+
+                var tableInfo = TranslateUtils.JsonDeserialize<TableInfo>(await FileUtils.ReadTextAsync(metadataFilePath, Encoding.UTF8));
+
+                if (await _settingsManager.Database.IsTableExistsAsync(tableName))
+                {
+                    await _settingsManager.Database.DropTableAsync(tableName);
+                }
+
+                await _settingsManager.Database.CreateTableAsync(tableName, tableInfo.Columns);
+
+                if (tableInfo.RowFiles.Count > 0)
+                {
+                    for (var i = 0; i < tableInfo.RowFiles.Count; i++)
+                    {
+                        var fileName = tableInfo.RowFiles[i];
+                        var filepath = PathUtils.Combine(_settingsManager.WebRootPath, directionryPath, fileName);
+                        var objects = TranslateUtils.JsonDeserialize<List<JObject>>(
+                            await FileUtils.ReadTextAsync(filepath, Encoding.UTF8));
+
+                        try
+                        {
+                            var repository = new Repository(_settingsManager.Database, tableName,
+                                tableInfo.Columns);
+                            await repository.BulkInsertAsync(objects);
+                        }
+                        catch
+                        {
+                            errorTableNames.Add(tableName);
+                        }
+                    }
+                }
+            }
         }
     }
 }

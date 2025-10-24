@@ -1,4 +1,4 @@
-using Datory;
+﻿using Datory;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -31,9 +31,7 @@ namespace XBLMS.Core.Repositories
             TableNameRepositories[tableName] = repository;
             return repository;
         }
-
-
-        private string GetNewTableNameAsync(int examPaperId)
+        public string GetNewTableNameAsync(int examPaperId)
         {
             var tableName = $"{_repository.TableName}_{examPaperId}";
             return tableName;
@@ -43,7 +41,6 @@ namespace XBLMS.Core.Repositories
             var tableName = GetNewTableNameAsync(examPaperId);
             await CreateTableAsync(tableName, _repository.TableColumns);
         }
-
         private async Task CreateTableAsync(string tableName, List<TableColumn> columnInfoList)
         {
             var isDbExists = await _settingsManager.Database.IsTableExistsAsync(tableName);

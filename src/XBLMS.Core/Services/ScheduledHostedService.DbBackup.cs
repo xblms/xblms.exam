@@ -1,6 +1,8 @@
 ﻿using Datory;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using XBLMS.Models;
 using XBLMS.Utils;
@@ -57,29 +59,27 @@ namespace XBLMS.Core.Services
             {
                 try
                 {
-                    var columns = await _settingsManager.Database.GetTableColumnsAsync(tableName);
-                    var repository = new Repository(_settingsManager.Database, tableName, columns);
-
-                    var tableInfo = new TableInfo
-                    {
-                        Columns = repository.TableColumns,
-                        TotalCount = await repository.CountAsync(),
-                        RowFiles = []
-                    };
-
-                    if (tableInfo.TotalCount > 0)
-                    {
-                        var fileName = $"{tableName}.json";
-                        tableInfo.RowFiles.Add(fileName);
-                        var rows = await _databaseManager.GetObjectsAsync(tableName);
-
-                        var filepath = PathUtils.Combine(_settingsManager.WebRootPath, directory, fileName);
-                        await FileUtils.WriteTextAsync(filepath, TranslateUtils.JsonSerialize(rows));
-                        dataSize += FileUtils.GetFileSizeLongByFilePath(filepath);
-                    }
-                    var metapath = PathUtils.Combine(_settingsManager.WebRootPath, directory, tableName, "_metadata.json");
-                    await FileUtils.WriteTextAsync(metapath, TranslateUtils.JsonSerialize(tableInfo));
+                    dataSize += await BackupTable(tableName, directory);
                     successTables.Add(tableName);
+
+                    if (_databaseManager.ExamPaperRepository.TableName.Equals(tableName))
+                    {
+                        var tableIdList = await _databaseManager.ExamPaperRepository.Select_GetSeparateStorageIdList();
+                        if (tableIdList != null && tableIdList.Count > 0)
+                        {
+                            foreach (var tableId in tableIdList)
+                            {
+                                var ExamPaperAnswer_TableName = _databaseManager.ExamPaperAnswerRepository.GetNewTableNameAsync(tableId);
+                                dataSize += await BackupTable(ExamPaperAnswer_TableName, directory);
+                                var ExamPaperRandomConfig_TableName = _databaseManager.ExamPaperRandomConfigRepository.GetNewTableNameAsync(tableId);
+                                dataSize += await BackupTable(ExamPaperRandomConfig_TableName, directory);
+                                var ExamPaperRandom_TableName = _databaseManager.ExamPaperRandomRepository.GetNewTableNameAsync(tableId);
+                                dataSize += await BackupTable(ExamPaperRandom_TableName, directory);
+                                var ExamPaperRandomTm_TableName = _databaseManager.ExamPaperRandomTmRepository.GetNewTableNameAsync(tableId);
+                                dataSize += await BackupTable(ExamPaperRandomTm_TableName, directory);
+                            }
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -97,6 +97,33 @@ namespace XBLMS.Core.Services
             backupinfo.DataSize = FileUtils.GetFileSizeByFileLength(dataSize);
             await _databaseManager.DbBackupRepository.UpdateAsync(backupinfo);
 
+        }
+        private async Task<long> BackupTable(string tableName, string directory)
+        {
+            long dataSize = 0;
+            var columns = await _settingsManager.Database.GetTableColumnsAsync(tableName);
+            var repository = new Repository(_settingsManager.Database, tableName, columns);
+
+            var tableInfo = new TableInfo
+            {
+                Columns = repository.TableColumns,
+                TotalCount = await repository.CountAsync(),
+                RowFiles = []
+            };
+
+            if (tableInfo.TotalCount > 0)
+            {
+                var fileName = $"{tableName}.json";
+                tableInfo.RowFiles.Add(fileName);
+                var rows = await _databaseManager.GetObjectsAsync(tableName);
+
+                var filepath = PathUtils.Combine(_settingsManager.WebRootPath, directory, fileName);
+                await FileUtils.WriteTextAsync(filepath, TranslateUtils.JsonSerialize(rows));
+                dataSize += FileUtils.GetFileSizeLongByFilePath(filepath);
+            }
+            var metapath = PathUtils.Combine(_settingsManager.WebRootPath, directory, tableName, "_metadata.json");
+            await FileUtils.WriteTextAsync(metapath, TranslateUtils.JsonSerialize(tableInfo));
+            return dataSize;
         }
         private class TableInfo
         {

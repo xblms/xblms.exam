@@ -1,4 +1,4 @@
-using Datory;
+﻿using Datory;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using XBLMS.Dto;
@@ -28,6 +28,10 @@ namespace XBLMS.Core.Repositories
             var total = await _repository.CountAsync(query);
             var list = await _repository.GetAllAsync(query.ForPage(pageIndex, pageSize));
             return (total, list);
+        }
+        public async Task<List<int>> Select_GetSeparateStorageIdList()
+        {
+            return await _repository.GetAllAsync<int>(Q.Select(nameof(ExamPaper.Id)).WhereTrue(nameof(ExamPaper.SeparateStorage)));
         }
 
     }

@@ -82,6 +82,8 @@ namespace XBLMS.Web.Controllers.Admin
 
             var adminEnforceLogoutMinutes = config.IsAdminEnforceLogout && config.AdminEnforceLogoutMinutes > 0 ? config.AdminEnforceLogoutMinutes : 0;
 
+            await AddPingTask();
+
             return new GetResult
             {
                 Version = version,

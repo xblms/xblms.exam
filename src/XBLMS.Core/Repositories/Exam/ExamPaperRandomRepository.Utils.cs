@@ -1,4 +1,4 @@
-using Datory;
+﻿using Datory;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -33,7 +33,7 @@ namespace XBLMS.Core.Repositories
         }
 
 
-        private string GetNewTableNameAsync(int examPaperId)
+        public string GetNewTableNameAsync(int examPaperId)
         {
             var tableName = $"{_repository.TableName}_{examPaperId}";
             return tableName;
