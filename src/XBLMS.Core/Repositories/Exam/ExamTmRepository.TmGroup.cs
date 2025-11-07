@@ -11,6 +11,22 @@ namespace XBLMS.Core.Repositories
 {
     public partial class ExamTmRepository
     {
+        public async Task<decimal> Group_GetTotalScoreAsync(ExamTmGroup group)
+        {
+            var query = Q.Select(nameof(ExamTm.Id)).WhereNullOrFalse(nameof(ExamTm.Locked));
+
+            if (group != null)
+            {
+                query = Group_GetQuery(group, query);
+            }
+
+            var list = await _repository.GetAllAsync(query);
+            if (list != null && list.Count > 0)
+            {
+                return list.Sum(q => q.Score);
+            }
+            return 0;
+        }
         public async Task<int> Group_GetTmTotalAsync(ExamTmGroup group)
         {
             var query = Q.Select(nameof(ExamTm.Id)).WhereNullOrFalse(nameof(ExamTm.Locked));

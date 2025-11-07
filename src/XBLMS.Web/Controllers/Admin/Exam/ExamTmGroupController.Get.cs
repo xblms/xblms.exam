@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using XBLMS.Dto;
+using XBLMS.Enums;
 using XBLMS.Models;
 
 namespace XBLMS.Web.Controllers.Admin.Exam
@@ -32,6 +33,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
                 group.Set("TypeName", group.GroupType.GetDisplayName());
                 group.Set("UseCount", 0);
+                group.Set("TotalScore", 0);
                 resultGroups.Add(group);
 
             }
@@ -48,8 +50,13 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
             var tmTotal = await _examTmRepository.Group_GetTmTotalAsync(group);
             var useTotal = await _examPaperRepository.GetTmGroupCount(group.Id);
+            decimal totalScore = 0;
+            if (group.GroupType == TmGroupType.Fixed)
+            {
+                totalScore = await _examTmRepository.Group_GetTotalScoreAsync(group);
+            }
 
-            return new GetTmTotalResult { TmTotal = tmTotal, UseTotal = useTotal };
+            return new GetTmTotalResult { TmTotal = tmTotal, UseTotal = useTotal, ScoreTotal = totalScore };
         }
     }
 }

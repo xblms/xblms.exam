@@ -6,6 +6,7 @@ namespace XBLMS.Repositories
 {
     public partial interface IExamTmRepository
     {
+        Task<decimal> Group_GetTotalScoreAsync(ExamTmGroup group);
         Task<int> Group_GetTmTotalAsync(ExamTmGroup group);
         Task<List<ExamTm>> Group_GetTmListAsync(ExamTmGroup group);
         Task<List<int>> Group_GetTmIdsAsync(ExamTmGroup group, List<int> txIds = null);

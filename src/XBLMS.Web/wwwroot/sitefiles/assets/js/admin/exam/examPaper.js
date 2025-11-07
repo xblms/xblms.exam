@@ -162,9 +162,26 @@ var methods = {
       utils.loading($this, false);
     });
   },
-
+  btnEditFastClick: function () {
+    if (this.treeSelectId > 0) {
+      var $this = this;
+      top.utils.openLayer({
+        title: false,
+        closebtn: 0,
+        url: utils.getExamUrl('examPaperEditFast', { id: 0, treeId: this.treeSelectId }),
+        width: "100%",
+        height: "100%",
+        end: function () {
+          $this.apiGetTree();
+          $this.btnSearchClick();
+        }
+      });
+    }
+    else {
+      utils.error("请选择一个试卷分类")
+    }
+  },
   btnEditClick: function (id) {
-
     if (this.treeSelectId > 0 || id > 0) {
       var $this = this;
       top.utils.openLayer({
@@ -182,7 +199,6 @@ var methods = {
     else {
       utils.error("请选择一个试卷分类")
     }
-
   },
   btnCopyClick: function (id) {
     var $this = this;

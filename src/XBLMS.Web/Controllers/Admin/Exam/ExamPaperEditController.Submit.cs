@@ -39,11 +39,6 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 paper.TreeParentPath = tree.ParentPath;
             }
 
-            if (paper.TmRandomType != ExamPaperTmRandomType.RandomExaming)
-            {
-                paper.Moni = false;
-            }
-
             if (paper.Id > 0)
             {
                 var oldPaper = await _examPaperRepository.GetAsync(paper.Id);

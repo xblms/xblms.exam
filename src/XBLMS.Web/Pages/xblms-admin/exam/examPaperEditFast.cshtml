@@ -1,0 +1,412 @@
+@page
+@{ Layout = "_Layout"; }
+@section Styles{
+    <link href="/sitefiles/assets/lib/geeks/css/theme.min.css" rel="stylesheet" type="text/css" />
+    <link href="/sitefiles/assets/lib/animate/animate.min.css" rel="stylesheet" type="text/css" />
+    <style>
+        html,body{
+            padding: 0;
+            margin: 0;
+            background-color:#f1f1f1;
+            overflow: hidden;
+        }
+        .el-tag {
+            margin-right: 10px;
+        }
+        .button-new-tag {
+            margin-right: 10px;
+            height: 32px;
+            line-height: 30px;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+    </style>
+}
+<div v-if="publishSuccess">
+    <div class="row d-flex flex-column align-items-center justify-content-center vh-100">
+        <div class="col-8">
+            <el-card class="pt-3 animate__animated animate__fadeInDown">
+                <el-result icon="success" title="成功发布考试">
+                    <template slot="subTitle">
+                        <div class="pb-3 pt-5">试卷名称</div>
+                        <h1>{{ form.title }}</h1>
+                    </template>
+                </el-result>
+            </el-card>
+            <div class="mt-3">
+                <el-button type="success" plain class="w-100 py-4 fw-bolder" v-on:click="utils.closeLayerSelf">安全退出<i class="el-icon-close ms-3"></i></el-button>
+            </div>
+        </div>
+    </div>
+</div>
+<div v-else>
+    <div style="width:299px;position:fixed;" class="text-center py-5 bg-white d-flex flex-column align-items-center justify-content-between" :style="{height: (winHeight) + 'px'}">
+        <div class="fw-bolder">发布考试</div>
+        <div>
+            <el-steps :active="active" finish-status="success" direction="vertical">
+                <el-step title="步骤 1">
+                    <template slot="description"><div class="mt-2 mb-3"><nobr>基本信息</nobr></div></template>
+                </el-step>
+                <el-step title="步骤 2">
+                    <template slot="description"><div class="mt-2 mb-3"><nobr>考试内容</nobr></div></template>
+                </el-step>
+                <el-step title="步骤 3">
+                    <template slot="description"><div class="mt-2 mb-3"><nobr>安排考生</nobr></div></template>
+                </el-step>
+                <el-step title="步骤 4">
+                    <template slot="description"><div class="mt-2 mb-3"><nobr>确认发布</nobr></div></template>
+                </el-step>
+            </el-steps>
+        </div>
+        <button type="button" class="btn btn-outline-primary rounded-pill" v-on:click="btnCloseClick">
+            <div class="d-flex align-items-end justify-content-between px-3">
+                <div class="pe-3">
+                    取 消
+                </div>
+                <div><i class="el-icon-close"></i></div>
+            </div>
+        </button>
+    </div>
+    <div style="margin-left:299px;height:100%;">
+        <template v-if="active===0">
+            <div class="row d-flex flex-column align-items-center justify-content-center vh-100">
+                <div class="col-10">
+                    <el-card class="pt-3 animate__animated animate__fadeInRight">
+                        <el-form v-on:submit.native.prevent :model="formBase" ref="formBase" label-position="right" label-width="110px">
+                            <el-form-item label="考试名称" prop="title" :rules="{ required: true, message: '请输入考试名称' }">
+                                <el-input v-model.trim="formBase.title" placeholder="请输入考试名称"></el-input>
+                            </el-form-item>
+                            <el-form-item label="考试时间" prop="examBeginDateTime" :rules="{ required: true, message: '请选择考试时间' }">
+                                <el-date-picker v-model="formBase.examBeginDateTime"
+                                                type="datetime"
+                                                placeholder="开始时间"
+                                                value-format="yyyy-MM-dd HH:mm:ss">
+                                </el-date-picker>
+                                -
+                                <el-date-picker v-model="formBase.examEndDateTime"
+                                                type="datetime"
+                                                placeholder="截止时间"
+                                                value-format="yyyy-MM-dd HH:mm:ss">
+                                </el-date-picker>
+                            </el-form-item>
+                            <el-form-item label="考试须知">
+                                <el-input ref="subject" type="textarea" :autosize="{ minRows: 2}" v-model="form.subject"></el-input>
+                                <el-link type="primary" icon="el-icon-document" v-on:click="btnOpenEditClick('subject','form')">富文本编辑</el-link>
+                            </el-form-item>
+                            <el-form-item label="考试类型" prop="tmRandomType">
+                                <el-radio-group v-model="formBase.tmRandomType" v-on:input="tmRandomTypeChange">
+                                    <el-radio label="RandomNow">预随机（AB卷）</el-radio>
+                                </el-radio-group>
+                                <span class="tips"><i class="tips el-icon-info me-2"></i><span>预随机：预发布N份套题试卷，开考的时候随机一份进行考试。</span></span>
+                            </el-form-item>
+                            <el-form-item label="随机份数" prop="randomCount" :rules="{ required: true, message: '随机份数不能为空' }">
+                                <el-input-number v-model="formBase.randomCount" :min="1" :max="100"></el-input-number>
+                            </el-form-item>
+                        </el-form>
+                    </el-card>
+                    <div class="mt-3">
+                        <el-button type="success" plain class="w-100 py-4 fw-bolder" v-on:click="btnFormBaseNextClick">下一步<i class="el-icon-right ms-3"></i></el-button>
+                    </div>
+                </div>
+            </div>
+        </template>
+        <template v-if="active===1">
+            <div class="p-3">
+                <el-card class="animate__animated animate__fadeInRight">
+                    <div class="mb-3">
+                        <el-tag :key="tmGroup.id"
+                                v-for="tmGroup in tmGroupSelectedList"
+                                :disable-transitions="false">
+                            {{ tmGroup.groupName }}
+                        </el-tag>
+                        <el-button type="warning" class="button-new-tag" v-on:click="btnTmGroupSelectClick">选择题目组</el-button>
+                    </div>
+                    <el-table ref="tableTmRandomConfig" v-if="tmRandomConfig"
+                              :data="tmRandomConfig"
+                              :row-key="Math.random()"
+                              :current-row-key="Math.random()"
+                              border
+                              :height="$(window).height() - 260"
+                              empty-text="请选择题目组"
+                              size="small" :default-sort="{ prop: 'txTaxis', order: 'asc' }">
+                        <el-table-column width="50" align="center">
+                            <template slot-scope="scope">
+                                <span class="text-success">
+                                    {{ scope.row.nandu1TmCount+scope.row.nandu2TmCount+scope.row.nandu3TmCount+scope.row.nandu4TmCount+scope.row.nandu5TmCount }}
+                                </span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="txName" width="200"
+                                         label="题型" show-overflow-tooltip>
+                        </el-table-column>
+                        <el-table-column label="难度">
+                            <el-table-column>
+                                <template slot="header" slot-scope="scope">
+                                    <i class="el-icon-star-on" style="color:#FF9900;margin:0 3px;font-size:14px;"></i>
+                                </template>
+                                <template slot-scope="scope">
+                                    <div class="d-flex align-items-center justify-content-start">
+                                        <div>
+                                            <el-input-number :precision="0" size="mini" :min="0" :max="scope.row.nandu1TmTotal" v-model="scope.row.nandu1TmCount" style="width:100px;" v-on:change="sumTmTotal"></el-input-number>
+                                        </div>
+                                        <span>/{{scope.row.nandu1TmTotal}}</span>
+                                    </div>
+                                </template>
+                            </el-table-column>
+                            <el-table-column>
+                                <template slot="header" slot-scope="scope">
+                                    <i class="el-icon-star-on" style="color:#FF9900;margin:0 3px;font-size:14px;"></i><i class="el-icon-star-on" style="color:#FF9900;margin:0 3px;font-size:14px;"></i>
+                                </template>
+                                <template slot-scope="scope">
+                                    <div class="d-flex align-items-center justify-content-start">
+                                        <div>
+                                            <el-input-number :precision="0" size="mini" :min="0" :max="scope.row.nandu2TmTotal" v-model="scope.row.nandu2TmCount" style="width:100px;" v-on:change="sumTmTotal"></el-input-number>
+                                        </div>
+                                        <span>/{{scope.row.nandu2TmTotal}}</span>
+                                    </div>
+                                </template>
+                            </el-table-column>
+                            <el-table-column>
+                                <template slot="header" slot-scope="scope">
+                                    <i class="el-icon-star-on" style="color:#FF9900;margin:0 3px;font-size:14px;"></i><i class="el-icon-star-on" style="color:#FF9900;margin:0 3px;font-size:14px;"></i><i class="el-icon-star-on" style="color:#FF9900;margin:0 3px;font-size:14px;"></i>
+                                </template>
+                                <template slot-scope="scope">
+                                    <div class="d-flex align-items-center justify-content-start">
+                                        <div>
+                                            <el-input-number :precision="0" size="mini" :min="0" :max="scope.row.nandu3TmTotal" v-model="scope.row.nandu3TmCount" style="width:100px;" v-on:change="sumTmTotal"></el-input-number>
+                                        </div>
+                                        <span>/{{scope.row.nandu3TmTotal}}</span>
+                                    </div>
+                                </template>
+                            </el-table-column>
+                            <el-table-column>
+                                <template slot="header" slot-scope="scope">
+                                    <i class="el-icon-star-on" style="color:#FF9900;margin:0 3px;font-size:14px;"></i><i class="el-icon-star-on" style="color:#FF9900;margin:0 3px;font-size:14px;"></i><i class="el-icon-star-on" style="color:#FF9900;margin:0 3px;font-size:14px;"></i><i class="el-icon-star-on" style="color:#FF9900;margin:0 3px;font-size:14px;"></i>
+                                </template>
+                                <template slot-scope="scope">
+                                    <div class="d-flex align-items-center justify-content-start">
+                                        <div>
+                                            <el-input-number :precision="0" size="mini" :min="0" :max="scope.row.nandu4TmTotal" v-model="scope.row.nandu4TmCount" style="width:100px;" v-on:change="sumTmTotal"></el-input-number>
+                                        </div>
+                                        <span>/{{scope.row.nandu4TmTotal}}</span>
+                                    </div>
+                                </template>
+                            </el-table-column>
+                            <el-table-column>
+                                <template slot="header" slot-scope="scope">
+                                    <i class="el-icon-star-on" style="color:#FF9900;margin:0 3px;font-size:14px;"></i><i class="el-icon-star-on" style="color:#FF9900;margin:0 3px;font-size:14px;"></i><i class="el-icon-star-on" style="color:#FF9900;margin:0 3px;font-size:14px;"></i><i class="el-icon-star-on" style="color:#FF9900;margin:0 3px;font-size:14px;"></i><i class="el-icon-star-on" style="color:#FF9900;margin:0 3px;font-size:14px;"></i>
+                                </template>
+                                <template slot-scope="scope">
+                                    <div class="d-flex align-items-center justify-content-start">
+                                        <div>
+                                            <el-input-number :precision="0" size="mini" :min="0" :max="scope.row.nandu5TmTotal" v-model="scope.row.nandu5TmCount" style="width:100px;" v-on:change="sumTmTotal"></el-input-number>
+                                        </div>
+                                        <span>/{{scope.row.nandu5TmTotal}}</span>
+                                    </div>
+                                </template>
+                            </el-table-column>
+                        </el-table-column>
+                        <el-table-column prop="taxis" width="120"
+                                         label="排序">
+                            <template slot-scope="scope">
+                                <el-input-number controls-position="right" size="mini" v-model="scope.row.txTaxis" :min="0" :max="100" style="width:120px;"></el-input-number>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <div class="mt-2"><i class="tips el-icon-info me-2"></i>共：<span class="text-success fw-bolder">{{ tmTotal }}</span>/{{ tmTotalCount }} 道题，总分100分，题目分数按总分折算。</div>
+                </el-card>
+                <div class="row g-3 mt-1">
+                    <div class="col-2">
+                        <el-button type="info" plain class="w-100 py-4 fw-bolder" v-on:click="btnPreviousClick"><i class="el-icon-back me-3"></i>上一步</el-button>
+                    </div>
+                    <div class="col-10">
+                        <el-button type="success" plain class="w-100 py-4 fw-bolder" v-on:click="btnTmConfigNextClick">下一步<i class="el-icon-right ms-3"></i></el-button>
+                    </div>
+                </div>
+            </div>
+        </template>
+        <template v-if="active===2">
+            <div class="row d-flex flex-column align-items-center justify-content-center vh-100">
+                <div class="col-10">
+                    <div class="mb-3"><i class="tips el-icon-info me-2"></i>共：{{ userTotal }} 位考生</div>
+                    <el-card class="pt-3 animate__animated animate__fadeInRight">
+                        <el-form v-on:submit.native.prevent :model="formUser" ref="formUser" label-position="top">
+                            <el-form-item label="考生范围" prop="userGroupIds" :rules="{ required: true, message: '请选择考生范围' }">
+                                <el-tag :key="userGroup.id"
+                                        v-for="userGroup in userGroupSelectedList"
+                                        :disable-transitions="false">
+                                    {{ userGroup.groupName }}
+                                </el-tag>
+                                <el-button class="button-new-tag" v-on:click="btnUserGroupSelectClick">选择用户组</el-button>
+                            </el-form-item>
+                        </el-form>
+                    </el-card>
+                    <div class="row g-3 mt-1">
+                        <div class="col-2">
+                            <el-button type="info" plain class="w-100 py-4 fw-bolder" v-on:click="btnPreviousClick"><i class="el-icon-back me-3"></i>上一步</el-button>
+                        </div>
+                        <div class="col-10">
+                            <el-button type="success" plain class="w-100 py-4 fw-bolder" v-on:click="btnFormUserNextClick">下一步<i class="el-icon-right ms-3"></i></el-button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+        <template v-if="active===3">
+            <div class="row d-flex flex-column align-items-center justify-content-center vh-100">
+                <div class="col-10">
+                    <h1>确认发布</h1>
+                    <el-card class="pt-3 animate__animated animate__fadeInRight">
+                        <el-form v-on:submit.native.prevent label-position="right" label-width="120px">
+                            <el-form-item label="考试名称">
+                                <span class="fw-bolder">{{ form.title }}</span>
+                            </el-form-item>
+                            <el-form-item label="考试时间">
+                                <span class="fw-bolder">{{ form.examBeginDateTime }} 至 {{ form.examEndDateTime }}</span>
+                            </el-form-item>
+                            <el-form-item label="总分">
+                                <span class="fw-bolder">{{ form.totalScore }}</span>
+                                <span class="mx-3">及格分</span><span class="fw-bolder">{{ form.passScore }}</span>
+                            </el-form-item>
+                            <el-form-item label="题目数量">
+                                <span class="fw-bolder">{{ tmTotal }}</span>
+                            </el-form-item>
+                            <el-form-item label="考生数量">
+                                <span class="fw-bolder">{{ userTotal }}</span>
+                            </el-form-item>
+                            <el-form-item label="随机卷">
+                                <span class="fw-bolder">{{ form.randomCount }}</span>
+                            </el-form-item>
+                        </el-form>
+                    </el-card>
+                    <div class="row g-3 mt-1">
+                        <div class="col-2">
+                            <el-button type="info" plain class="w-100 py-4 fw-bolder" v-on:click="btnPreviousClick"><i class="el-icon-back me-3"></i>上一步</el-button>
+                        </div>
+                        <div class="col-8">
+                            <el-button type="success" plain class="w-100 py-4 fw-bolder" v-on:click="btnFormPublishClick">发 布<i class="el-icon-s-promotion ms-3"></i></el-button>
+                        </div>
+                        <div class="col-2">
+                            <el-button type="info" plain class="w-100 py-4 fw-bolder" v-on:click="drawerHightConfig=true"><i class="el-icon-setting me-3"></i>高级配置</el-button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+</div>
+<template>
+    <el-drawer title="高级配置" destroy-on-close
+               size="30%"
+               :visible.sync="drawerHightConfig"
+               direction="rtl">
+        <div class="px-3">
+            <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-100) + 'px' }">
+                <el-form v-on:submit.native.prevent :model="form" ref="form" label-position="top" size="mini" class="pe-3">
+                <el-form-item label="考试次数" prop="examTimes">
+                    <el-input-number v-model="form.examTimes" :min="1"></el-input-number>
+                </el-form-item>
+                <el-form-item label="性能扩展" prop="separateStorage">
+                    <el-checkbox v-model="form.separateStorage" :disabled="id>0">分配独立空间</el-checkbox>
+                    <el-tooltip placement="top">
+                        <div slot="content">
+                            开启之后系统会单独创建存储空间来处理这场考试中涉及到的相关大数据，以保证更高性能的延展。
+                            <el-divider></el-divider>
+                            这是一个提高考试性能的策略，并且是持久化的，它可以让每一场关键考试都可以如释重负，应对自如。
+                            <el-divider></el-divider>
+                            试卷建立后不能再修改此属性
+                        </div>
+                        <span><i class="el-icon-info"></i></span>
+                    </el-tooltip>
+                </el-form-item>
+                <el-form-item>
+                    <el-switch v-model="form.moni" active-color="#13ce66"
+                               active-text="设置该场考试为模拟考试">
+                    </el-switch>
+                </el-form-item>
+                <el-form-item label="证书" prop="cerId">
+                    <el-select v-model="form.cerId" placeholder="请选择证书" filterable clearable style="width:100%">
+                        <el-option v-for="cer in cerList"
+                                   :key="cer.id"
+                                   :label="cer.name"
+                                   :value="cer.id">
+                        </el-option>
+                    </el-select>
+                    <div class="tips">考生通过本场考试即可获得证书</div>
+                </el-form-item>
+                <el-form-item label="计时方式" prop="isTiming">
+                    <el-radio v-model="form.isTiming" :label="true">计时答题</el-radio>
+                    <el-radio v-model="form.isTiming" :label="false">不计时答题</el-radio>
+                </el-form-item>
+                <el-form-item prop="timingMinute" v-if="form.isTiming">
+                    <el-input-number v-model="form.timingMinute" :min="1"></el-input-number>
+                    <small class="tips">单位分钟，计时结束自动交卷</small>
+                </el-form-item>
+                <el-form-item label="允许退出">
+                    <el-switch v-model="form.openExist" active-color="#13ce66"
+                               active-text="允许退出">
+                    </el-switch>
+                    <div class="tips">考试页面是否显示退出按钮，退出后再次进入可以恢复考试，适用于布置模拟自测。</div>
+                </el-form-item>
+                <el-form-item label="查看权限">
+                    <el-switch v-model="form.secrecyScore" active-color="#13ce66"
+                               active-text="允许查看成绩">
+                    </el-switch>
+                    <br />
+                    <el-switch v-model="form.secrecyPaperContent" active-color="#13ce66"
+                               active-text="允许查看答卷">
+                    </el-switch>
+                    <br />
+                    <el-switch v-model="form.secrecyPaperAnswer" active-color="#13ce66"
+                               active-text="允许查看题目正确答案">
+                    </el-switch>
+                </el-form-item>
+                <el-form-item label="考试难度">
+                    <el-switch v-model="form.isExamingTmRandomView" active-color="#13ce66"
+                               active-text="题目顺序随机">
+                    </el-switch>
+                    <br />
+                    <el-switch v-model="form.isExamingTmOptionRandomView" active-color="#13ce66"
+                               active-text="候选项顺序随机">
+                    </el-switch>
+                </el-form-item>
+                <el-form-item label="自动判分">
+                    <el-switch v-model="form.isAutoScore" active-color="#13ce66"
+                               active-text="主观题自动判分">
+                    </el-switch>
+                    <br />
+                    <el-switch v-model="form.isAutoScoreTiankongti" active-color="#13ce66"
+                               active-text="填空题按空给分">
+                    </el-switch>
+                    <br />
+                    <el-switch v-model="form.isAutoScoreJiandati" active-color="#13ce66"
+                               active-text="简答题按关键词给分">
+                    </el-switch>
+                    <br />
+                    <el-switch v-model="form.isAutoScoreDuoxuanti" active-color="#13ce66"
+                               active-text="多选题按项给分">
+                    </el-switch>
+                    <div class="tips">按条件给的分值=题目分数/答案数量</div>
+                </el-form-item>
+                <el-form-item label="退出次数">
+                    <el-input-number v-model="form.existCount" :min="0"></el-input-number>
+                    <div class="tips">0不限制，否则到达次数自动交卷</div>
+                </el-form-item>
+                <el-form-item label="全屏考试">
+                    <el-switch v-model="form.fullScreen" active-color="#13ce66"
+                               active-text="全屏考试">
+                    </el-switch>
+                </el-form-item>
+                <el-form-item label="移动端考试">
+                    <el-switch v-model="form.lockedApp" active-color="#13ce66"
+                               active-text="开启后移动端将禁用该场考试">
+                    </el-switch>
+                </el-form-item>
+                </el-form>
+            </el-scrollbar>
+        </div>
+    </el-drawer>
+</template>
+@section Scripts{
+    <script src="/sitefiles/assets/js/admin/exam/examPaperEditFast.js" type="text/javascript"></script>
+}

@@ -4,7 +4,7 @@
 <el-card>
     <div slot="header" class="clearfix">
         <span>{{ id > 0 ? "修改" : "新增" }}题目组</span>
-        <el-button style="float: right;padding:3px 0;" type="text" v-on:click="utils.closeLayer(false)"><i class="el-icon-close"></i></el-button>
+        <el-button style="float: right;padding:3px 0;" type="text" v-on:click="utils.closeLayerSelf"><i class="el-icon-close"></i></el-button>
     </div>
     <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-180) + 'px' }">
         <div style="margin-right:18px;">
@@ -126,7 +126,7 @@
 <el-row align="center" style="margin-top:18px;">
     <el-col :span="24" align="center">
         <el-button icon="el-icon-check" :size="euiSize" type="primary" v-on:click="btnSubmitClick">确 定</el-button>
-        <el-button icon="el-icon-close" :size="euiSize" v-on:click="btnCancelClick">取 消</el-button>
+        <el-button icon="el-icon-close" :size="euiSize" v-on:click="utils.closeLayerSelf">取 消</el-button>
     </el-col>
 </el-row>
 

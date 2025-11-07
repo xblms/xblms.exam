@@ -70,6 +70,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         {
             public int TmTotal { get; set; }
             public int UseTotal { get; set; }
+            public decimal ScoreTotal { get; set; }
         }
     }
 }
