@@ -19,7 +19,7 @@
                            :limit="1"
                            :action="$urlUploadCheck"
                            :auto-upload="true"
-                           :headers="{Authorization: 'Bearer ' + $token}"
+                           :headers="{Authorization: 'Bearer ' + $token,Permission:$permission}"
                            :file-list="uploadList"
                            :before-upload="uploadBefore"
                            :on-progress="uploadProgress"

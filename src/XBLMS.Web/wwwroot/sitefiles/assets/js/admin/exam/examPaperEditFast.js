@@ -158,11 +158,10 @@ var methods = {
         $this.apiSubmit();
       }
     });
-
   },
   apiSubmit: function () {
     var $this = this;
-    utils.loading($this, true);
+    utils.loading(this, true, "正在发布试卷，请稍等...");
     $api.post($url, {
       isClear: this.submitSubmitIsClear,
       submitType: this.submitSubmitType,

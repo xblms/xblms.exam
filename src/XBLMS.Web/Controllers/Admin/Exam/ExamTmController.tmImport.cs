@@ -42,6 +42,11 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         [HttpPost, Route(RouteImportExcel)]
         public async Task<ActionResult<GetImportResult>> Import([FromQuery] int treeId, [FromForm] IFormFile file)
         {
+            if (!await _authManager.HasPermissionsAsync(MenuPermissionType.Import))
+            {
+                return this.NoAuth();
+            }
+
             var adminAuth = await _authManager.GetAdminAuth();
             var admin = adminAuth.Admin;
 

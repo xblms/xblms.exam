@@ -56,13 +56,14 @@ var methods = {
 
     this.importTmCache.tmTotal = this.importTmCache.tmCurrent = this.importTmCache.tmTotal;
 
-    utils.success("导入完成，请查看导入结果", { layer:true });
+    utils.success("导入完成，请查看导入结果", { layer: true });
   },
 
   uploadExcelTmError: function (err) {
     utils.loading(this, false);
     var error = JSON.parse(err.message);
     utils.error(error.message, { layer: true });
+    this.uploadExcelTmimportMessageShow = true;
   },
 };
 

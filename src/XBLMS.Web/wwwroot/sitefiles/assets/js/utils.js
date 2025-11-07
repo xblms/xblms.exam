@@ -1263,10 +1263,11 @@ if (sessionId && accessToken) {
 }
 
 var $token = sessionStorage.getItem(ACCESS_TOKEN_NAME) || localStorage.getItem(ACCESS_TOKEN_NAME) || utils.getQueryString('accessToken');
+var $permission = utils.getQueryString("menuId");
 var $api = axios.create({
   baseURL: $apiUrl,
   headers: {
-    Permission: utils.getQueryString("menuId"),
+    Permission: $permission,
     Authorization: "Bearer " + $token
   },
 });
