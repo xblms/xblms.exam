@@ -8,25 +8,19 @@ namespace XBLMS.Core.Services
 {
     public partial class ExamManager : IExamManager
     {
-        private readonly ISettingsManager _settingsManager;
-        private readonly IPathManager _pathManager;
         private readonly ICreateManager _createManager;
         private readonly ITaskManager _taskManager;
         private readonly IOrganManager _organManager;
         private readonly IDatabaseManager _databaseManager;
 
-        public ExamManager(ISettingsManager settingsManager,
-            IOrganManager organManager,
-            IPathManager pathManager,
+        public ExamManager(IOrganManager organManager,
             ICreateManager createManager,
             ITaskManager taskManager,
             IDatabaseManager databaseManager)
         {
-            _settingsManager = settingsManager;
             _organManager = organManager;
             _createManager = createManager;
             _taskManager = taskManager;
-            _pathManager = pathManager;
             _databaseManager = databaseManager;
         }
 
@@ -281,7 +275,7 @@ namespace XBLMS.Core.Services
                 return (false, "未找到试卷");
             }
 
-            return (true, "");
+            return (true, string.Empty);
         }
 
     }

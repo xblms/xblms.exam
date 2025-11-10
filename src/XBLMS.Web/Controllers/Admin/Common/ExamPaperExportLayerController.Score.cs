@@ -1,5 +1,4 @@
-﻿using Aspose.Pdf.Operators;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Text;

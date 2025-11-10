@@ -1,7 +1,6 @@
 ﻿using XBLMS.Dto;
 using XBLMS.Enums;
 using XBLMS.Models;
-using XBLMS.Repositories;
 using XBLMS.Services;
 
 namespace XBLMS.Core.Services
@@ -13,16 +12,14 @@ namespace XBLMS.Core.Services
         private readonly IOrganManager _organManager;
         private readonly ISettingsManager _settingsManager;
         private readonly IDatabaseManager _databaseManager;
-        private readonly IErrorLogRepository _errorRepository;
 
-        public CreateManager(IPathManager pathManager, ITaskManager taskManager, IDatabaseManager databaseManager, ISettingsManager settingsManager, IOrganManager organManager, IErrorLogRepository errorLogRepository)
+        public CreateManager(IPathManager pathManager, ITaskManager taskManager, IDatabaseManager databaseManager, ISettingsManager settingsManager, IOrganManager organManager)
         {
             _pathManager = pathManager;
             _taskManager = taskManager;
             _databaseManager = databaseManager;
             _settingsManager = settingsManager;
             _organManager = organManager;
-            _errorRepository = errorLogRepository;
         }
 
         public void CreateSubmitAnswerAsync(ExamPaperAnswer answer)

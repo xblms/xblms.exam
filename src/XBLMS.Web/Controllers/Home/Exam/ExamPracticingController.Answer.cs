@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using XBLMS.Models;
 using XBLMS.Utils;
@@ -93,7 +92,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
                     await _examPracticeWrongRepository.InsertAsync(new ExamPracticeWrong
                     {
                         UserId = user.Id,
-                        TmIds = new List<int> { request.Id }
+                        TmIds = [request.Id]
                     });
                 }
             }
@@ -112,56 +111,12 @@ namespace XBLMS.Web.Controllers.Home.Exam
             var isRight = false;
             if (tx.ExamTxBase == Enums.ExamTxBase.Tiankongti || tx.ExamTxBase == Enums.ExamTxBase.Jiandati)
             {
-                if (StringUtils.EqualsIgnoreCase(tm.Answer, myAnswer))
-                {
-                    isRight = true;
-                }
+                isRight = StringUtils.EqualsIgnoreCase(tm.Answer, myAnswer);
             }
             else
             {
                 var answerList = ListUtils.GetStringList(tm.Answer);
-                var allTrue = true;
-                foreach (var answer in answerList)
-                {
-                    if (!StringUtils.ContainsIgnoreCase(myAnswer, answer))
-                    {
-                        allTrue = false;
-                    }
-                }
-                if (!allTrue)
-                {
-                    answerList = ListUtils.GetStringList(tm.Answer, ";");
-                    foreach (var answer in answerList)
-                    {
-                        if (!StringUtils.ContainsIgnoreCase(myAnswer, answer))
-                        {
-                            allTrue = false;
-                        }
-                    }
-                }
-                if (!allTrue)
-                {
-                    answerList = ListUtils.GetStringList(tm.Answer, "，");
-                    foreach (var answer in answerList)
-                    {
-                        if (!StringUtils.ContainsIgnoreCase(myAnswer, answer))
-                        {
-                            allTrue = false;
-                        }
-                    }
-                }
-                if (!allTrue)
-                {
-                    answerList = ListUtils.GetStringList(tm.Answer, "；");
-                    foreach (var answer in answerList)
-                    {
-                        if (!StringUtils.ContainsIgnoreCase(myAnswer, answer))
-                        {
-                            allTrue = false;
-                        }
-                    }
-                }
-                isRight = allTrue;
+                isRight = ExamUtils.IsAnswerAllTrue(tm.Answer, myAnswer, answerList);
             }
             return isRight;
         }

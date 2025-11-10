@@ -48,47 +48,7 @@ namespace XBLMS.Core.Services
                 if (!string.IsNullOrEmpty(answer))
                 {
                     var answerList = ListUtils.GetStringList(answer);
-                    var allTrue = true;
-                    foreach (var answerItem in answerList)
-                    {
-                        if (!StringUtils.ContainsIgnoreCase(myAnswer, answerItem))
-                        {
-                            allTrue = false;
-                        }
-                    }
-                    if (StringUtils.ContainsIgnoreCase(answer, ";") && !allTrue)
-                    {
-                        answerList = ListUtils.GetStringList(answer, ";");
-                        foreach (var answerItem in answerList)
-                        {
-                            if (!StringUtils.ContainsIgnoreCase(myAnswer, answerItem))
-                            {
-                                allTrue = false;
-                            }
-                        }
-                    }
-                    if (StringUtils.ContainsIgnoreCase(answer, "，") && !allTrue)
-                    {
-                        answerList = ListUtils.GetStringList(answer, "，");
-                        foreach (var answerItem in answerList)
-                        {
-                            if (!StringUtils.ContainsIgnoreCase(myAnswer, answerItem))
-                            {
-                                allTrue = false;
-                            }
-                        }
-                    }
-                    if (StringUtils.ContainsIgnoreCase(answer, "；") && !allTrue)
-                    {
-                        answerList = ListUtils.GetStringList(answer, "；");
-                        foreach (var answerItem in answerList)
-                        {
-                            if (!StringUtils.ContainsIgnoreCase(myAnswer, answerItem))
-                            {
-                                allTrue = false;
-                            }
-                        }
-                    }
+                    var allTrue = ExamUtils.IsAnswerAllTrue(answer, myAnswer, answerList);
 
                     if (allTrue)
                     {
