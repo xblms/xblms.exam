@@ -14,8 +14,8 @@
 <div style="position:fixed;right:5%;top:60%;" class="animate__animated animate__fadeInRightBig">
     <div>
         <div class="mb-3 text-center">
-            <el-button type="success" icon="el-icon-user-solid" circle class="border-0 fs-2" v-if="isLike" v-on:click="btnLikeClick"></el-button>
-            <el-button icon="el-icon-user" plain circle class="border-0 fs-2" v-else v-on:click="btnLikeClick"></el-button>
+            <el-button type="success" icon="bi bi-hand-thumbs-up-fill" circle class="border-0 fs-2" v-if="isLike" v-on:click="btnLikeClick"></el-button>
+            <el-button icon="bi bi-hand-thumbs-up" plain circle class="border-0 fs-2" v-else v-on:click="btnLikeClick"></el-button>
             <div>{{ likes }}</div>
         </div>
         <div class="mb-3 text-center">

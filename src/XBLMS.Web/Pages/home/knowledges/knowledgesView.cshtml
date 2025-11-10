@@ -19,15 +19,15 @@
     <div class="position-absolute top-50 start-100 translate-middle ms-5 mb-5">
         <div class="mb-3 text-center">
             <el-tooltip class="item" effect="dark" content="点赞" placement="top">
-                <el-link :underline="false" v-if="isLike" v-on:click="btnLikeClick"><i class="bi bi-star-fill fs-2 text-white"></i></el-link>
-                <el-link :underline="false" v-else v-on:click="btnLikeClick"><i class="bi bi-star fs-2 text-white"></i></el-link>
+                <el-link :underline="false" v-if="isLike" v-on:click="btnLikeClick"><i class="bi bi-hand-thumbs-up-fill fs-2 text-white"></i></el-link>
+                <el-link :underline="false" v-else v-on:click="btnLikeClick"><i class="bi bi-hand-thumbs-up fs-2 text-white"></i></el-link>
             </el-tooltip>
             <span class="text-white">{{ likes }}</span>
         </div>
         <div class="mb-3 text-center">
             <el-tooltip class="item" effect="dark" content="收藏" placement="top">
-                <el-link :underline="false" v-if="isCollect" v-on:click="btnCollectClick"><i class="bi bi-heart-fill fs-2  text-white"></i></el-link>
-                <el-link :underline="false" v-else v-on:click="btnCollectClick"><i class="bi bi-heart fs-2 text-white"></i></el-link>
+                <el-link :underline="false" v-if="isCollect" v-on:click="btnCollectClick"><i class="bi bi-star-fill fs-2  text-white"></i></el-link>
+                <el-link :underline="false" v-else v-on:click="btnCollectClick"><i class="bi bi-star fs-2 text-white"></i></el-link>
             </el-tooltip>
             <span class="text-white">{{ collects }}</span>
         </div>
