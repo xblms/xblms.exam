@@ -70,6 +70,17 @@ var utils = {
     }
     return [];
   },
+  loadStarIcons: function (len) {
+    if (len > 0) {
+      var icons = "";
+      var icon = '<i class="el-icon-star-on" style="color:#FF9900;margin:0 3px;font-size:14px;"></i>';
+      for (var i = 0; i < len; i++) {
+        icons += icon;
+      }
+      return icons;
+    }
+    return "";
+  },
   loadExternals: function (cssUrls, jsUrls) {
     if (cssUrls) {
       var head = document.getElementsByTagName('head')[0];
