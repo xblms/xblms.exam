@@ -90,7 +90,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             var downloadUrl = _pathManager.GetDownloadFilesUrl(fileName);
 
             await _authManager.AddAdminLogAsync("导出成绩单", paper.Title);
-            await _authManager.AddStatLogAsync(StatType.Export, "导出成绩单", 0, string.Empty, new StringResult { Value = downloadUrl });
+            await _authManager.AddStatLogAsync(StatType.Export, $"导出成绩单({paper.Title})", 0, string.Empty, new StringResult { Value = downloadUrl });
 
             return new StringResult
             {

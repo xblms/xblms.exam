@@ -28,19 +28,19 @@
 
 ## 演示环境
 
-> 管理端演示环境
+管理端演示环境
 
 * 账号：admin，密码：123123
 
 * [点击前往管理端演示](http://182.92.223.118:5000/xblms-admin)
 
-> 用户端演示环境
+用户端演示环境
 
 * 账号：test，密码：123123
 
 * [点击前往用户端演示](http://182.92.223.118:5000/home)
 
-> 移动端演示环境
+移动端演示环境
 
 * 扫码前往移动端演示
 
@@ -208,9 +208,3 @@ Copyright (C) 2024 XBLMS.EXAM
 ## 打赏
 
 <img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/ds.png"/>
-
-## 对公
-
-* 对公业务请联系客服微信
-
-<img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/linkmewechat.jpg"/>
