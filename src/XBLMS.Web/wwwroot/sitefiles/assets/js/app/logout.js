@@ -22,7 +22,7 @@ var methods = {
     if (this.returnUrl) {
       window.top.location.href = this.returnUrl;
     } else {
-      window.top.location.href = utils.getIndexUrl();
+      window.top.location.href = utils.getRootUrl("login");
     }
   }
 };
