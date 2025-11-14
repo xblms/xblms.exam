@@ -42,6 +42,7 @@ namespace XBLMS.Core.Services
         public IExamTmRepository ExamTmRepository { get; }
         public IExamTmAnalysisRepository ExamTmAnalysisRepository { get; }
         public IExamTmAnalysisTmRepository ExamTmAnalysisTmRepository { get; }
+        public IExamTmCorrectionRepository ExamTmCorrectionRepository { get; }
         public IExamCerUserRepository ExamCerUserRepository { get; }
         public IExamCerRepository ExamCerRepository { get; }
         public IExamPaperTreeRepository ExamPaperTreeRepository { get; }
@@ -131,6 +132,7 @@ namespace XBLMS.Core.Services
             IExamTmRepository examTmRepository,
             IExamTmAnalysisRepository examTmAnalysisRepository,
             IExamTmAnalysisTmRepository examTmAnalysisTmRepository,
+            IExamTmCorrectionRepository examTmCorrectionRepository,
             IExamCerUserRepository examCerUserRepository,
             IExamCerRepository examCerRepository,
             IExamPaperTreeRepository examPaperTreeRepository,
@@ -210,6 +212,7 @@ namespace XBLMS.Core.Services
             ExamTmRepository = examTmRepository;
             ExamTmAnalysisRepository = examTmAnalysisRepository;
             ExamTmAnalysisTmRepository = examTmAnalysisTmRepository;
+            ExamTmCorrectionRepository = examTmCorrectionRepository;
             ExamCerUserRepository = examCerUserRepository;
             ExamCerRepository = examCerRepository;
             ExamPaperTreeRepository = examPaperTreeRepository;
@@ -293,6 +296,7 @@ namespace XBLMS.Core.Services
                 ExamTmRepository,
                 ExamTmAnalysisRepository,
                 ExamTmAnalysisTmRepository,
+                ExamTmCorrectionRepository,
                 ExamCerRepository,
                 ExamCerUserRepository,
                 ExamPaperTreeRepository,

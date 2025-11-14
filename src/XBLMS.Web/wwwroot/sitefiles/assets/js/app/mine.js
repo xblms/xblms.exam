@@ -269,6 +269,18 @@ var methods = {
         }
       });
     }
+    if (common === 'correction') {
+      top.utils.openLayer({
+        title: false,
+        closebtn: 0,
+        url: utils.getExamUrl("examTmCorrectionLog"),
+        width: "100%",
+        height: "100%",
+        end: function () {
+          $this.setDocumentTitle();
+        }
+      });
+    }
   },
   setDocumentTitle: function () {
     top.document.title = "我的";

@@ -146,6 +146,8 @@ namespace XBLMS.Enums
         [DataEnum(DisplayName = "积分商品修改")]
         GiftUpdate,
         [DataEnum(DisplayName = "积分商品删除")]
-        GiftDelete
+        GiftDelete,
+        [DataEnum(DisplayName = "题目纠错审核")]
+        ExamTmCorrectionAudit,
     }
 }

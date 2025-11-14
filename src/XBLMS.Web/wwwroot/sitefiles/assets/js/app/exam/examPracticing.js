@@ -200,6 +200,15 @@ var methods = {
   goResult: function () {
     utils.loading(this, true,"正在统计练习...");
     location.href = utils.getExamUrl("examPracticeResult", { id: this.id });
+  },
+  btnCorrection: function () {
+    top.utils.openLayer({
+      title: false,
+      closebtn: 0,
+      url: utils.getExamUrl('examTmCorrection', { tmId: this.tm.id }),
+      width: "100%",
+      height: "100%"
+    });
   }
 };
 var $vue = new Vue({

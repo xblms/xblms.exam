@@ -140,8 +140,18 @@
             "children": []
           },
           {
-            "id": "examtmanalysis",
+            "id": "examtmcorrection",
             "order": 5,
+            "text": "题目纠错管理",
+            "link": "/xblms-admin/exam/examTmCorrection/",
+            "iconClass": "el-icon-s-data",
+            "Permissions": [ "Select", "Update" ],
+            "isPermission": true,
+            "children": []
+          },
+          {
+            "id": "examtmanalysis",
+            "order": 6,
             "text": "题库统计",
             "link": "/xblms-admin/exam/examTmAnalysis/",
             "iconClass": "el-icon-s-data",

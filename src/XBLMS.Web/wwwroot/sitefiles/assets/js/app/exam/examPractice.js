@@ -1,10 +1,13 @@
 var $url = "/exam/examPractice";
 var $urlSubmit = $url + "/submit";
 var $urlDelete = $url + "/del";
+var $urlTotal = $url + "/total";
 
 var data = utils.init({
   list: [],
   total: 0,
+  collectTotal: 0,
+  wrongTotal: 0,
   form: {
     pageIndex: 1,
     pageSize: PER_PAGE
@@ -21,19 +24,27 @@ var methods = {
     }
     $api.get($url, { params: this.form }).then(function (response) {
       var res = response.data;
-
       if (res.list && res.list.length > 0) {
         res.list.forEach(paper => {
           $this.list.push(paper);
         });
       }
       $this.total = res.total;
-
     }).catch(function (error) {
       utils.error(error);
     }).then(function () {
       utils.loading($this, false);
       $this.loadMoreLoading = false;
+    });
+  },
+  apiGetTotal: function () {
+    var $this = this;
+    $api.get($urlTotal).then(function (response) {
+      var res = response.data;
+      $this.collectTotal = res.collectTotal;
+      $this.wrongTotal = res.wrongTotal;
+    }).catch(function (error) {
+    }).then(function () {
     });
   },
   btnCreateClick: function (practiceType, groupId, groupTmTotal) {
@@ -54,32 +65,45 @@ var methods = {
       top.utils.alertWarning({
         title: '准备进入刷题模式',
         callback: function () {
-          if (groupTmTotal > 0) {
-            $this.apiCreatePractice(practiceType, groupId);
+          if (practiceType === 'Collect') {
+            if ($this.collectTotal > 0) {
+              $this.apiCreatePractice(practiceType, groupId);
+            }
+            else {
+              utils.error("没有题目可以练习");
+            }
+          }
+          else if (practiceType === 'Wrong') {
+            if ($this.wrongTotal > 0) {
+              $this.apiCreatePractice(practiceType, groupId);
+            }
+            else {
+              utils.error("没有题目可以练习");
+            }
           }
           else {
-            utils.error("没有题目可以练习");
+            if (groupTmTotal > 0) {
+              $this.apiCreatePractice(practiceType, groupId);
+            }
+            else {
+              utils.error("没有题目可以练习");
+            }
           }
         }
       });
     }
-
   },
   apiCreatePractice: function (practiceType, groupId) {
     var $this = this;
-
     utils.loading(this, true, "正在创建练习...");
-
     $api.post($urlSubmit, { practiceType: practiceType, groupId: groupId }).then(function (response) {
       var res = response.data;
-
       if (res.success) {
         $this.goPractice(res.id);
       }
       else {
         utils.error(res.error);
       }
-
     }).catch(function (error) {
       utils.error(error);
     }).then(function () {
@@ -138,5 +162,6 @@ var $vue = new Vue({
   methods: methods,
   created: function () {
     this.apiGet();
+    this.apiGetTotal();
   },
 });

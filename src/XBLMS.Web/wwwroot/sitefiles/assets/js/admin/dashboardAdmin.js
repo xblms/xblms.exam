@@ -162,6 +162,15 @@ var methods = {
         height: "99%"
       });
     }
+    else if (log.isTmCorrection) {
+      top.utils.openLayer({
+        title: false,
+        closebtn: 0,
+        url: utils.getCommonUrl('examTmCorrectionLayerView', { id: log.objectId }),
+        width: "88%",
+        height: "88%"
+      });
+    }
   },
 
   btnTaskStudy: function () {
@@ -200,7 +209,7 @@ var methods = {
     utils.openTopRight(rightTitle, utils.getStudyUrl("studyOffCourseWeek"), 40);
   },
   btnDoc: function () {
-    utils.openTopLeft(this.systemCode==='Exam'?'考试档案':'学习档案', utils.getSettingsUrl("usersDoc"), 98);
+    utils.openTopLeft(this.systemCode === 'Exam' ? '考试档案' : '学习档案', utils.getSettingsUrl("usersDoc"), 98);
   },
   btnEditClick: function (log) {
     var $this = this;

@@ -52,6 +52,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         private readonly IExamTmAnalysisTmRepository _examTmAnalysisTmRepository;
         private readonly ITableStyleRepository _tableStyleRepository;
         private readonly IExamTmSmallRepository _examTmSmallRepository;
+        private readonly IExamPaperRandomTmRepository _examPaperRandomTmRepository;
 
         public ExamTmController(IAuthManager authManager, IPathManager pathManager, IDatabaseManager databaseManager, ICacheManager cacheManager,
             IConfigRepository configRepository, IExamManager examManager,
@@ -62,7 +63,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             IExamPracticeCollectRepository examPracticeCollectRepository,
             IExamPracticeWrongRepository examPracticeWrongRepository,
             IExamTmAnalysisTmRepository examTmAnalysisTmRepository,
-            ITableStyleRepository tableStyleRepository, IExamTmSmallRepository examTmSmallRepository)
+            ITableStyleRepository tableStyleRepository, IExamTmSmallRepository examTmSmallRepository, IExamPaperRandomTmRepository examPaperRandomTmRepository)
         {
             _organManager = organManager;
             _examManager = examManager;
@@ -84,6 +85,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             _examTmAnalysisTmRepository = examTmAnalysisTmRepository;
             _tableStyleRepository = tableStyleRepository;
             _examTmSmallRepository = examTmSmallRepository;
+            _examPaperRandomTmRepository = examPaperRandomTmRepository;
         }
         public class GetEditResult
         {
@@ -98,6 +100,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         {
             public ExamTm Item { get; set; }
             public List<ExamTmSmall> Smalls { get; set; }
+            public int ExamPaperId { get; set; }
         }
 
         public class GetEditSmallRequest

@@ -84,10 +84,14 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             if (info.Id > 0)
             {
                 var last = await _examTmRepository.GetAsync(info.Id);
-               
+
+                if (request.ExamPaperId > 0)
+                {
+                    await _examPaperRandomTmRepository.UpdateByCorrectionAsync(request.ExamPaperId, info);
+                }
                 await _examTmRepository.UpdateAsync(info);
-                await _authManager.AddAdminLogAsync("修改题目", $"{StringUtils.StripTags(info.Title)}");
-                await _authManager.AddStatLogAsync(StatType.ExamTmUpdate, "修改题目", last.Id, StringUtils.StripTags(info.Title), last);
+                await _authManager.AddAdminLogAsync("修改题目", $"{ _examManager.GetTmTitle(info) }");
+                await _authManager.AddStatLogAsync(StatType.ExamTmUpdate, "修改题目", last.Id, _examManager.GetTmTitle(info), last);
             }
             else
             {
@@ -104,8 +108,8 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
                 info.Id = await _examTmRepository.InsertAsync(info);
 
-                await _authManager.AddAdminLogAsync("新增题目", $"{StringUtils.StripTags(info.Title)}");
-                await _authManager.AddStatLogAsync(StatType.ExamTmAdd, "新增题目", info.Id, StringUtils.StripTags(info.Title));
+                await _authManager.AddAdminLogAsync("新增题目", $"{ _examManager.GetTmTitle(info) }");
+                await _authManager.AddStatLogAsync(StatType.ExamTmAdd, "新增题目", info.Id, _examManager.GetTmTitle(info));
                 await _authManager.AddStatCount(StatType.ExamTmAdd);
             }
 

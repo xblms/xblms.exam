@@ -7,6 +7,7 @@ namespace XBLMS.Services
 {
     public partial interface IExamManager
     {
+        string GetTmTitle(ExamTm tm);
         Task<ExamTmSmall> GetSmallTmInfo(int tmId);
         Task<ExamTm> GetTmInfo(int tmId);
         Task GetTmInfo(ExamTm tm);

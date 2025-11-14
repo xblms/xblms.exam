@@ -1,0 +1,96 @@
+@page
+@{ Layout = "_Layout"; }
+<el-card>
+    <el-form :inline="true" :size="euiSize">
+        <el-form-item label="">
+            <el-input v-model="formInline.keyWords" prefix-icon="el-icon-search" clearable placeholder="关键字"></el-input>
+        </el-form-item>
+        <el-form-item label="">
+            <el-select v-model="formInline.status" placeholder="状态" v-on:change="btnSearchClick">
+                <el-option label="全部状态" value=""></el-option>
+                <el-option v-for="auditStatus in auditStatusList"
+                           :key="auditStatus.value"
+                           :label="auditStatus.label"
+                           :value="auditStatus.value">
+                </el-option>
+            </el-select>
+        </el-form-item>
+        <el-form-item>
+            <el-button type="primary" icon="el-icon-search" v-on:click="btnSearchClick">查 询</el-button>
+        </el-form-item>
+    </el-form>
+    <el-table ref="correctionTable"
+              :data="list" :height="$(window).height()-155"
+              tooltip-effect="light"
+              :size="euiSize">
+        <el-table-column label="#"
+                         type="index"
+                         width="60"
+                         align="left">
+            <template scope="scope">
+                <span>{{(formInline.pageIndex - 1) * formInline.pageSize + scope.$index + 1}}</span>
+            </template>
+        </el-table-column>
+        <el-table-column prop="tmTitle" label="纠错题目" show-overflow-tooltip>
+            <template slot-scope="scope">
+                <el-link type="primary" :underline="false" v-on:click="btnTmViewClick(scope.row.id)"><span v-html="scope.row.tmTitle"></span></el-link>
+            </template>
+        </el-table-column>
+        <el-table-column show-overflow-tooltip prop="createdUserName" label="纠错人">
+            <template slot-scope="scope">
+                <el-link type="primary" :underline="false" v-on:click="btnUserViewClick(scope.row.userId)">{{scope.row.userDisplayName}}</el-link>
+            </template>
+        </el-table-column>
+        <el-table-column prop="reason" label="纠错理由" show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column label="提交时间" width="140" prop="createdDate">
+        </el-table-column>
+        <el-table-column label="状态" width="80">
+            <template slot-scope="scope">
+                <span>{{ scope.row.auditStatusStr }}</span>
+            </template>
+        </el-table-column>
+        <el-table-column label="审核人">
+            <template slot-scope="scope">
+                <span v-if="scope.row.auditAdminId>0">
+                    <el-link type="primary" :underline="false" v-on:click="btnAdminViewClick(scope.row.auditAdminId)">{{scope.row.adminDisplayName}}</el-link>
+                </span>
+            </template>
+        </el-table-column>
+        <el-table-column label="审核理由" show-overflow-tooltip>
+            <template slot-scope="scope">
+                <span v-if="scope.row.auditAdminId>0">{{ scope.row.auditResaon }}</span>
+            </template>
+        </el-table-column>
+        <el-table-column label="审核时间" width="140">
+            <template slot-scope="scope">
+                <span v-if="scope.row.auditAdminId>0">{{ scope.row.auditDate }}</span>
+            </template>
+        </el-table-column>
+        <el-table-column width="100" align="right">
+            <template slot-scope="scope">
+                <el-dropdown :show-timeout="0" placement="left">
+                    <el-button icon="el-icon-arrow-left" size="mini" v-on:click.stop="return false">
+                        操作
+                    </el-button>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item icon="el-icon-edit" v-on:click.native="btnAuditClick(scope.row.id)">审核</el-dropdown-item>
+                        <el-dropdown-item icon="el-icon-document-copy" v-on:click.native="btnEditClick(scope.row)">修改题目</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+            </template>
+        </el-table-column>
+        @await Html.PartialAsync("_PartialTableEmpty")
+    </el-table>
+    <div style="text-align: center; margin-top: 10px;">
+        <el-pagination background
+                       v-on:current-change="handleCurrentChange"
+                       :current-page="formInline.pageIndex"
+                       layout="total, prev, pager, next, jumper"
+                       :total="total">
+        </el-pagination>
+    </div>
+</el-card>
+@section Scripts{
+<script src="/sitefiles/assets/js/admin/exam/examTmCorrection.js" type="text/javascript"></script>
+ }

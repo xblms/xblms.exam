@@ -345,6 +345,15 @@ var methods = {
     }
     return false;
   },
+  btnCorrection: function () {
+    top.utils.openLayer({
+      title: false,
+      closebtn: 0,
+      url: utils.getExamUrl('examTmCorrection', { tmId: this.tm.sourceTmId, examPaperId: this.paper.id }),
+      width: "60%",
+      height: "80%"
+    });
+  }
 };
 
 var $vue = new Vue({

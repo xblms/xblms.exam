@@ -9,7 +9,23 @@
     </style>
 }
 <div class="px-3 pt-3">
-    <el-button class="rounded-0 w-100 py-3" icon="el-icon-s-promotion" type="primary" v-on:click="btnCreateClick('Create')">自定义新的练习</el-button>
+    <div class="row g-3">
+             <div class="col-12">
+                    <el-button class="w-100 rounded-pill" type="primary" plain v-on:click="btnCreateClick('Create')">
+                    <i class="bi bi-fast-forward-circle-fill me-3"></i>自定义刷题模型
+                </el-button>
+            </div>
+            <div class="col-6">
+                <el-button class="w-100 rounded-pill" type="success" plain v-on:click="btnCreateClick('Collect')">
+                    <i class="bi bi-person-hearts me-3"></i>收藏练习
+                </el-button>
+            </div>
+            <div class="col-6">
+                     <el-button class="w-100 rounded-pill" type="warning" plain v-on:click="btnCreateClick('Wrong')">
+                    <i class="bi bi-backspace-reverse me-3"></i>错题练习
+                </el-button>
+            </div>
+        </div>
 </div>
 <div class="p-3"  v-if="total>0">
     <div>

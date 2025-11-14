@@ -4,6 +4,7 @@ var $urlDelSmall = 'exam/examTm/tmEdit/delSmall';
 
 var data = utils.init({
   id: utils.getQueryInt("id"),
+  examPaperId: utils.getQueryInt("examPaperId"),
   treeId: utils.getQueryInt("treeId"),
   txList: [],
   tmTreeData: [],
@@ -134,7 +135,7 @@ var methods = {
     var $this = this;
     utils.loading(this, true);
 
-    $api.post($urlsubmit, { item: this.form, smalls: this.tableTmSmallList }
+    $api.post($urlsubmit, { item: this.form, smalls: this.tableTmSmallList, examPaperId: this.examPaperId }
     ).then(function (response) {
       var res = response.data;
       if (res.value) {

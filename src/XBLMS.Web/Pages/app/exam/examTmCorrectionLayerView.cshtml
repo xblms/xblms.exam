@@ -1,0 +1,91 @@
+﻿@page
+@{ Layout = "_LayoutApp"; }
+@section Styles{
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+        }
+
+        html {
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+}
+<div class="p-3">
+    <div class="bg-white">
+        <el-descriptions title="" :column="1" border>
+            <el-descriptions-item label="">
+                <template slot="label">
+                    <nobr>纠错时间</nobr>
+                </template>
+                {{ info.createdDate }}
+            </el-descriptions-item>
+            <el-descriptions-item label="纠错理由">{{ info.reason }}</el-descriptions-item>
+            <el-descriptions-item label="状态"><el-tag size="small" :type="utils.toLowerCase(info.auditStatus)">{{ info.auditStatusStr }}</el-tag></el-descriptions-item>
+            <el-descriptions-item label="审核理由">{{ info.auditResaon }}</el-descriptions-item>
+            <el-descriptions-item label="审核时间">{{ info.auditDate }}</el-descriptions-item>
+        </el-descriptions>
+    </div>
+    <div class="mt-3 bg-white">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col" width="100"></th>
+                    <th scope="col">纠错时</th>
+                    <th scope="col">现在</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr :class="tm.txName!==tmNew.txName?'table-warning':''">
+                    <th scope="row">题型</th>
+                    <td><span v-html="tm.txName"></span></td>
+                    <td><span v-html="tmNew.txName"></span></td>
+                </tr>
+                <tr :class="tm.title!==tmNew.title?'table-warning':''">
+                    <th scope="row">题目</th>
+                    <td><span v-html="tm.title"></span></td>
+                    <td><span v-html="tmNew.title"></span></td>
+                </tr>
+                <tr :class="tm.optionsStr!==tmNew.optionsStr?'table-warning':''">
+                    <th scope="row">候选项</th>
+                    <td>
+                        <div v-for="option in tm.options">{{ option }}</div>
+                    </td>
+                    <td>
+                        <div v-for="option in tmNew.options">{{ option }}</div>
+                    </td>
+                </tr>
+                <tr :class="tm.answer!==tmNew.answer?'table-warning':''">
+                    <th scope="row">答案</th>
+                    <td><span v-html="tm.answer"></span></td>
+                    <td><span v-html="tmNew.answer"></span></td>
+                </tr>
+                <tr :class="tm.score!==tmNew.score?'table-warning':''">
+                    <th scope="row">分数</th>
+                    <td><span v-html="tm.score"></span></td>
+                    <td><span v-html="tmNew.score"></span></td>
+                </tr>
+                <tr :class="tm.zhishidian!==tmNew.zhishidian?'table-warning':''">
+                    <th scope="row">知识点</th>
+                    <td><span v-html="tm.zhishidian"></span></td>
+                    <td><span v-html="tmNew.zhishidian"></span></td>
+                </tr>
+                <tr :class="tm.jiexi!==tmNew.jiexi?'table-warning':''">
+                    <th scope="row">解析</th>
+                    <td><span v-html="tm.jiexi"></span></td>
+                    <td><span v-html="tmNew.jiexi"></span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="py-8"></div>
+<div class="py-8"></div>
+<div style="position:fixed;left:0;bottom:0;width:100%;" class="text-center mb-5 animate__animated animate__fadeInUp">
+    <el-button class="rounded-pill" type="primary" v-on:click="utils.closeLayerSelf" icon="el-icon-back">返 回</el-button>
+</div>
+@section Scripts{
+<script src="/sitefiles/assets/js/app/exam/examTmCorrectionLayerView.js" type="text/javascript"></script>
+}

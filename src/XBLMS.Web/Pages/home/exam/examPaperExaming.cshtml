@@ -174,10 +174,15 @@
                             </div>
                         </div>
                     </el-scrollbar>
-                    <div class="pt-3 text-center">
-                        <el-button v-on:click="btnUpClick" icon="el-icon-arrow-left" circle :disabled="tm.tmIndex===1"></el-button>
-                        <span class="px-5">{{ tm.tmIndex }}/{{ paper.tmTotal }}</span>
-                        <el-button v-on:click="btnDownClick" icon="el-icon-arrow-right" circle :disabled="tm.tmIndex===paper.tmTotal"></el-button>
+                    <div class="pt-3 px-4 d-flex justify-content-between align-items-center">
+                        <div>
+                            <el-button v-on:click="btnUpClick" icon="el-icon-arrow-left" :disabled="tm.tmIndex===1">上一题</el-button>
+                            <span class="px-5">{{ tm.tmIndex }}/{{ paper.tmTotal }}</span>
+                            <el-button v-on:click="btnDownClick" icon="el-icon-arrow-right" :disabled="tm.tmIndex===paper.tmTotal">下一题</el-button>
+                        </div>
+                        <div>
+                            <el-button v-on:click="btnCorrection"><i class="el-icon-question text-warning me-2"></i>题目纠错</el-button>
+                        </div>
                     </div>
                 </el-card>
                 <el-card v-else>

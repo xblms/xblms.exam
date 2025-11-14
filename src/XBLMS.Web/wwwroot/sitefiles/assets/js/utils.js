@@ -220,7 +220,9 @@ var utils = {
     }
     return values.join('');
   },
-
+  toLowerCase: function (val) {
+    return _.toLower(val);
+  },
   toInt: function (val) {
     if (!val) return 0;
     if (typeof val === 'number') return val;

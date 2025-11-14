@@ -80,5 +80,27 @@ namespace XBLMS.Core.Repositories
                 Where(nameof(ExamPaperRandomTm.SourceTmId), tmId));
             return idsList;
         }
+        public async Task UpdateByCorrectionAsync(int examPaperId, ExamTm tm)
+        {
+            var tableName = await GetTableNameAsync(examPaperId);
+            var repository = await GetRepositoryAsync(tableName);
+
+            var list = await repository.GetAllAsync(Q.
+                Where(nameof(ExamPaperRandomTm.ExamPaperId), examPaperId).
+                Where(nameof(ExamPaperRandomTm.SourceTmId), tm.Id));
+            if (list != null && list.Count > 0)
+            {
+                foreach (var item in list)
+                {
+                    item.Set("options", tm.Get("options"));
+                    item.Set("optionsValues", tm.Get("optionsValues"));
+                    item.Title = tm.Title;
+                    item.Answer = tm.Answer;
+                    item.AnswerCount = tm.AnswerCount;
+                    item.Jiexi = tm.Jiexi;
+                    await repository.UpdateAsync(item);
+                }
+            }
+        }
     }
 }

@@ -248,6 +248,13 @@ namespace XBLMS.Core.Services
                     await _settingsManager.Database.CreateIndexAsync(tableName, $"IX_{tableName}_{nameof(ExamTm.TreeId)}", $"{nameof(ExamTm.TreeId)}");
                     await _settingsManager.Database.CreateIndexAsync(tableName, $"IX_{tableName}_{nameof(ExamTm.TmGroupIds)}", $"{nameof(ExamTm.TmGroupIds)}");
                 }
+                else if (tableName == ExamTmCorrectionRepository.TableName)
+                {
+                    await _settingsManager.Database.CreateIndexAsync(tableName, $"IX_{tableName}_{nameof(ExamTmCorrection.AuditAdminId)}", $"{nameof(ExamTmCorrection.AuditAdminId)}");
+                    await _settingsManager.Database.CreateIndexAsync(tableName, $"IX_{tableName}_{nameof(ExamTmCorrection.TmId)}", $"{nameof(ExamTmCorrection.TmId)}");
+                    await _settingsManager.Database.CreateIndexAsync(tableName, $"IX_{tableName}_{nameof(ExamTmCorrection.ExamPaperId)}", $"{nameof(ExamTmCorrection.ExamPaperId)}");
+                    await _settingsManager.Database.CreateIndexAsync(tableName, $"IX_{tableName}_{nameof(ExamTmCorrection.UserId)}", $"{nameof(ExamTmCorrection.UserId)}");
+                }
                 else if (tableName == StudyCourseFilesRepository.TableName)
                 {
                     await _settingsManager.Database.CreateIndexAsync(tableName, $"IX_{tableName}_{nameof(StudyCourseFiles.GroupId)}", $"{nameof(StudyCourseFiles.GroupId)}");

@@ -256,6 +256,15 @@ var methods = {
       $this.curTimingSecond++;
       $this.timingChange();
     }, 1000)
+  },
+  btnCorrection: function (val) {
+    top.utils.openLayer({
+      title: false,
+      closebtn: 0,
+      url: utils.getExamUrl('examTmCorrection', { tmId: val.sourceTmId, examPaperId: this.paper.id }),
+      width: "100%",
+      height: "100%"
+    });
   }
 };
 

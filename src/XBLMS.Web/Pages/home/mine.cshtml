@@ -2,11 +2,11 @@
 @{ Layout = "_LayoutHome"; }
 @section Styles{
     <style>
-        body,html {
+        body, html {
             padding: 0;
             margin: 0;
             background: #ffffff;
-            overflow:hidden;
+            overflow: hidden;
         }
     </style>
 }
@@ -61,15 +61,25 @@
         </button>
         <el-divider class="mb-2">
         </el-divider>
-                    <button type="button" class="btn w-100 rounded-pill border-0 fw-normal mb-2" :class="webHomeUserCenterMenuIndex===5?'btn-dark button-fa':'btn-outline-dark'" v-on:click="btnMenu(5)">
-                <div class="d-flex align-items-end justify-content-between">
-                    <div>
-                        修改信息
-                    </div>
-                    <div><i class="el-icon-caret-right"></i></div>
+        <button type="button" class="btn w-100 rounded-pill border-0 fw-normal mb-2" :class="webHomeUserCenterMenuIndex===7?'btn-dark button-fa':'btn-outline-dark'" v-on:click="btnMenu(7)">
+            <div class="d-flex align-items-end justify-content-between">
+                <div>
+                    题目纠错记录
                 </div>
-            </button>
-               <button type="button" class="btn w-100 rounded-pill border-0 fw-normal mb-2" :class="webHomeUserCenterMenuIndex===6?'btn-dark button-fa':'btn-outline-dark'" v-on:click="btnMenu(6)">
+                <div><i class="el-icon-caret-right"></i></div>
+            </div>
+        </button>
+        <el-divider class="mb-2">
+        </el-divider>
+        <button type="button" class="btn w-100 rounded-pill border-0 fw-normal mb-2" :class="webHomeUserCenterMenuIndex===5?'btn-dark button-fa':'btn-outline-dark'" v-on:click="btnMenu(5)">
+            <div class="d-flex align-items-end justify-content-between">
+                <div>
+                    修改信息
+                </div>
+                <div><i class="el-icon-caret-right"></i></div>
+            </div>
+        </button>
+        <button type="button" class="btn w-100 rounded-pill border-0 fw-normal mb-2" :class="webHomeUserCenterMenuIndex===6?'btn-dark button-fa':'btn-outline-dark'" v-on:click="btnMenu(6)">
             <div class="d-flex align-items-end justify-content-between">
                 <div>
                     修改密码

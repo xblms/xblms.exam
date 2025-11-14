@@ -293,6 +293,14 @@ namespace XBLMS.Web.Controllers.Admin
                     }
                     item.Set("IsKnowledge", isKnowledge);
 
+                    var isTmCorrection = false;
+                    if (item.StatType == StatType.ExamTmCorrectionAudit)
+                    {
+                        isTmCorrection = true;
+                        isView = true;
+                    }
+                    item.Set("IsTmCorrection", isTmCorrection);
+
                     item.Set("Name", name);
                     item.Set("IsView", isView);
                     item.Set("IsEdit", isEdit);

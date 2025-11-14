@@ -1,0 +1,59 @@
+@page
+@{ Layout = "_LayoutHome"; }
+<template v-if="success">
+    <el-result icon="success" title="成功提示" class="pt-8">
+        <template slot="subTitle">
+            纠错已提交，请等待审核
+        </template>
+        <template slot="extra">
+            <el-button type="primary" icon="el-icon-close" v-on:click="utils.closeLayerSelf">关 闭</el-button>
+        </template>
+    </el-result>
+</template>
+<template v-else-if="form && form.tmId>0">
+    <el-card>
+        <div slot="header">
+            <span class="fw-bolder">题目纠错</span>
+        </div>
+        <el-scrollbar class="scrollbar" :style="{ height: ($(window).height()-186) + 'px' }">
+            <div class="pe-3">
+                <el-form v-on:submit.native.prevent :size="euiSize" ref="form" :model="form">
+                    <el-form-item>
+                        <span>{{ title }}</span>
+                    </el-form-item>
+                    <el-form-item label="理由" prop="reason" :rules="{ required: true, message: '请输入理由' }">
+                        <el-input ref="reason" type="textarea" :autosize="{ minRows: 3}" v-model="form.reason"></el-input>
+                    </el-form-item>
+                    <el-form-item label="纠错记录" v-if="total>0">
+                        <el-table :data="list" border
+                                  stripe size="mini"
+                                  style="width: 100%">
+                            <el-table-column prop="createdDate"
+                                             label="提交时间">
+                            </el-table-column>
+                            <el-table-column prop="reason"
+                                             label="理由">
+                            </el-table-column>
+                            <el-table-column prop="auditStatusStr"
+                                             label="审核状态">
+                            </el-table-column>
+                            <el-table-column prop="auditResaon"
+                                             label="审核理由">
+                            </el-table-column>
+                            <el-table-column label="审核时间" prop="auditDate">
+                            </el-table-column>
+                        </el-table>
+                    </el-form-item>
+                </el-form>
+            </div>
+        </el-scrollbar>
+    </el-card>
+    <el-row align="center" style="margin-top:18px;">
+        <el-col :span="24" align="center">
+            <el-button icon="el-icon-s-promotion" type="primary" v-on:click="btnSubmitClick">提交</el-button>
+            <el-button icon="el-icon-close" v-on:click="utils.closeLayerSelf">取 消</el-button>
+        </el-col>
+    </el-row>
+</template>
+@section Scripts{
+<script src="/sitefiles/assets/js/home/exam/examTmCorrection.js" type="text/javascript"></script> }

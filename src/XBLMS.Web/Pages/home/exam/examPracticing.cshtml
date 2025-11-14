@@ -209,6 +209,7 @@
                 <el-button v-on:click="btnCollectionRemoveClick" type="danger" plain v-if="tm.isCollection"><i class="bi bi-heartbreak-fill me-2"></i>取消收藏</el-button>
                 <el-button v-on:click="btnCollectionClick" type="success" plain v-else><i class="bi bi-suit-heart-fill me-2"></i>收藏</el-button>
                 <el-button v-on:click="btnWrongRemoveClick" type="danger" plain v-if="tm.isWrong"><i class="bi bi-sign-turn-slight-left me-2"></i>移出错题库</el-button>
+                <el-button v-on:click="btnCorrection" plain type="warning" icon="el-icon-question">题目纠错</el-button>
             </div>
         </div>
     </el-card>

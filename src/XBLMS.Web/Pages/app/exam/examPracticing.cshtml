@@ -202,6 +202,7 @@
             <div v-else class="text-center">
                 <el-button icon="el-icon-check" class="w-100 rounded-0 py-3" v-on:click="btnSubmitAnswerClick" type="primary">提交答案</el-button>
             </div>
+            <div class="pt-2 text-end"><el-button v-on:click="btnCorrection" plain type="warning" icon="el-icon-question" size="mini">题目纠错</el-button></div>
         </div>
     </div>
     <el-card v-else>

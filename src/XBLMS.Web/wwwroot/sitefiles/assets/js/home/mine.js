@@ -31,6 +31,9 @@ var methods = {
       if (value === 6) {
         this.mineUrl = utils.getRootUrl('password');
       }
+      if (value === 7) {
+        this.mineUrl = utils.getExamUrl('examTmCorrectionLog');
+      }
     }
   },
   winResize: function () {

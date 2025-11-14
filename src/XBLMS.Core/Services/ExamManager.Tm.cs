@@ -8,6 +8,10 @@ namespace XBLMS.Core.Services
 {
     public partial class ExamManager
     {
+        public string GetTmTitle(ExamTm tm)
+        {
+            return StringUtils.StripTags(tm.Title);
+        }
         public async Task<ExamTm> GetTmInfo(int tmId)
         {
             var tm = await _databaseManager.ExamTmRepository.GetAsync(tmId);
@@ -54,7 +58,7 @@ namespace XBLMS.Core.Services
 
                         var tmTitleList = GetTiankongtiTitleList(smallTx, smallTm.Title);
 
-                        smallTm.Title = StringUtils.StripTags(smallTm.Title);
+                        smallTm.Title = GetTmTitle(smallTm);
 
                         var smalltx = await _databaseManager.ExamTxRepository.GetAsync(smallTm.TxId);
                         smallTm.Set("TxName", smalltx.Name);
@@ -189,7 +193,7 @@ namespace XBLMS.Core.Services
             SetOptionInfo(tm);
 
             tm.Set("TitleHtml", tm.Title);
-            tm.Title = StringUtils.StripTags(tm.Title);
+            tm.Title = GetTmTitle(tm);
 
             tm.Set("NanduStar", $"{tm.Nandu}<i class='el-icon-star-on' style='color:#FF9900;margin-left:3px;font-size:14px;'></i>");
 
@@ -225,7 +229,7 @@ namespace XBLMS.Core.Services
 
             var tmTitleList = GetTiankongtiTitleList(smallTx, smallTm.Title);
 
-            smallTm.Title = StringUtils.StripTags(smallTm.Title);
+            smallTm.Title = GetTmTitle(smallTm);
 
             var smalltx = await _databaseManager.ExamTxRepository.GetAsync(smallTm.TxId);
             smallTm.Set("TxName", smalltx.Name);
@@ -251,7 +255,7 @@ namespace XBLMS.Core.Services
             SetOptionInfo(tm);
 
             tm.Set("TitleHtml", tm.Title);
-            tm.Title = StringUtils.StripTags(tm.Title);
+            tm.Title = GetTmTitle(tm);
 
             tm.Set("NanduStar", $"{tm.Nandu}<i class='el-icon-star-on' style='color:#FF9900;margin-left:3px;font-size:14px;'></i>");
 
