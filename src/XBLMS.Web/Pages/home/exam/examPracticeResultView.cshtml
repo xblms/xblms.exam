@@ -11,18 +11,15 @@
             border-bottom-width: 2px;
             background: none;
         }
-
-        .el-radio {
-            white-space: normal;
-        }
-
-        .el-checkbox__label {
+        .el-radio__label, .el-checkbox__label {
             display: inline-grid;
             word-wrap: break-word;
-            line-height: 20px;
+            line-height: 24px !important;
             white-space: pre-line;
         }
-
+        .el-checkbox.is-bordered.el-checkbox--medium, .el-radio.is-bordered.el-radio--medium {
+            height: auto !important;
+        }
     </style>
 }
 <template>
@@ -91,7 +88,7 @@
                         <div class="list-group" v-if="small.baseTx!=='Tiankongti'">
                             <div v-if="small.baseTx==='Danxuanti' || small.baseTx==='Panduanti'">
                                 <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in small.optionsRandom">
-                                    <div class="d-flex justify-content-start align-items-start">
+                                    <div class="d-flex justify-content-start align-items-top">
                                         <div class="me-1 position-relative">
                                             {{optionsABC[optionIndex]}}.
                                         </div>
@@ -105,7 +102,7 @@
                             </div>
                             <div v-else-if="small.baseTx==='Duoxuanti'">
                                 <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in small.optionsRandom">
-                                    <div class="d-flex justify-content-start align-items-start">
+                                    <div class="d-flex justify-content-start align-items-top">
                                         <div class="me-1 position-relative">
                                             {{optionsABC[optionIndex]}}.
                                         </div>

@@ -10,22 +10,18 @@
             border-bottom-width: 2px;
             background: none;
         }
-
-        .el-radio {
-            white-space: normal;
-        }
-
-        .el-checkbox__label {
+        .el-radio__label, .el-checkbox__label {
             display: inline-grid;
             word-wrap: break-word;
-            line-height: 20px;
+            line-height: 24px !important;
             white-space: pre-line;
         }
-
+        .el-checkbox.is-bordered.el-checkbox--medium, .el-radio.is-bordered.el-radio--medium {
+            height: auto !important;
+        }
         .number {
             color: red;
         }
-
         html {
             background-color: #f1f1f1;
         }
@@ -33,7 +29,7 @@
     <link href="/sitefiles/assets/css/watermark.css" rel="stylesheet" type="text/css" />
 }
 @await Html.PartialAsync("_PartialWatermark")
-<template v-if="isLoad">
+<template v-if="isLoad && paper">
     <div class="px-8 p-3">
         <div class="d-flex justify-content-between align-items-center">
             <div>
@@ -82,12 +78,12 @@
                                         <div class="list-group" v-if="small.baseTx!=='Tiankongti'">
                                             <div v-if="small.baseTx==='Danxuanti' || small.baseTx==='Panduanti'">
                                                 <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in small.optionsRandom">
-                                                    <div class="d-flex justify-content-start align-items-center">
+                                                    <div class="d-flex justify-content-start align-items-top">
                                                         <div>
                                                             {{optionsABC[optionIndex]}}
                                                         </div>
-                                                        <div class="w-100 pt-1">
-                                                            <el-radio class="border-0 w-100" border :label="option.key" v-model="small.answerInfo.answer" v-on:change="answerSmallChange(small)" size="medium">
+                                                        <div class="w-100">
+                                                            <el-radio class="border-0 w-100 pt-0" border :label="option.key" v-model="small.answerInfo.answer" v-on:change="answerSmallChange(small)" size="medium">
                                                                 <span v-html="option.value"></span>
                                                             </el-radio>
                                                         </div>
@@ -96,12 +92,12 @@
                                             </div>
                                             <div v-else-if="small.baseTx==='Duoxuanti'">
                                                 <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in small.optionsRandom">
-                                                    <div class="d-flex justify-content-start align-items-center">
+                                                    <div class="d-flex justify-content-start align-items-top">
                                                         <div>
                                                             {{optionsABC[optionIndex]}}
                                                         </div>
-                                                        <div class="w-100 pt-1">
-                                                            <el-checkbox class="border-0 w-100" border :true-label="option.key" false-label="" v-model="small.answerInfo.optionsValues[optionsABC.indexOf(option.key)]" v-on:change="answerSmallChange(small)" size="medium">
+                                                        <div class="w-100">
+                                                            <el-checkbox class="border-0 w-100 pt-0" border :true-label="option.key" false-label="" v-model="small.answerInfo.optionsValues[optionsABC.indexOf(option.key)]" v-on:change="answerSmallChange(small)" size="medium">
                                                                 <span v-html="option.value"></span>
                                                             </el-checkbox>
                                                         </div>
@@ -137,12 +133,12 @@
                                 <div class="list-group" v-if="tm.baseTx!=='Tiankongti'">
                                     <div v-if="tm.baseTx==='Danxuanti' || tm.baseTx==='Panduanti'">
                                         <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.optionsRandom">
-                                            <div class="d-flex justify-content-start align-items-center">
+                                            <div class="d-flex justify-content-start align-items-top">
                                                 <div>
                                                     {{optionsABC[optionIndex]}}
                                                 </div>
-                                                <div class="w-100 pt-1">
-                                                    <el-radio class="border-0 w-100" border :label="option.key" v-model="tm.answerInfo.answer" v-on:change="answerChange" size="medium">
+                                                <div class="w-100">
+                                                    <el-radio class="border-0 w-100 pt-0" border :label="option.key" v-model="tm.answerInfo.answer" v-on:change="answerChange" size="medium">
                                                         <span v-html="option.value"></span>
                                                     </el-radio>
                                                 </div>
@@ -151,12 +147,12 @@
                                     </div>
                                     <div v-else-if="tm.baseTx==='Duoxuanti'">
                                         <div class="list-group-item list-group-item-action" v-for="(option,optionIndex) in tm.optionsRandom">
-                                            <div class="d-flex justify-content-start align-items-center">
+                                            <div class="d-flex justify-content-start align-items-top">
                                                 <div>
                                                     {{optionsABC[optionIndex]}}
                                                 </div>
-                                                <div class="w-100 pt-1">
-                                                    <el-checkbox class="border-0 w-100" border :true-label="option.key" false-label="" v-model="tm.answerInfo.optionsValues[optionsABC.indexOf(option.key)]" v-on:change="answerChange" size="medium">
+                                                <div class="w-100">
+                                                    <el-checkbox class="border-0 w-100 pt-0" border :true-label="option.key" false-label="" v-model="tm.answerInfo.optionsValues[optionsABC.indexOf(option.key)]" v-on:change="answerChange" size="medium">
                                                         <span v-html="option.value"></span>
                                                     </el-checkbox>
                                                 </div>
@@ -270,6 +266,28 @@
             </el-col>
         </el-row>
     </div>
+</template>
+<template>
+    <el-dialog title="题目纠错"
+               :visible.sync="correctionDialogVisible" :show-close="false"
+               width="40%">
+        <div v-if="tm">
+            <el-form v-on:submit.native.prevent :size="euiSize" ref="formCorrection" :model="formCorrection">
+                <el-form-item>
+                    <el-scrollbar class="scrollbar" style="height:100px;padding-right:10px;">
+                        <span v-html="tm.titleHtml"></span>
+                    </el-scrollbar>
+                </el-form-item>
+                <el-form-item label="理由" prop="reason" :rules="{ required: true, message: '请输入理由' }">
+                    <el-input ref="reason" type="textarea" :autosize="{ minRows: 3}" v-model="formCorrection.reason"></el-input>
+                </el-form-item>
+            </el-form>
+        </div>
+        <span slot="footer" class="dialog-footer">
+            <el-button type="primary" class="border-0" icon="el-icon-check" v-on:click="btnCorrectionSubmitClick">提 交</el-button>
+            <el-button class="border-0" icon="el-icon-close" v-on:click="correctionDialogVisible = false">取 消</el-button>
+        </span>
+    </el-dialog>
 </template>
 @section Scripts{
     <script src="/sitefiles/assets/js/home/exam/examPaperExaming.js" type="text/javascript"></script>

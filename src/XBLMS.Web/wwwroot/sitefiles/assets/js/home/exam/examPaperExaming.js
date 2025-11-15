@@ -4,6 +4,7 @@ var $urlSubmitAnswer = $url + "/submitAnswer";
 var $urlSubmitAnswerSmall = $url + "/submitAnswerSmall";
 var $urlSubmitPaper = $url + "/submitPaper";
 var $urlSubmitTiming = $url + "/submitTiming";
+var $urlCorrectionSubmit = '/exam/examTmCorrection/submit';
 
 var data = utils.init({
   id: utils.getQueryInt('id'),
@@ -20,14 +21,14 @@ var data = utils.init({
   surplusSecond: 0,
   curTimingSecond: 1,
   isLoad: false,
-  isScreen: false,
   loadCounts: utils.getQueryInt('loadCounts'),
+  correctionDialogVisible: false,
+  formCorrection: { tmId: 0, examPaperId: 0, reason: '' }
 });
 
 var methods = {
   apiGet: function () {
     var $this = this;
-
     if (this.loadCounts >= 8) {
       utils.loading($this, false);
       utils.alertExamWarning({
@@ -50,29 +51,23 @@ var methods = {
       }
       $api.get($url, { params: { id: $this.id, planId: this.planId, courseId: this.courseId, loadCounts: this.loadCounts } }).then(function (response) {
         var res = response.data;
-
         $this.startId = res.item.startId;
-
         if (res.item.tmTotal > 0) {
           $this.watermark = res.watermark;
           $this.paper = res.item;
           $this.list = JSON.parse(utils.AESDecrypt(res.txList, res.salt));
-
           $this.startId = $this.paper.startId;
-
           $this.loadFullScree();
         }
         else {
           location.href = utils.getExamUrl('examPaperExaming', { id: $this.id, planId: $this.planId, courseId: $this.courseId, loadCounts: $this.loadCounts + 1, loadStartId: $this.startId })
         }
-
       }).catch(function (error) {
         utils.error(error, { layer: true });
       }).then(function () {
         utils.loading($this, false);
       });
     }
-
   },
   loadFullScree: function () {
     var $this = this;
@@ -132,11 +127,9 @@ var methods = {
     else {
       $this.loadTm();
     }
-
   },
   loadTm: function () {
     var $this = this;
-
     if ($this.list && $this.list.length > 0) {
       $this.list.forEach(item => {
         var cTmList = item.tmList;
@@ -148,11 +141,8 @@ var methods = {
             }
           })
         }
-
       });
-
       $this.isLoad = true;
-
       $this.btnGetTm($this.tmList[0].id);
     }
   },
@@ -171,12 +161,9 @@ var methods = {
     return getCurTm.answerStatus;
   },
   answerChange: function () {
-
     let setTm = this.tm;
-
     this.tmList = this.tmList.filter(f => f.id !== setTm.id);
     setTm.answerStatus = false;
-
     if (setTm.baseTx === "Duoxuanti") {
       setTm.answerInfo.answer = setTm.answerInfo.optionsValues.join('');
     }
@@ -189,7 +176,6 @@ var methods = {
       }
       setTm.answerInfo.answer = setTm.answerInfo.optionsValues.join(',');
     }
-
     if (setTm.answerInfo.answer !== '' && setTm.answerInfo.answer.length > 0) {
       if (completionStatus) {
         setTm.answerStatus = true;
@@ -198,22 +184,15 @@ var methods = {
         setTm.answerStatus = false;
       }
     }
-
     this.tmList.push(setTm);
-
     var answerTotals = this.tmList.filter(f => f.answerStatus);
     this.answerTotal = answerTotals.length;
-
     this.apiSubmitAnswer(setTm.answerInfo);
   },
   answerSmallChange: function (smallTm) {
-
     let setTm = this.tm;
-
     this.tmList = this.tmList.filter(f => f.id !== setTm.id);
     setTm.answerStatus = false;
-
-
     //子题状态
     smallTm.answerStatus = false;
     if (smallTm.baseTx === "Duoxuanti") {
@@ -228,7 +207,6 @@ var methods = {
       }
       smallTm.answerInfo.answer = smallTm.answerInfo.optionsValues.join(',');
     }
-
     if (smallTm.answerInfo.answer !== '' && smallTm.answerInfo.answer.length > 0) {
       if (completionStatus) {
         smallTm.answerStatus = true;
@@ -237,7 +215,6 @@ var methods = {
         smallTm.answerStatus = false;
       }
     }
-
     if (setTm.smallLists && setTm.smallLists.length > 0) {
       var smallList = setTm.smallLists;
       var allSmallAnswer = true;
@@ -248,13 +225,9 @@ var methods = {
       })
       setTm.answerStatus = allSmallAnswer;
     }
-
-
     this.tmList.push(setTm);
-
     var answerTotals = this.tmList.filter(f => f.answerStatus);
     this.answerTotal = answerTotals.length;
-
     this.apiSubmitSmallAnswer(smallTm.answerInfo);
   },
   btnDownClick: function () {
@@ -288,9 +261,7 @@ var methods = {
     this.apiSubmitPaper();
   },
   btnPaperSubmit: function () {
-
     var $this = this;
-
     if (this.answerTotal < this.paper.tmTotal) {
       utils.alertWarning({
         title: '温馨提示',
@@ -309,7 +280,6 @@ var methods = {
         }
       });
     }
-
   },
   timingFinish: function () {
     this.btnSubmitPaperClick();
@@ -346,12 +316,46 @@ var methods = {
     return false;
   },
   btnCorrection: function () {
-    top.utils.openLayer({
-      title: false,
-      closebtn: 0,
-      url: utils.getExamUrl('examTmCorrection', { tmId: this.tm.sourceTmId, examPaperId: this.paper.id }),
-      width: "60%",
-      height: "80%"
+    if (this.paper.fullScreen) {
+      this.correctionDialogVisible = true;
+    }
+    else {
+      top.utils.openLayer({
+        title: false,
+        closebtn: 0,
+        url: utils.getExamUrl('examTmCorrection', { tmId: this.tm.sourceTmId, examPaperId: this.paper.id }),
+        width: "60%",
+        height: "80%"
+      });
+    }
+  },
+  apiCorrectionSubmit: function () {
+    var $this = this;
+    utils.loading(this, true);
+    $api.post($urlCorrectionSubmit, this.formCorrection).then(function (response) {
+      var res = response.data;
+      if (res.value) {
+        utils.success("纠错已提交", { layer: true });
+        $this.formCorrection.reason = "";
+        $this.correctionDialogVisible = false;
+      }
+      else {
+        utils.error("提交失败，请重新尝试", { layer: true });
+      }
+    }).catch(function (error) {
+      utils.error(error, { layer: true });
+    }).then(function () {
+      utils.loading($this, false);
+    });
+  },
+  btnCorrectionSubmitClick: function () {
+    var $this = this;
+    this.$refs.formCorrection.validate(function (valid) {
+      if (valid) {
+        $this.formCorrection.tmId = $this.tm.sourceTmId;
+        $this.formCorrection.examPaperId = $this.paper.id;
+        $this.apiCorrectionSubmit();
+      }
     });
   }
 };
@@ -367,7 +371,6 @@ var $vue = new Vue({
   mounted: function () {
     let exitHandler = () => {
       var $this = this;
-
       if (!$this.isFullscreenFun()) {
         utils.alertExamWarning({
           title: '温馨提示',
@@ -378,7 +381,6 @@ var $vue = new Vue({
           }
         });
       }
-
     };
     let visibilityHandler = (e) => {
       var $this = this;
