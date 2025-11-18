@@ -152,13 +152,28 @@
                   </template>
                 </el-row>
             </div>
-            <el-card class="box-card mt-3 rounded-5 pe-5">
+            <el-card class="rounded-5 mt-3 pe-5">
                 <div class="row">
                     <div class="col-1 ps-3 pt-1">
                         <h4><i class="el-icon-s-data"></i><br />数<br />据<br />简<br />报</h4>
                     </div>
                     <div class="col-11 p-0">
-                        <apexchart type="bar" :options="chartOptions" :series="series" :height="($(window).height()-200)"></apexchart>
+                        <el-card class="mb-3 rounded-5 border-0" shadow="hover">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <el-divider direction="vertical"></el-divider>
+                                <div>组织：{{ totalCompany }}</div>
+                                <el-divider direction="vertical"></el-divider>
+                                <div>管理员：{{ totalAdmin }}</div>
+                                <el-divider direction="vertical"></el-divider>
+                                <div>用户：{{ totalUser }}</div>
+                                <el-divider direction="vertical"></el-divider>
+                                <div>题目：{{ totalTm }}</div>
+                                <el-divider direction="vertical"></el-divider>
+                                <div>课件：{{ totalFile }}</div>
+                                <el-divider direction="vertical"></el-divider>
+                            </div>
+                        </el-card>
+                        <apexchart type="bar" :options="chartOptions" :series="series" :height="($(window).height()-280)"></apexchart>
                     </div>
                 </div>
             </el-card>

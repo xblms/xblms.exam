@@ -16,7 +16,12 @@ var data = utils.init({
   planOverTotal: 0,
   taskExamTotal: 0,
   taskStudyTotal: 0,
-  systemCode: null
+  systemCode: null,
+  totalCompany: 1,
+  totalAdmin: 2,
+  totalUser: 3,
+  totalTm: 4,
+  totalFile: 5
 });
 
 var methods = {
@@ -54,6 +59,12 @@ var methods = {
 
       $this.taskExamTotal = $this.examTotalToday + $this.examTotalWeek;
       $this.taskStudyTotal = $this.planCreateTotal + $this.planOverTotal + $this.offTrainTotal;
+
+      $this.totalCompany = res.totalCompany;
+      $this.totalAdmin = res.totalAdmin;
+      $this.totalUser = res.totalUser;
+      $this.totalTm = res.totalTm;
+      $this.totalFile = res.totalFile;
 
       $this.series = res.dataList;
       $this.chartOptions = {

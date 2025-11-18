@@ -72,6 +72,11 @@ namespace XBLMS.Web.Controllers.Admin
             public int PlanOverTotal { get; set; }
             public int PlanCreateTotal { get; set; }
             public int OffTrainTotal { get; set; }
+            public int TotalCompany { get; set; }
+            public int TotalAdmin { get; set; }
+            public int TotalUser { get; set; }
+            public int TotalTm { get; set; }
+            public int TotalFile { get; set; }
             public SystemCode SystemCode { get; set; }
         }
 
