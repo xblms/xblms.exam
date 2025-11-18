@@ -44,6 +44,16 @@ namespace XBLMS.Core.Repositories
             query = Group_GetQuery(group, query);
             return await _repository.GetAllAsync(query);
         }
+        public async Task<List<ExamTm>> Group_GetTmListAsync(ExamTmGroup group, List<int> txIds = null)
+        {
+            var query = Q.WhereNullOrFalse(nameof(ExamTm.Locked));
+            if (txIds != null)
+            {
+                query.WhereIn(nameof(ExamTm.TxId), txIds);
+            }
+            query = Group_GetQuery(group, query);
+            return await _repository.GetAllAsync(query);
+        }
         public async Task<List<int>> Group_GetTmIdsAsync(ExamTmGroup group, List<int> txIds = null)
         {
             var query = Q.WhereNullOrFalse(nameof(ExamTm.Locked));

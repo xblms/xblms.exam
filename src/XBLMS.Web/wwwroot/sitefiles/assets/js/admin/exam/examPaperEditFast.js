@@ -1,5 +1,6 @@
 ﻿var $url = 'exam/examPaperEdit';
 var $urlGetConfig = $url + '/getConfig';
+var $urlGetTmList = $url + '/getTms';
 
 var data = utils.init({
   id: utils.getQueryInt('id'),
@@ -35,19 +36,17 @@ var data = utils.init({
   userGroupSelectedList: [],
   winHeight: $(window).height(),
   drawerHightConfig: false,
-  publishSuccess: false
+  publishSuccess: false,
+  tmList: null
 });
 
 var methods = {
   apiGet: function () {
     var $this = this;
-
     this.isSelect = this.isCourseUse;
-
     utils.loading(this, true);
     $api.get($url, { params: { id: this.id } }).then(function (response) {
       var res = response.data;
-
       $this.tmAllGroupList = res.tmGroupList;
       $this.tmFixedGroupList = res.tmFixedGroupList;
       $this.txList = res.txList;
@@ -55,9 +54,7 @@ var methods = {
       $this.paperTree = res.paperTree;
       $this.cerList = res.cerList;
       $this.systemCode = res.systemCode;
-
       $this.tmGroupList = $this.tmAllGroupList;
-
       $this.form = _.assign({}, res.item);
       $this.formBase.title = $this.form.title;
       $this.formBase.examBeginDateTime = $this.form.examBeginDateTime;
@@ -67,8 +64,6 @@ var methods = {
       $this.form.examTimes = 1;
       $this.form.isCourseUse = $this.isCourseUse;
       $this.form.cerId = null;
-
-
     }).catch(function (error) {
       utils.error(error, { layer: true });
     }).then(function () {
@@ -98,18 +93,24 @@ var methods = {
       this.tmTotalCount += (item.nandu1TmTotal + item.nandu2TmTotal + item.nandu3TmTotal + item.nandu4TmTotal + item.nandu5TmTotal);
     })
   },
-  btnGetConfigClick: function () {
-    if (this.form.tmRandomType !== 'RandomNone') {
-      this.apiGetConfig();
-    }
-  },
   tmRandomTypeChange: function () {
+    this.userTotal = 0;
+    this.tmTotal = 0;
+    this.tmTotalCount = 0;
+    this.form.totalScore = 100;
+    this.form.passScore = 60;
+    this.form.tmScoreType = "ScoreTypeRate";
     this.form.txIds = [];
     this.form.tmGroupIds = [];
+    this.form.userGroupIds = [];
     this.tmGroupSelectedList = [];
     this.userGroupSelectedList = [];
     this.tmGroupList = [];
     this.tmRandomConfig = [];
+    this.tmList = [];
+    if (this.formBase.tmRandomType === 'RandomNone') {
+      this.form.tmScoreType = "ScoreTypeTm";
+    }
   },
   btnOpenEditClick: function (ref, ptype) {
     top.utils.openLayer({
@@ -128,7 +129,6 @@ var methods = {
       if (valid) {
         var valido = $this.submitValid();
         if (!valido) return;
-
         $this.apiSubmit();
       }
     });
@@ -140,7 +140,6 @@ var methods = {
     var valido = this.submitValid();
     if (!valido) return;
     this.apiSubmit();
-
   },
   btnSubmit: function () {
     this.submitSubmitIsClear = false;
@@ -213,9 +212,6 @@ var methods = {
   btnPreviousClick: function () {
     if (this.active > 0) this.active--;
   },
-  btnNextClick: function () {
-    if (this.active < 3) this.active++;
-  },
   btnFormBaseNextClick: function () {
     var $this = this;
     this.$refs.formBase.validate(function (valid) {
@@ -240,6 +236,9 @@ var methods = {
   btnFormUserNextClick: function () {
     if (this.userTotal > 0) {
       this.form.userGroupIds = this.formUser.userGroupIds;
+      if (this.form.passScore > this.form.totalScore) {
+        this.form.passScore = this.form.totalScore;
+      }
       this.active++;
     }
     else {
@@ -269,6 +268,43 @@ var methods = {
     this.tmGroupSelectedList = this.tmGroupSelectedList.filter(f => f.id !== id);
     this.apiGetConfig();
   },
+  apiGetTmList: function () {
+    var $this = this;
+    utils.loading(this, true, "正在加载题目");
+    $api.post($urlGetTmList, { txIds: $this.form.txIds, tmGroupIds: $this.form.tmGroupIds }).then(function (response) {
+      var res = response.data;
+      $this.tmList = res.items;
+    }).catch(function (error) {
+      utils.error(error, { layer: true });
+    }).then(function () {
+      utils.loading($this, false);
+      $this.$nextTick(() => {
+        $this.sumTmTotalByTmList();
+      })
+    });
+  },
+  sumTmTotalByTmList: function () {
+    this.form.totalScore = 0;
+    this.tmTotal = 0;
+    this.tmTotalCount = 0;
+    this.tmList.forEach(item => {
+      this.tmTotal++;
+      this.tmTotalCount++;
+      this.form.totalScore = this.form.totalScore + item.score;
+    })
+    if (this.form.totalScore > 0) {
+      this.form.totalScore = this.form.totalScore.toFixed(0);
+    }
+  },
+  btnTmViewClick: function (val) {
+    top.utils.openLayer({
+      title: false,
+      closebtn: 0,
+      url: utils.getCommonUrl('examTmLayerView', { id: val.id }),
+      width: "58%",
+      height: "88%"
+    });
+  },
   btnTmGroupSelectClick: function () {
     top.utils.openLayer({
       title: false,
@@ -281,7 +317,12 @@ var methods = {
   btnTmGroupSelectCallback: function (groups) {
     this.tmGroupSelectedList = groups;
     this.getTmGroupIds();
-    this.apiGetConfig();
+    if (this.form.tmRandomType === 'RandomNone') {
+      this.apiGetTmList();
+    }
+    else {
+      this.apiGetConfig();
+    }
   },
   getTmGroupIds: function () {
     var ids = _.map(this.tmGroupSelectedList, function (item) {

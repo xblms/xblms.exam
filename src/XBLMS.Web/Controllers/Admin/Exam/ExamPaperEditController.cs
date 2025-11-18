@@ -18,6 +18,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
     {
         private const string Route = "exam/examPaperEdit";
         private const string RouteGetConfig = Route + "/getConfig";
+        private const string RouteGetTmList = Route + "/getTms";
 
         private readonly IConfigRepository _configRepository;
         private readonly IAuthManager _authManager;
@@ -79,6 +80,10 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         public class GetConfigResult
         {
             public List<ExamPaperRandomConfig> Items { get; set; }
+        }
+        public class GetTmListResult
+        {
+            public List<ExamTm> Items { get; set; }
         }
         public class GetResult
         {

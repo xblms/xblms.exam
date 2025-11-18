@@ -33,7 +33,7 @@
                     </template>
                 </el-result>
             </el-card>
-            <div class="mt-3">
+            <div class="mt-3 animate__animated animate__fadeInUp">
                 <el-button type="success" plain class="w-100 py-4 fw-bolder" v-on:click="utils.closeLayerSelf">安全退出<i class="el-icon-close ms-3"></i></el-button>
             </div>
         </div>
@@ -96,10 +96,16 @@
                             <el-form-item label="考试类型" prop="tmRandomType">
                                 <el-radio-group v-model="formBase.tmRandomType" v-on:input="tmRandomTypeChange">
                                     <el-radio label="RandomNow">预随机（AB卷）</el-radio>
+                                    <el-radio label="RandomExaming">开考随机</el-radio>
+                                    <el-radio label="RandomNone">固定试卷</el-radio>
                                 </el-radio-group>
-                                <span class="tips"><i class="tips el-icon-info me-2"></i><span>预随机：预发布N份套题试卷，开考的时候随机一份进行考试。</span></span>
+                                <div class="tips"><i class="tips el-icon-info me-2"></i>
+                                    <span v-if="formBase.tmRandomType==='RandomNow'">预随机：预发布N份套题试卷，开考的时候随机一份进行考试。</span>
+                                    <span v-if="formBase.tmRandomType==='RandomExaming'">开考随机：进入考试的时候随机抽题生成试卷。</span>
+                                    <span v-if="formBase.tmRandomType==='RandomNone'">固定试卷：固定的题目生产试卷。</span>
+                                </div>
                             </el-form-item>
-                            <el-form-item label="随机份数" prop="randomCount" :rules="{ required: true, message: '随机份数不能为空' }">
+                            <el-form-item v-if="formBase.tmRandomType==='RandomNow'" label="随机份数" prop="randomCount" :rules="{ required: true, message: '随机份数不能为空' }">
                                 <el-input-number v-model="formBase.randomCount" :min="1" :max="100"></el-input-number>
                             </el-form-item>
                         </el-form>
@@ -121,99 +127,130 @@
                         </el-tag>
                         <el-button type="warning" class="button-new-tag" v-on:click="btnTmGroupSelectClick">选择题目组</el-button>
                     </div>
-                    <el-table ref="tableTmRandomConfig" v-if="tmRandomConfig"
-                              :data="tmRandomConfig"
-                              :row-key="Math.random()"
-                              :current-row-key="Math.random()"
-                              border
-                              :height="$(window).height() - 260"
-                              empty-text="请选择题目组"
-                              size="small" :default-sort="{ prop: 'txTaxis', order: 'asc' }">
-                        <el-table-column width="50" align="center">
-                            <template slot-scope="scope">
-                                <span class="text-success">
-                                    {{ scope.row.nandu1TmCount+scope.row.nandu2TmCount+scope.row.nandu3TmCount+scope.row.nandu4TmCount+scope.row.nandu5TmCount }}
-                                </span>
-                            </template>
-                        </el-table-column>
-                        <el-table-column prop="txName" width="200"
-                                         label="题型" show-overflow-tooltip>
-                        </el-table-column>
-                        <el-table-column label="难度">
-                            <el-table-column>
-                                <template slot="header" slot-scope="scope">
-                                    <span v-html="utils.loadStarIcons(1)"></span>
-                                </template>
-                                <template slot-scope="scope">
-                                    <div class="d-flex align-items-center justify-content-start">
-                                        <div>
-                                            <el-input-number :precision="0" size="mini" :min="0" :max="scope.row.nandu1TmTotal" v-model="scope.row.nandu1TmCount" style="width:100px;" v-on:change="sumTmTotal"></el-input-number>
-                                        </div>
-                                        <span>/{{scope.row.nandu1TmTotal}}</span>
-                                    </div>
+                    <template v-if="formBase.tmRandomType==='RandomNone'">
+                        <el-table ref="tmListTable" :data="tmList" size="mini"
+                                  style="width: 100%" :height="$(window).height()-260" empty-text="请选择固定类型的题目组">
+                            <el-table-column label="#"
+                                             type="index"
+                                             width="60">
+                                <template scope="scope">
+                                    <span>{{ scope.$index + 1 }}</span>
                                 </template>
                             </el-table-column>
-                            <el-table-column>
-                                <template slot="header" slot-scope="scope">
-                                    <span v-html="utils.loadStarIcons(2)"></span>
-                                </template>
+                            <el-table-column show-overflow-tooltip prop="title" label="题目">
                                 <template slot-scope="scope">
-                                    <div class="d-flex align-items-center justify-content-start">
-                                        <div>
-                                            <el-input-number :precision="0" size="mini" :min="0" :max="scope.row.nandu2TmTotal" v-model="scope.row.nandu2TmCount" style="width:100px;" v-on:change="sumTmTotal"></el-input-number>
-                                        </div>
-                                        <span>/{{scope.row.nandu2TmTotal}}</span>
-                                    </div>
+                                    <el-link type="primary" :underline="false" v-on:click="btnTmViewClick(scope.row)">
+                                        <span v-html="scope.row.title"></span>
+                                    </el-link>
                                 </template>
                             </el-table-column>
-                            <el-table-column>
-                                <template slot="header" slot-scope="scope">
-                                    <span v-html="utils.loadStarIcons(3)"></span>
-                                </template>
+                            <el-table-column prop="txName" label="题型" width="180" show-overflow-tooltip>
+                            </el-table-column>
+                            <el-table-column prop="score" label="分数" width="63">
+                            </el-table-column>
+                            <el-table-column label="难度" width="63">
                                 <template slot-scope="scope">
-                                    <div class="d-flex align-items-center justify-content-start">
-                                        <div>
-                                            <el-input-number :precision="0" size="mini" :min="0" :max="scope.row.nandu3TmTotal" v-model="scope.row.nandu3TmCount" style="width:100px;" v-on:change="sumTmTotal"></el-input-number>
-                                        </div>
-                                        <span>/{{scope.row.nandu3TmTotal}}</span>
-                                    </div>
+                                    <span v-html="scope.row.nanduStar"></span>
                                 </template>
                             </el-table-column>
-                            <el-table-column>
-                                <template slot="header" slot-scope="scope">
-                                    <span v-html="utils.loadStarIcons(4)"></span>
-                                </template>
+                        </el-table>
+                        <div class="mt-2"><i class="tips el-icon-info me-2"></i>共：<span class="text-success fw-bolder">{{ tmTotal }}</span>道题，总分{{ form.totalScore }}分，题目分数按原题分数计算。</div>
+                    </template>
+                    <template v-else>
+                        <el-table ref="tableTmRandomConfig" v-if="tmRandomConfig"
+                                  :data="tmRandomConfig"
+                                  :row-key="Math.random()"
+                                  :current-row-key="Math.random()"
+                                  border
+                                  :height="$(window).height() - 260"
+                                  empty-text="请选择题目组"
+                                  size="mini" :default-sort="{ prop: 'txTaxis', order: 'asc' }">
+                            <el-table-column width="50" align="center">
                                 <template slot-scope="scope">
-                                    <div class="d-flex align-items-center justify-content-start">
-                                        <div>
-                                            <el-input-number :precision="0" size="mini" :min="0" :max="scope.row.nandu4TmTotal" v-model="scope.row.nandu4TmCount" style="width:100px;" v-on:change="sumTmTotal"></el-input-number>
-                                        </div>
-                                        <span>/{{scope.row.nandu4TmTotal}}</span>
-                                    </div>
+                                    <span class="text-success">
+                                        {{ scope.row.nandu1TmCount+scope.row.nandu2TmCount+scope.row.nandu3TmCount+scope.row.nandu4TmCount+scope.row.nandu5TmCount }}
+                                    </span>
                                 </template>
                             </el-table-column>
-                            <el-table-column>
-                                <template slot="header" slot-scope="scope">
-                                    <span v-html="utils.loadStarIcons(5)"></span>
-                                </template>
-                                <template slot-scope="scope">
-                                    <div class="d-flex align-items-center justify-content-start">
-                                        <div>
-                                            <el-input-number :precision="0" size="mini" :min="0" :max="scope.row.nandu5TmTotal" v-model="scope.row.nandu5TmCount" style="width:100px;" v-on:change="sumTmTotal"></el-input-number>
+                            <el-table-column prop="txName" width="200"
+                                             label="题型" show-overflow-tooltip>
+                            </el-table-column>
+                            <el-table-column label="难度">
+                                <el-table-column>
+                                    <template slot="header" slot-scope="scope">
+                                        <span v-html="utils.loadStarIcons(1)"></span>
+                                    </template>
+                                    <template slot-scope="scope">
+                                        <div class="d-flex align-items-center justify-content-start">
+                                            <div>
+                                                <el-input-number :precision="0" size="mini" :min="0" :max="scope.row.nandu1TmTotal" v-model="scope.row.nandu1TmCount" style="width:100px;" v-on:change="sumTmTotal"></el-input-number>
+                                            </div>
+                                            <span>/{{scope.row.nandu1TmTotal}}</span>
                                         </div>
-                                        <span>/{{scope.row.nandu5TmTotal}}</span>
-                                    </div>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column>
+                                    <template slot="header" slot-scope="scope">
+                                        <span v-html="utils.loadStarIcons(2)"></span>
+                                    </template>
+                                    <template slot-scope="scope">
+                                        <div class="d-flex align-items-center justify-content-start">
+                                            <div>
+                                                <el-input-number :precision="0" size="mini" :min="0" :max="scope.row.nandu2TmTotal" v-model="scope.row.nandu2TmCount" style="width:100px;" v-on:change="sumTmTotal"></el-input-number>
+                                            </div>
+                                            <span>/{{scope.row.nandu2TmTotal}}</span>
+                                        </div>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column>
+                                    <template slot="header" slot-scope="scope">
+                                        <span v-html="utils.loadStarIcons(3)"></span>
+                                    </template>
+                                    <template slot-scope="scope">
+                                        <div class="d-flex align-items-center justify-content-start">
+                                            <div>
+                                                <el-input-number :precision="0" size="mini" :min="0" :max="scope.row.nandu3TmTotal" v-model="scope.row.nandu3TmCount" style="width:100px;" v-on:change="sumTmTotal"></el-input-number>
+                                            </div>
+                                            <span>/{{scope.row.nandu3TmTotal}}</span>
+                                        </div>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column>
+                                    <template slot="header" slot-scope="scope">
+                                        <span v-html="utils.loadStarIcons(4)"></span>
+                                    </template>
+                                    <template slot-scope="scope">
+                                        <div class="d-flex align-items-center justify-content-start">
+                                            <div>
+                                                <el-input-number :precision="0" size="mini" :min="0" :max="scope.row.nandu4TmTotal" v-model="scope.row.nandu4TmCount" style="width:100px;" v-on:change="sumTmTotal"></el-input-number>
+                                            </div>
+                                            <span>/{{scope.row.nandu4TmTotal}}</span>
+                                        </div>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column>
+                                    <template slot="header" slot-scope="scope">
+                                        <span v-html="utils.loadStarIcons(5)"></span>
+                                    </template>
+                                    <template slot-scope="scope">
+                                        <div class="d-flex align-items-center justify-content-start">
+                                            <div>
+                                                <el-input-number :precision="0" size="mini" :min="0" :max="scope.row.nandu5TmTotal" v-model="scope.row.nandu5TmCount" style="width:100px;" v-on:change="sumTmTotal"></el-input-number>
+                                            </div>
+                                            <span>/{{scope.row.nandu5TmTotal}}</span>
+                                        </div>
+                                    </template>
+                                </el-table-column>
+                            </el-table-column>
+                            <el-table-column prop="taxis" width="120"
+                                             label="排序">
+                                <template slot-scope="scope">
+                                    <el-input-number controls-position="right" size="mini" v-model="scope.row.txTaxis" :min="0" :max="100" style="width:90px;"></el-input-number>
                                 </template>
                             </el-table-column>
-                        </el-table-column>
-                        <el-table-column prop="taxis" width="120"
-                                         label="排序">
-                            <template slot-scope="scope">
-                                <el-input-number controls-position="right" size="mini" v-model="scope.row.txTaxis" :min="0" :max="100" style="width:90px;"></el-input-number>
-                            </template>
-                        </el-table-column>
-                    </el-table>
-                    <div class="mt-2"><i class="tips el-icon-info me-2"></i>共：<span class="text-success fw-bolder">{{ tmTotal }}</span>/{{ tmTotalCount }} 道题，总分100分，题目分数按总分折算。</div>
+                        </el-table>
+                        <div class="mt-2"><i class="tips el-icon-info me-2"></i>共：<span class="text-success fw-bolder">{{ tmTotal }}</span>/{{ tmTotalCount }} 道题，总分100分，题目分数按总分折算。</div>
+                    </template>
                 </el-card>
                 <div class="row g-3 mt-1">
                     <div class="col-2">
@@ -255,7 +292,7 @@
         <template v-if="active===3">
             <div class="row d-flex flex-column align-items-center justify-content-center vh-100">
                 <div class="col-10">
-                    <h1>确认发布</h1>
+                    <h1>确认发布（<span v-if="form.tmRandomType === 'RandomNow'">AB卷</span><span v-if="form.tmRandomType === 'RandomExaming'">开考随机</span><span v-if="form.tmRandomType === 'RandomNone'">固定试卷</span>）</h1>
                     <el-card class="pt-3 animate__animated animate__fadeInRight">
                         <el-form v-on:submit.native.prevent label-position="right" label-width="120px">
                             <el-form-item label="考试名称">
@@ -266,15 +303,15 @@
                             </el-form-item>
                             <el-form-item label="总分">
                                 <span class="fw-bolder">{{ form.totalScore }}</span>
-                                <span class="mx-3">及格分</span><span class="fw-bolder">{{ form.passScore }}</span>
+                            </el-form-item>
+                            <el-form-item label="及格分">
+                                <el-input-number :precision="0" size="mini" :min="0" :max="form.totalScore" v-model="form.passScore"></el-input-number>
                             </el-form-item>
                             <el-form-item label="题目数量">
                                 <span class="fw-bolder">{{ tmTotal }}</span>
+                                <span class="mx-3">考生数量</span><span class="fw-bolder">{{ userTotal }}</span>
                             </el-form-item>
-                            <el-form-item label="考生数量">
-                                <span class="fw-bolder">{{ userTotal }}</span>
-                            </el-form-item>
-                            <el-form-item label="随机卷">
+                            <el-form-item label="随机卷" v-if="form.tmRandomType === 'RandomNow'">
                                 <span class="fw-bolder">{{ form.randomCount }}</span>
                             </el-form-item>
                         </el-form>
