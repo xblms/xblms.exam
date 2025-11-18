@@ -7,9 +7,8 @@ var data = utils.init({
 });
 
 var methods = {
-  apiGet: function (message) {
+  apiGet: function () {
     var $this = this;
-
     utils.loading(this, true);
     $api.get($url, { params: { search: this.search } }).then(function (response) {
       var res = response.data;
@@ -18,9 +17,6 @@ var methods = {
       utils.error(error);
     }).then(function () {
       utils.loading($this, false);
-      if (message) {
-        utils.success(message);
-      }
     });
   },
   btnSearch: function () {
@@ -54,7 +50,7 @@ var methods = {
     $api.post($urlDelete, {
       id: id
     }).then(function (response) {
-      utils.success('操作成功！');
+      utils.success('操作成功！', { layer: true });
       $this.apiGet();
     }).catch(function (error) {
       utils.error(error);
@@ -71,7 +67,7 @@ var methods = {
   btnDeleteClick: function (group) {
     var $this = this;
     if (group.useCount > 0) {
-      utils.error("不能删除被使用的组");
+      utils.error("不能删除被使用的组", { layer: true });
     }
     else {
       top.utils.alertDelete({

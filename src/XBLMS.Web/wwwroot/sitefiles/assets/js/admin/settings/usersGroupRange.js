@@ -161,15 +161,11 @@ var methods = {
     $api.post($urlRange, this.formInline).then(function (response) {
       var res = response.data;
       if (res.value) {
-        utils.success("操作成功");
-
+        utils.success("操作成功", { layer: true });
         $this.formInline.rangeUserIds = [];
         $this.formInline.rangeAll = false;
-
-
         $this.btnSearchClick();
       }
-
     }).catch(function (error) {
       utils.error(error, { layer: true });
     }).then(function () {
