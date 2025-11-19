@@ -632,10 +632,10 @@ namespace XBLMS.Core.Repositories
 
             return (total, list);
         }
-        public async Task<(int total, List<User> list)> GetListAsync(AdminAuth auth, int organId, string organType, string keyword, int pageIndex, int pageSize)
+        public async Task<(int total, List<User> list)> GetListAsync(AdminAuth auth, int organId, string organType, string keyWords, int pageIndex, int pageSize)
         {
             var query = Q.NewQuery();
-            query = GetUserQuery(auth, query, organId, organType, 0, keyword, string.Empty);
+            query = GetUserQuery(auth, query, organId, organType, 0, keyWords, string.Empty);
 
             var total = await _repository.CountAsync(query);
 

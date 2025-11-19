@@ -10,7 +10,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
         public async Task<ActionResult<GetResults>> Get([FromQuery] GetRequest request)
         {
             var adminAuth = await _authManager.GetAdminAuth();
-            var (total, list) = await _userRepository.GetListAsync(adminAuth, request.OrganId, request.OrganType, request.Keyword, request.PageIndex, request.PageSize);
+            var (total, list) = await _userRepository.GetListAsync(adminAuth, request.OrganId, request.OrganType, request.KeyWords, request.PageIndex, request.PageSize);
             if (total > 0)
             {
                 foreach (var item in list)

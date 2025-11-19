@@ -57,7 +57,7 @@ namespace XBLMS.Web.Controllers.Admin.Common
             public int OrganId { get; set; }
             public string OrganType { get; set; }
             public RangeType RangeType { get; set; }
-            public string Keyword { get; set; }
+            public string KeyWords { get; set; }
             public int PageIndex { get; set; }
             public int PageSize { get; set; }
         }

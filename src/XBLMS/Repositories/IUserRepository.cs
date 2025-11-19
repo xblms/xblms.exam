@@ -37,7 +37,7 @@ namespace XBLMS.Repositories
             bool isPasswordMd5);
         Task<(bool success, string errorMessage)> ValidateStateAsync(User user);
         Task<User> DeleteAsync(int userId);
-        Task<(int total, List<User> list)> GetListAsync(AdminAuth auth, int organId, string organType, string keyword, int pageIndex, int pageSize);
+        Task<(int total, List<User> list)> GetListAsync(AdminAuth auth, int organId, string organType, string keyWords, int pageIndex, int pageSize);
         Task<(int total, List<User> list)> GetListAsync(AdminAuth auth, int organId, string organType, UserGroup group, int dayOfLastActivity, string keyword, string order, int pageIndex, int pageSize);
         Task<(int total, int count)> GetCountByCompanyAsync(AdminAuth auth, int companyId);
         Task<(int total, int count)> GetCountByDepartmentAsync(AdminAuth auth, int departmentId);
