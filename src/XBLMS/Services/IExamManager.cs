@@ -23,7 +23,7 @@ namespace XBLMS.Services
         Task<List<Cascade<int>>> GetKnowlegesTreeCascadesAsync(AdminAuth auth, bool isTotal = false);
         Task GetPaperInfo(ExamPaper paper, User user, int planId = 0, int courseId = 0, bool cjList = false);
         Task GetPaperInfo(ExamPaper paper, User user, ExamPaperStart start);
-        Task<(bool Success, string msg)> CheckExam(int paperId, int userId);
+        Task<(bool Success, string msg)> CheckExam(int paperId, int userId, int planId, int courseId);
 
     }
 

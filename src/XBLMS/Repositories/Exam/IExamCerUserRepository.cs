@@ -8,6 +8,7 @@ namespace XBLMS.Repositories
     public interface IExamCerUserRepository : IRepository
     {
         Task<bool> ExistsAsync(int userID, int examPaperId);
+        Task<bool> ExistsAsync(int userID, int examPaperId, int planId, int courseId);
         Task DeleteByUserId(int userId);
         Task DeleteByPaperId(int examPaperId);
         Task<ExamCerUser> GetAsync(int id);

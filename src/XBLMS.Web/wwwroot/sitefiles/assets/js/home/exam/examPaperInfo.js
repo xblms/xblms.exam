@@ -18,27 +18,21 @@ var data = utils.init({
 var methods = {
   apiGet: function () {
     var $this = this;
-
     if (this.total === 0) {
       utils.loading(this, true);
     }
-
     $api.get($url, { params: { id: $this.id, planId: $this.planId, courseId: $this.courseId } }).then(function (response) {
       var res = response.data;
-
       $this.item = res.item;
       top.utils.pointNotice(res.pointNotice);
-
       if ($this.item.examStartDateTimeLong > 0) {
         $this.isStart = false;
       }
-
       if ($this.item.examSubmiting) {
         setTimeout(function () {
           $this.apiGet();
         }, 3000)
       }
-
     }).catch(function (error) {
       utils.error(error, { layer: true });
     }).then(function () {
@@ -48,7 +42,7 @@ var methods = {
   apiCheck: function () {
     var $this = this;
     utils.loading(this, true, '正在检测开考数据，请稍等...');
-    $api.get($urlCheck, { params: { id: $this.id } }).then(function (response) {
+    $api.get($urlCheck, { params: { id: $this.id, planId: this.planId, courseId: this.courseId } }).then(function (response) {
       var res = response.data;
       if (res.success) {
         $this.goExaming();
@@ -56,7 +50,6 @@ var methods = {
       else {
         utils.error(res.msg, { layer: true });
       }
-
     }).catch(function (error) {
       utils.error(error, { layer: true });
     }).then(function () {

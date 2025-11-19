@@ -17,10 +17,12 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 cer = await _examCerRepository.GetAsync(request.Id);
             }
             var families = FontUtils.GetFontFamilies();
+            var config = await _configRepository.GetAsync();
             return new GetResult
             {
                 Item = cer,
-                Fonts = families
+                Fonts = families,
+                SystemCode = config.SystemCode
             };
         }
     }

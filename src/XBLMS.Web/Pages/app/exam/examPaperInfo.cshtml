@@ -26,6 +26,21 @@
                 </div>
             </div>
             <div class="row gy-3">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-12" v-if="item.planId>0 || item.courseId>0">
+                    <div class="card rounded-0 bg-white">
+                        <div class="card-body pt-3 pb-0">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <div class="mb-2 fw-bold">{{ item.courseName }}</div>
+                                    <p class="text-muted fs-6 text-warning">课后考试</p>
+                                </div>
+                                <div class="icon-shape icon-sm rounded-circle text-muted card-icon">
+                                    <i class="el-icon-star-off fs-3 text-warning"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="col-xl-6 col-lg-6 col-md-6 col-6">
                     <div class="card rounded-0 bg-white">
                         <div class="card-body pt-3 pb-0">

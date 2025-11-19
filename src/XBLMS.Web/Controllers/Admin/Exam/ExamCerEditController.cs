@@ -4,6 +4,7 @@ using NSwag.Annotations;
 using System.Collections.Generic;
 using XBLMS.Configuration;
 using XBLMS.Dto;
+using XBLMS.Enums;
 using XBLMS.Models;
 using XBLMS.Repositories;
 using XBLMS.Services;
@@ -25,9 +26,10 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         private readonly ISettingsManager _settingsManager;
         private readonly IExamCerRepository _examCerRepository;
         private readonly IStatRepository _statRepository;
+        private readonly IConfigRepository _configRepository;
 
         public ExamCerEditController(IDatabaseManager databaseManager, IAuthManager authManager, IPathManager pathManager, ISettingsManager settingsManager,
-            IExamCerRepository examCerRepository, IStatRepository statRepository)
+            IExamCerRepository examCerRepository, IStatRepository statRepository, IConfigRepository configRepository)
         {
             _databaseManager = databaseManager;
             _authManager = authManager;
@@ -35,12 +37,14 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             _settingsManager = settingsManager;
             _examCerRepository = examCerRepository;
             _statRepository = statRepository;
+            _configRepository = configRepository;
         }
 
         public class GetResult
         {
             public ExamCer Item { get; set; }
             public List<string> Fonts { get; set; }
+            public SystemCode SystemCode { get; set; }
         }
         public class SubmitWartmarkPositionData
         {

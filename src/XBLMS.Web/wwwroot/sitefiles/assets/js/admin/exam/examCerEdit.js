@@ -19,41 +19,40 @@ var data = utils.init({
     fontSize: 18,
   },
   timer: null,
+  systemCode: null
 });
 
 var methods = {
   apiGet: function () {
-    if (utils.getQueryInt("id") > 0) {
-
-      var $this = this;
-      utils.loading(this, true);
-      $api.get($url, { params: { id: this.id } }).then(function (response) {
-        var res = response.data;
+    var $this = this;
+    utils.loading(this, true);
+    $api.get($url, { params: { id: this.id } }).then(function (response) {
+      var res = response.data;
+      $this.systemCode = res.systemCode;
+      if ($this.id > 0) {
         var cerInfo = res.item;
-
         $this.form = _.assign({}, cerInfo);
+        $this.backgroundImg = cerInfo.backgroundImg;
+        $this.typeNow = cerInfo.markList;
+        $this.timer = setTimeout(function () {
+          for (var i = 0; i < cerInfo.position.length; i++) {
+            $this.createBox(cerInfo.position[i]);
+          }
+        }, 200);
+      }
+    }).catch(function (error) {
+      utils.error(error, { layer: true });
+    }).then(function () {
+      utils.loading($this, false);
+    });
 
-        if ($this.id > 0)
-        {
-          $this.backgroundImg = cerInfo.backgroundImg;
-          $this.typeNow = cerInfo.markList;
-          $this.timer = setTimeout(function () {
-            for (var i = 0; i < cerInfo.position.length; i++) {
-              $this.createBox(cerInfo.position[i]);
-            }
-          }, 200);
-        }
 
-      }).catch(function (error) {
-        utils.error(error,{ layer:true });
-      }).then(function () {
-        utils.loading($this, false);
-      });
+    if (utils.getQueryInt("id") > 0) {
+    
     }
     else {
       utils.loading(this, false);
     }
-
   },
   btnSubmitClick: function () {
     var $this = this;
@@ -80,7 +79,6 @@ var methods = {
         utils.loading($this, false);
         utils.error('证书模板数据异常，请重新编辑', { layer: true });
       }
-
     }).catch(function (error) {
       utils.error(error, { layer:true });
     }).then(function () {
@@ -100,18 +98,6 @@ var methods = {
       utils.error(error, { layer: true });
     }).then(function () {
       utils.loading($this, false);
-    });
-  },
-  loadBox: function () {
-    var $this = this;
-    var loadData = [{ id: 1001, text: "C16\n16.5", color: "rgb(255, 0, 0)", height: 70, width: 77, pageX: 627, pageY: 364 },
-    { id: 1004, text: "C19\n16.08", color: "rgb(0, 128, 0)", height: 70, width: 77, pageX: 870, pageY: 364 },
-    { id: 1005, text: "C20\n16.5", color: "rgb(0, 0, 255)", height: 70, width: 77, pageX: 627, pageY: 439 },
-    { id: 1006, text: "C21\n16.18", color: "rgb(255, 165, 0)", height: 70, width: 77, pageX: 709, pageY: 439 },
-    { id: 1007, text: "C22\n16.08", color: "rgb(255, 165, 0)", height: 70, width: 77, pageX: 870, pageY: 439 },
-    { id: 1008, text: "C23\n16.08", color: "rgb(255, 165, 0)", height: 70, width: 77, pageX: 789, pageY: 439 }];
-    $.each(loadData, function (i, row) {
-      $this.createBox(row);
     });
   },
   createBox: function (data) {
@@ -224,6 +210,8 @@ var methods = {
     this.boxChange(value, 1007, "organName", "颁发单位", 30, 100, 10, 352);
     this.boxChange(value, 1010, "examName", "试卷名称", 30, 100, 10, 400);
     this.boxChange(value, 1011, "examScore", "考试成绩", 30, 100, 120, 400);
+    this.boxChange(value, 1008, "planName", "计划名称", 30, 100, 10, 450);
+    this.boxChange(value, 1009, "courseName", "课程名称", 30, 100, 120, 450);
   },
   uploadBefore(file) {
     var re = /(\.jpg|\.jpeg|\.bmp|\.gif|\.png|\.webp)$/i;

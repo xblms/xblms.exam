@@ -138,6 +138,10 @@
                                 <el-checkbox label="organName" :disabled="backgroundImg===''">颁发单位</el-checkbox>
                                 <el-checkbox label="examName" :disabled="backgroundImg===''">试卷名称</el-checkbox>
                                 <el-checkbox label="examScore" :disabled="backgroundImg===''">考试成绩</el-checkbox>
+                                <template v-if="systemCode==='Elearning'">
+                                    <el-checkbox label="planName" :disabled="backgroundImg===''">计划名称</el-checkbox>
+                                    <el-checkbox label="courseName" :disabled="backgroundImg===''">课程名称</el-checkbox>
+                                </template>
                             </el-checkbox-group>
                         </el-tooltip>
                     </el-form-item>

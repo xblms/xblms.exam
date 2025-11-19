@@ -9,8 +9,10 @@ namespace XBLMS.Repositories
     {
         Task<ExamPaperStart> GetAsync(int id);
         Task<int> CountAsync(int paperId, int userId);
+        Task<int> CountAsync(int paperId, int userId, int planId, int courseId);
         Task<ExamPaperStart> GetNoSubmitAsync(int planId, int courseId, int paperId, int userId);
         Task<int> GetNoSubmitIdAsync(int paperId, int userId);
+        Task<int> GetNoSubmitIdAsync(int paperId, int userId, int planId, int courseId);
         Task<List<ExamPaperStart>> GetNoSubmitListAsync(int paperId, int userId);
         Task<int> InsertAsync(ExamPaperStart item);
         Task DeleteByUserId(int userId);
@@ -20,6 +22,7 @@ namespace XBLMS.Repositories
         Task UpdateAsync(ExamPaperStart item);
         Task IncrementAsync(int id);
         Task<List<ExamPaperStart>> GetListAsync(int paperId, int userId);
+        Task<List<ExamPaperStart>> GetListAsync(int paperId, int userId, int planId, int courseId);
         Task<(int total, List<ExamPaperStart> list)> GetListAsync(int userId, string dateFrom, string dateTo, string keyWords, int pageIndex, int pageSize);
         Task<(int total, List<ExamPaperStart> list)> GetListByAdminAsync(int paperId, int planId, int couresId, string dateFrom, string dateTo, string keyWords, int pageIndex, int pageSize, bool isMark = true);
         Task<(int total, List<ExamPaperStart> list)> GetListByMarkerAsync(int markerId, string keyWords, int pageIndex, int pageSize);

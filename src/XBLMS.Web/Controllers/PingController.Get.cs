@@ -9,7 +9,7 @@ namespace XBLMS.Web.Controllers
         [HttpGet, Route(Route)]
         public ActionResult<string> Get()
         {
-            return "xblms";
+            return $"{_settingsManager.VersionName} v{_settingsManager.Version}";
         }
     }
 }

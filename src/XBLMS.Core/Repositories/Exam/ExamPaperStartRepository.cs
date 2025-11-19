@@ -76,6 +76,16 @@ namespace XBLMS.Core.Repositories
                 Where(nameof(ExamPaperStart.ExamPaperId), paperId).
                 Where(nameof(ExamPaperStart.UserId), userId));
         }
+        public async Task<int> GetNoSubmitIdAsync(int paperId, int userId, int planId, int courseId)
+        {
+            return await _repository.GetAsync<int>(Q.
+                Select(nameof(ExamPaperStart.Id)).
+                WhereNullOrFalse(nameof(ExamPaperStart.IsSubmit)).
+                Where(nameof(ExamPaperStart.PlanId), planId).
+                Where(nameof(ExamPaperStart.CourseId), courseId).
+                Where(nameof(ExamPaperStart.ExamPaperId), paperId).
+                Where(nameof(ExamPaperStart.UserId), userId));
+        }
         public async Task<List<ExamPaperStart>> GetNoSubmitListAsync(int paperId, int userId)
         {
             return await _repository.GetAllAsync(Q.
@@ -90,7 +100,15 @@ namespace XBLMS.Core.Repositories
                 Where(nameof(ExamPaperStart.ExamPaperId), paperId).
                 Where(nameof(ExamPaperStart.UserId), userId));
         }
-
+        public async Task<int> CountAsync(int paperId, int userId, int planId, int courseId)
+        {
+            return await _repository.CountAsync(Q.
+                WhereTrue(nameof(ExamPaperStart.IsSubmit)).
+                Where(nameof(ExamPaperStart.PlanId), planId).
+                Where(nameof(ExamPaperStart.CourseId), courseId).
+                Where(nameof(ExamPaperStart.ExamPaperId), paperId).
+                Where(nameof(ExamPaperStart.UserId), userId));
+        }
 
         public async Task<List<ExamPaperStart>> GetListAsync(int paperId, int userId)
         {
@@ -99,6 +117,17 @@ namespace XBLMS.Core.Repositories
                  WhereTrue(nameof(ExamPaperStart.IsMark)).
                 Where(nameof(ExamPaperStart.ExamPaperId), paperId).
                 Where(nameof(ExamPaperStart.UserId), userId).
+                OrderByDesc(nameof(ExamPaperStart.Id)));
+        }
+        public async Task<List<ExamPaperStart>> GetListAsync(int paperId, int userId, int planId, int courseId)
+        {
+            return await _repository.GetAllAsync(Q.
+                WhereTrue(nameof(ExamPaperStart.IsSubmit)).
+                 WhereTrue(nameof(ExamPaperStart.IsMark)).
+                Where(nameof(ExamPaperStart.ExamPaperId), paperId).
+                Where(nameof(ExamPaperStart.UserId), userId).
+                Where(nameof(ExamPaperStart.PlanId), planId).
+                Where(nameof(ExamPaperStart.CourseId), courseId).
                 OrderByDesc(nameof(ExamPaperStart.Id)));
         }
         public async Task<(int total, List<ExamPaperStart> list)> GetListAsync(int userId, string dateFrom, string dateTo, string keyWords, int pageIndex, int pageSize)

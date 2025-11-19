@@ -28,6 +28,14 @@ namespace XBLMS.Core.Repositories
         {
             return await _repository.ExistsAsync(Q.Where(nameof(ExamCerUser.UserId), userID).Where(nameof(ExamCerUser.ExamPaperId), examPaperId));
         }
+        public async Task<bool> ExistsAsync(int userID, int examPaperId,int planId,int courseId)
+        {
+            return await _repository.ExistsAsync(Q.
+                Where(nameof(ExamCerUser.PlanId), planId).
+                Where(nameof(ExamCerUser.CourseId), courseId).
+                Where(nameof(ExamCerUser.UserId), userID).
+                Where(nameof(ExamCerUser.ExamPaperId), examPaperId));
+        }
         public async Task<ExamCerUser> GetAsync(int id)
         {
             return await _repository.GetAsync(id);

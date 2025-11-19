@@ -28,8 +28,8 @@ namespace XBLMS.Core.Services
 
         public async Task GetPaperInfo(ExamPaper paper, User user, int planId = 0, int courseId = 0, bool cjList = false)
         {
-            var myExamTimes = await _databaseManager.ExamPaperStartRepository.CountAsync(paper.Id, user.Id);
-            var startId = await _databaseManager.ExamPaperStartRepository.GetNoSubmitIdAsync(paper.Id, user.Id);
+            var myExamTimes = await _databaseManager.ExamPaperStartRepository.CountAsync(paper.Id, user.Id, planId, courseId);
+            var startId = await _databaseManager.ExamPaperStartRepository.GetNoSubmitIdAsync(paper.Id, user.Id, planId, courseId);
             var cerName = "";
             if (paper.CerId > 0)
             {
@@ -40,7 +40,7 @@ namespace XBLMS.Core.Services
                 }
             }
 
-            var examUser = await _databaseManager.ExamPaperUserRepository.GetAsync(paper.Id, user.Id);
+            var examUser = await _databaseManager.ExamPaperUserRepository.GetAsync(paper.Id, user.Id, planId, courseId);
 
             var courseName = "学习任务：xxxxx";
             if (courseId > 0 || planId > 0)
@@ -154,7 +154,7 @@ namespace XBLMS.Core.Services
             }
             if (cjList)
             {
-                var cjlist = await _databaseManager.ExamPaperStartRepository.GetListAsync(paper.Id, user.Id);
+                var cjlist = await _databaseManager.ExamPaperStartRepository.GetListAsync(paper.Id, user.Id, planId, courseId);
                 if (cjlist != null && cjlist.Count > 0)
                 {
                     foreach (var cj in cjlist)
@@ -242,13 +242,13 @@ namespace XBLMS.Core.Services
             ass.Set("ConfigId", assUser.ConfigId);
             ass.Set("ConfigName", assUser.ConfigName);
         }
-        public async Task<(bool Success, string msg)> CheckExam(int paperId, int userId)
+        public async Task<(bool Success, string msg)> CheckExam(int paperId, int userId, int planId, int courseId)
         {
             var paper = await _databaseManager.ExamPaperRepository.GetAsync(paperId);
-            var paperUser = await _databaseManager.ExamPaperUserRepository.GetAsync(paperId, userId);
+            var paperUser = await _databaseManager.ExamPaperUserRepository.GetAsync(paperId, userId, planId, courseId);
             if (paper != null || paperUser != null)
             {
-                var myTimes = await _databaseManager.ExamPaperStartRepository.CountAsync(paperId, userId);
+                var myTimes = await _databaseManager.ExamPaperStartRepository.CountAsync(paperId, userId, planId, courseId);
                 var times = paperUser.ExamTimes;
                 if (times - myTimes <= 0)
                 {

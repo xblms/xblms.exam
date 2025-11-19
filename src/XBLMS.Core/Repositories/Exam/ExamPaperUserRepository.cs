@@ -58,6 +58,14 @@ namespace XBLMS.Core.Repositories
                 Where(nameof(ExamPaperUser.ExamPaperId), paperId).
                 Where(nameof(ExamPaperUser.UserId), userId));
         }
+        public async Task<ExamPaperUser> GetAsync(int paperId, int userId,int planId,int courseId)
+        {
+            return await _repository.GetAsync(Q.
+                Where(nameof(ExamPaperUser.PlanId), planId).
+                Where(nameof(ExamPaperUser.CourseId), courseId).
+                Where(nameof(ExamPaperUser.ExamPaperId), paperId).
+                Where(nameof(ExamPaperUser.UserId), userId));
+        }
         public async Task<ExamPaperUser> GetAsync(int id)
         {
             return await _repository.GetAsync(id);
