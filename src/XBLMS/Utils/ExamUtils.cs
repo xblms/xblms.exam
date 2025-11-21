@@ -7,11 +7,18 @@ namespace XBLMS.Utils
         public static bool IsAnswerAllTrue(string answer, string myAnswer, List<string> answerList)
         {
             var allTrue = true;
-            foreach (var answerItem in answerList)
+            if (!answerList.Contains(myAnswer) && !answer.Contains(myAnswer))
             {
-                if (!StringUtils.ContainsIgnoreCase(myAnswer, answerItem))
+                allTrue = false;
+            }
+            if (!allTrue)
+            {
+                foreach (var answerItem in answerList)
                 {
-                    allTrue = false;
+                    if (!StringUtils.ContainsIgnoreCase(myAnswer, answerItem))
+                    {
+                        allTrue = false;
+                    }
                 }
             }
             if (StringUtils.ContainsIgnoreCase(answer, ";") && !allTrue)
