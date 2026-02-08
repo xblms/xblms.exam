@@ -1,0 +1,276 @@
+*** Begin Patch
+*** Update File: src/XBLMS/Utils/FileUtils.cs
+@@
+        public static bool IsPlayer(string fileExtName)
+        {
+            var retVal = false;
+            if (!string.IsNullOrEmpty(fileExtName))
+            {
+                fileExtName = StringUtils.TrimAndToLower(fileExtName);
+                if (!fileExtName.StartsWith("."))
+                {
+                    fileExtName = "." + fileExtName;
+                }
+                if (fileExtName == ".flv" || fileExtName == ".avi" || fileExtName == ".mpg" || fileExtName == ".mpeg" || fileExtName == ".smi" || fileExtName == ".mp3" || fileExtName == ".mid" || fileExtName == ".midi" || fileExtName == ".rm" || fileExtName == ".rmb" || fileExtName == ".rmvb" || fileExtName == ".wmv" || fileExtName == ".wma" || fileExtName == ".asf" || fileExtName == ".mov" || fileExtName == ".mp4")
+                {
+                    retVal = true;
+                }
+            }
+            return retVal;
+        }
++
++        // 新增：判断是否为音频格式（常见音频扩展）
++        public static bool IsAudio(string fileExtName)
++        {
++            var retVal = false;
++            if (!string.IsNullOrEmpty(fileExtName))
++            {
++                fileExtName = StringUtils.TrimAndToLower(fileExtName);
++                if (!fileExtName.StartsWith("."))
++                {
++                    fileExtName = "." + fileExtName;
++                }
++                if (fileExtName == ".mp3" || fileExtName == ".mid" || fileExtName == ".midi" || fileExtName == ".rm" || fileExtName == ".rmb" || fileExtName == ".wma" || fileExtName == ".wav" || fileExtName == ".aac" || fileExtName == ".flac" || fileExtName == ".ogg")
++                {
++                    retVal = true;
++                }
++            }
++            return retVal;
++        }
+*** End Patch
+
+*** Begin Patch
+*** Update File: src/XBLMS.Web/Controllers/Admin/Study/StudyCourseFilesController.Create.cs
+@@
+-                if (!FileUtils.IsPlayer(fileType) && !FileUtils.IsPDF(fileType) && !FileUtils.IsPPT(fileType) && !FileUtils.IsWord(fileType) && !FileUtils.IsExcel(fileType))
+-                {
+-                    return this.Error(Constants.ErrorUpload);
+-                }
++                // 最小改动：允许图片一并上传（否则图片会被拒绝）
++                if (!FileUtils.IsPlayer(fileType)
++                    && !FileUtils.IsPDF(fileType)
++                    && !FileUtils.IsPPT(fileType)
++                    && !FileUtils.IsWord(fileType)
++                    && !FileUtils.IsExcel(fileType)
++                    && !FileUtils.IsImage(fileType))
++                {
++                    return this.Error(Constants.ErrorUpload);
++                }
+*** End Patch
+
+*** Begin Patch
+*** Update File: src/XBLMS.Web/Pages/xblms-admin/study/studyCourseFilesUpload.cshtml
+@@
+-                            <div class="el-upload__tip" slot="tip" style="color:red;">支持音视频和Office文件，非Windows运行环境下Office仅支持word和pdf。</div>
++                            <div class="el-upload__tip" slot="tip" style="color:red;">支持图片、音视频和 Office 文件，非 Windows 运行环境下 Office 仅支持 Word 和 PDF。</div>
+*** End Patch
+
+*** Begin Patch
+*** Update File: src/XBLMS.Web/wwwroot/sitefiles/assets/js/admin/study/studyCourseFilesUpload.js
+@@
+-    this.fileList = fileList;
+-    if (file.status !== 'ready' && file.raw.type != 'video/mp4') return;
+-
+-
+-    const coverBase64 = "";
+-    const getVideoInfo = new Promise((resolve) => {
+-      const videoElement = document.createElement("video");
+-      videoElement.src = URL.createObjectURL(file.raw);
+-
+-      videoElement.onloadedmetadata = () => {
+-        const canvas = document.createElement("canvas");
+-        const { videoWidth, videoHeight } = videoElement;
+-        canvas.width = videoWidth;
+-        canvas.height = videoHeight;
+-
+-        // 在视频播放到指定时间后截取画面
+-        const snapshotTime = 3; // 截取时间点（单位：秒）
+-        videoElement.currentTime = snapshotTime;
+-
+-        videoElement.onseeked = () => {
+-          // 绘制视频当前时间点的画面到画布上
+-          canvas
+-            .getContext("2d")
+-            .drawImage(videoElement, 0, 0, videoWidth, videoHeight);
+-
+-          resolve({
+-            duration: videoElement.duration,
+-            cover: canvas.toDataURL("image/jpeg")
+-          });
+-        };
+-
+-      };
+-
+-
+-    });
+-    getVideoInfo.then((videoInfo) => {
+-      var duration = Math.floor(videoInfo.duration);
+-      duration = duration < 1 ? 1 : duration;
+-      this.durationList.push({ id: file.uid, duration: duration, cover: videoInfo.cover });
+-    })
++    this.fileList = fileList;
++    if (file.status !== 'ready') return;
++
++    // 支持 video/* 与 audio/*：视频尝试截取封面并读取时长，音频读取时长；其它类型不处理
++    var mime = file.raw && file.raw.type ? file.raw.type : '';
++    if (mime.startsWith('video/')) {
++      const getVideoInfo = new Promise((resolve) => {
++        const videoElement = document.createElement("video");
++        videoElement.preload = 'metadata';
++        videoElement.src = URL.createObjectURL(file.raw);
++
++        videoElement.onloadedmetadata = () => {
++          const videoWidth = videoElement.videoWidth || 320;
++          const videoHeight = videoElement.videoHeight || 180;
++          const canvas = document.createElement("canvas");
++          canvas.width = videoWidth;
++          canvas.height = videoHeight;
++
++          const snapshotTime = Math.min(3, Math.floor(videoElement.duration || 3));
++          try { videoElement.currentTime = snapshotTime; } catch (e) { /* ignore */ }
++
++          videoElement.onseeked = () => {
++            try {
++              const ctx = canvas.getContext("2d");
++              ctx.drawImage(videoElement, 0, 0, videoWidth, videoHeight);
++              resolve({ duration: Math.floor(videoElement.duration || 1), cover: canvas.toDataURL("image/jpeg") });
++            } catch (e) {
++              resolve({ duration: Math.floor(videoElement.duration || 1), cover: '' });
++            }
++          };
++        };
++        videoElement.onerror = () => { resolve({ duration: 1, cover: '' }); };
++      });
++      getVideoInfo.then((videoInfo) => {
++        var duration = Math.floor(videoInfo.duration);
++        duration = duration < 1 ? 1 : duration;
+        this.durationList.push({ id: file.uid, duration: duration, cover: videoInfo.cover });
++      });
++
++    } else if (mime.startsWith('audio/')) {
++      const getAudioInfo = new Promise((resolve) => {
++        const audioElement = document.createElement("audio");
++        audioElement.preload = 'metadata';
++        audioElement.src = URL.createObjectURL(file.raw);
++        audioElement.onloadedmetadata = function() { resolve({ duration: Math.floor(audioElement.duration || 1) }); };
++        audioElement.onerror = function() { resolve({ duration: 1 }); };
++      });
++      getAudioInfo.then((audioInfo) => {
++        var duration = Math.floor(audioInfo.duration);
++        duration = duration < 1 ? 1 : duration;
++        this.durationList.push({ id: file.uid, duration: duration, cover: '' });
++      });
++    } else {
++      // 图片或文档等不提取时长/封面
++    }
+*** End Patch
+
+*** Begin Patch
+*** Update File: src/XBLMS.Web/Controllers/Admin/Study/StudyCourseFileLayerViewController.Get.cs
+@@
+-            file.Url = await _pathManager.GetServerFileUrl(file.Url);
+-
+-            return new GetResult
+-            {
+-                FileName = file.FileName,
+-                FileUrl = file.Url,
+-                FileType = file.FileType,
+-                IsVideo = FileUtils.IsPlayer(file.FileType)
+-            };
++            file.Url = await _pathManager.GetServerFileUrl(file.Url);
++
++            // 如果最终 URL 指向 PDF（例如后处理将 Office 转为 PDF），把返回的 FileType 标准化为 PDF
++            var finalExt = PathUtils.GetExtension(file.Url);
++            var fileTypeToReturn = file.FileType;
++            if (!string.IsNullOrEmpty(finalExt))
++            {
++                var extNoDot = finalExt.StartsWith(".") ? finalExt.Substring(1) : finalExt;
++                if (StringUtils.EqualsIgnoreCase(extNoDot, "pdf"))
++                {
++                    fileTypeToReturn = "PDF";
++                }
++            }
++
++            return new GetResult
++            {
++                FileName = file.FileName,
++                FileUrl = file.Url,
++                FileType = fileTypeToReturn,
++                IsVideo = FileUtils.IsPlayer(file.FileType),
++                IsAudio = FileUtils.IsAudio(file.FileType)
++            };
+         }
+*** End Patch
+
+*** Begin Patch
+*** Update File: src/XBLMS.Web/Pages/xblms-admin/study/studyCourseFileLayerView.cshtml
+@@
+-    <template v-if="isVideo">
+-        <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-180) + 'px' }">
+-            <div id="divPlayer"></div>
+-        </el-scrollbar>
+-    </template>
+-    <template v-else>
+-        <iframe :src="fileUrl" :style="{height: ($(window).innerHeight()-180) + 'px'}" style="width:100%;height:100%;"></iframe>
+-    </template>
++    <template v-if="isVideo">
++        <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-180) + 'px' }">
++            <div id="divPlayer"></div>
++        </el-scrollbar>
++    </template>
++    <template v-else-if="isAudio">
++        <el-scrollbar class="scrollbar" :style="{ height: ($(window).innerHeight()-180) + 'px' }">
++            <div style="padding:16px;">
++                <audio :src="fileUrl" controls style="width:100%;"></audio>
++            </div>
++        </el-scrollbar>
++    </template>
++    <template v-else>
++        <iframe :src="fileUrl" :style="{height: ($(window).innerHeight()-180) + 'px'}" style="width:100%;height:100%;"></iframe>
++    </template>
+*** End Patch
+
+*** Begin Patch
+*** Update File: src/XBLMS.Web/wwwroot/sitefiles/assets/js/admin/study/studyCourseFileLayerView.js
+@@
+  var data = utils.init({
+    id: utils.getQueryInt('id'),
+    fileName: '',
+    fileUrl: '',
+    fileType: '',
+-  isVideo: false
++  isVideo: false,
++  isAudio: false
+  });
+@@
+        $this.fileName = res.fileName;
+        $this.fileUrl = res.fileUrl;
+        $this.fileType = res.fileType;
+-      $this.isVideo = res.isVideo;
++      $this.isVideo = res.isVideo;
++      $this.isAudio = res.isAudio;
+@@
+-      if ($this.fileType !== 'PDF') {
+-        $this.$nextTick(_ => {
+-          $this.videoPlayer = new Player({
+-            el: document.querySelector('#divPlayer'),
+-            url: $this.fileUrl,
+-            fluid: true,
+-            autoplay: true
+-          });
+-        });
+-      }
++      // 仅当后端标记为视频时初始化第三方播放器（与模板渲染条件一致）
++      if ($this.isVideo) {
++        $this.$nextTick(_ => {
++          $this.videoPlayer = new Player({
++            el: document.querySelector('#divPlayer'),
++            url: $this.fileUrl,
++            fluid: true,
++            autoplay: true
++          });
++        });
++      }
+      });
+    }
+  };
