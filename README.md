@@ -3,6 +3,10 @@
 
 <br />
 
+happy new year!
+
+<br />
+
 <img src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/logo.png" height="180" align="center">
 
 <br />
