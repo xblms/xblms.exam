@@ -34,7 +34,7 @@ var methods = {
     this.apiGet();
   },
   btnSearchClick: function () {
-    this.pageIndex = 1;
+    this.form.pageIndex = 1;
     this.apiGet();
   }
 };
