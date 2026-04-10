@@ -38,14 +38,21 @@ var methods = {
     });
   },
   answerChangeDuowei: function (setTm) {
-    setTm.answer = setTm.optionsValues.join('');
-    if (setTm.answer !== '' && setTm.answer.length > 0) {
+    let isAll = true;
+    let smallList = setTm.smallList;
+    smallList.forEach(small => {
+      let smallAnswer = small.optionsValues.join('');
+      if (smallAnswer === '' || smallAnswer.length <= 0) {
+        isAll = false;
+      }
+    })
+    if (isAll) {
       setTm.answerStatus = true;
     }
     else {
       setTm.answerStatus = false;
     }
-    this.getAnswerTotal(setTm);
+    this.getAnswerTotal();
   },
   answerChange: function (setTm) {
     if (setTm.tx === "Duoxuanti") {
@@ -61,25 +68,34 @@ var methods = {
 
     this.getAnswerTotal(setTm);
   },
-  getAnswerTotal: function (setTm) {
-    this.answerTotal = 0;
-
-    var smallTm = this.tmList.find(item => item.id === setTm.id);
-
-    this.tmList.forEach(tm => {
-      if (tm.parentId > 0 && tm.id === setTm.id) {
-        tm.answerStatus = setTm.answerStatus;
-        tm.answer = setTm.answer;
-      }
-
-      if (tm.answerStatus) {
-        this.answerTotal++;
+  answerChangeSmall: function (setTm) {
+    let isAll = true;
+    let smallList = setTm.smallList;
+    smallList.forEach(small => {
+      let smallAnswer = "";
+      if (small.tx === 'Danxuanti') {
+        smallAnswer = small.answer;
       }
       else {
-        if (tm.id === setTm.parentId && !tm.answerStatus) {
-          tm.answerStatus = true;
-          this.answerTotal++;
-        }
+        smallAnswer = small.optionsValues.join('');
+      }
+      if (smallAnswer === '' || smallAnswer.length <= 0) {
+        isAll = false;
+      }
+    })
+    if (isAll) {
+      setTm.answerStatus = true;
+    }
+    else {
+      setTm.answerStatus = false;
+    }
+    this.getAnswerTotal();
+  },
+  getAnswerTotal: function () {
+    this.answerTotal = 0;
+    this.tmList.forEach(tm => {
+      if (tm.answerStatus && tm.parentId === 0) {
+        this.answerTotal++;
       }
     });
   },
