@@ -3,14 +3,36 @@
 
 <br />
 
-lastupdate:20260413
+lastupdate:20260417
 
 <br />
 
-<img src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/logo.png" height="180" align="center">
+<img src="src/XBLMS.Web/wwwroot/sitefiles/assets/images/logo.png" height="180" align="center">
 
 <br />
 <br />
+<br />
+
+## 演示环境
+
+管理端演示环境
+
+* 账号：admin，密码：123123
+
+* [点击前往管理端演示](http://182.92.223.118:5000/xblms-admin)
+
+用户端演示环境
+
+* 账号：test，密码：123123
+
+* [点击前往用户端演示](http://182.92.223.118:5000/home)
+
+移动端演示环境
+
+* 扫码前往移动端演示
+
+<img width="200" src="src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/qrcode.png"/>
+
 <br />
 
 
