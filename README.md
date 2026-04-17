@@ -13,6 +13,23 @@ lastupdate:20260417
 <br />
 <br />
 
+## 巨照
+
+<br />
+
+### 后台管理
+
+<img src="src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/admin/index.png">
+
+<br />
+<br />
+
+### 用户中心
+
+<img src="src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/home/index.png">
+
+<br />
+
 ## 演示环境
 
 管理端演示环境
