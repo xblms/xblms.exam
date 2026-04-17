@@ -173,12 +173,17 @@ npm run copy-linux-arm64
 
 如发现问题或对产品有任何建议，请提交至 [Gitee Issues](https://gitee.com/xblms/xblmes/issues)。
 
+
+## 打赏
+
+<img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/ds.png"/>
+
+## 联系我们
+
+[星期八在线考试系统-官网](https://www.xblms.cn)
+
 ## License
 
 [GNU Affero General Public License v3.0](LICENSE)
 
 Copyright (C) 2024 XBLMS.EXAM
-
-## 打赏
-
-<img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/ds.png"/>
