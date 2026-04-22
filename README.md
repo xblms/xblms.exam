@@ -3,7 +3,7 @@
 
 <br />
 
-lastupdate:20260417
+lastupdate:20260422
 
 <br />
 
@@ -44,9 +44,9 @@ lastupdate:20260417
 
 * [点击前往用户端演示](http://182.92.223.118:5000/home)
 
-移动端演示环境
+移动用户端演示环境
 
-* 扫码前往移动端演示
+* 扫码进入移动端
 
 <img width="200" src="src/XBLMS.Web/wwwroot/sitefiles/assets/images/demo/app/qrcode.png"/>
 
