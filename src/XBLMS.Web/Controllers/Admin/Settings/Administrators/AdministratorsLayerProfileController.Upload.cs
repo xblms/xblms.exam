@@ -13,7 +13,6 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
         [HttpPost, Route(RouteUpload)]
         public async Task<ActionResult<StringResult>> Upload([FromQuery] string userName, [FromForm] IFormFile file)
         {
-
             var (success, msg, url) = await _uploadManager.UploadAvatar(file, UploadManageType.AdminAvatar, userName);
             if (success)
             {

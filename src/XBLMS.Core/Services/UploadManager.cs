@@ -28,6 +28,7 @@ namespace XBLMS.Core.Services
 
             var returnUrl = "";
 
+            userName = string.IsNullOrEmpty(userName) ? StringUtils.GetShortGuid() : userName;
             if (uploadType == UploadManageType.AdminAvatar)
             {
                 var filePath = _pathManager.GetAdminAvatarUploadPath(userName, fileName);

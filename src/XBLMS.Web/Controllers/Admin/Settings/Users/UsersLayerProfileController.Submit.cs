@@ -90,16 +90,6 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
                     return this.Error($"用户添加失败：{errorMessage}");
                 }
 
-                if (!string.IsNullOrEmpty(user.AvatarUrl))
-                {
-                    var fileName = PageUtils.GetFileNameFromUrl(user.AvatarUrl);
-                    var filePath = _pathManager.GetUserUploadPath(0, fileName);
-                    var avatarFilePath = _pathManager.GetUserUploadPath(resultUser.Id, fileName);
-                    FileUtils.CopyFile(filePath, avatarFilePath);
-                    user.AvatarUrl = _pathManager.GetUserUploadUrl(resultUser.Id, fileName);
-                    await _userRepository.UpdateAsync(resultUser);
-                }
-
                 await _authManager.AddAdminLogAsync("新增用户账号", $"{request.UserName}");
                 await _authManager.AddStatLogAsync(StatType.UserAdd, "新增用户账号", user.Id, user.DisplayName);
                 await _authManager.AddStatCount(StatType.UserAdd);

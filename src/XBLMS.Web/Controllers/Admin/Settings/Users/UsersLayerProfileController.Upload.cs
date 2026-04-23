@@ -13,13 +13,13 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
         [HttpPost, Route(RouteUpload)]
         public async Task<ActionResult<StringResult>> Upload([FromQuery] int userId, [FromForm] IFormFile file)
         {
-            if (!await _authManager.HasPermissionsAsync(MenuPermissionType.Update))
+            var userName = string.Empty;
+            if (userId > 0)
             {
-                return this.NoAuth();
+                var user = await _userRepository.GetByUserIdAsync(userId);
+                userName = user.UserName;
             }
-            var user = await _userRepository.GetByUserIdAsync(userId);
-            if (user == null) return NotFound();
-            var (success, msg, url) = await _uploadManager.UploadAvatar(file, UploadManageType.AdminAvatar, user.UserName);
+            var (success, msg, url) = await _uploadManager.UploadAvatar(file, UploadManageType.UserAvatar, userName);
             if (success)
             {
                 return new StringResult

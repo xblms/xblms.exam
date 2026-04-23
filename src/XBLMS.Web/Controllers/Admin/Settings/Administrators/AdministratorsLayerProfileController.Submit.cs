@@ -107,15 +107,6 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
                 }
 
                 administrator = await _administratorRepository.GetByUserNameAsync(request.UserName);
-                if (!string.IsNullOrEmpty(administrator.AvatarUrl))
-                {
-                    var fileName = PageUtils.GetFileNameFromUrl(administrator.AvatarUrl);
-                    var filePath = _pathManager.GetAdministratorUploadPath(administrator.UserName, fileName);
-                    var avatarFilePath = _pathManager.GetAdministratorUploadPath(administrator.UserName, fileName);
-                    FileUtils.CopyFile(filePath, avatarFilePath);
-                    administrator.AvatarUrl = _pathManager.GetAdministratorUploadUrl(administrator.UserName, fileName);
-                    await _administratorRepository.UpdateAsync(administrator);
-                }
 
                 await _authManager.AddAdminLogAsync("新增管理员账号", $"{administrator.DisplayName}");
                 await _authManager.AddStatLogAsync(StatType.AdminAdd, "新增管理员账号", administrator.Id, administrator.UserName);
