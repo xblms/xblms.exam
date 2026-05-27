@@ -108,16 +108,14 @@ namespace XBLMS.Web.Controllers.Home.Exam
         }
         private bool IsRight(ExamTx tx, ExamTm tm, string myAnswer)
         {
-            var isRight = false;
-            if (tx.ExamTxBase == Enums.ExamTxBase.Tiankongti || tx.ExamTxBase == Enums.ExamTxBase.Jiandati)
-            {
-                isRight = StringUtils.EqualsIgnoreCase(tm.Answer, myAnswer);
-            }
-            else
+            var isRight = StringUtils.EqualsIgnoreCase(tm.Answer, myAnswer);
+
+            if (!isRight)
             {
                 var answerList = ListUtils.GetStringList(tm.Answer);
                 isRight = ExamUtils.IsAnswerAllTrue(tm.Answer, myAnswer, answerList);
             }
+
             return isRight;
         }
     }

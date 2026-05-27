@@ -6,55 +6,27 @@ namespace XBLMS.Utils
     {
         public static bool IsAnswerAllTrue(string answer, string myAnswer, List<string> answerList)
         {
-            var allTrue = true;
-            if (!answerList.Contains(myAnswer) && !answer.Contains(myAnswer))
-            {
-                allTrue = false;
-            }
-            if (!allTrue)
-            {
-                foreach (var answerItem in answerList)
-                {
-                    if (!StringUtils.ContainsIgnoreCase(myAnswer, answerItem))
-                    {
-                        allTrue = false;
-                    }
-                }
-            }
-            if (StringUtils.ContainsIgnoreCase(answer, ";") && !allTrue)
+            if (StringUtils.ContainsIgnoreCase(answer, ";"))
             {
                 answerList = ListUtils.GetStringList(answer, ";");
-                foreach (var answerItem in answerList)
-                {
-                    if (!StringUtils.ContainsIgnoreCase(myAnswer, answerItem))
-                    {
-                        allTrue = false;
-                    }
-                }
+                answer = ListUtils.ToString(answerList);
             }
-            if (StringUtils.ContainsIgnoreCase(answer, "，") && !allTrue)
-            {
-                answerList = ListUtils.GetStringList(answer, "，");
-                foreach (var answerItem in answerList)
-                {
-                    if (!StringUtils.ContainsIgnoreCase(myAnswer, answerItem))
-                    {
-                        allTrue = false;
-                    }
-                }
-            }
-            if (StringUtils.ContainsIgnoreCase(answer, "；") && !allTrue)
+            if (StringUtils.ContainsIgnoreCase(answer, "；"))
             {
                 answerList = ListUtils.GetStringList(answer, "；");
-                foreach (var answerItem in answerList)
-                {
-                    if (!StringUtils.ContainsIgnoreCase(myAnswer, answerItem))
-                    {
-                        allTrue = false;
-                    }
-                }
+                answer = ListUtils.ToString(answerList);
             }
-            return allTrue;
+            if (StringUtils.ContainsIgnoreCase(answer, ","))
+            {
+                answerList = ListUtils.GetStringList(answer, ",");
+                answer = ListUtils.ToString(answerList);
+            }
+            if (StringUtils.ContainsIgnoreCase(answer, "，"))
+            {
+                answerList = ListUtils.GetStringList(answer, "，");
+                answer = ListUtils.ToString(answerList);
+            }
+            return StringUtils.EqualsIgnoreCase(answer, myAnswer);
         }
     }
 }
