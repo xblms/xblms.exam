@@ -3,7 +3,7 @@
 
 <br />
 
-lastupdate:20260605
+lastupdate:20260610
 
 <br />
 
@@ -171,12 +171,12 @@ npm run copy-linux-arm64
 
 ## 问题与建议
 
-如发现问题或对产品有任何建议，请提交至 [Gitee Issues](https://gitee.com/xblms/xblmes/issues)。
+如发现问题或对产品有任何建议，请提交至 [Gitee Issues](https://github.com/xblms/xblms.exam/issues)。
 
 
 ## 打赏
 
-<img width="200" src="https://gitee.com/xblms/xblmes/raw/master/src/XBLMS.Web/wwwroot/sitefiles/assets/images/ds.png"/>
+<img width="200" src="src/XBLMS.Web/wwwroot/sitefiles/assets/images/ds.png"/>
 
 ## 联系我们
 
