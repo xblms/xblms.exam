@@ -32,6 +32,17 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         private const string RouteEditSmallSubmit = Route + "/tmEdit/submitSmall";
         private const string RouteEditSmallDelete = Route + "/tmEdit/delSmall";
 
+        private const string RouteAi = Route + "/ai";
+        private const string RouteAiPublish = RouteAi + "/publish";
+        private const string RouteAiPublishSave = RouteAiPublish + "/save";
+        private const string RouteAiDel = RouteAi + "/del";
+        private const string RouteAiDels = RouteAi + "/dels";
+        private const string RouteAiRuku = RouteAi + "/ruku";
+        private const string RouteAiRukus = RouteAi + "/rukus";
+
+        private const string RouteAiEdit = RouteAi + "/tmEdit/get";
+        private const string RouteAiEditSubmit = RouteAi + "/tmEdit/submit";
+
         private readonly IAuthManager _authManager;
         private readonly IPathManager _pathManager;
         private readonly ICacheManager _cacheManager;
@@ -53,6 +64,8 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         private readonly ITableStyleRepository _tableStyleRepository;
         private readonly IExamTmSmallRepository _examTmSmallRepository;
         private readonly IExamPaperRandomTmRepository _examPaperRandomTmRepository;
+        private readonly IExamTmAiRepository _examTmAiRepository;
+        private readonly IAiTaskService _aiTaskService;
 
         public ExamTmController(IAuthManager authManager, IPathManager pathManager, IDatabaseManager databaseManager, ICacheManager cacheManager,
             IConfigRepository configRepository, IExamManager examManager,
@@ -63,7 +76,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             IExamPracticeCollectRepository examPracticeCollectRepository,
             IExamPracticeWrongRepository examPracticeWrongRepository,
             IExamTmAnalysisTmRepository examTmAnalysisTmRepository,
-            ITableStyleRepository tableStyleRepository, IExamTmSmallRepository examTmSmallRepository, IExamPaperRandomTmRepository examPaperRandomTmRepository)
+            ITableStyleRepository tableStyleRepository, IExamTmSmallRepository examTmSmallRepository, IExamPaperRandomTmRepository examPaperRandomTmRepository, IExamTmAiRepository examTmAiRepository, IAiTaskService aiTaskService)
         {
             _organManager = organManager;
             _examManager = examManager;
@@ -86,6 +99,8 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             _tableStyleRepository = tableStyleRepository;
             _examTmSmallRepository = examTmSmallRepository;
             _examPaperRandomTmRepository = examPaperRandomTmRepository;
+            _examTmAiRepository = examTmAiRepository;
+            _aiTaskService = aiTaskService;
         }
         public class GetEditResult
         {

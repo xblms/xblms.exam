@@ -149,5 +149,11 @@ namespace XBLMS.Enums
         GiftDelete,
         [DataEnum(DisplayName = "题目纠错审核")]
         ExamTmCorrectionAudit,
+        [DataEnum(DisplayName = "AI题目新增")]
+        ExamTmAIAdd,
+        [DataEnum(DisplayName = "AI题目删除")]
+        ExamTmAIDelete,
+        [DataEnum(DisplayName = "AI题目修改")]
+        ExamTmAIUpdate,
     }
 }

@@ -1,0 +1,131 @@
+@page
+@{ Layout = "_Layout"; }
+@section Styles{
+    <link href="/sitefiles/assets/lib/geeks/css/theme.min.css" rel="stylesheet" type="text/css" />
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+            background-color: #f1f1f1;
+        }
+    </style>
+}
+<div>
+    <div style="width:399px;position:fixed;" class="text-center py-5 bg-white d-flex flex-column align-items-center justify-content-between vh-100 h-100 shadow">
+        <div class="h1 text-warning">AI 出题</div>
+        <div>
+            <el-form v-on:submit.native.prevent :model="form" ref="form" v-if="form" :size="euiSize" label-position="top" label-width="0">
+                <el-form-item prop="txId" :rules="{ required: true, message: '请选择题型' }">
+                    <el-select :disabled="publishLoading" v-model="form.txId" placeholder="请选择题型" style="width:158px;">
+                        <el-option :key="0" label="请选择题型" :value="0"></el-option>
+                        <el-option v-for="tx in txList"
+                                   :key="tx.id"
+                                   :label="tx.name"
+                                   :value="tx.id">
+                        </el-option>
+                    </el-select>
+                    <div class="tips text-start">选择一个题型</div>
+                </el-form-item>
+                <el-form-item prop="zsd" :rules="{ required: true, message: '请输入知识点' }">
+                    <el-input :disabled="publishLoading" v-model.trim="form.zsd" placeholder="请输入知识点" style="width:158px;"></el-input>
+                    <div class="tips text-start">输入知识点</div>
+                </el-form-item>
+                <el-form-item prop="tmCount" :rules="{ required: true, message: '请输入出题数量' }">
+                    <el-input-number :disabled="publishLoading" v-model="form.tmCount" :min="1" :max="10" style="width:158px;"></el-input-number>
+                    <div class="tips text-start">输入出题数量</div>
+                </el-form-item>
+                <el-form-item>
+                    <el-button class="rounded-pill" style="width:158px;" :disabled="!aiServe" icon="el-icon-s-promotion" type="primary" :size="euiSize" :loading="publishLoading" v-on:click="btnPublishClick">开始出题</el-button>
+                </el-form-item>
+            </el-form>
+        </div>
+        <div class="d-flex align-items-center justify-content-between">
+            <el-button v-if="publishTotal>0" type="success" :loading="publishLoading" v-on:click="btnSaveClick">保存并退出（{{ publishTotal }}）</el-button>
+            <el-button v-else :loading="publishLoading" v-on:click="utils.closeLayerSelf">退 出</el-button>
+            <el-button v-if="publishTotal>0" type="warning" :loading="publishLoading" v-on:click="btnClearTmClick">清 空</el-button>
+        </div>
+    </div>
+    <div style="margin-left:399px;height:100%;">
+        <div v-if="aiServe">
+            <div class="d-flex flex-column align-items-center justify-content-center vh-100" v-if="publishTotal===0 && !publishLoading">
+                <span class="text-success">准备就绪</span>
+            </div>
+            <div v-else class="p-3">
+                <div class="text-center mb-3" v-if="publishLoading"><span class="bg-warning text-white px-3 py-2 rounded-pill"><i class="el-icon-loading"></i> 正在出题 {{ publishCurrent }}/{{ form.tmCount }}</span></div>
+                <el-card shadow="never" :class="tm.tmError?'border-danger rounded-0 border-5 border-bottom-0 border-top-0 border-end-0 mb-3':'border-success rounded-0 border-5 border-bottom-0 border-top-0 border-end-0 mb-3'" v-for="(tm,tmIndex) in tmList">
+                    <el-form v-on:submit.native.prevent size="mini" label-width="100px">
+                        <el-row>
+                            <el-col :span="24">
+                                <div class="d-flex align-items-center justify-content-start">
+                                    <div>
+                                        <el-form-item label="">
+                                            <span class="fw-bold">{{ tm.txName }}</span>
+                                        </el-form-item>
+                                    </div>
+                                    <div>
+                                        <el-form-item label="分数" prop="score">
+                                            <el-input-number :precision="2" :step="1" v-model.trim="tm.score" :min="1" :max="100" placeholder="请输入分数"></el-input-number>
+                                        </el-form-item>
+                                    </div>
+                                    <div>
+                                        <el-form-item label="难度" prop="nandu">
+                                            <div class="pt-1"><el-rate v-model="tm.nandu"></el-rate></div>
+                                        </el-form-item>
+                                    </div>
+                                    <div>
+                                        <el-form-item label="知识点">
+                                            <span class="fw-bold">{{ tm.zhishidian }}</span>
+                                        </el-form-item>
+                                    </div>
+                                </div>
+                                <el-form-item label="题目内容" prop="title">
+                                    <el-input ref="title" type="textarea" :autosize="{ minRows: 1}" v-model="tm.title"></el-input>
+                                </el-form-item>
+                                <template v-if="tm.baseTx==='Danxuanti' || tm.baseTx==='Panduanti'">
+                                    <el-form-item v-for="(optionvalue,index) in tm.options">
+                                        <el-input v-model="tm.options[index]">
+                                            <el-radio slot="prepend" v-model="tm.answer" :label="optionsABC[index]"></el-radio>
+                                        </el-input>
+                                    </el-form-item>
+                                </template>
+                                <template v-else-if="tm.baseTx==='Duoxuanti'">
+                                    <el-form-item v-for="(optionvalue,index) in tm.optionsValues">
+                                        <el-input v-model.trim="tm.options[index]">
+                                            <el-checkbox slot="prepend" :true-label="optionsABC[index]" false-label="" v-model="tm.optionsValues[index]" :label="optionsABC[index]"></el-checkbox>
+                                        </el-input>
+                                    </el-form-item>
+                                </template>
+                                <el-form-item label="答案" prop="answer">
+                                    <el-input v-model.trim="tm.answer" placeholder="请输入答案"></el-input>
+                                </el-form-item>
+                                <el-form-item label="解析" prop="jiexi">
+                                    <el-input ref="jiexi" type="textarea" :autosize="{ minRows: 1}" v-model="tm.jiexi"></el-input>
+                                </el-form-item>
+                                <el-form-item v-if="tm.tmError">
+                                    <div class="tips text-danger">
+                                        <div class="mb-1"><span class="px-3 py-1 bg-danger text-white rounded-pill">发现错误，请手动调整</span></div>
+                                        <div class="mb-1 border-start border-3 border-danger ps-3" v-for="errorMsg in tm.tmErrors">{{ errorMsg }}</div>
+                                    </div>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                    </el-form>
+                </el-card>
+            </div>
+        </div>
+        <div class="d-flex flex-column align-items-center justify-content-center vh-100" v-else>
+            <el-result icon="warning" title="提 醒">
+                <template slot="subTitle">
+                    <h1>未连接到AI服务器</h1>
+                    <div class="tips">请前往系统设置中配置AI服务器</div>
+                </template>
+                <template slot="extra">
+                    <el-button type="primary" v-on:click="utils.closeLayerSelf">退 出</el-button>
+                </template>
+            </el-result>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script src="/sitefiles/assets/js/admin/exam/examTmAiPublish.js" type="text/javascript"></script>
+}

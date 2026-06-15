@@ -28,6 +28,7 @@ namespace XBLMS.Services
         IDbRecoverRepository DbRecoverRepository { get; }
         IScheduledTaskRepository ScheduledTaskRepository { get; }
 
+        IExamTmAiRepository ExamTmAiRepository { get; }
         IExamTxRepository ExamTxRepository { get; }
         IExamTmTreeRepository ExamTmTreeRepository { get; }
         IExamTmRepository ExamTmRepository { get; }

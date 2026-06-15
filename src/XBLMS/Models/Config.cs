@@ -46,6 +46,11 @@ namespace XBLMS.Models
         public SystemCode SystemCode { get; set; } = SystemCode.Exam;
         public string SystemCodeName { get; set; } = "星期八在线考试系统";
 
+        //AI
+        public string AiHostUrl { get; set; } = "http://localhost:11434";
+        public bool AiServe { get; set; } = false;
+        public string AiRunningModel { get; set; }
+
 
         //部署配置
         public bool BushuFilesServer { get; set; } = false; //课件服务器单独部署

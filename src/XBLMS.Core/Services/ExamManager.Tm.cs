@@ -18,7 +18,16 @@ namespace XBLMS.Core.Services
             SetOptionInfo(tm);
             return tm;
         }
-
+        public async Task GetTmInfoNoTree(ExamTm tm)
+        {
+            await GetBaseTmInfo(tm);
+        }
+        public async Task<ExamTmAi> GetAiTmInfo(int tmId)
+        {
+            var tm = await _databaseManager.ExamTmAiRepository.GetAsync(tmId);
+            SetOptionInfo(tm);
+            return tm;
+        }
         public async Task GetTmInfo(ExamTm tm)
         {
             await GetBaseTmInfo(tm);

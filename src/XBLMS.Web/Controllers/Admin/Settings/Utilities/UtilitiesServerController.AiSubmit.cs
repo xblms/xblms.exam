@@ -8,8 +8,8 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Utilities
 {
     public partial class UtilitiesServerController
     {
-        [HttpPost, Route(Route)]
-        public async Task<ActionResult<BoolResult>> Submit([FromBody] GetItem request)
+        [HttpPost, Route(RouteAI)]
+        public async Task<ActionResult<BoolResult>> Submit([FromBody] GetAIRequest request)
         {
             if (!await _authManager.HasPermissionsAsync(MenuPermissionType.Update))
             {
@@ -17,13 +17,14 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Utilities
             }
             var config = await _configRepository.GetAsync();
 
-            config.SystemCode = request.SystemCode;
-            config.SystemCodeName = request.SystemCodeName;
-
+            config.AiHostUrl = request.AiHostUrl;
+            config.AiServe = request.AiServe;
+            config.AiRunningModel = request.AiRunningModel;
             await _configRepository.UpdateAsync(config);
 
-            await _authManager.AddAdminLogAsync("修改系统参数配置");
-            await _authManager.AddStatLogAsync(StatType.None, "修改系统参数配置");
+            await _authManager.AddAdminLogAsync("修改AI参数配置");
+            await _authManager.AddStatLogAsync(StatType.None, "修改AI参数配置");
+
             return new BoolResult
             {
                 Value = true

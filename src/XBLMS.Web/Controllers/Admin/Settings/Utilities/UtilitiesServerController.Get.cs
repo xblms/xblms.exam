@@ -16,13 +16,17 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Utilities
 
             var config = await _configRepository.GetAsync();
 
-            return new GetItem
+            var result = new GetItem
             {
-                BushuFilesServer = config.BushuFilesServer,
-                BushuFilesServerUrl = config.BushuFilesServerUrl,
-                SystemCode = config.SystemCode,
                 SystemCodeName = config.SystemCodeName,
+                SystemCode = config.SystemCode,
+                AiHostUrl = config.AiHostUrl,
+                AiServe = config.AiServe,
+                AiRunningModel = config.AiRunningModel,
+                IsModels = !string.IsNullOrEmpty(config.AiRunningModel)
             };
+
+            return result;
         }
     }
 }

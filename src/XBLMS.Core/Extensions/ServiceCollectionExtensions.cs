@@ -107,6 +107,7 @@ namespace XBLMS.Core.Extensions
             services.AddScoped<IUploadManager, UploadManager>();
             services.AddScoped<IExamManager, ExamManager>();
             services.AddScoped<IStudyManager, StudyManager>();
+            services.AddScoped<IAiTaskService, AiTaskService>();
 
             services.AddSignalR();
             services.AddScoped<ISignalRHubManagerMessage, SignalRHubManagerMessage>();

@@ -10,6 +10,8 @@ namespace XBLMS.Services
         string GetTmTitle(ExamTm tm);
         Task<ExamTmSmall> GetSmallTmInfo(int tmId);
         Task<ExamTm> GetTmInfo(int tmId);
+        Task GetTmInfoNoTree(ExamTm tm);
+        Task<ExamTmAi> GetAiTmInfo(int tmId);
         Task GetTmInfo(ExamTm tm);
         Task GetTmDeleteInfo(ExamTm tm);
         Task GetTmInfoByPaper(ExamTm tm);

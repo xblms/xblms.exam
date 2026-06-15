@@ -158,6 +158,16 @@
             "Permissions": [ "Select" ],
             "isPermission": true,
             "children": []
+          },
+          {
+            "id": "examtmai",
+            "order": 7,
+            "text": "AI出题",
+            "link": "/xblms-admin/exam/examTmAi/",
+            "iconClass": "el-icon-s-data",
+            "Permissions": [ "Select", "Add", "Update", "Delete" ],
+            "isPermission": true,
+            "children": []
           }
         ]
       },

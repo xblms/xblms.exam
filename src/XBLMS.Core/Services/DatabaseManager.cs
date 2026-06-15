@@ -37,6 +37,7 @@ namespace XBLMS.Core.Services
         public IDbRecoverRepository DbRecoverRepository { get; }
         public IScheduledTaskRepository ScheduledTaskRepository { get; }
 
+        public IExamTmAiRepository ExamTmAiRepository { get; }
         public IExamTxRepository ExamTxRepository { get; }
         public IExamTmTreeRepository ExamTmTreeRepository { get; }
         public IExamTmRepository ExamTmRepository { get; }
@@ -130,6 +131,7 @@ namespace XBLMS.Core.Services
             IExamTxRepository examTxRepository,
             IExamTmTreeRepository examTmTreeRepository,
             IExamTmRepository examTmRepository,
+            IExamTmAiRepository examTmAiRepository,
             IExamTmAnalysisRepository examTmAnalysisRepository,
             IExamTmAnalysisTmRepository examTmAnalysisTmRepository,
             IExamTmCorrectionRepository examTmCorrectionRepository,
@@ -210,6 +212,7 @@ namespace XBLMS.Core.Services
             ExamTxRepository = examTxRepository;
             ExamTmTreeRepository = examTmTreeRepository;
             ExamTmRepository = examTmRepository;
+            ExamTmAiRepository = examTmAiRepository;
             ExamTmAnalysisRepository = examTmAnalysisRepository;
             ExamTmAnalysisTmRepository = examTmAnalysisTmRepository;
             ExamTmCorrectionRepository = examTmCorrectionRepository;
@@ -291,6 +294,7 @@ namespace XBLMS.Core.Services
                 DbBackupRepository,
                 DbRecoverRepository,
                 ScheduledTaskRepository,
+                ExamTmAiRepository,
                 ExamTxRepository,
                 ExamTmTreeRepository,
                 ExamTmRepository,

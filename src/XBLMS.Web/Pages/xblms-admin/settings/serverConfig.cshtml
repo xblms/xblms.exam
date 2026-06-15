@@ -2,27 +2,59 @@
 @{ Layout = "_Layout"; }
 
 <el-card>
-    <el-scrollbar class="scrollbar" :style="{height: ($(window).height() - 118) + 'px'}">
-
-        <el-form v-on:submit.native.prevent ref="form" :model="form" :size="euiSize" status-icon label-position="top">
-            <el-form-item label="系统类型" prop="systemCode">
-                <el-radio-group v-model="form.systemCode">
-                    <el-radio label="Exam">考试系统</el-radio>
-                    <el-radio label="Elearning">培训系统</el-radio>
-                </el-radio-group>
-            </el-form-item>
-            <el-form-item label="系统名称" prop="systemCodeName" :rules="{ required: true, message: '请输入系统名称' }">
-                <el-input v-model="form.systemCodeName"></el-input>
-            </el-form-item>
-        </el-form>
-    </el-scrollbar>
-    <el-divider></el-divider>
-    <div style="height: 10px"></div>
-    <el-row>
-        <el-col :span="24" align="center">
-            <el-button icon="el-icon-check" type="primary" v-on:click="btnSubmitClick" :size="euiSize">保 存</el-button>
-        </el-col>
-    </el-row>
+    <el-tabs tab-position="left">
+        <el-tab-pane label="基础配置">
+            <el-card class="ms-3">
+                <el-scrollbar class="scrollbar" :style="{height: ($(window).height() - 118) + 'px'}">
+                    <el-form v-on:submit.native.prevent ref="form" :model="form" status-icon label-position="top">
+                        <el-form-item label="系统类型" prop="systemCode">
+                            <el-radio-group v-model="form.systemCode">
+                                <el-radio label="Exam">考试系统</el-radio>
+                                <el-radio label="Elearning">培训系统</el-radio>
+                            </el-radio-group>
+                        </el-form-item>
+                        <el-form-item label="系统名称" prop="systemCodeName" :rules="{ required: true, message: '请输入系统名称' }">
+                            <el-input v-model="form.systemCodeName"></el-input>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button plain icon="el-icon-check" type="success" v-on:click="btnSubmitClick">保 存</el-button>
+                        </el-form-item>
+                    </el-form>
+                </el-scrollbar>
+            </el-card>
+        </el-tab-pane>
+        <el-tab-pane label="AI服务">
+            <el-card class="ms-3">
+                 <el-scrollbar class="scrollbar" :style="{height: ($(window).height() - 118) + 'px'}">
+                    <el-form v-on:submit.native.prevent ref="formAi" :model="formAi" status-icon label-position="top">
+                        <el-form-item>
+                            <el-link href="https://docs.ollama.com/" target="_blank">本地化部署LLM参考文档</el-link>
+                        </el-form-item>
+                        <el-form-item label="Host" prop="aiHostUrl" :rules="{ required: true, message: '请输入AI接口地址' }">
+                            <el-input v-model="formAi.aiHostUrl"></el-input>
+                            <div class="tips">
+                                <el-link icon="el-icon-refresh" v-on:click="btnAITestClick">测试连接</el-link>
+                            </div>
+                        </el-form-item>
+                        <el-form-item label="模型" prop="aiRunningModel">
+                            <el-select v-if="isModels" v-model="formAi.aiRunningModel" placeholder="选择一个正在运行的模型">
+                                <el-option label="选择一个正在运行的模型" value=""></el-option>
+                                <el-option v-for="model in aiRunningModels"
+                                           :key="model.details.family"
+                                           :value="model.details.family">
+                                    {{ model.details.family }}（{{ utils.formatFileSize(model.size) }}）
+                                </el-option>
+                            </el-select>
+                            <el-button icon="el-icon-refresh" v-on:click="btnRefreshAiClick">重新获取模型</el-button>
+                        </el-form-item>
+                        <el-form-item v-if="formAi.aiServe">
+                            <el-button plain icon="el-icon-check" type="success" v-on:click="btnAISubmitClick">保 存</el-button>
+                        </el-form-item>
+                    </el-form>
+                </el-scrollbar>
+            </el-card>
+        </el-tab-pane>
+    </el-tabs>
 </el-card>
 
 @section Scripts{
