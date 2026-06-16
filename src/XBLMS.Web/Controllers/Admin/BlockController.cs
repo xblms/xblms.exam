@@ -17,13 +17,17 @@ namespace XBLMS.Web.Controllers.Admin
         private readonly IBlockManager _blockManager;
         private readonly IBlockRuleRepository _ruleRepository;
         private readonly IConfigRepository _configRepository;
+        private readonly ILogRepository _logRepository;
+        private readonly IAdministratorRepository _administratorRepository;
 
-        public BlockController(ISettingsManager settingsManager, IBlockManager blockManager, IBlockRuleRepository ruleRepository, IConfigRepository configRepository)
+        public BlockController(ISettingsManager settingsManager, IBlockManager blockManager, IBlockRuleRepository ruleRepository, IConfigRepository configRepository, ILogRepository logRepository, IAdministratorRepository administratorRepository)
         {
             _settingsManager = settingsManager;
             _blockManager = blockManager;
             _ruleRepository = ruleRepository;
             _configRepository = configRepository;
+            _logRepository = logRepository;
+            _administratorRepository = administratorRepository;
         }
 
         public class QueryRequest

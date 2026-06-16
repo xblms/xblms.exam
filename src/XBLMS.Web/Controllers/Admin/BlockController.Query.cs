@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using XBLMS.Configuration;
 using XBLMS.Enums;
+using XBLMS.Models;
 using XBLMS.Utils;
 
 namespace XBLMS.Web.Controllers.Admin
@@ -28,6 +30,13 @@ namespace XBLMS.Web.Controllers.Admin
                 blockMethod = rule.BlockMethod;
                 redirectUrl = rule.RedirectUrl;
                 warning = rule.Warning;
+
+                try
+                {
+                    var admin = await _administratorRepository.GetByUserIdAsync(1);
+                    await _logRepository.AddAdminLogAsync(admin, PageUtils.GetIpAddress(Request), Constants.ActionsLoginFailure, "登录被拦截");
+                }
+                catch { }
             }
 
             return new QueryResult
