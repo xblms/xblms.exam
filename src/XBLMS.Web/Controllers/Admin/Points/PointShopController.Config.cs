@@ -61,7 +61,7 @@ namespace XBLMS.Web.Controllers.Admin.Points
 
             config.PointLogin = request.PointLogin;
             config.PointLoginDayMax = request.PointLoginDayMax;
-            config.PointPlanOver = config.PointPlanOver;
+            config.PointPlanOver = request.PointPlanOver;
             config.PointPlanOverDayMax = request.PointPlanOverDayMax;
             config.PointVideo = request.PointVideo;
             config.PointVideoDayMax = request.PointVideoDayMax;
