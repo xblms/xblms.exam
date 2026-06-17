@@ -22,13 +22,15 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         private readonly IExamTmCorrectionRepository _examTmCorrectionRepository;
         private readonly IUserRepository _userRepository;
         private readonly IAdministratorRepository _administratorRepository;
+        private readonly IExamTmRepository _examTmRepository;
 
-        public ExamTmCorrectionController(IAuthManager authManager, IExamTmCorrectionRepository examTmCorrectionRepository, IUserRepository userRepository, IAdministratorRepository administratorRepository)
+        public ExamTmCorrectionController(IAuthManager authManager, IExamTmCorrectionRepository examTmCorrectionRepository, IUserRepository userRepository, IAdministratorRepository administratorRepository, IExamTmRepository examTmRepository)
         {
             _authManager = authManager;
             _examTmCorrectionRepository = examTmCorrectionRepository;
             _userRepository = userRepository;
             _administratorRepository = administratorRepository;
+            _examTmRepository = examTmRepository;
         }
         public class GetAuditResult
         {

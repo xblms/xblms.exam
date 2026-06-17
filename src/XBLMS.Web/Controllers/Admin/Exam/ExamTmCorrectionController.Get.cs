@@ -27,6 +27,12 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                         item.Set("AdminDisplayName", admin?.DisplayName);
                     }
                     item.Set("AuditStatusStr", item.AuditStatus.GetDisplayName());
+
+                    var tm = await _examTmRepository.GetAsync(item.TmId);
+                    if (tm == null)
+                    {
+                        item.TmId = 0;
+                    }
                 }
             }
 

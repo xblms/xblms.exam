@@ -59,14 +59,19 @@ var methods = {
   btnAdminViewClick: function (id) {
     utils.openAdminView(id);
   },
-  btnTmViewClick: function (id) {
-    top.utils.openLayer({
-      title: false,
-      closebtn: 0,
-      url: utils.getCommonUrl('examTmCorrectionLayerView', { id: id }),
-      width: "88%",
-      height: "88%"
-    });
+  btnTmViewClick: function (row) {
+    if (row.tmId > 0) {
+      top.utils.openLayer({
+        title: false,
+        closebtn: 0,
+        url: utils.getCommonUrl('examTmCorrectionLayerView', { id: row.id }),
+        width: "88%",
+        height: "88%"
+      });
+    }
+    else {
+      utils.error('原题目被删除，无法继续操作');
+    }
   },
   handleSizeChange(val) {
     this.formInline.pageIndex = 1;
@@ -95,17 +100,22 @@ var methods = {
     });
   },
   btnEditClick: function (row) {
-    var $this = this;
-    top.utils.openLayer({
-      title: false,
-      closebtn: 0,
-      url: utils.getExamUrl('examTmEdit', { id: row.tmId, examPaperId: row.examPaperId }),
-      width: "78%",
-      height: "98%",
-      end: function () {
-        $this.apiGet();
-      }
-    });
+    if (row.tmId > 0) {
+      var $this = this;
+      top.utils.openLayer({
+        title: false,
+        closebtn: 0,
+        url: utils.getExamUrl('examTmEdit', { id: row.tmId, examPaperId: row.examPaperId }),
+        width: "78%",
+        height: "98%",
+        end: function () {
+          $this.apiGet();
+        }
+      });
+    }
+    else {
+      utils.error('原题目被删除，无法继续操作');
+    }
   },
 };
 

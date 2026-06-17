@@ -49,14 +49,19 @@ var methods = {
     this.form.pageIndex++;
     this.apiGet();
   },
-  btnTmViewClick: function (id) {
-    top.utils.openLayer({
-      title: false,
-      closebtn: 0,
-      url: utils.getExamUrl('examTmCorrectionLayerView', { id: id }),
-      width: "100%",
-      height: "100%"
-    });
+  btnTmViewClick: function (row) {
+    if (row.tmId > 0) {
+      top.utils.openLayer({
+        title: false,
+        closebtn: 0,
+        url: utils.getExamUrl('examTmCorrectionLayerView', { id: id }),
+        width: "100%",
+        height: "100%"
+      });
+    }
+    else {
+      utils.error('原题目被删除，无法继续操作');
+    }
   },
 };
 

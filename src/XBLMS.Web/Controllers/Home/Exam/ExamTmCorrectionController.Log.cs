@@ -18,6 +18,11 @@ namespace XBLMS.Web.Controllers.Home.Exam
                 foreach (var item in list)
                 {
                     item.Set("AuditStatusStr", item.AuditStatus.GetDisplayName());
+                    var tm = await _examTmRepository.GetAsync(item.TmId);
+                    if (tm == null)
+                    {
+                        item.TmId = 0;
+                    }
                 }
             }
 

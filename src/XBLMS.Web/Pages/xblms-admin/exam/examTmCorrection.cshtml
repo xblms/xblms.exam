@@ -33,7 +33,7 @@
         </el-table-column>
         <el-table-column prop="tmTitle" label="纠错题目" show-overflow-tooltip>
             <template slot-scope="scope">
-                <el-link type="primary" :underline="false" v-on:click="btnTmViewClick(scope.row.id)"><span v-html="scope.row.tmTitle"></span></el-link>
+                <el-link type="primary" :underline="false" v-on:click="btnTmViewClick(scope.row)"><span v-html="scope.row.tmTitle"></span></el-link>
             </template>
         </el-table-column>
         <el-table-column show-overflow-tooltip prop="createdUserName" label="纠错人">
