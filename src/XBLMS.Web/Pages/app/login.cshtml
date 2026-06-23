@@ -22,9 +22,6 @@
             <el-form-item class="text-center">
                 <span class="fw-bolder h2">用户登录</span>
             </el-form-item>
-            <el-form-item v-if="pageAlert" class="m-0">
-                <el-alert class="p-0 bg-white fs-6" :closable="false" :type="pageAlert.type" v-html="pageAlert.title"></el-alert>
-            </el-form-item>
             <el-form-item prop="account" :rules="[{ required: true, message: '请输入用户名' }]">
                 <el-input ref="account" v-model="form.account" placeholder="请输入用户名" autocomplete="off" v-on:keyup.enter.native="btnSubmitClick">
                 </el-input>

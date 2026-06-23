@@ -44,9 +44,6 @@
                             <el-form-item>
                                 <h2 class="mb-3">管理员登录</h2>
                             </el-form-item>
-                            <el-form-item v-if="pageAlert">
-                                <el-alert size="mini" :closable="false" :type="pageAlert.type" v-html="pageAlert.title" class="py-1"></el-alert>
-                            </el-form-item>
                             <el-form-item prop="account" :rules="[{ required: true, message: '请输入用户名' }]">
                                 <el-input ref="account" v-model="form.account" placeholder="请输入用户名" autocomplete="off" v-on:keyup.enter.native="btnSubmitClick">
                                 </el-input>

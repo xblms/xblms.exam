@@ -10,20 +10,11 @@ namespace XBLMS.Web.Controllers.Admin
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<GetResult>> Get()
         {
-            var redirectUrl = await AdminRedirectCheckAsync();
-            if (!string.IsNullOrEmpty(redirectUrl))
-            {
-                return new GetResult
-                {
-                    Success = false,
-                    RedirectUrl = redirectUrl
-                };
-            }
-
             var config = await _configRepository.GetAsync();
-
+            var installCheck = await _authManager.InstallRedirectCheckAsync();
             return new GetResult
             {
+                InstallCheck = installCheck,
                 Success = true,
                 Version = _settingsManager.Version,
                 VersionName = _settingsManager.VersionName,

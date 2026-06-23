@@ -66,8 +66,12 @@ var methods = {
       }
     }).then(function (response) {
       var res = response.data;
-
-      if (res.value) {
+        if (res.installCheck && res.installCheck.error)
+        {
+        utils.installCheck(res.installCheck);
+      }
+      else{
+           if (res.value) {
         if (res.isEnforcePasswordChange) {
           utils.error('账号密码已过期，请尽快修改密码');
           $this.redirectPassword(res.local.userName);
@@ -96,6 +100,8 @@ var methods = {
       } else {
         location.href = res.redirectUrl;
       }
+      }
+   
     }).catch(function (error) {
       utils.error(error);
       utils.loading($this, false);

@@ -24,26 +24,27 @@ var methods = {
   apiGet: function () {
     var $this = this;
 
-    if (this.status === 401) {
-      this.pageAlert = {
-        type: 'error',
-        title: '账号登录已过期或失效，请重新登录'
-      };
-    }
-
     utils.loading(this, true);
     $api.get($url).then(function (response) {
       var res = response.data;
-
-      $this.systemCodeName = res.systemCodeName;
+        if (res.installCheck.error)
+        {
+        utils.installCheck(res.installCheck);
+      }
+      else
+      {
+              $this.systemCodeName = res.systemCodeName;
       document.title = res.systemCodeName;
       $this.version = res.version;
       $this.versionName = res.versionName;
       $this.isUserCaptchaDisabled = res.isUserCaptchaDisabled;
       if ($this.isUserCaptchaDisabled) {
         $this.btnTypeClick();
-      } else {
+      }
+      else
+      {
         $this.apiCaptcha();
+      }
       }
     }).catch(function (error) {
       utils.error(error);

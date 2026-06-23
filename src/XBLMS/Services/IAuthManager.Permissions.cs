@@ -11,5 +11,6 @@ namespace XBLMS.Services
         Task<AdminAuth> GetAdminAuth();
         List<Select<string>> AuthorityDataTypes();
         List<Select<string>> AuthorityTypes();
+        Task<InstallCheckResult> InstallRedirectCheckAsync();
     }
 }

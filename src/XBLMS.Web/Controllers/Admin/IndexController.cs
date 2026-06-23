@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using XBLMS.Configuration;
+using XBLMS.Dto;
 using XBLMS.Repositories;
 using XBLMS.Services;
 
@@ -20,33 +20,24 @@ namespace XBLMS.Web.Controllers.Admin
 
         private readonly ISettingsManager _settingsManager;
         private readonly IAuthManager _authManager;
-        private readonly IPathManager _pathManager;
         private readonly IConfigRepository _configRepository;
         private readonly IAdministratorRepository _administratorRepository;
         private readonly IDbCacheRepository _dbCacheRepository;
-        private readonly IScheduledTaskRepository _scheduledTaskRepository;
-        private readonly ICreateManager _createManager;
-        private readonly ITaskManager _taskManager;
-        private readonly IErrorLogRepository _logRepository;
         private readonly IOrganCompanyRepository _organCompanyRepository;
-        private readonly IOrganDepartmentRepository _organDepartmentRepository;
 
-        public IndexController(ISettingsManager settingsManager, IAuthManager authManager, IPathManager pathManager, IConfigRepository configRepository, IAdministratorRepository administratorRepository, IDbCacheRepository dbCacheRepository, IScheduledTaskRepository scheduledTaskRepository,
-            ICreateManager createManager, ITaskManager taskManager, IErrorLogRepository logRepository, IOrganCompanyRepository organCompanyRepository, IOrganDepartmentRepository organDepartmentRepository)
+        public IndexController(ISettingsManager settingsManager,
+            IAuthManager authManager,
+            IConfigRepository configRepository,
+            IAdministratorRepository administratorRepository,
+            IDbCacheRepository dbCacheRepository,
+            IOrganCompanyRepository organCompanyRepository)
         {
             _settingsManager = settingsManager;
             _authManager = authManager;
-            _pathManager = pathManager;
             _configRepository = configRepository;
             _administratorRepository = administratorRepository;
             _dbCacheRepository = dbCacheRepository;
-            _scheduledTaskRepository = scheduledTaskRepository;
-
-            _createManager = createManager;
-            _taskManager = taskManager;
-            _logRepository = logRepository;
             _organCompanyRepository = organCompanyRepository;
-            _organDepartmentRepository = organDepartmentRepository;
         }
 
         public class Local
@@ -68,6 +59,7 @@ namespace XBLMS.Web.Controllers.Admin
         }
         public class GetResult
         {
+            public InstallCheckResult InstallCheck { get; set; }
             public string Version { get; set; }
             public string VersionName { get; set; }
             public bool IsSafeMode { get; set; }
@@ -92,27 +84,6 @@ namespace XBLMS.Web.Controllers.Admin
         public class SetLanguageRequest
         {
             public string Culture { get; set; }
-        }
-
-        private async Task<(bool redirect, string redirectUrl)> AdminRedirectCheckAsync()
-        {
-            var redirect = false;
-            var redirectUrl = string.Empty;
-
-            var config = await _configRepository.GetAsync();
-
-            if (string.IsNullOrEmpty(_settingsManager.Database.ConnectionString) || await _configRepository.IsNeedInstallAsync())
-            {
-                redirect = true;
-                redirectUrl = _pathManager.GetAdminUrl(InstallController.Route);
-            }
-            else if (config.Initialized && config.DatabaseVersion != _settingsManager.Version)
-            {
-                redirect = true;
-                redirectUrl = _pathManager.GetAdminUrl(SyncDatabaseController.Route);
-            }
-
-            return (redirect, redirectUrl);
         }
     }
 }

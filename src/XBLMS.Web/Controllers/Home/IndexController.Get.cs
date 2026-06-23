@@ -17,13 +17,12 @@ namespace XBLMS.Web.Controllers.Home
             var config = await _configRepository.GetAsync();
             if (config.IsHomeClosed) return this.Error("对不起，用户中心已被禁用！");
 
-            var (redirect, redirectUrl) = await AdminRedirectCheckAsync();
-            if (redirect)
+            var installCheck = await _authManager.InstallRedirectCheckAsync();
+            if (installCheck.Error)
             {
                 return new GetResult
                 {
-                    Value = false,
-                    RedirectUrl = redirectUrl
+                    InstallCheck = installCheck
                 };
             }
 

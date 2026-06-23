@@ -27,17 +27,15 @@ var methods = {
   apiGet: function () {
     var $this = this;
 
-    if (this.status === 401) {
-      this.pageAlert = {
-        type: 'error',
-        title: '账号登录已过期或失效，请重新登录'
-      };
-    }
-
     utils.loading(this, true);
     $api.get($url).then(function (response) {
       var res = response.data;
-      if (res.success) {
+        if (res.installCheck.error)
+        {
+        utils.installCheck(res.installCheck);
+      }
+      else{
+         if (res.success) {
         $this.systemCodeName = res.systemCodeName;
         document.title = res.systemCodeName;
         $this.version = res.version;
@@ -47,6 +45,8 @@ var methods = {
       } else {
         location.href = res.redirectUrl;
       }
+      }
+     
     }).catch(function (error) {
       utils.error(error);
     }).then(function () {

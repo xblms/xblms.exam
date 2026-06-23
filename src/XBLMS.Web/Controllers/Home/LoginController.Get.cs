@@ -11,9 +11,11 @@ namespace XBLMS.Web.Controllers.Home
         {
             var config = await _configRepository.GetAsync();
             if (config.IsHomeClosed) return this.Error("用户中心已被禁用！");
+            var installCheck = await _authManager.InstallRedirectCheckAsync();
 
             return new GetResult
             {
+                InstallCheck = installCheck,
                 Version = _settingsManager.Version,
                 VersionName = _settingsManager.VersionName,
                 IsUserCaptchaDisabled = config.IsUserCaptchaDisabled,

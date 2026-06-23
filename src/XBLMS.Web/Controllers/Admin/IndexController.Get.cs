@@ -22,13 +22,12 @@ namespace XBLMS.Web.Controllers.Admin
                 return this.Error($"访问已被禁止，IP地址：{PageUtils.GetIpAddress(Request)}，请与网站管理员联系开通访问权限");
             }
 
-            var (redirect, redirectUrl) = await AdminRedirectCheckAsync();
-            if (redirect)
+            var installCheck = await _authManager.InstallRedirectCheckAsync();
+            if (installCheck.Error)
             {
                 return new GetResult
                 {
-                    Value = false,
-                    RedirectUrl = redirectUrl
+                    InstallCheck = installCheck
                 };
             }
 

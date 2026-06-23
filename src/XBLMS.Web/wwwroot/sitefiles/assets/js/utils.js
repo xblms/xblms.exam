@@ -1248,6 +1248,9 @@ var utils = {
       padding: CryptoJS.pad.Pkcs7
     })
     return decrypt.toString(CryptoJS.enc.Utf8)
+  },
+  installCheck: function (installCheck) {
+    window.top.location.href = "/xblms-admin/installCheck?par=" + utils.uuid() + "&xblmscheck=" + installCheck.goInstall;
   }
 };
 

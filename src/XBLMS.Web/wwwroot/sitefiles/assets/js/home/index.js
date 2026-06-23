@@ -30,7 +30,12 @@ var methods = {
       }
     }).then(function (response) {
       var res = response.data;
-      if (res.value) {
+        if (res.installCheck && res.installCheck.error)
+        {
+        utils.installCheck(res.installCheck);
+      }
+      else{
+             if (res.value) {
         $this.displayName = res.displayName;
         $this.avatarUrl = res.avatarUrl;
         $this.systemCode = res.systemCode;
@@ -42,6 +47,8 @@ var methods = {
       else {
         location.href = res.redirectUrl;
       }
+      }
+ 
 
     }).catch(function (error) {
       utils.error(error);

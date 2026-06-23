@@ -86,5 +86,22 @@ namespace XBLMS.Core.Services
             };
             return authResult;
         }
+
+        public async Task<InstallCheckResult> InstallRedirectCheckAsync()
+        {
+            var result = new InstallCheckResult { GoInstall = false, Error = false };
+
+            if (string.IsNullOrEmpty(_settingsManager.Database.ConnectionString))
+            {
+                result.Error = true;
+                result.GoInstall = true;
+            }
+            else if (await _databaseManager.ConfigRepository.IsNeedInstallAsync())
+            {
+                result.Error = true;
+            }
+
+            return result;
+        }
     }
 }
