@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using XBLMS.Core.Utils;
 using XBLMS.Dto;
@@ -23,8 +22,6 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             var adminAuth = await _authManager.GetAdminAuth();
 
             var analysis = await _examTmAnalysisRepository.GetAsync(reqeust.Type, reqeust.PaperId, adminAuth.CurCompanyId);
-            var total = 0;
-            var list = new List<ExamTmAnalysisTm>();
             if (analysis != null)
             {
                 if (reqeust.ReAnalysis)
@@ -37,7 +34,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             }
             else
             {
-                var analysisId = await _examTmAnalysisRepository.InsertAsync(new ExamTmAnalysis
+                await _examTmAnalysisRepository.InsertAsync(new ExamTmAnalysis
                 {
                     CreatorId = adminAuth.AdminId,
                     CompanyId = adminAuth.CurCompanyId,
@@ -50,7 +47,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                 await Analysis(analysis, adminAuth);
             }
 
-            (total, list) = await _examTmAnalysisTmRepository.GetListAsync(adminAuth, reqeust.OrderType, reqeust.KeyWords, analysis.Id, reqeust.PageIndex, reqeust.PageSize);
+            var (total, list) = await _examTmAnalysisTmRepository.GetListAsync(adminAuth, reqeust.OrderType, reqeust.KeyWords, analysis.Id, reqeust.PageIndex, reqeust.PageSize);
 
             return new GetResult
             {
@@ -88,29 +85,29 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                     {
                         errorPercent = wrongTotal * 100 / answerTotal;
                         errorRate = ((double)answerTotal / ((double)answerTotal + 5)) * (double)wrongTotal;
+                        var analysisTm = new ExamTmAnalysisTm
+                        {
+                            TmId = tm.Id,
+                            AnalysisId = analysis.Id,
+                            AnswerCount = answerTotal,
+                            RightCount = rightTotal,
+                            WrongCount = wrongTotal,
+                            WrongRate = TranslateUtils.ToDecimal(errorRate.ToString(), 2),
+                            WrongPercent = TranslateUtils.ToDecimal(errorPercent.ToString(), 2),
+                            Title = StringUtils.StripTags(tm.Title),
+                            TxId = tm.TxId,
+                            TreeId = tm.TreeId,
+                            Jiexi = tm.Jiexi,
+                            Zhishidian = tm.Zhishidian,
+                            Nandu = tm.Nandu,
+                            Score = tm.Score,
+                            CreatorId = tm.CreatorId,
+                            CompanyId = tm.CompanyId,
+                            DepartmentId = tm.DepartmentId,
+                            CreatedDate = tm.CreatedDate
+                        };
+                        await _examTmAnalysisTmRepository.InsertAsync(analysisTm);
                     }
-                    var analysisTm = new ExamTmAnalysisTm
-                    {
-                        TmId = tm.Id,
-                        AnalysisId = analysis.Id,
-                        AnswerCount = answerTotal,
-                        RightCount = rightTotal,
-                        WrongCount = wrongTotal,
-                        WrongRate = TranslateUtils.ToDecimal(errorRate.ToString(), 2),
-                        WrongPercent = TranslateUtils.ToDecimal(errorPercent.ToString(), 2),
-                        Title = StringUtils.StripTags(tm.Title),
-                        TxId = tm.TxId,
-                        TreeId = tm.TreeId,
-                        Jiexi = tm.Jiexi,
-                        Zhishidian = tm.Zhishidian,
-                        Nandu = tm.Nandu,
-                        Score = tm.Score,
-                        CreatorId = tm.CreatorId,
-                        CompanyId = tm.CompanyId,
-                        DepartmentId = tm.DepartmentId,
-                        CreatedDate = tm.CreatedDate
-                    };
-                    await _examTmAnalysisTmRepository.InsertAsync(analysisTm);
                 }
             }
             if (analysis.TmAnalysisType == TmAnalysisType.ByPractice)
@@ -131,32 +128,30 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                         {
                             errorPercent = wrongTotal * 100 / answerTotal;
                             errorRate = ((double)answerTotal / ((double)answerTotal + 5)) * (double)wrongTotal;
+                            var analysisTm = new ExamTmAnalysisTm
+                            {
+                                TmId = tm.Id,
+                                AnalysisId = analysis.Id,
+                                AnswerCount = answerTotal,
+                                RightCount = rightTotal,
+                                WrongCount = wrongTotal,
+                                WrongRate = TranslateUtils.ToDecimal(errorRate.ToString(), 2),
+                                WrongPercent = TranslateUtils.ToDecimal(errorPercent.ToString(), 2),
+                                Title = StringUtils.StripTags(tm.Title),
+                                TxId = tm.TxId,
+                                TreeId = tm.TreeId,
+                                Jiexi = tm.Jiexi,
+                                Zhishidian = tm.Zhishidian,
+                                Nandu = tm.Nandu,
+                                Score = tm.Score,
+                                CreatedDate = tm.CreatedDate,
+                                CreatorId = tm.CreatorId,
+                                CompanyId = tm.CompanyId,
+                                DepartmentId = tm.DepartmentId
+                            };
+                            await _examTmAnalysisTmRepository.InsertAsync(analysisTm);
                         }
-                        var analysisTm = new ExamTmAnalysisTm
-                        {
-                            TmId = tm.Id,
-                            AnalysisId = analysis.Id,
-                            AnswerCount = answerTotal,
-                            RightCount = rightTotal,
-                            WrongCount = wrongTotal,
-                            WrongRate = TranslateUtils.ToDecimal(errorRate.ToString(), 2),
-                            WrongPercent = TranslateUtils.ToDecimal(errorPercent.ToString(), 2),
-                            Title = StringUtils.StripTags(tm.Title),
-                            TxId = tm.TxId,
-                            TreeId = tm.TreeId,
-                            Jiexi = tm.Jiexi,
-                            Zhishidian = tm.Zhishidian,
-                            Nandu = tm.Nandu,
-                            Score = tm.Score,
-                            CreatedDate = tm.CreatedDate,
-                            CreatorId = tm.CreatorId,
-                            CompanyId = tm.CompanyId,
-                            DepartmentId = tm.DepartmentId
-                        };
-                        await _examTmAnalysisTmRepository.InsertAsync(analysisTm);
                     }
-
-
                 }
             }
             if (analysis.TmAnalysisType == TmAnalysisType.ByExamOnlyOne)
@@ -185,30 +180,29 @@ namespace XBLMS.Web.Controllers.Admin.Exam
                         if (wrongTotal > 0)
                         {
                             errorPercent = wrongTotal * 100 / answerTotal;
-                            errorRate = ((double)answerTotal / ((double)answerTotal + 5)) * (double)wrongTotal;
+                            errorRate = ((double)answerTotal / ((double)answerTotal + 5)) * (double)wrongTotal; var analysisTm = new ExamTmAnalysisTm
+                            {
+                                TmId = tm.Id,
+                                AnalysisId = analysis.Id,
+                                AnswerCount = answerTotal,
+                                RightCount = rightTotal,
+                                WrongCount = wrongTotal,
+                                WrongRate = TranslateUtils.ToDecimal(errorRate.ToString(), 2),
+                                WrongPercent = TranslateUtils.ToDecimal(errorPercent.ToString(), 2),
+                                Title = StringUtils.StripTags(tm.Title),
+                                TxId = tm.TxId,
+                                TreeId = tm.TreeId,
+                                Jiexi = tm.Jiexi,
+                                Zhishidian = tm.Zhishidian,
+                                Nandu = tm.Nandu,
+                                Score = tm.Score,
+                                CreatedDate = tm.CreatedDate,
+                                CreatorId = tm.CreatorId,
+                                CompanyId = tm.CompanyId,
+                                DepartmentId = tm.DepartmentId
+                            };
+                            await _examTmAnalysisTmRepository.InsertAsync(analysisTm);
                         }
-                        var analysisTm = new ExamTmAnalysisTm
-                        {
-                            TmId = tm.Id,
-                            AnalysisId = analysis.Id,
-                            AnswerCount = answerTotal,
-                            RightCount = rightTotal,
-                            WrongCount = wrongTotal,
-                            WrongRate = TranslateUtils.ToDecimal(errorRate.ToString(), 2),
-                            WrongPercent = TranslateUtils.ToDecimal(errorPercent.ToString(), 2),
-                            Title = StringUtils.StripTags(tm.Title),
-                            TxId = tm.TxId,
-                            TreeId = tm.TreeId,
-                            Jiexi = tm.Jiexi,
-                            Zhishidian = tm.Zhishidian,
-                            Nandu = tm.Nandu,
-                            Score = tm.Score,
-                            CreatedDate = tm.CreatedDate,
-                            CreatorId = tm.CreatorId,
-                            CompanyId = tm.CompanyId,
-                            DepartmentId = tm.DepartmentId
-                        };
-                        await _examTmAnalysisTmRepository.InsertAsync(analysisTm);
                     }
 
                 }
