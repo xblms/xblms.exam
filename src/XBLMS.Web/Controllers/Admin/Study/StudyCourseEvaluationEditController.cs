@@ -15,20 +15,16 @@ namespace XBLMS.Web.Controllers.Admin.Study
     public partial class StudyCourseEvaluationEditController : ControllerBase
     {
         private const string Route = "study/studyCourseEvaluationEdit";
-        private const string RouteUpload = Route + "/upload";
 
         private readonly IAuthManager _authManager;
-        private readonly IStudyManager _studyManager;
         private readonly IStudyCourseEvaluationRepository _studyCourseEvaluationRepository;
         private readonly IStudyCourseEvaluationItemRepository _studyCourseEvaluationItemRepository;
 
         public StudyCourseEvaluationEditController(IAuthManager authManager,
-            IStudyManager studyManager,
             IStudyCourseEvaluationRepository studyCourseEvaluationRepository,
             IStudyCourseEvaluationItemRepository studyCourseEvaluationItemRepository)
         {
             _authManager = authManager;
-            _studyManager = studyManager;
             _studyCourseEvaluationRepository = studyCourseEvaluationRepository;
             _studyCourseEvaluationItemRepository = studyCourseEvaluationItemRepository;
         }

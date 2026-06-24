@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using System.Collections.Generic;
@@ -25,23 +24,17 @@ namespace XBLMS.Web.Controllers.Admin.Common
         private const string RouteCheck = Route + "/check";
         private const string RouteSubmit = Route + "/submit";
 
-        private readonly IHttpContextAccessor _context;
         private readonly IAuthManager _authManager;
         private readonly IExamTmRepository _examTmRepository;
         private readonly IExamTxRepository _examTxRepository;
-        private readonly IStatRepository _statRepository;
         private readonly IExamTmTreeRepository _examTmTreeRepository;
-        private readonly ITableStyleRepository _tableStyleRepository;
 
-        public EditorTmWordOpenLayerController(IHttpContextAccessor context, IAuthManager authManager, IExamTmRepository examTmRepository, IExamTxRepository examTxRepository, IStatRepository statRepository, IExamTmTreeRepository examTmTreeRepository, ITableStyleRepository tableStyleRepository)
+        public EditorTmWordOpenLayerController(IAuthManager authManager, IExamTmRepository examTmRepository, IExamTxRepository examTxRepository, IStatRepository statRepository, IExamTmTreeRepository examTmTreeRepository, ITableStyleRepository tableStyleRepository)
         {
-            _context = context;
             _authManager = authManager;
             _examTmRepository = examTmRepository;
             _examTxRepository = examTxRepository;
-            _statRepository = statRepository;
             _examTmTreeRepository = examTmTreeRepository;
-            _tableStyleRepository = tableStyleRepository;
         }
 
         public class GetResult

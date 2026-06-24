@@ -16,19 +16,16 @@ namespace XBLMS.Web.Controllers.Home.Exam
     {
         private const string Route = "exam/examPkRooms";
 
-        private readonly IAuthManager _authManager;
         private readonly IOrganManager _organManager;
 
         private readonly IExamPkRepository _examPkRepository;
         private readonly IExamPkRoomRepository _examPkRoomRepository;
 
 
-        public ExamPkRoomsController(IAuthManager authManager,
-            IOrganManager organManager,
+        public ExamPkRoomsController(IOrganManager organManager,
             IExamPkRepository examPkRepository,
             IExamPkRoomRepository examPkRoomRepository)
         {
-            _authManager = authManager;
             _organManager = organManager;
             _examPkRepository = examPkRepository;
             _examPkRoomRepository = examPkRoomRepository;

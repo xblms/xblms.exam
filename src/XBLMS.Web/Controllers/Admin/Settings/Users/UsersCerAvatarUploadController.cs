@@ -15,16 +15,12 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
         private const string Route = "settings/usersCerAvatarUpload";
 
         private readonly IAuthManager _authManager;
-        private readonly ISettingsManager _settingsManager;
-        private readonly IConfigRepository _configRepository;
         private readonly IUserRepository _userRepository;
         private readonly IUploadManager _uploadManager;
 
-        public UsersCerAvatarUploadController(IAuthManager authManager, ISettingsManager settingsManager, IConfigRepository configRepository, IUserRepository userRepository, IUploadManager uploadManager)
+        public UsersCerAvatarUploadController(IAuthManager authManager, IUserRepository userRepository, IUploadManager uploadManager)
         {
             _authManager = authManager;
-            _settingsManager = settingsManager;
-            _configRepository = configRepository;
             _userRepository = userRepository;
             _uploadManager = uploadManager;
         }

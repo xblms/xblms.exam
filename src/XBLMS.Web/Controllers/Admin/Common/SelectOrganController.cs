@@ -4,7 +4,6 @@ using NSwag.Annotations;
 using System.Collections.Generic;
 using XBLMS.Configuration;
 using XBLMS.Dto;
-using XBLMS.Repositories;
 using XBLMS.Services;
 
 namespace XBLMS.Web.Controllers.Admin.Common
@@ -18,22 +17,12 @@ namespace XBLMS.Web.Controllers.Admin.Common
         private const string RouteChange = "common/selectOrganChange";
 
         private readonly IAuthManager _authManager;
-        private readonly ICacheManager _cacheManager;
-        private readonly IConfigRepository _configRepository;
-        private readonly IAdministratorRepository _administratorRepository;
-        private readonly IUserRepository _userRepository;
-        private readonly IUserGroupRepository _userGroupRepository;
         private readonly IOrganManager _organManager;
 
-        public SelectOrganController(IAuthManager authManager, ICacheManager cacheManager, IConfigRepository configRepository, IAdministratorRepository administratorRepository, IUserGroupRepository userGroupRepository, IOrganManager organManager, IUserRepository userRepository)
+        public SelectOrganController(IAuthManager authManager,IOrganManager organManager)
         {
             _authManager = authManager;
-            _cacheManager = cacheManager;
-            _configRepository = configRepository;
-            _administratorRepository = administratorRepository;
-            _userGroupRepository = userGroupRepository;
             _organManager = organManager;
-            _userRepository = userRepository;
         }
         public class GetRequest
         {

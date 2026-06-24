@@ -17,23 +17,18 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
     {
         private const string Route = "settings/usersGroup";
         private const string RouteDelete = "settings/usersGroup/actions/delete";
-
         private const string RouteEditGet = "settings/usersGroup/actions/editGet";
         private const string RouteEditPost = "settings/usersGroup/actions/editPost";
 
         private readonly IAuthManager _authManager;
-        private readonly ICacheManager _cacheManager;
-        private readonly IConfigRepository _configRepository;
         private readonly IAdministratorRepository _administratorRepository;
         private readonly IUserGroupRepository _userGroupRepository;
         private readonly IOrganManager _organManager;
         private readonly IUserRepository _userRepository;
 
-        public UsersGroupController(IAuthManager authManager, ICacheManager cacheManager, IConfigRepository configRepository, IAdministratorRepository administratorRepository, IUserGroupRepository userGroupRepository, IOrganManager organManager, IUserRepository userRepository)
+        public UsersGroupController(IAuthManager authManager,IAdministratorRepository administratorRepository, IUserGroupRepository userGroupRepository, IOrganManager organManager, IUserRepository userRepository)
         {
             _authManager = authManager;
-            _cacheManager = cacheManager;
-            _configRepository = configRepository;
             _administratorRepository = administratorRepository;
             _userGroupRepository = userGroupRepository;
             _organManager = organManager;

@@ -16,14 +16,11 @@ namespace XBLMS.Web.Controllers.Home.Gift
     {
         private const string Route = "gifts";
 
-        private readonly IConfigRepository _configRepository;
         private readonly IAuthManager _authManager;
         private readonly IPointShopRepository _pointShopRepository;
 
-        public GiftsController(IConfigRepository configRepository,
-            IAuthManager authManager, IPointShopRepository pointShopRepository)
+        public GiftsController(IAuthManager authManager, IPointShopRepository pointShopRepository)
         {
-            _configRepository = configRepository;
             _authManager = authManager;
             _pointShopRepository = pointShopRepository;
         }

@@ -13,13 +13,11 @@ namespace XBLMS.Web.Controllers.Admin.Study
     {
         private const string Route = "study/studyCourseFileLayerView";
 
-        private readonly IAuthManager _authManager;
         private readonly IStudyCourseFilesRepository _studyCourseFilesRepository;
         private readonly IPathManager _pathManager;
 
-        public StudyCourseFileLayerViewController(IAuthManager authManager, IStudyCourseFilesRepository studyCourseFilesRepository, IPathManager pathManager)
+        public StudyCourseFileLayerViewController(IStudyCourseFilesRepository studyCourseFilesRepository, IPathManager pathManager)
         {
-            _authManager = authManager;
             _studyCourseFilesRepository = studyCourseFilesRepository;
             _pathManager = pathManager;
         }

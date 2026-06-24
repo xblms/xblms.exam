@@ -22,24 +22,16 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
         private const string RouteLock = "settings/administrators/actions/lock";
         private const string RouteUnLock = "settings/administrators/actions/unLock";
 
-        private readonly ICacheManager _cacheManager;
         private readonly IAuthManager _authManager;
-        private readonly IPathManager _pathManager;
-        private readonly IDatabaseManager _databaseManager;
         private readonly IAdministratorRepository _administratorRepository;
-        private readonly IRoleRepository _roleRepository;
-        private readonly IAdministratorsInRolesRepository _administratorsInRolesRepository;
         private readonly IOrganManager _organManager;
 
-        public AdministratorsController(ICacheManager cacheManager, IAuthManager authManager, IPathManager pathManager, IDatabaseManager databaseManager, IAdministratorRepository administratorRepository, IRoleRepository roleRepository, IOrganManager organManager, IAdministratorsInRolesRepository administratorsInRolesRepository)
+        public AdministratorsController(IAuthManager authManager,
+            IAdministratorRepository administratorRepository,
+            IOrganManager organManager)
         {
-            _cacheManager = cacheManager;
             _authManager = authManager;
-            _pathManager = pathManager;
-            _databaseManager = databaseManager;
             _administratorRepository = administratorRepository;
-            _roleRepository = roleRepository;
-            _administratorsInRolesRepository = administratorsInRolesRepository;
             _organManager = organManager;
         }
 

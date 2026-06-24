@@ -17,15 +17,13 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
         private const string RouteUpload = "settings/usersLayerProfile/actions/upload";
 
         private readonly IAuthManager _authManager;
-        private readonly IPathManager _pathManager;
         private readonly IUserRepository _userRepository;
         private readonly IOrganManager _organManager;
         private readonly IUploadManager _uploadManager;
 
-        public UsersLayerProfileController(IAuthManager authManager, IPathManager pathManager, IOrganManager organManager, IUserRepository userRepository, IUploadManager uploadManager)
+        public UsersLayerProfileController(IAuthManager authManager, IOrganManager organManager, IUserRepository userRepository, IUploadManager uploadManager)
         {
             _authManager = authManager;
-            _pathManager = pathManager;
             _organManager = organManager;
             _userRepository = userRepository;
             _uploadManager = uploadManager;

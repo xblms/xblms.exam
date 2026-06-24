@@ -15,7 +15,6 @@ namespace XBLMS.Web.Controllers.Home.Exam
         private const string Route = "exam/examQuestionnairing";
         private const string RouteSubmitPaper = Route + "/submitPaper";
 
-        private readonly IConfigRepository _configRepository;
         private readonly IAuthManager _authManager;
         private readonly IOrganManager _organManager;
 
@@ -24,15 +23,13 @@ namespace XBLMS.Web.Controllers.Home.Exam
         private readonly IExamQuestionnaireTmRepository _examQuestionnaireTmRepository;
         private readonly IExamQuestionnaireUserRepository _examQuestionnaireUserRepository;
 
-        public ExamQuestionnairingController(IConfigRepository configRepository,
-            IAuthManager authManager,
+        public ExamQuestionnairingController(IAuthManager authManager,
             IOrganManager organManager,
             IExamQuestionnaireRepository examQuestionnaireRepository,
             IExamQuestionnaireAnswerRepository examQuestionnaireAnswerRepository,
             IExamQuestionnaireTmRepository examQuestionnaireTmRepository,
             IExamQuestionnaireUserRepository examQuestionnaireUserRepository)
         {
-            _configRepository = configRepository;
             _authManager = authManager;
             _organManager = organManager;
             _examQuestionnaireRepository = examQuestionnaireRepository;

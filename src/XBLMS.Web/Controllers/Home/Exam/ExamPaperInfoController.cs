@@ -19,18 +19,14 @@ namespace XBLMS.Web.Controllers.Home.Exam
         private const string RouteClientExam = Route + "/clientExam";
         private const string RouteClientExamStatus = Route + "/clientExamStatus";
 
-        private readonly IConfigRepository _configRepository;
         private readonly IAuthManager _authManager;
-        private readonly IExamPaperUserRepository _examPaperUserRepository;
         private readonly IExamPaperRepository _examPaperRepository;
         private readonly IExamManager _examManager;
 
-        public ExamPaperInfoController(IConfigRepository configRepository, IAuthManager authManager, IExamPaperRepository examPaperRepository, IExamPaperUserRepository examPaperUserRepository, IExamManager examManager)
+        public ExamPaperInfoController(IAuthManager authManager, IExamPaperRepository examPaperRepository, IExamManager examManager)
         {
-            _configRepository = configRepository;
             _authManager = authManager;
             _examPaperRepository = examPaperRepository;
-            _examPaperUserRepository = examPaperUserRepository;
             _examManager = examManager;
         }
         public class GetRequest

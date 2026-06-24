@@ -17,40 +17,31 @@ namespace XBLMS.Web.Controllers.Home.Study
     {
         private const string Route = "study/studyCourseEvaluation";
 
-        private readonly IConfigRepository _configRepository;
         private readonly IAuthManager _authManager;
-        private readonly IStudyManager _studyManager;
         private readonly IOrganManager _organManager;
         private readonly IStudyCourseRepository _studyCourseRepository;
         private readonly IStudyCourseUserRepository _studyCourseUserRepository;
         private readonly IStudyPlanCourseRepository _studyPlanCourseRepository;
-        private readonly IStudyPlanRepository _studyPlanRepository;
         private readonly IStudyCourseEvaluationItemRepository _studyCourseEvaluationItemRepository;
         private readonly IStudyCourseEvaluationUserRepository _studyCourseEvaluationUserRepository;
         private readonly IStudyCourseEvaluationItemUserRepository _studyCourseEvaluationItemUserRepository;
         private readonly IStudyCourseEvaluationRepository _studyCourseEvaluationRepository;
 
-        public StudyCourseEvaluationController(IConfigRepository configRepository,
-            IAuthManager authManager,
-            IStudyManager studyManager,
+        public StudyCourseEvaluationController(IAuthManager authManager,
             IOrganManager organManager,
             IStudyCourseRepository studyCourseRepository,
             IStudyCourseUserRepository studyCourseUserRepository,
             IStudyPlanCourseRepository studyPlanCourseRepository,
-            IStudyPlanRepository studyPlanRepository,
             IStudyCourseEvaluationUserRepository studyCourseEvaluationUserRepository,
             IStudyCourseEvaluationItemUserRepository studyCourseEvaluationItemUserRepository,
             IStudyCourseEvaluationItemRepository studyCourseEvaluationItemRepository,
             IStudyCourseEvaluationRepository studyCourseEvaluationRepository)
         {
-            _configRepository = configRepository;
             _authManager = authManager;
-            _studyManager = studyManager;
             _organManager = organManager;
             _studyCourseRepository = studyCourseRepository;
             _studyCourseUserRepository = studyCourseUserRepository;
             _studyPlanCourseRepository = studyPlanCourseRepository;
-            _studyPlanRepository = studyPlanRepository;
             _studyCourseEvaluationUserRepository = studyCourseEvaluationUserRepository;
             _studyCourseEvaluationItemUserRepository = studyCourseEvaluationItemUserRepository;
             _studyCourseEvaluationItemRepository = studyCourseEvaluationItemRepository;

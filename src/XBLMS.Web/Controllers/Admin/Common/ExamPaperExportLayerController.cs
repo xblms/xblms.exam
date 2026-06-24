@@ -22,7 +22,6 @@ namespace XBLMS.Web.Controllers.Admin.Common
         private const string Route = "common/examPaperExportLayer";
         private const string RouteScore = Route + "/score";
 
-        private readonly IExamTmRepository _examTmRepository;
         private readonly IAuthManager _authManager;
         private readonly IPathManager _pathManager;
         private readonly IExamManager _examManager;
@@ -40,7 +39,6 @@ namespace XBLMS.Web.Controllers.Admin.Common
 
         public ExamPaperExportLayerController(IAuthManager authManager,
             IPathManager pathManager,
-            IExamTmRepository examTmRepository,
             IExamManager examManager,
             IOrganManager organManager,
             IExamPaperRepository examPaperRepository,
@@ -56,7 +54,6 @@ namespace XBLMS.Web.Controllers.Admin.Common
         {
             _authManager = authManager;
             _pathManager = pathManager;
-            _examTmRepository = examTmRepository;
             _examManager = examManager;
             _organManager = organManager;
             _examPaperRepository = examPaperRepository;

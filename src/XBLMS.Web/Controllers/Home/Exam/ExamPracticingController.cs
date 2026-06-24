@@ -21,16 +21,8 @@ namespace XBLMS.Web.Controllers.Home.Exam
         private const string RouteCollectionRemove = Route + "/collectionRemove";
         private const string RouteWrongRemove = Route + "/wrongRemove";
 
-        private const string RoutePricticingTmIds = Route+ "/tmids";
-        private const string RoutePricticingSubmit = Route+"/submit";
-        private const string RouteCollectionSubmit = Route + "/collectionSubmit";
-        private const string RouteError = Route + "home/exam/practice/error";
-        private const string RouteErrorDel = Route + "home/exam/practice/error/del";
 
         private readonly IAuthManager _authManager;
-        private readonly IConfigRepository _configRepository;
-        private readonly IDatabaseManager _databaseManager;
-        private readonly IAdministratorRepository _adminRepository;
         private readonly IExamTmRepository _examTmRepository;
         private readonly IExamPracticeRepository _examPracticeRepository;
         private readonly IExamTxRepository _examTxRepository;
@@ -43,10 +35,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
 
 
         public ExamPracticingController(IAuthManager authManager,
-            IConfigRepository configRepository,
-            IDatabaseManager databaseManager,
             IExamManager examManager,
-            IAdministratorRepository administratorRepository,
             IExamPracticeRepository examPracticeRepository,
             IExamTmRepository examTmRepository,
             IExamTxRepository examTxRepository,
@@ -58,9 +47,6 @@ namespace XBLMS.Web.Controllers.Home.Exam
         {
             _authManager = authManager;
             _examManager = examManager;
-            _configRepository = configRepository;
-            _databaseManager = databaseManager;
-            _adminRepository = administratorRepository;
             _examTmRepository = examTmRepository;
             _examPracticeRepository = examPracticeRepository;
             _examTxRepository = examTxRepository;

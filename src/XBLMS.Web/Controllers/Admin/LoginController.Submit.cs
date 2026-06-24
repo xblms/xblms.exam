@@ -38,27 +38,28 @@ namespace XBLMS.Web.Controllers.Admin
             string errorMessage;
             (administrator, userName, errorMessage) = await _administratorRepository.ValidateAsync(request.Account, request.Password, true);
 
+            var ipAddress = PageUtils.GetIpAddress(Request);
             if (administrator == null)
             {
                 administrator = await _administratorRepository.GetByUserNameAsync(userName);
                 if (administrator != null)
                 {
                     await _authManager.AddStatCount(StatType.AdminLoginFailure, administrator);
-                    await _administratorRepository.UpdateLastActivityDateAndCountOfFailedLoginAsync(administrator); // 记录最后登录时间、失败次数+1
+                    await _administratorRepository.UpdateLastActivityDateAndCountOfFailedLoginAsync(administrator); 
+                    await _logRepository.AddAdminLogAsync(administrator, ipAddress, Constants.ActionsLoginFailure, "尝试登录但密码错误");
                 }
-
 
                 return this.Error(errorMessage);
             }
 
             administrator = await _administratorRepository.GetByUserNameAsync(userName);
 
-            await _administratorRepository.UpdateLastActivityDateAndCountOfLoginAsync(administrator); // 记录最后登录时间、失败次数清零
+            await _administratorRepository.UpdateLastActivityDateAndCountOfLoginAsync(administrator);
 
             var token = _authManager.AuthenticateAdministrator(administrator, request.IsPersistent);
 
             await _authManager.AddStatCount(StatType.AdminLoginSuccess, administrator);
-            await _logRepository.AddAdminLogAsync(administrator, PageUtils.GetIpAddress(Request), Constants.ActionsLoginSuccess);
+            await _logRepository.AddAdminLogAsync(administrator, ipAddress, Constants.ActionsLoginSuccess);
 
             var cacheKey = Constants.GetSessionIdCacheKey(administrator.Id);
             if (!request.IsForceLogoutAndLogin)

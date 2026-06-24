@@ -16,17 +16,13 @@ namespace XBLMS.Web.Controllers.Admin.Common
     {
         private const string Route = "common/userLayerView";
 
-        private readonly IAuthManager _authManager;
         private readonly IUserRepository _userRepository;
-        private readonly IUserGroupRepository _userGroupRepository;
         private readonly IOrganManager _organManager;
         private readonly IConfigRepository _configRepository;
 
-        public UserLayerViewController(IAuthManager authManager, IUserRepository userRepository, IUserGroupRepository userGroupRepository, IOrganManager organManager, IConfigRepository configRepository)
+        public UserLayerViewController(IUserRepository userRepository, IOrganManager organManager, IConfigRepository configRepository)
         {
-            _authManager = authManager;
             _userRepository = userRepository;
-            _userGroupRepository = userGroupRepository;
             _organManager = organManager;
             _configRepository = configRepository;
         }

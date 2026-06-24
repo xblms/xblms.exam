@@ -18,22 +18,12 @@ namespace XBLMS.Web.Controllers.Admin.Common
         private const string Route = "common/selectAdministrators";
 
         private readonly IAuthManager _authManager;
-        private readonly ICacheManager _cacheManager;
-        private readonly IConfigRepository _configRepository;
         private readonly IAdministratorRepository _administratorRepository;
-        private readonly IUserRepository _userRepository;
-        private readonly IUserGroupRepository _userGroupRepository;
-        private readonly IOrganManager _organManager;
 
-        public SelectAdministratorsController(IAuthManager authManager, ICacheManager cacheManager, IConfigRepository configRepository, IAdministratorRepository administratorRepository, IUserGroupRepository userGroupRepository, IOrganManager organManager, IUserRepository userRepository)
+        public SelectAdministratorsController(IAuthManager authManager,IAdministratorRepository administratorRepository)
         {
             _authManager = authManager;
-            _cacheManager = cacheManager;
-            _configRepository = configRepository;
             _administratorRepository = administratorRepository;
-            _userGroupRepository = userGroupRepository;
-            _organManager = organManager;
-            _userRepository = userRepository;
         }
         public class GetRequest
         {

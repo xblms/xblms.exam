@@ -21,15 +21,10 @@ namespace XBLMS.Web.Controllers.Home.Study
         private const string RouteCollection = Route + "/collection";
         private const string RouteEvaluation = Route + "/evaluation";
 
-        private readonly IConfigRepository _configRepository;
         private readonly IAuthManager _authManager;
-        private readonly IStudyManager _studyManager;
         private readonly IOrganManager _organManager;
         private readonly IStudyCourseRepository _studyCourseRepository;
         private readonly IStudyCourseUserRepository _studyCourseUserRepository;
-        private readonly IStudyCourseWareRepository _studyCourseWareRepository;
-        private readonly IStudyCourseWareUserRepository _studyCourseWareUserRepository;
-        private readonly IStudyPlanRepository _studyPlanRepository;
         private readonly IStudyPlanCourseRepository _studyPlanCourseRepository;
         private readonly IExamPaperRepository _examPaperRepository;
         private readonly IExamPaperStartRepository _examPaperStartRepository;
@@ -39,15 +34,11 @@ namespace XBLMS.Web.Controllers.Home.Study
         private readonly IStudyCourseEvaluationRepository _studyCourseEvaluationRepository;
         private readonly IStudyPlanUserRepository _studyPlanUserRepository;
 
-        public StudyCourseOfflineInfoController(IConfigRepository configRepository,
-            IAuthManager authManager,
+        public StudyCourseOfflineInfoController(IAuthManager authManager,
             IStudyManager studyManager,
             IOrganManager organManager,
             IStudyCourseRepository studyCourseRepository,
             IStudyCourseUserRepository studyCourseUserRepository,
-            IStudyCourseWareRepository studyCourseWareRepository,
-            IStudyCourseWareUserRepository studyCourseWareUserRepository,
-            IStudyPlanRepository studyPlanRepository,
             IStudyPlanCourseRepository studyPlanCourseRepository,
             IExamPaperRepository examPaperRepository,
             IExamPaperStartRepository examPaperStartRepository,
@@ -57,15 +48,10 @@ namespace XBLMS.Web.Controllers.Home.Study
             IStudyCourseEvaluationRepository studyCourseEvaluationRepository,
             IStudyPlanUserRepository studyPlanUserRepository)
         {
-            _configRepository = configRepository;
             _authManager = authManager;
-            _studyManager = studyManager;
             _organManager = organManager;
             _studyCourseRepository = studyCourseRepository;
             _studyCourseUserRepository = studyCourseUserRepository;
-            _studyCourseWareRepository = studyCourseWareRepository;
-            _studyCourseWareUserRepository = studyCourseWareUserRepository;
-            _studyPlanRepository = studyPlanRepository;
             _studyPlanCourseRepository = studyPlanCourseRepository;
             _examPaperRepository = examPaperRepository;
             _examPaperStartRepository = examPaperStartRepository;

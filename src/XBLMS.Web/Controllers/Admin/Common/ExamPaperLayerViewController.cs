@@ -16,22 +16,17 @@ namespace XBLMS.Web.Controllers.Admin.Common
     {
         private const string Route = "common/examPaperLayerView";
 
-        private readonly IExamTmRepository _examTmRepository;
-        private readonly IAuthManager _authManager;
         private readonly IExamManager _examManager;
         private readonly IExamPaperRepository _examPaperRepository;
         private readonly IExamPaperRandomRepository _examPaperRandomRepository;
         private readonly IExamPaperRandomConfigRepository _examPaperRandomConfigRepository;
         private readonly IExamPaperRandomTmRepository _examPaperRandomTmRepository;
 
-        public ExamPaperLayerViewController(IAuthManager authManager,
-            IExamTmRepository examTmRepository, IExamManager examManager,
+        public ExamPaperLayerViewController(IExamManager examManager,
             IExamPaperRepository examPaperRepository,
             IExamPaperRandomRepository examPaperRandomRepository,
             IExamPaperRandomConfigRepository examPaperRandomConfigRepository, IExamPaperRandomTmRepository examPaperRandomTmRepository)
         {
-            _authManager = authManager;
-            _examTmRepository = examTmRepository;
             _examManager = examManager;
             _examPaperRepository = examPaperRepository;
             _examPaperRandomRepository = examPaperRandomRepository;

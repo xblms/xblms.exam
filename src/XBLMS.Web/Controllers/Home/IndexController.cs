@@ -17,23 +17,17 @@ namespace XBLMS.Web.Controllers.Home
         private const string Route = "index";
         private const string RouteSession = Route + "/resses";
 
-        private readonly ISettingsManager _settingsManager;
         private readonly IAuthManager _authManager;
         private readonly IConfigRepository _configRepository;
         private readonly IDbCacheRepository _dbCacheRepository;
-        private readonly IPathManager _pathManager;
 
         public IndexController(IAuthManager authManager,
-            ISettingsManager settingsManager,
             IConfigRepository configRepository,
-            IDbCacheRepository dbCacheRepository,
-            IPathManager pathManager)
+            IDbCacheRepository dbCacheRepository)
         {
-            _settingsManager = settingsManager;
             _authManager = authManager;
             _configRepository = configRepository;
             _dbCacheRepository = dbCacheRepository;
-            _pathManager = pathManager;
         }
         public class GetRequest
         {

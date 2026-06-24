@@ -19,11 +19,9 @@ namespace XBLMS.Web.Controllers.Home.Exam
         private const string RouteSubmitTiming = Route + "/submitTiming";
         private const string RouteSubmitAnswerSmall = Route + "/submitAnswerSmall";
 
-        private readonly IConfigRepository _configRepository;
         private readonly IAuthManager _authManager;
         private readonly ICreateManager _createManager;
         private readonly IOrganManager _organManager;
-        private readonly IExamPaperUserRepository _examPaperUserRepository;
         private readonly IExamPaperRepository _examPaperRepository;
         private readonly IExamPaperRandomConfigRepository _examPaperRandomConfigRepository;
         private readonly IExamPaperRandomRepository _examPaperRandomRepository;
@@ -35,11 +33,9 @@ namespace XBLMS.Web.Controllers.Home.Exam
         private readonly IExamPaperRandomTmSmallRepository _examPaperRandomTmSmallRepository;
         private readonly IExamPaperAnswerSmallRepository _examPaperAnswerSmallRepository;
 
-        public ExamPaperExamingController(IConfigRepository configRepository,
-            ICreateManager createManager,
+        public ExamPaperExamingController(ICreateManager createManager,
             IAuthManager authManager,
             IExamPaperRepository examPaperRepository,
-            IExamPaperUserRepository examPaperUserRepository,
             IExamPaperRandomConfigRepository examPaperRandomConfigRepository,
             IExamPaperRandomRepository examPaperRandomRepository,
             IExamPaperRandomTmRepository examPaperRandomTmRepository,
@@ -51,11 +47,9 @@ namespace XBLMS.Web.Controllers.Home.Exam
             IExamPaperRandomTmSmallRepository examPaperRandomTmSmallRepository,
             IExamPaperAnswerSmallRepository examPaperAnswerSmallRepository)
         {
-            _configRepository = configRepository;
             _authManager = authManager;
             _createManager = createManager;
             _examPaperRepository = examPaperRepository;
-            _examPaperUserRepository = examPaperUserRepository;
             _examPaperRandomConfigRepository = examPaperRandomConfigRepository;
             _examPaperRandomRepository = examPaperRandomRepository;
             _examPaperRandomTmRepository = examPaperRandomTmRepository;

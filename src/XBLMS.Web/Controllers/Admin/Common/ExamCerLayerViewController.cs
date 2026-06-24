@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using XBLMS.Configuration;
 using XBLMS.Repositories;
-using XBLMS.Services;
 
 namespace XBLMS.Web.Controllers.Admin.Common
 {
@@ -14,13 +13,11 @@ namespace XBLMS.Web.Controllers.Admin.Common
     {
         private const string Route = "common/examCerLayerView";
 
-        private readonly IAuthManager _authManager;
         private readonly IExamCerRepository _examCerRepository;
         private readonly IExamCerUserRepository _examCerUserRepository;
 
-        public ExamCerLayerViewController(IAuthManager authManager, IExamCerRepository examCerRepository, IExamCerUserRepository examCerUserRepository)
+        public ExamCerLayerViewController(IExamCerRepository examCerRepository, IExamCerUserRepository examCerUserRepository)
         {
-            _authManager = authManager;
             _examCerRepository = examCerRepository;
             _examCerUserRepository = examCerUserRepository;
         }

@@ -16,26 +16,13 @@ namespace XBLMS.Web.Controllers.Admin.Exam
     {
         private const string Route = "exam/examPaperSelect";
 
-
         private readonly IAuthManager _authManager;
-        private readonly IExamManager _examManager;
         private readonly IExamPaperRepository _examPaperRepository;
-        private readonly IExamPaperTreeRepository _examPaperTreeRepository;
-        private readonly IExamPaperUserRepository _examPaperUserRepository;
-        private readonly IExamPaperStartRepository _examPaperStartRepository;
         public ExamPaperSelectController(IAuthManager authManager,
-            IExamManager examManager,
-            IExamPaperRepository examPaperRepository,
-            IExamPaperTreeRepository examPaperTreeRepository,
-            IExamPaperUserRepository examPaperUserRepository,
-            IExamPaperStartRepository examPaperStartRepository)
+            IExamPaperRepository examPaperRepository)
         {
             _authManager = authManager;
-            _examManager = examManager;
             _examPaperRepository = examPaperRepository;
-            _examPaperTreeRepository = examPaperTreeRepository;
-            _examPaperUserRepository = examPaperUserRepository;
-            _examPaperStartRepository = examPaperStartRepository;
         }
 
         public class GetRequest

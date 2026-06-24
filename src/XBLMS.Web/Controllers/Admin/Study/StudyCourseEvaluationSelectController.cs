@@ -17,20 +17,13 @@ namespace XBLMS.Web.Controllers.Admin.Study
         private const string Route = "study/studyCourseEvaluationSelect";
 
         private readonly IAuthManager _authManager;
-        private readonly IStudyManager _studyManager;
         private readonly IStudyCourseEvaluationRepository _studyCourseEvaluationRepository;
-        private readonly IStudyCourseEvaluationItemRepository _studyCourseEvaluationItemRepository;
 
         public StudyCourseEvaluationSelectController(IAuthManager authManager,
-            IExamManager examManager,
-            IStudyManager studyManager,
-            IStudyCourseEvaluationRepository studyCourseEvaluationRepository,
-            IStudyCourseEvaluationItemRepository studyCourseEvaluationItemRepository)
+            IStudyCourseEvaluationRepository studyCourseEvaluationRepository)
         {
             _authManager = authManager;
-            _studyManager = studyManager;
             _studyCourseEvaluationRepository = studyCourseEvaluationRepository;
-            _studyCourseEvaluationItemRepository = studyCourseEvaluationItemRepository;
         }
         public class GetRequest
         {

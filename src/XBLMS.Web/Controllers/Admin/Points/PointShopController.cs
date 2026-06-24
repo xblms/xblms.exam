@@ -17,15 +17,11 @@ namespace XBLMS.Web.Controllers.Admin.Points
     {
         private const string Route = "points/pointshop";
         private const string RouteDelete = Route + "/del";
-
         private const string RouteItem = Route + "/item";
         private const string RouteItemUpload = RouteItem + "/upload";
-
         private const string RouteUsers = Route + "/users";
-
         private const string RouteConfig = Route + "/config";
 
-        private readonly ISettingsManager _settingsManager;
         private readonly IAuthManager _authManager;
         private readonly IConfigRepository _configRepository;
         private readonly IPointShopRepository _pointShopRepository;
@@ -34,9 +30,8 @@ namespace XBLMS.Web.Controllers.Admin.Points
         private readonly IPointShopUserRepository _pointShopUserRepository;
         private readonly IUserRepository _userRepository;
 
-        public UtilitiesPointShopController(ISettingsManager settingsManager, IAuthManager authManager, IConfigRepository configRepository, IPointShopRepository pointShopRepository, IUploadManager uploadManager, IAdministratorRepository administratorRepository, IPointShopUserRepository pointShopUserRepository, IUserRepository userRepository)
+        public UtilitiesPointShopController(IAuthManager authManager, IConfigRepository configRepository, IPointShopRepository pointShopRepository, IUploadManager uploadManager, IAdministratorRepository administratorRepository, IPointShopUserRepository pointShopUserRepository, IUserRepository userRepository)
         {
-            _settingsManager = settingsManager;
             _authManager = authManager;
             _configRepository = configRepository;
             _pointShopRepository = pointShopRepository;

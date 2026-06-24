@@ -17,7 +17,6 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         private const string Route = "exam/examPkUsers";
 
         private readonly IAuthManager _authManager;
-        private readonly IPathManager _pathManager;
         private readonly IOrganManager _organManager;
 
         private readonly IExamPkRepository _examPkRepository;
@@ -25,13 +24,11 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
 
         public ExamPkUsersController(IAuthManager authManager,
-            IPathManager pathManager,
             IOrganManager organManager,
             IExamPkRepository examPkRepository,
             IExamPkUserRepository examPkUserRepository)
         {
             _authManager = authManager;
-            _pathManager = pathManager;
             _organManager = organManager;
             _examPkRepository = examPkRepository;
             _examPkUserRepository = examPkUserRepository;

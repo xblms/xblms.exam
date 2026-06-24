@@ -20,21 +20,18 @@ namespace XBLMS.Web.Controllers.Admin.Study
         private const string RouteUnLock = Route + "/unLock";
 
         private readonly IAuthManager _authManager;
-        private readonly IStudyManager _studyManager;
         private readonly IStudyCourseRepository _studyCourseRepository;
         private readonly IStudyCourseUserRepository _studyCourseUserRepository;
         private readonly IStudyCourseWareRepository _studyCourseWareRepository;
         private readonly IStudyPlanCourseRepository _studyPlanCourseRepository;
 
         public StudyCourseController(IAuthManager authManager,
-            IStudyManager studyManager,
             IStudyCourseRepository studyCourseRepository,
             IStudyCourseWareRepository studyCourseWareRepository,
             IStudyCourseUserRepository studyCourseUserRepository,
             IStudyPlanCourseRepository studyPlanCourseRepository)
         {
             _authManager = authManager;
-            _studyManager = studyManager;
             _studyCourseRepository = studyCourseRepository;
             _studyCourseWareRepository = studyCourseWareRepository;
             _studyCourseUserRepository = studyCourseUserRepository;

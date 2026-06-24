@@ -18,20 +18,16 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         private const string RouteDelete = Route + "/del";
 
         private readonly IAuthManager _authManager;
-        private readonly IPathManager _pathManager;
         private readonly ISettingsManager _settingsManager;
         private readonly IExamCerRepository _examCerRepository;
         private readonly IExamCerUserRepository _examCerUserRepository;
         private readonly IExamPaperRepository _examPaperRepository;
-        private readonly IDatabaseManager _databaseManager;
 
-        public ExamCerController(IDatabaseManager databaseManager, IAuthManager authManager, ISettingsManager settingsManager, IPathManager pathManager,
+        public ExamCerController(IAuthManager authManager, ISettingsManager settingsManager,
             IExamCerRepository examCerRepository, IExamCerUserRepository examCerUserRepository, IExamPaperRepository examPaperRepository)
         {
-            _databaseManager = databaseManager;
             _authManager = authManager;
             _settingsManager = settingsManager;
-            _pathManager = pathManager;
             _examCerRepository = examCerRepository;
             _examCerUserRepository = examCerUserRepository;
             _examPaperRepository = examPaperRepository;

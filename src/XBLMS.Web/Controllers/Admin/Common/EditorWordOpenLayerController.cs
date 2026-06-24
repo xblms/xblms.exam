@@ -19,12 +19,10 @@ namespace XBLMS.Web.Controllers.Admin.Common
     {
         private const string Route = "common/editorWordOpenLayer";
 
-        private readonly IHttpContextAccessor _context;
         private readonly IPathManager _pathManager;
 
-        public EditorWordOpenLayerController(IHttpContextAccessor context, IPathManager pathManager)
+        public EditorWordOpenLayerController(IPathManager pathManager)
         {
-            _context = context;
             _pathManager = pathManager;
         }
 

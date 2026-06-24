@@ -21,30 +21,21 @@ namespace XBLMS.Web.Controllers.Admin.Common
         private const string RouteRange = Route + "/range";
 
         private readonly IAuthManager _authManager;
-        private readonly IPathManager _pathManager;
-        private readonly IDatabaseManager _databaseManager;
         private readonly IUserRepository _userRepository;
-        private readonly IUserGroupRepository _userGroupRepository;
         private readonly IOrganManager _organManager;
         private readonly IExamPaperUserRepository _examPaperUserRepository;
         private readonly IExamManager _examManager;
         private readonly IExamPaperRepository _examPaperRepository;
 
         public UsersRangeController(IAuthManager authManager,
-            IPathManager pathManager,
-            IDatabaseManager databaseManager,
             IUserRepository userRepository,
-            IUserGroupRepository userGroupRepository,
             IOrganManager organManager,
             IExamManager examManager,
             IExamPaperUserRepository examPaperUserRepository,
             IExamPaperRepository examPaperRepository)
         {
             _authManager = authManager;
-            _pathManager = pathManager;
-            _databaseManager = databaseManager;
             _userRepository = userRepository;
-            _userGroupRepository = userGroupRepository;
             _organManager = organManager;
             _examManager = examManager;
             _examPaperUserRepository = examPaperUserRepository;

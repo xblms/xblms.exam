@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using XBLMS.Configuration;
 using XBLMS.Models;
 using XBLMS.Repositories;
-using XBLMS.Services;
 
 namespace XBLMS.Web.Controllers.Admin.Common
 {
@@ -16,14 +15,11 @@ namespace XBLMS.Web.Controllers.Admin.Common
     {
         private const string Route = "common/examAssessmentConfigLayerView";
 
-        private readonly IAuthManager _authManager;
-
         private readonly IExamAssessmentConfigSetRepository _examAssessmentConfigSetRepository;
         private readonly IExamAssessmentConfigRepository _examAssessmentConfigRepository;
 
-        public ExamAssessmentConfigLayerViewController(IAuthManager authManager, IExamAssessmentConfigSetRepository examAssessmentConfigSetRepository, IExamAssessmentConfigRepository examAssessmentConfigRepository)
+        public ExamAssessmentConfigLayerViewController(IExamAssessmentConfigSetRepository examAssessmentConfigSetRepository, IExamAssessmentConfigRepository examAssessmentConfigRepository)
         {
-            _authManager = authManager;
             _examAssessmentConfigSetRepository = examAssessmentConfigSetRepository;
             _examAssessmentConfigRepository = examAssessmentConfigRepository;
         }

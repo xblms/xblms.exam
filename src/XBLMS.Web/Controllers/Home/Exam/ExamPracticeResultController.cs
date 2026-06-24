@@ -16,16 +16,14 @@ namespace XBLMS.Web.Controllers.Home.Exam
         private const string Route = "exam/examPracticeResult";
         private const string RouteView = Route + "/view";
 
-        private readonly IConfigRepository _configRepository;
         private readonly IAuthManager _authManager;
         private readonly IExamPracticeRepository _examPracticeRepository;
         private readonly IExamPracticeAnswerRepository _examPracticeAnswerRepository;
         private readonly IExamManager _examManager;
 
-        public ExamPracticeResultController(IConfigRepository configRepository,IExamManager examManager,
+        public ExamPracticeResultController(IExamManager examManager,
             IAuthManager authManager, IExamPracticeRepository examPracticeRepository, IExamPracticeAnswerRepository examPracticeAnswerRepository)
         {
-            _configRepository = configRepository;
             _authManager = authManager;
             _examManager = examManager;
             _examPracticeRepository = examPracticeRepository;

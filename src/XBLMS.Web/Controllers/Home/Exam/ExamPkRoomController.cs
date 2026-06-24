@@ -17,12 +17,10 @@ namespace XBLMS.Web.Controllers.Home.Exam
     {
         private const string Route = "exam/examPkRoom";
         private const string RouteNotice = Route + "/notice";
-        private const string RouteFinish = Route + "/finish";
 
         private readonly ISettingsManager _settingsManager;
         private readonly IAuthManager _authManager;
         private readonly ICacheManager _cacheManager;
-        private readonly IOrganManager _organManager;
         private readonly IUserRepository _userRepository;
 
         private readonly ISignalRHubManagerMessage _signalRHubManagerMessage;
@@ -35,7 +33,6 @@ namespace XBLMS.Web.Controllers.Home.Exam
         public ExamPkRoomController(IAuthManager authManager,
             ISettingsManager settingsManager,
             ICacheManager cacheManager,
-            IOrganManager organManager,
             IUserRepository userRepository,
             ISignalRHubManagerMessage signalRHubManagerMessage,
             IExamManager examManager,
@@ -45,7 +42,6 @@ namespace XBLMS.Web.Controllers.Home.Exam
             _settingsManager = settingsManager;
             _authManager = authManager;
             _cacheManager = cacheManager;
-            _organManager = organManager;
             _signalRHubManagerMessage = signalRHubManagerMessage;
             _userRepository = userRepository;
             _examManager = examManager;

@@ -16,26 +16,22 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
     public partial class UsersGroupRangeController : ControllerBase
     {
         private const string Route = "settings/usersGroupRange";
-        private const string RouteOtherData = Route+"/actions/otherData";
         private const string RouteRange = Route + "/actions/range";
 
         private readonly IAuthManager _authManager;
-        private readonly IPathManager _pathManager;
-        private readonly IDatabaseManager _databaseManager;
         private readonly IUserRepository _userRepository;
         private readonly IUserGroupRepository _userGroupRepository;
         private readonly IOrganManager _organManager;
-        private readonly IExamManager _examManager;
 
-        public UsersGroupRangeController(IAuthManager authManager, IPathManager pathManager, IDatabaseManager databaseManager, IUserRepository userRepository, IUserGroupRepository userGroupRepository, IOrganManager organManager, IExamManager examManager)
+        public UsersGroupRangeController(IAuthManager authManager,
+            IUserRepository userRepository,
+            IUserGroupRepository userGroupRepository,
+            IOrganManager organManager)
         {
             _authManager = authManager;
-            _pathManager = pathManager;
-            _databaseManager = databaseManager;
             _userRepository = userRepository;
             _userGroupRepository = userGroupRepository;
             _organManager = organManager;
-            _examManager = examManager;
         }
 
         public class GetRequest

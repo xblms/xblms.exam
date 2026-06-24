@@ -14,15 +14,11 @@ namespace XBLMS.Web.Controllers.Admin.Common
     {
         private const string Route = "common/examTmDeleteLayerView";
 
-        private readonly IExamTmRepository _examTmRepository;
-        private readonly IAuthManager _authManager;
         private readonly IExamManager _examManager;
         private readonly IStatLogRepository _statLogRepository;
 
-        public ExamTmDeleteLayerViewController(IAuthManager authManager, IExamTmRepository examTmRepository, IExamManager examManager, IStatLogRepository statLogRepository)
+        public ExamTmDeleteLayerViewController(IExamManager examManager, IStatLogRepository statLogRepository)
         {
-            _authManager = authManager;
-            _examTmRepository = examTmRepository;
             _examManager = examManager;
             _statLogRepository = statLogRepository;
         }

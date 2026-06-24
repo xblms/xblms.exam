@@ -13,25 +13,18 @@ namespace XBLMS.Web.Controllers.Admin.Knowledges
     public partial class KnowledgesEditController : ControllerBase
     {
         private const string Route = "knowledges/edit";
-
         private const string RouteUpload = Route + "/upload";
 
         private readonly IAuthManager _authManager;
-        private readonly IPathManager _pathManager;
-        private readonly ISettingsManager _settingsManager;
         private readonly IKnowlegesRepository _knowlegesRepository;
-        private readonly IKnowlegesTreeRepository _knowlegesTreeRepository;
-        private readonly IErrorLogRepository _logRepository;
         private readonly IUploadManager _uploadManager;
 
-        public KnowledgesEditController(IPathManager pathManager, IAuthManager authManager, ISettingsManager settingsManager, IKnowlegesRepository knowlegesRepository, IKnowlegesTreeRepository knowlegesTreeRepository, IErrorLogRepository logRepository, IUploadManager uploadManager)
+        public KnowledgesEditController(IAuthManager authManager,
+            IKnowlegesRepository knowlegesRepository,
+            IUploadManager uploadManager)
         {
             _authManager = authManager;
-            _pathManager = pathManager;
-            _settingsManager = settingsManager;
             _knowlegesRepository = knowlegesRepository;
-            _knowlegesTreeRepository = knowlegesTreeRepository;
-            _logRepository = logRepository;
             _uploadManager = uploadManager;
         }
         public class GetResult

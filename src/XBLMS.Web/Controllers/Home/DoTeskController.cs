@@ -24,7 +24,6 @@ namespace XBLMS.Web.Controllers.Home
         private readonly IExamAssessmentUserRepository _examAssessmentUserRepository;
         private readonly IExamAssessmentRepository _examAssessmentRepository;
         private readonly IStudyPlanUserRepository _studyPlanUserRepository;
-        private readonly IStudyManager _studyManager;
         private readonly IStudyPlanRepository _studyPlanRepository;
         private readonly IConfigRepository _configRepository;
 
@@ -36,7 +35,6 @@ namespace XBLMS.Web.Controllers.Home
             IExamAssessmentUserRepository examAssessmentUserRepository,
             IExamAssessmentRepository examAssessmentRepository,
             IStudyPlanUserRepository studyPlanUserRepository,
-            IStudyManager studyManager,
             IStudyPlanRepository studyPlanRepository,
             IConfigRepository configRepository)
         {
@@ -48,7 +46,6 @@ namespace XBLMS.Web.Controllers.Home
             _examAssessmentUserRepository = examAssessmentUserRepository;
             _examAssessmentRepository = examAssessmentRepository;
             _studyPlanUserRepository = studyPlanUserRepository;
-            _studyManager = studyManager;
             _studyPlanRepository = studyPlanRepository;
             _configRepository = configRepository;
         }

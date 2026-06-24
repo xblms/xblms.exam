@@ -16,29 +16,20 @@ namespace XBLMS.Web.Controllers.Home.Exam
     {
         private const string Route = "exam/examPaperCer";
 
-        private readonly IConfigRepository _configRepository;
         private readonly IAuthManager _authManager;
-        private readonly IExamPaperUserRepository _examPaperUserRepository;
         private readonly IExamPaperStartRepository _examPaperStartRepository;
         private readonly IExamPaperRepository _examPaperRepository;
-        private readonly IExamManager _examManager;
         private readonly IExamCerUserRepository _examCerUserRepository;
         private readonly IExamCerRepository _examCerRepository;
 
-        public ExamPaperCerController(IConfigRepository configRepository,
-            IAuthManager authManager,
+        public ExamPaperCerController(IAuthManager authManager,
             IExamPaperRepository examPaperRepository,
-            IExamPaperUserRepository examPaperUserRepository,
-            IExamManager examManager,
             IExamPaperStartRepository examPaperStartRepository,
             IExamCerUserRepository examCerUserRepository,
             IExamCerRepository examCerRepository)
         {
-            _configRepository = configRepository;
             _authManager = authManager;
             _examPaperRepository = examPaperRepository;
-            _examPaperUserRepository = examPaperUserRepository;
-            _examManager = examManager;
             _examPaperStartRepository = examPaperStartRepository;
             _examCerUserRepository = examCerUserRepository;
             _examCerRepository = examCerRepository;

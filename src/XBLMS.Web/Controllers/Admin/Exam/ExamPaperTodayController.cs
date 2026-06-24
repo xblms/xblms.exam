@@ -17,31 +17,13 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         private const string Route = "exam/examPaperToday";
 
         private readonly IAuthManager _authManager;
-        private readonly IExamManager _examManager;
         private readonly IExamPaperRepository _examPaperRepository;
-        private readonly IExamPaperTreeRepository _examPaperTreeRepository;
-        private readonly IExamPaperUserRepository _examPaperUserRepository;
-        private readonly IExamPaperStartRepository _examPaperStartRepository;
-        private readonly IExamTmAnalysisRepository _examTmAnalysisRepository;
-        private readonly IExamTmAnalysisTmRepository _examTmAnalysisTmRepository;
 
         public ExamPaperTodayController(IAuthManager authManager,
-            IExamManager examManager,
-            IExamPaperRepository examPaperRepository,
-            IExamPaperTreeRepository examPaperTreeRepository,
-            IExamPaperUserRepository examPaperUserRepository,
-            IExamPaperStartRepository examPaperStartRepository,
-            IExamTmAnalysisRepository examTmAnalysisRepository,
-            IExamTmAnalysisTmRepository examTmAnalysisTmRepository)
+            IExamPaperRepository examPaperRepository)
         {
             _authManager = authManager;
-            _examManager = examManager;
             _examPaperRepository = examPaperRepository;
-            _examPaperTreeRepository = examPaperTreeRepository;
-            _examPaperUserRepository = examPaperUserRepository;
-            _examPaperStartRepository = examPaperStartRepository;
-            _examTmAnalysisRepository = examTmAnalysisRepository;
-            _examTmAnalysisTmRepository = examTmAnalysisTmRepository;
         }
         public class GetRequest
         {

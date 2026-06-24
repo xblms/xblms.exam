@@ -21,7 +21,6 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         private readonly IAuthManager _authManager;
         private readonly IExamManager _examManager;
         private readonly IPathManager _pathManager;
-        private readonly ICreateManager _createManager;
         private readonly IUserGroupRepository _userGroupRepository;
 
         private readonly IExamAssessmentRepository _examAssessmentRepository;
@@ -38,8 +37,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             IExamAssessmentRepository examAssessmentRepository,
             IExamAssessmentTmRepository examAssessmentTmRepository,
             IExamAssessmentUserRepository examAssessmentUserRepository,
-            IExamAssessmentConfigRepository examAssessmentConfigRepository,
-            ICreateManager createManager)
+            IExamAssessmentConfigRepository examAssessmentConfigRepository)
         {
             _authManager = authManager;
             _examManager = examManager;
@@ -49,7 +47,6 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             _examAssessmentTmRepository = examAssessmentTmRepository;
             _examAssessmentUserRepository = examAssessmentUserRepository;
             _examAssessmentConfigRepository = examAssessmentConfigRepository;
-            _createManager = createManager;
         }
         public class GetUploadTmResult
         {

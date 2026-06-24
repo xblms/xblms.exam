@@ -27,20 +27,13 @@ namespace XBLMS.Web.Controllers.Admin.Common
         private const string RouteStudyCourse = "common/userDocStudyCourse";
         private const string RouteStudyPlan = "common/userDocStudyPlan";
 
-
-        private readonly IAuthManager _authManager;
         private readonly IUserRepository _userRepository;
-        private readonly IUserGroupRepository _userGroupRepository;
-        private readonly IOrganManager _organManager;
         private readonly IDatabaseManager _databaseManager;
         private readonly IConfigRepository _configRepository;
 
-        public UserDocLayerViewController(IAuthManager authManager, IUserRepository userRepository, IUserGroupRepository userGroupRepository, IOrganManager organManager, IDatabaseManager databaseManager, IConfigRepository configRepository)
+        public UserDocLayerViewController(IUserRepository userRepository,IDatabaseManager databaseManager, IConfigRepository configRepository)
         {
-            _authManager = authManager;
             _userRepository = userRepository;
-            _userGroupRepository = userGroupRepository;
-            _organManager = organManager;
             _databaseManager = databaseManager;
             _configRepository = configRepository;
         }

@@ -24,12 +24,9 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         private readonly IExamPkRepository  _examPkRepository;
         private readonly IUserGroupRepository _userGroupRepository;
         private readonly IExamTmGroupRepository _tmGroupRepository;
-        private readonly IExamTmRepository _examTmRepository;
         private readonly IExamTxRepository _examTxRepository;
         private readonly IExamPkUserRepository _examPkUserRepository;
         private readonly IExamPkRoomRepository _examPkRoomRepository;
-
-        private readonly IUserRepository _userRepository;
 
         public ExamPkEditController(IAuthManager authManager,
             IOrganManager organManager,
@@ -37,8 +34,6 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             IExamPkRepository examPkRepository,
             IExamTmGroupRepository examTmGroupRepository,
             IUserGroupRepository userGroupRepository,
-            IUserRepository userRepository,
-            IExamTmRepository examTmRepository,
             IExamTxRepository examTxRepository,
             IExamPkUserRepository examPkUserRepository,
             IExamPkRoomRepository examPkRoomRepository)
@@ -49,8 +44,6 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             _examPkRepository = examPkRepository;
             _userGroupRepository = userGroupRepository;
             _tmGroupRepository = examTmGroupRepository;
-            _userRepository = userRepository;
-            _examTmRepository = examTmRepository;
             _examTxRepository = examTxRepository;
             _examPkUserRepository = examPkUserRepository;
             _examPkRoomRepository = examPkRoomRepository;

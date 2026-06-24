@@ -22,7 +22,6 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
         private const string RouteImportCheck = "settings/users/actions/importCheck";
         private const string RouteImport = "settings/users/actions/import";
         private const string RouteExport = "settings/users/actions/export";
-        private const string RouteCheck = "settings/users/actions/check";
         private const string RouteLock = "settings/users/actions/lock";
         private const string RouteUnLock = "settings/users/actions/unLock";
 

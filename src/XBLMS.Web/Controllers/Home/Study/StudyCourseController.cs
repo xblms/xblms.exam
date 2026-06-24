@@ -17,28 +17,19 @@ namespace XBLMS.Web.Controllers.Home.Study
         private const string Route = "study/studyCourse";
         private const string RouteItem = Route + "/item";
 
-        private readonly IConfigRepository _configRepository;
         private readonly IAuthManager _authManager;
         private readonly IStudyManager _studyManager;
         private readonly IStudyCourseRepository _studyCourseRepository;
         private readonly IStudyCourseUserRepository _studyCourseUserRepository;
-        private readonly IStudyPlanCourseRepository _studyPlanCourseRepository;
-        private readonly IStudyPlanRepository _studyPlanRepository;
-        public StudyCourseController(IConfigRepository configRepository,
-            IAuthManager authManager,
+        public StudyCourseController(IAuthManager authManager,
             IStudyManager studyManager,
             IStudyCourseRepository studyCourseRepository,
-            IStudyCourseUserRepository studyCourseUserRepository,
-            IStudyPlanCourseRepository studyPlanCourseRepository,
-            IStudyPlanRepository studyPlanRepository)
+            IStudyCourseUserRepository studyCourseUserRepository)
         {
-            _configRepository = configRepository;
             _authManager = authManager;
             _studyManager = studyManager;
             _studyCourseRepository = studyCourseRepository;
             _studyCourseUserRepository = studyCourseUserRepository;
-            _studyPlanCourseRepository = studyPlanCourseRepository;
-            _studyPlanRepository = studyPlanRepository;
         }
         public class GetRequest
         {

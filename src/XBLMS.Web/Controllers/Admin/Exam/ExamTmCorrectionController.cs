@@ -18,6 +18,7 @@ namespace XBLMS.Web.Controllers.Admin.Exam
     {
         private const string Route = "exam/correction";
         private const string RouteAudit = "exam/correction/audit";
+
         private readonly IAuthManager _authManager;
         private readonly IExamTmCorrectionRepository _examTmCorrectionRepository;
         private readonly IUserRepository _userRepository;

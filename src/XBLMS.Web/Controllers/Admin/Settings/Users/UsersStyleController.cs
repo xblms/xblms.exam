@@ -21,15 +21,13 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Users
 
         private readonly IAuthManager _authManager;
         private readonly IPathManager _pathManager;
-        private readonly IDatabaseManager _databaseManager;
         private readonly IUserRepository _userRepository;
         private readonly ITableStyleRepository _tableStyleRepository;
 
-        public UsersStyleController(IAuthManager authManager, IPathManager pathManager, IDatabaseManager databaseManager, IUserRepository userRepository, ITableStyleRepository tableStyleRepository)
+        public UsersStyleController(IAuthManager authManager, IPathManager pathManager, IUserRepository userRepository, ITableStyleRepository tableStyleRepository)
         {
             _authManager = authManager;
             _pathManager = pathManager;
-            _databaseManager = databaseManager;
             _userRepository = userRepository;
             _tableStyleRepository = tableStyleRepository;
         }

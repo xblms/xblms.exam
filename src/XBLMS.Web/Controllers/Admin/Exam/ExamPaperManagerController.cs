@@ -35,7 +35,6 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         private readonly IAuthManager _authManager;
         private readonly IPathManager _pathManager;
         private readonly IOrganManager _organManager;
-        private readonly IUserRepository _userRepository;
         private readonly IExamPaperRepository _examPaperRepository;
         private readonly IExamPaperUserRepository _examPaperUserRepository;
         private readonly IExamPaperStartRepository _examPaperStartRepository;
@@ -45,7 +44,6 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         public ExamPaperManagerController(IAuthManager authManager,
             IPathManager pathManager,
             IOrganManager organManager,
-            IUserRepository userRepository,
             IAdministratorRepository administratorRepository,
             IExamPaperUserRepository examPaperUserRepository,
             IExamPaperAnswerRepository examPaperAnswerRepository,
@@ -55,7 +53,6 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             _authManager = authManager;
             _pathManager = pathManager;
             _organManager = organManager;
-            _userRepository = userRepository;
             _administratorRepository = administratorRepository;
             _examPaperUserRepository = examPaperUserRepository;
             _examPaperAnswerRepository = examPaperAnswerRepository;

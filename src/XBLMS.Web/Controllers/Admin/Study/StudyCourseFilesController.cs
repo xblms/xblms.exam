@@ -18,42 +18,30 @@ namespace XBLMS.Web.Controllers.Admin.Study
         private const string RouteActionsDownload = Route + "/file/download";
 
         private readonly ISettingsManager _settingsManager;
-        private readonly ICreateManager _createManager;
-        private readonly IDatabaseManager _databaseManager;
         private readonly IAuthManager _authManager;
         private readonly IPathManager _pathManager;
         private readonly IStudyCourseFilesRepository _studyCourseFilesRepository;
         private readonly IStudyCourseFilesGroupRepository _studyCourseFilesGroupRepository;
         private readonly IConfigRepository _configRepository;
-        private readonly IStatRepository _statRepository;
-        private readonly IOrganManager _organManager;
         private readonly IAdministratorRepository _administratorRepository;
         private readonly IDbCacheRepository _dbCacheRepository;
-        public StudyCourseFilesController(IDatabaseManager databaseManager,
-            ISettingsManager settingsManager,
-            ICreateManager createManager,
+        public StudyCourseFilesController(ISettingsManager settingsManager,
             IAuthManager authManager,
             IPathManager pathManager,
             IConfigRepository configRepository,
-            IStatRepository statRepository,
             IAdministratorRepository administratorRepository,
             IDbCacheRepository dbCacheRepository,
             IStudyCourseFilesRepository studyCourseFilesRepository,
-            IStudyCourseFilesGroupRepository studyCourseFilesGroupRepository,
-            IOrganManager organManager)
+            IStudyCourseFilesGroupRepository studyCourseFilesGroupRepository)
         {
-            _databaseManager = databaseManager;
             _settingsManager = settingsManager;
-            _createManager = createManager;
             _authManager = authManager;
             _pathManager = pathManager;
             _configRepository = configRepository;
-            _statRepository = statRepository;
             _administratorRepository = administratorRepository;
             _dbCacheRepository = dbCacheRepository;
             _studyCourseFilesRepository = studyCourseFilesRepository;
             _studyCourseFilesGroupRepository = studyCourseFilesGroupRepository;
-            _organManager = organManager;
         }
 
         public class GetResult

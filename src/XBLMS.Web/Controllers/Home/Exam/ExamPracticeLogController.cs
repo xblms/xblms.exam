@@ -17,13 +17,11 @@ namespace XBLMS.Web.Controllers.Home.Exam
         private const string Route = "exam/examPracticeLog";
         private const string RouteDelete = Route + "/del";
 
-        private readonly IConfigRepository _configRepository;
         private readonly IAuthManager _authManager;
         private readonly IExamPracticeRepository _examPracticeRepository;
 
-        public ExamPracticeLogController(IConfigRepository configRepository, IAuthManager authManager, IExamPracticeRepository examPracticeRepository)
+        public ExamPracticeLogController(IAuthManager authManager, IExamPracticeRepository examPracticeRepository)
         {
-            _configRepository = configRepository;
             _authManager = authManager;
             _examPracticeRepository = examPracticeRepository;
         }

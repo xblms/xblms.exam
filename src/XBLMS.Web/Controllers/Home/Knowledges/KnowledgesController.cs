@@ -14,19 +14,18 @@ namespace XBLMS.Web.Controllers.Home.Knowledges
     public partial class KnowledgesController : ControllerBase
     {
         private const string Route = "knowledges";
-        private const string RouteItem = Route + "/item";
         private const string RouteTree = Route + "/tree";
 
-        private readonly IConfigRepository _configRepository;
         private readonly IAuthManager _authManager;
         private readonly IKnowlegesRepository _knowlegesRepository;
         private readonly IKnowlegesTreeRepository _knowlegesTreeRepository;
         private readonly IPathManager _pathManager;
 
-        public KnowledgesController(IConfigRepository configRepository, IPathManager pathManager,
-            IAuthManager authManager, IKnowlegesRepository knowlegesRepository, IKnowlegesTreeRepository knowlegesTreeRepository)
+        public KnowledgesController(IPathManager pathManager,
+            IAuthManager authManager,
+            IKnowlegesRepository knowlegesRepository,
+            IKnowlegesTreeRepository knowlegesTreeRepository)
         {
-            _configRepository = configRepository;
             _authManager = authManager;
             _knowlegesRepository = knowlegesRepository;
             _knowlegesTreeRepository = knowlegesTreeRepository;

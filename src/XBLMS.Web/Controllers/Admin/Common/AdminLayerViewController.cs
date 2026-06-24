@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using XBLMS.Configuration;
@@ -16,13 +15,11 @@ namespace XBLMS.Web.Controllers.Admin.Common
     {
         private const string Route = "common/adminLayerView";
 
-        private readonly IHttpContextAccessor _context;
         private readonly IAdministratorRepository _administratorRepository;
         private readonly IOrganManager _organManager;
 
-        public AdminLayerViewController(IHttpContextAccessor context, IAdministratorRepository administratorRepository, IOrganManager organManager)
+        public AdminLayerViewController(IAdministratorRepository administratorRepository, IOrganManager organManager)
         {
-            _context = context;
             _administratorRepository = administratorRepository;
             _organManager = organManager;
         }

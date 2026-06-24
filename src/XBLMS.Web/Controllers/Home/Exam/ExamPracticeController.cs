@@ -26,10 +26,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
 
         private const string RouteReadyZsd = Route + "/readyZsd";
 
-        private readonly IConfigRepository _configRepository;
         private readonly IAuthManager _authManager;
-        private readonly IExamPaperUserRepository _examPaperUserRepository;
-        private readonly IExamPaperRepository _examPaperRepository;
         private readonly IExamManager _examManager;
         private readonly IExamTmGroupRepository _examTmGroupRepository;
         private readonly IExamTmRepository _examTmRepository;
@@ -40,10 +37,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
         private readonly IExamTxRepository _examTxRepository;
         private readonly IExamPracticeAnswerRepository _examPracticeAnswerRepository;
 
-        public ExamPracticeController(IConfigRepository configRepository,
-            IAuthManager authManager,
-            IExamPaperRepository examPaperRepository,
-            IExamPaperUserRepository examPaperUserRepository,
+        public ExamPracticeController(IAuthManager authManager,
             IExamManager examManager,
             IExamTmGroupRepository examTmGroupRepository,
             IExamTmRepository examTmRepository,
@@ -54,10 +48,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
             IExamTxRepository examTxRepository,
             IExamPracticeAnswerRepository examPracticeAnswerRepository)
         {
-            _configRepository = configRepository;
             _authManager = authManager;
-            _examPaperRepository = examPaperRepository;
-            _examPaperUserRepository = examPaperUserRepository;
             _examManager = examManager;
             _examTmGroupRepository = examTmGroupRepository;
             _examTmRepository = examTmRepository;

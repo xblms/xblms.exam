@@ -24,10 +24,6 @@ namespace XBLMS.Web.Controllers.Admin.Study
         private readonly IUserGroupRepository _userGroupRepository;
         private readonly IStudyPlanRepository _studyPlanRepository;
         private readonly IStudyPlanCourseRepository _studyPlanCourseRepository;
-        private readonly IStudyCourseRepository _studyCourseRepository;
-        private readonly IStudyCourseTreeRepository _studyCourseTreeRepository;
-        private readonly IStudyCourseFilesRepository _studyCourseFilesRepository;
-        private readonly IStudyCourseWareRepository _studyCourseWareRepository;
         private readonly IStudyPlanUserRepository _studyPlanUserRepository;
 
         public StudyPlanEditController(IAuthManager authManager,
@@ -37,10 +33,6 @@ namespace XBLMS.Web.Controllers.Admin.Study
             IUserGroupRepository userGroupRepository,
             IStudyPlanRepository studyPlanRepository,
             IStudyPlanCourseRepository studyPlanCourseRepository,
-            IStudyCourseRepository studyCourseRepository,
-            IStudyCourseFilesRepository studyCourseFilesRepository,
-            IStudyCourseTreeRepository studyCourseTreeRepository,
-            IStudyCourseWareRepository studyCourseWareRepository,
             IStudyPlanUserRepository studyPlanUserRepository)
         {
             _authManager = authManager;
@@ -50,10 +42,6 @@ namespace XBLMS.Web.Controllers.Admin.Study
             _userGroupRepository = userGroupRepository;
             _studyPlanRepository = studyPlanRepository;
             _studyPlanCourseRepository = studyPlanCourseRepository;
-            _studyCourseRepository = studyCourseRepository;
-            _studyCourseTreeRepository = studyCourseTreeRepository;
-            _studyCourseFilesRepository = studyCourseFilesRepository;
-            _studyCourseWareRepository = studyCourseWareRepository;
             _studyPlanUserRepository = studyPlanUserRepository;
         }
         public class GetResult

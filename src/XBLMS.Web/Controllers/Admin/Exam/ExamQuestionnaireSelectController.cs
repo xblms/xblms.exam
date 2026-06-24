@@ -17,18 +17,11 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         private const string Route = "exam/examQuestionnaireSelect";
 
         private readonly IAuthManager _authManager;
-        private readonly IExamManager _examManager;
         private readonly IExamQuestionnaireRepository _examQuestionnaireRepository;
-        private readonly IExamQuestionnaireUserRepository _examQuestionnaireUserRepository;
-        public ExamQuestionnaireSelectController(IAuthManager authManager,
-            IExamManager examManager,
-            IExamQuestionnaireRepository examQuestionnaireRepository,
-            IExamQuestionnaireUserRepository examQuestionnaireUserRepository)
+        public ExamQuestionnaireSelectController(IAuthManager authManager,IExamQuestionnaireRepository examQuestionnaireRepository)
         {
             _authManager = authManager;
-            _examManager = examManager;
             _examQuestionnaireRepository = examQuestionnaireRepository;
-            _examQuestionnaireUserRepository = examQuestionnaireUserRepository;
         }
         public class GetRequest
         {

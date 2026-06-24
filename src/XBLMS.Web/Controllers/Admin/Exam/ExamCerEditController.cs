@@ -20,23 +20,19 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         private const string RouteUpload = Route + "/upload";
         private const string RouteSubmitPosition = Route + "/positionsSubmit";
 
-        private readonly IDatabaseManager _databaseManager;
         private readonly IAuthManager _authManager;
         private readonly IPathManager _pathManager;
         private readonly ISettingsManager _settingsManager;
         private readonly IExamCerRepository _examCerRepository;
-        private readonly IStatRepository _statRepository;
         private readonly IConfigRepository _configRepository;
 
-        public ExamCerEditController(IDatabaseManager databaseManager, IAuthManager authManager, IPathManager pathManager, ISettingsManager settingsManager,
-            IExamCerRepository examCerRepository, IStatRepository statRepository, IConfigRepository configRepository)
+        public ExamCerEditController(IAuthManager authManager, IPathManager pathManager, ISettingsManager settingsManager,
+            IExamCerRepository examCerRepository, IConfigRepository configRepository)
         {
-            _databaseManager = databaseManager;
             _authManager = authManager;
             _pathManager = pathManager;
             _settingsManager = settingsManager;
             _examCerRepository = examCerRepository;
-            _statRepository = statRepository;
             _configRepository = configRepository;
         }
 

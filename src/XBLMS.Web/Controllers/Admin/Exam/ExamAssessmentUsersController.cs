@@ -16,24 +16,14 @@ namespace XBLMS.Web.Controllers.Admin.Exam
     {
         private const string Route = "exam/examAssessmentUsers";
 
-        private readonly IAuthManager _authManager;
-        private readonly IPathManager _pathManager;
         private readonly IOrganManager _organManager;
-
-        private readonly IExamAssessmentRepository _examAssessmentRepository;
         private readonly IExamAssessmentUserRepository _examAssessmentUserRepository;
 
 
-        public ExamAssessmentUsersController(IAuthManager authManager,
-            IPathManager pathManager,
-            IOrganManager organManager,
-            IExamAssessmentRepository examAssessmentRepository,
+        public ExamAssessmentUsersController(IOrganManager organManager,
             IExamAssessmentUserRepository examAssessmentUserRepository)
         {
-            _authManager = authManager;
-            _pathManager = pathManager;
             _organManager = organManager;
-            _examAssessmentRepository = examAssessmentRepository;
             _examAssessmentUserRepository = examAssessmentUserRepository;
         }
 

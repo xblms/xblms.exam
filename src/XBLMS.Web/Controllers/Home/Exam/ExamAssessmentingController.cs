@@ -15,7 +15,6 @@ namespace XBLMS.Web.Controllers.Home.Exam
         private const string Route = "exam/examAssessmenting";
         private const string RouteSubmitPaper = Route + "/submitPaper";
 
-        private readonly IConfigRepository _configRepository;
         private readonly IAuthManager _authManager;
 
         private readonly IExamAssessmentRepository _examAssessmentRepository;
@@ -25,8 +24,7 @@ namespace XBLMS.Web.Controllers.Home.Exam
         private readonly IExamAssessmentConfigRepository _examAssessmentConfigRepository;
         private readonly IExamAssessmentConfigSetRepository _examAssessmentConfigSetRepository;
 
-        public ExamAssessmentingController(IConfigRepository configRepository,
-            IAuthManager authManager,
+        public ExamAssessmentingController(IAuthManager authManager,
             IExamAssessmentRepository examAssessmentRepository,
             IExamAssessmentUserRepository examAssessmentUserRepository,
             IExamAssessmentTmRepository examAssessmentTmRepository,
@@ -34,7 +32,6 @@ namespace XBLMS.Web.Controllers.Home.Exam
             IExamAssessmentConfigRepository examAssessmentConfigRepository,
             IExamAssessmentConfigSetRepository examAssessmentConfigSetRepository)
         {
-            _configRepository = configRepository;
             _authManager = authManager;
             _examAssessmentRepository = examAssessmentRepository;
             _examAssessmentUserRepository = examAssessmentUserRepository;

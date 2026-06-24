@@ -17,19 +17,16 @@ namespace XBLMS.Web.Controllers.Admin.Study
         private const string Route = "study/studyOffCourseWeek";
 
         private readonly IAuthManager _authManager;
-        private readonly IStudyManager _studyManager;
         private readonly IStudyCourseRepository _studyCourseRepository;
         private readonly IStudyPlanCourseRepository _studyPlanCourseRepository;
         private readonly IStudyPlanRepository _studyPlanRepository;
 
         public StudyOffCourseWeekController(IAuthManager authManager,
-            IStudyManager studyManager,
             IStudyCourseRepository studyCourseRepository,
             IStudyPlanCourseRepository studyPlanCourseRepository,
             IStudyPlanRepository studyPlanRepository)
         {
             _authManager = authManager;
-            _studyManager = studyManager;
             _studyCourseRepository = studyCourseRepository;
             _studyPlanCourseRepository = studyPlanCourseRepository;
             _studyPlanRepository = studyPlanRepository;

@@ -16,8 +16,6 @@ namespace XBLMS.Web.Controllers.Home.Gift
     {
         private const string Route = "giftView";
 
-
-        private readonly IConfigRepository _configRepository;
         private readonly IAuthManager _authManager;
         private readonly IPointShopRepository _pointShopRepository;
         private readonly IPointShopUserRepository _pointShopUserRepository;
@@ -25,10 +23,9 @@ namespace XBLMS.Web.Controllers.Home.Gift
         private readonly IOrganManager _organManager;
 
 
-        public GiftViewController(IConfigRepository configRepository, IUserRepository userRepository, IOrganManager organManager,
+        public GiftViewController(IUserRepository userRepository, IOrganManager organManager,
             IAuthManager authManager, IPointShopRepository pointShopRepository, IPointShopUserRepository pointShopUserRepository)
         {
-            _configRepository = configRepository;
             _authManager = authManager;
             _organManager = organManager;
             _userRepository = userRepository;

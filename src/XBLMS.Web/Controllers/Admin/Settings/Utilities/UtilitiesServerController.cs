@@ -20,14 +20,12 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Utilities
         private const string RouteAI = Route + "/ai";
         private const string RouteAITest = RouteAI + "/test";
 
-        private readonly ISettingsManager _settingsManager;
         private readonly IAuthManager _authManager;
         private readonly IConfigRepository _configRepository;
         private readonly IAiTaskService _aiTaskService;
 
-        public UtilitiesServerController(ISettingsManager settingsManager, IAuthManager authManager, IConfigRepository configRepository, IAiTaskService aiTaskService)
+        public UtilitiesServerController(IAuthManager authManager, IConfigRepository configRepository, IAiTaskService aiTaskService)
         {
-            _settingsManager = settingsManager;
             _authManager = authManager;
             _configRepository = configRepository;
             _aiTaskService = aiTaskService;

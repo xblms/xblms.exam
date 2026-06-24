@@ -20,21 +20,19 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Administrators
         private const string RouteRoles = "settings/administratorsLayerProfile/actions/roles";
 
         private readonly IAuthManager _authManager;
-        private readonly IPathManager _pathManager;
         private readonly IUploadManager _uploadManager;
         private readonly IAdministratorRepository _administratorRepository;
         private readonly IAdministratorsInRolesRepository _administratorsInRolesRepository;
         private readonly IRoleRepository _roleRepository;
         private readonly IOrganManager _organManager;
 
-        public AdministratorsLayerProfileController(IAuthManager authManager, IPathManager pathManager,
+        public AdministratorsLayerProfileController(IAuthManager authManager,
             IOrganManager organManager,
             IRoleRepository roleRepository,
             IAdministratorsInRolesRepository administratorsInRolesRepository,
             IAdministratorRepository administratorRepository, IUploadManager uploadManager)
         {
             _authManager = authManager;
-            _pathManager = pathManager;
             _administratorsInRolesRepository = administratorsInRolesRepository;
             _administratorRepository = administratorRepository;
             _roleRepository = roleRepository;

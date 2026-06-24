@@ -18,32 +18,21 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         private const string RouteExportWord = Route + "/exportWord";
 
         private readonly IAuthManager _authManager;
-        private readonly IExamManager _examManager;
         private readonly IPathManager _pathManager;
-        private readonly IUserGroupRepository _userGroupRepository;
-
         private readonly IExamQuestionnaireRepository _questionnaireRepository;
         private readonly IExamQuestionnaireTmRepository _questionnaireTmRepository;
-        private readonly IExamQuestionnaireUserRepository _questionnaireUserRepository;
         private readonly IExamQuestionnaireAnswerRepository _questionnaireAnswerRepository;
 
 
-        public ExamQuestionnaireAnalysisController(IAuthManager authManager,
-            IPathManager pathManager,
-            IExamManager examManager,
-            IUserGroupRepository userGroupRepository,
+        public ExamQuestionnaireAnalysisController(IPathManager pathManager,IAuthManager authManager,
             IExamQuestionnaireRepository examQuestionnaireRepository,
             IExamQuestionnaireTmRepository examQuestionnaireTmRepository,
-            IExamQuestionnaireUserRepository examQuestionnaireUserRepository,
             IExamQuestionnaireAnswerRepository questionnaireAnswerRepository)
         {
-            _authManager = authManager;
-            _examManager = examManager;
             _pathManager = pathManager;
-            _userGroupRepository = userGroupRepository;
+            _authManager = authManager;
             _questionnaireRepository = examQuestionnaireRepository;
             _questionnaireTmRepository = examQuestionnaireTmRepository;
-            _questionnaireUserRepository = examQuestionnaireUserRepository;
             _questionnaireAnswerRepository = questionnaireAnswerRepository;
         }
         public class GetRequest

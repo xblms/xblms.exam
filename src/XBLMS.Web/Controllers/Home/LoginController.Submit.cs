@@ -42,14 +42,14 @@ namespace XBLMS.Web.Controllers.Home
                 if (user != null)
                 {
                     await _authManager.AddUserStatCount(StatType.UserLoginFailure, user);
-                    await _logRepository.AddUserLogAsync(user, ipAddress, Constants.ActionsLoginFailure, "帐号或密码错误");
+                    await _logRepository.AddUserLogAsync(user, ipAddress, Constants.ActionsLoginFailure, "尝试登录但密码错误");
                 }
                 return this.Error(errorMessage);
             }
 
             user = await _userRepository.GetByUserNameAsync(userName);
 
-            await _userRepository.UpdateLastActivityDateAndCountOfLoginAsync(user); // 记录最后登录时间、失败次数清零
+            await _userRepository.UpdateLastActivityDateAndCountOfLoginAsync(user);
 
 
             await _authManager.AddUserStatCount(StatType.UserLogin, user);

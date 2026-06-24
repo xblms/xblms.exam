@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using XBLMS.Configuration;
 using XBLMS.Models;
-using XBLMS.Repositories;
 using XBLMS.Services;
 
 namespace XBLMS.Web.Controllers.Admin.Settings.Block
@@ -17,13 +16,11 @@ namespace XBLMS.Web.Controllers.Admin.Settings.Block
 
         private readonly IAuthManager _authManager;
         private readonly IBlockManager _blockManager;
-        private readonly IBlockRuleRepository _ruleRepository;
 
-        public QueryController(IAuthManager authManager, IBlockManager blockManager, IBlockRuleRepository ruleRepository)
+        public QueryController(IAuthManager authManager, IBlockManager blockManager)
         {
             _authManager = authManager;
             _blockManager = blockManager;
-            _ruleRepository = ruleRepository;
         }
 
         public class SubmitRequest

@@ -16,14 +16,11 @@ namespace XBLMS.Web.Controllers.Home.Gift
     {
         private const string Route = "pointsLog";
 
-        private readonly IConfigRepository _configRepository;
         private readonly IAuthManager _authManager;
         private readonly IPointLogRepository _pointLogRepository;
 
-        public PointsLogController(IConfigRepository configRepository,
-            IAuthManager authManager, IPointLogRepository pointLogRepository)
+        public PointsLogController(IAuthManager authManager, IPointLogRepository pointLogRepository)
         {
-            _configRepository = configRepository;
             _authManager = authManager;
             _pointLogRepository = pointLogRepository;
         }

@@ -24,7 +24,6 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         private readonly IStudyManager _studyManager;
         private readonly IAdministratorRepository _adminRepository;
         private readonly IExamPaperRepository _examPaperRepository;
-        private readonly IExamPaperTreeRepository _examPaperTreeRepository;
         private readonly IExamPaperUserRepository _examPaperUserRepository;
         private readonly IExamPaperStartRepository _examPaperStartRepository;
         private readonly IExamTmAnalysisRepository _examTmAnalysisRepository;
@@ -35,7 +34,6 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             IExamManager examManager,
             IStudyManager studyManager,
             IExamPaperRepository examPaperRepository,
-            IExamPaperTreeRepository examPaperTreeRepository,
             IExamPaperUserRepository examPaperUserRepository,
             IExamPaperStartRepository examPaperStartRepository,
             IExamTmAnalysisRepository examTmAnalysisRepository,
@@ -46,7 +44,6 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             _examManager = examManager;
             _studyManager = studyManager;
             _examPaperRepository = examPaperRepository;
-            _examPaperTreeRepository = examPaperTreeRepository;
             _examPaperUserRepository = examPaperUserRepository;
             _examPaperStartRepository = examPaperStartRepository;
             _examTmAnalysisRepository = examTmAnalysisRepository;

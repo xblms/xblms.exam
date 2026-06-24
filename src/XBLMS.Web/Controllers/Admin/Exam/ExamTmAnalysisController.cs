@@ -23,7 +23,6 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
         private readonly IAuthManager _authManager;
         private readonly IExamPaperRepository _examPaperRepository;
-        private readonly IExamTxRepository _examTxRepository;
         private readonly IExamTmRepository _examTmRepository;
         private readonly IExamTmAnalysisRepository _examTmAnalysisRepository;
         private readonly IExamTmAnalysisTmRepository _examTmAnalysisTmRepository;
@@ -32,14 +31,13 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         private readonly IExamPracticeAnswerRepository _examPracticeAnswerRepository;
         private readonly IExamTmGroupRepository _examTmGroupRepository;
 
-        public ExamTmAnalysisController(IAuthManager authManager, IExamPaperRepository examPaperRepository, IExamTxRepository examTxRepository, IExamTmRepository examTmRepository,
+        public ExamTmAnalysisController(IAuthManager authManager, IExamPaperRepository examPaperRepository, IExamTmRepository examTmRepository,
             IExamTmAnalysisRepository examTmAnalysisRepository, IExamTmAnalysisTmRepository examTmAnalysisTmRepository,
             IExamPaperRandomTmRepository examPaperRandomTmRepository, IExamPaperAnswerRepository examPaperAnswerRepository, IExamPracticeAnswerRepository examPracticeAnswerRepository,
             IExamTmGroupRepository examTmGroupRepository)
         {
             _authManager = authManager;
             _examPaperRepository = examPaperRepository;
-            _examTxRepository = examTxRepository;
             _examTmRepository = examTmRepository;
             _examTmAnalysisRepository = examTmAnalysisRepository;
             _examTmAnalysisTmRepository = examTmAnalysisTmRepository;

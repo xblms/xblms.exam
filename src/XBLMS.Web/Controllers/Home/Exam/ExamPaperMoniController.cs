@@ -17,15 +17,13 @@ namespace XBLMS.Web.Controllers.Home.Exam
         private const string Route = "exam/examPaperMoni";
         private const string RouteItem = Route + "/item";
 
-        private readonly IConfigRepository _configRepository;
         private readonly IAuthManager _authManager;
         private readonly IExamPaperUserRepository _examPaperUserRepository;
         private readonly IExamPaperRepository _examPaperRepository;
         private readonly IExamManager _examManager;
 
-        public ExamPaperMoniController(IConfigRepository configRepository, IAuthManager authManager, IExamPaperRepository examPaperRepository, IExamPaperUserRepository examPaperUserRepository, IExamManager examManager)
+        public ExamPaperMoniController(IAuthManager authManager, IExamPaperRepository examPaperRepository, IExamPaperUserRepository examPaperUserRepository, IExamManager examManager)
         {
-            _configRepository = configRepository;
             _authManager = authManager;
             _examPaperRepository = examPaperRepository;
             _examPaperUserRepository = examPaperUserRepository;

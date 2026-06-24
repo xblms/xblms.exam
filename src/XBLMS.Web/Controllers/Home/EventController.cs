@@ -16,31 +16,25 @@ namespace XBLMS.Web.Controllers.Home
         private const string Route = "event";
 
         private readonly IAuthManager _authManager;
-        private readonly IUserRepository _userRepository;
         private readonly IExamManager _examManager;
         private readonly IExamPaperRepository _examPaperRepository;
         private readonly IExamPaperUserRepository _examPaperUserRepository;
         private readonly IStudyCourseUserRepository _studyCourseUserRepository;
         private readonly IStudyCourseRepository _studyCourseRepository;
-        private readonly IStudyPlanCourseRepository _studyPlanCourseRepository;
 
         public EventController(IAuthManager authManager,
-            IUserRepository userRepository,
             IExamPaperUserRepository examPaperUserRepository,
             IExamManager examManager,
             IExamPaperRepository examPaperRepository,
             IStudyCourseUserRepository studyCourseUserRepository,
-            IStudyCourseRepository studyCourseRepository,
-            IStudyPlanCourseRepository studyPlanCourseRepository)
+            IStudyCourseRepository studyCourseRepository)
         {
             _authManager = authManager;
-            _userRepository = userRepository;
             _examPaperUserRepository = examPaperUserRepository;
             _examManager = examManager;
             _examPaperRepository = examPaperRepository;
             _studyCourseUserRepository = studyCourseUserRepository;
             _studyCourseRepository = studyCourseRepository;
-            _studyPlanCourseRepository = studyPlanCourseRepository;
         }
         public class GetRequest
         {

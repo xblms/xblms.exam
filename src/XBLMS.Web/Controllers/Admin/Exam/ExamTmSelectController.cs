@@ -18,38 +18,22 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         private const string RouteSelect = Route + "/setGroupTm";
         private const string RouteRemove = Route + "/delGroupTm";
 
-
         private readonly IAuthManager _authManager;
-        private readonly IPathManager _pathManager;
-        private readonly ICacheManager _cacheManager;
-        private readonly IDatabaseManager _databaseManager;
-        private readonly IConfigRepository _configRepository;
-        private readonly IAdministratorRepository _administratorRepository;
-        private readonly IExamTxRepository _examTxRepository;
         private readonly IExamTmTreeRepository _examTmTreeRepository;
         private readonly IExamTmRepository _examTmRepository;
-        private readonly IStatRepository _statRepository;
         private readonly IExamManager _examManager;
-        private readonly IOrganManager _organManager;
         private readonly IExamTmGroupRepository _examTmGroupRepository;
 
-        public ExamTmSelectController(IAuthManager authManager, IPathManager pathManager, IDatabaseManager databaseManager, ICacheManager cacheManager,
-            IConfigRepository configRepository, IExamManager examManager,
-            IAdministratorRepository administratorRepository, IOrganManager organManager,
-            IExamTxRepository examTxRepository, IExamTmTreeRepository examTmTreeRepository, IExamTmRepository examTmRepository, IStatRepository statRepository, IExamTmGroupRepository examTmGroupRepository)
+        public ExamTmSelectController(IAuthManager authManager,
+            IExamManager examManager,
+            IExamTmTreeRepository examTmTreeRepository,
+            IExamTmRepository examTmRepository,
+            IExamTmGroupRepository examTmGroupRepository)
         {
-            _organManager = organManager;
             _examManager = examManager;
             _authManager = authManager;
-            _pathManager = pathManager;
-            _cacheManager = cacheManager;
-            _databaseManager = databaseManager;
-            _configRepository = configRepository;
-            _administratorRepository = administratorRepository;
-            _examTxRepository = examTxRepository;
             _examTmTreeRepository = examTmTreeRepository;
             _examTmRepository = examTmRepository;
-            _statRepository = statRepository;
             _examTmGroupRepository = examTmGroupRepository;
         }
         public class GetSeletRemoveRequest

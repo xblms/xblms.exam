@@ -18,15 +18,12 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         private const string Route = "exam/examTm";
         private const string RouteCache = Route + "/cache";
         private const string RouteDelete = Route + "/del";
-        private const string RouteSearch = Route + "/search";
         private const string RouteImportExcel = Route + "/importExcel";
         private const string RouteImportGetCache = RouteImportExcel + "/getCache";
         private const string RouteExportExcel = Route + "/export";
         private const string RouteDeleteSearch = Route + "/delSearch";
         private const string RouteEdit = Route + "/tmEdit/get";
         private const string RouteEditSubmit = Route + "/tmEdit/submit";
-        private const string RouteImportWord = Route + "/importWord";
-        private const string RouteExportWord = Route + "/exportWord";
 
         private const string RouteEditSmall = Route + "/tmEdit/getSmall";
         private const string RouteEditSmallSubmit = Route + "/tmEdit/submitSmall";
@@ -48,11 +45,9 @@ namespace XBLMS.Web.Controllers.Admin.Exam
         private readonly ICacheManager _cacheManager;
         private readonly IDatabaseManager _databaseManager;
         private readonly IConfigRepository _configRepository;
-        private readonly IAdministratorRepository _administratorRepository;
         private readonly IExamTxRepository _examTxRepository;
         private readonly IExamTmTreeRepository _examTmTreeRepository;
         private readonly IExamTmRepository _examTmRepository;
-        private readonly IStatRepository _statRepository;
         private readonly IExamManager _examManager;
         private readonly IOrganManager _organManager;
         private readonly IExamTmGroupRepository _examTmGroupRepository;
@@ -69,14 +64,18 @@ namespace XBLMS.Web.Controllers.Admin.Exam
 
         public ExamTmController(IAuthManager authManager, IPathManager pathManager, IDatabaseManager databaseManager, ICacheManager cacheManager,
             IConfigRepository configRepository, IExamManager examManager,
-            IAdministratorRepository administratorRepository, IOrganManager organManager,
-            IExamTxRepository examTxRepository, IExamTmTreeRepository examTmTreeRepository, IExamTmRepository examTmRepository, IStatRepository statRepository, IExamTmGroupRepository examTmGroupRepository,
+            IOrganManager organManager,
+            IExamTxRepository examTxRepository, IExamTmTreeRepository examTmTreeRepository, IExamTmRepository examTmRepository, IExamTmGroupRepository examTmGroupRepository,
             IExamPracticeRepository examPracticeRepository,
             IExamPracticeAnswerRepository examPracticeAnswerRepository,
             IExamPracticeCollectRepository examPracticeCollectRepository,
             IExamPracticeWrongRepository examPracticeWrongRepository,
             IExamTmAnalysisTmRepository examTmAnalysisTmRepository,
-            ITableStyleRepository tableStyleRepository, IExamTmSmallRepository examTmSmallRepository, IExamPaperRandomTmRepository examPaperRandomTmRepository, IExamTmAiRepository examTmAiRepository, IAiTaskService aiTaskService)
+            ITableStyleRepository tableStyleRepository,
+            IExamTmSmallRepository examTmSmallRepository,
+            IExamPaperRandomTmRepository examPaperRandomTmRepository,
+            IExamTmAiRepository examTmAiRepository,
+            IAiTaskService aiTaskService)
         {
             _organManager = organManager;
             _examManager = examManager;
@@ -85,11 +84,9 @@ namespace XBLMS.Web.Controllers.Admin.Exam
             _cacheManager = cacheManager;
             _databaseManager = databaseManager;
             _configRepository = configRepository;
-            _administratorRepository = administratorRepository;
             _examTxRepository = examTxRepository;
             _examTmTreeRepository = examTmTreeRepository;
             _examTmRepository = examTmRepository;
-            _statRepository = statRepository;
             _examTmGroupRepository = examTmGroupRepository;
             _examPracticeRepository = examPracticeRepository;
             _examPracticeAnswerRepository = examPracticeAnswerRepository;

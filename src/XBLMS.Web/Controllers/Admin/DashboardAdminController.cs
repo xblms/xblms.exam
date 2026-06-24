@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Antiforgery;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using System.Collections.Generic;
@@ -20,29 +18,25 @@ namespace XBLMS.Web.Controllers.Admin
         private const string Route = "dashboardAdmin";
         private const string RouteGetData = Route + "/data";
 
-        private readonly IHttpContextAccessor _context;
-        private readonly IAntiforgery _antiforgery;
-        private readonly ICacheManager _cacheManager;
-        private readonly ISettingsManager _settingsManager;
         private readonly IDatabaseManager _databaseManager;
         private readonly IAdministratorRepository _administratorRepository;
         private readonly IAuthManager _authManager;
-        private readonly IOrganManager _organManager;
         private readonly IStatLogRepository _statLogRepository;
         private readonly IStatRepository _statRepository;
         private readonly IExamPaperRepository _examPaperRepository;
         private readonly IConfigRepository _configRepository;
 
-        public DashboardAdminController(IHttpContextAccessor context, IAuthManager authManager, IAntiforgery antiforgery, ICacheManager cacheManager, ISettingsManager settingsManager, IDatabaseManager databaseManager, IAdministratorRepository administratorRepository, IOrganManager organManager, IStatLogRepository statLogRepository, IStatRepository statRepository, IExamPaperRepository examPaperRepository, IConfigRepository configRepository)
+        public DashboardAdminController(IAuthManager authManager,
+            IDatabaseManager databaseManager,
+            IAdministratorRepository administratorRepository,
+            IStatLogRepository statLogRepository,
+            IStatRepository statRepository,
+            IExamPaperRepository examPaperRepository,
+            IConfigRepository configRepository)
         {
-            _context = context;
             _authManager = authManager;
-            _antiforgery = antiforgery;
-            _cacheManager = cacheManager;
-            _settingsManager = settingsManager;
             _databaseManager = databaseManager;
             _administratorRepository = administratorRepository;
-            _organManager = organManager;
             _statLogRepository = statLogRepository;
             _statRepository = statRepository;
             _examPaperRepository = examPaperRepository;

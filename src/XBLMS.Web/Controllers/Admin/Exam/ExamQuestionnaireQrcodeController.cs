@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using XBLMS.Configuration;
 using XBLMS.Repositories;
-using XBLMS.Services;
 
 namespace XBLMS.Web.Controllers.Admin.Exam
 {
@@ -14,12 +13,10 @@ namespace XBLMS.Web.Controllers.Admin.Exam
     {
         private const string Route = "exam/examQuestionnaireQrcode";
 
-        private readonly IAuthManager _authManager;
         private readonly IExamQuestionnaireRepository _examQuestionnaireRepository;
 
-        public ExamQuestionnaireQrcodeController(IAuthManager authManager, IExamQuestionnaireRepository examQuestionnaireRepository)
+        public ExamQuestionnaireQrcodeController(IExamQuestionnaireRepository examQuestionnaireRepository)
         {
-            _authManager = authManager;
             _examQuestionnaireRepository = examQuestionnaireRepository;
         }
         public class GetResult

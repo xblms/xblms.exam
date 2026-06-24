@@ -14,27 +14,18 @@ namespace XBLMS.Web.Controllers.Home.Exam
     {
         private const string Route = "exam/examPaperSubmitResult";
 
-        private readonly IConfigRepository _configRepository;
         private readonly IAuthManager _authManager;
-        private readonly IExamPaperUserRepository _examPaperUserRepository;
         private readonly IExamPaperRepository _examPaperRepository;
-        private readonly IExamManager _examManager;
         private readonly IExamPaperStartRepository _examPaperStartRepository;
         private readonly ICreateManager _createManager;
 
-        public ExamPaperSubmitResultController(IConfigRepository configRepository,
-            IAuthManager authManager,
+        public ExamPaperSubmitResultController(IAuthManager authManager,
             IExamPaperRepository examPaperRepository,
-            IExamPaperUserRepository examPaperUserRepository,
-            IExamManager examManager,
             IExamPaperStartRepository examPaperStartRepository,
             ICreateManager createManager)
         {
-            _configRepository = configRepository;
             _authManager = authManager;
             _examPaperRepository = examPaperRepository;
-            _examPaperUserRepository = examPaperUserRepository;
-            _examManager = examManager;
             _examPaperStartRepository = examPaperStartRepository;
             _createManager = createManager;
         }

@@ -18,19 +18,16 @@ namespace XBLMS.Web.Controllers.Home.Exam
         private const string Route = "exam/examQuestionnaire";
         private const string RouteItem = "exam/examQuestionnaire/item";
 
-        private readonly IConfigRepository _configRepository;
         private readonly IAuthManager _authManager;
         private readonly IExamQuestionnaireUserRepository _examQuestionnaireUserRepository;
         private readonly IExamQuestionnaireRepository _examQuestionnaireRepository;
         private readonly IExamManager _examManager;
 
-        public ExamQuestionnaireController(IConfigRepository configRepository,
-            IAuthManager authManager,
+        public ExamQuestionnaireController(IAuthManager authManager,
             IExamManager examManager,
             IExamQuestionnaireUserRepository examQuestionnaireUserRepository,
             IExamQuestionnaireRepository examQuestionnaireRepository)
         {
-            _configRepository = configRepository;
             _authManager = authManager;
             _examManager = examManager;
             _examQuestionnaireUserRepository = examQuestionnaireUserRepository;

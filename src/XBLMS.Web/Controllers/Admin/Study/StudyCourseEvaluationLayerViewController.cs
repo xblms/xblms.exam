@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using XBLMS.Configuration;
 using XBLMS.Models;
 using XBLMS.Repositories;
-using XBLMS.Services;
 
 namespace XBLMS.Web.Controllers.Admin.Study
 {
@@ -16,14 +15,11 @@ namespace XBLMS.Web.Controllers.Admin.Study
     {
         private const string Route = "study/studyCourseEvaluationLayerView";
 
-        private readonly IAuthManager _authManager;
-
         private readonly IStudyCourseEvaluationRepository _studyCourseEvaluationRepository;
         private readonly IStudyCourseEvaluationItemRepository _studyCourseEvaluationItemRepository;
 
-        public StudyCourseEvaluationLayerViewController(IAuthManager authManager, IStudyCourseEvaluationRepository studyCourseEvaluationRepository, IStudyCourseEvaluationItemRepository studyCourseEvaluationItemRepository)
+        public StudyCourseEvaluationLayerViewController(IStudyCourseEvaluationRepository studyCourseEvaluationRepository, IStudyCourseEvaluationItemRepository studyCourseEvaluationItemRepository)
         {
-            _authManager = authManager;
             _studyCourseEvaluationRepository = studyCourseEvaluationRepository;
             _studyCourseEvaluationItemRepository = studyCourseEvaluationItemRepository;
         }

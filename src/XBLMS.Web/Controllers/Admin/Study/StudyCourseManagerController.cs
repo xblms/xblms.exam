@@ -17,7 +17,6 @@ namespace XBLMS.Web.Controllers.Admin.Study
         private const string Route = "study/studyCourseManager";
 
         private const string RouteCourse = Route + "/course";
-        private const string RouteCourseExport = RouteCourse + "/export";
 
         private const string RouteUser = Route + "/user";
         private const string RouteUserExport = RouteUser + "/export";
@@ -28,24 +27,16 @@ namespace XBLMS.Web.Controllers.Admin.Study
         private const string RouteScoreExport = RouteScore + "/export";
 
         private const string RouteQ = Route + "/examq";
-        private const string RouteQExport = RouteQ + "/export";
 
         private const string RouteEvaluation = Route + "/evaluation";
         private const string RouteEvaluationExport = RouteEvaluation + "/export";
 
         private readonly IAuthManager _authManager;
-        private readonly IStudyManager _studyManager;
         private readonly IPathManager _pathManager;
-        private readonly IUploadManager _uploadManager;
         private readonly IOrganManager _organManager;
         private readonly IUserRepository _userRepository;
-        private readonly IUserGroupRepository _userGroupRepository;
-        private readonly IStudyPlanRepository _studyPlanRepository;
         private readonly IStudyPlanCourseRepository _studyPlanCourseRepository;
         private readonly IStudyCourseRepository _studyCourseRepository;
-        private readonly IStudyCourseTreeRepository _studyCourseTreeRepository;
-        private readonly IStudyCourseFilesRepository _studyCourseFilesRepository;
-        private readonly IStudyCourseWareRepository _studyCourseWareRepository;
         private readonly IStudyPlanUserRepository _studyPlanUserRepository;
         private readonly IStudyCourseUserRepository _studyCourseUserRepository;
         private readonly IExamPaperStartRepository _examPaperStartRepository;
@@ -64,15 +55,8 @@ namespace XBLMS.Web.Controllers.Admin.Study
 
         public StudyCourseManagerController(IAuthManager authManager,
             IPathManager pathManager,
-            IUploadManager uploadManager,
-            IStudyManager studyManager,
-            IUserGroupRepository userGroupRepository,
-            IStudyPlanRepository studyPlanRepository,
             IStudyPlanCourseRepository studyPlanCourseRepository,
             IStudyCourseRepository studyCourseRepository,
-            IStudyCourseFilesRepository studyCourseFilesRepository,
-            IStudyCourseTreeRepository studyCourseTreeRepository,
-            IStudyCourseWareRepository studyCourseWareRepository,
             IStudyPlanUserRepository studyPlanUserRepository,
             IStudyCourseUserRepository studyCourseUserRepository,
             IOrganManager organManager,
@@ -91,15 +75,8 @@ namespace XBLMS.Web.Controllers.Admin.Study
         {
             _authManager = authManager;
             _pathManager = pathManager;
-            _uploadManager = uploadManager;
-            _studyManager = studyManager;
-            _userGroupRepository = userGroupRepository;
-            _studyPlanRepository = studyPlanRepository;
             _studyPlanCourseRepository = studyPlanCourseRepository;
             _studyCourseRepository = studyCourseRepository;
-            _studyCourseTreeRepository = studyCourseTreeRepository;
-            _studyCourseFilesRepository = studyCourseFilesRepository;
-            _studyCourseWareRepository = studyCourseWareRepository;
             _studyPlanUserRepository = studyPlanUserRepository;
             _studyCourseUserRepository = studyCourseUserRepository;
             _organManager = organManager;
